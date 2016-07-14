@@ -197,6 +197,8 @@ namespace Chatterino
 
         public Message(string text)
         {
+            RawMessage = text;
+
             Words = text.Split(' ').Select(x => new Span { Type = SpanType.Text, Value = x }).ToList();
             SplitWordSegments = new Tuple<string, Point>[Words.Count][];
         }

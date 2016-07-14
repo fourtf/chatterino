@@ -21,7 +21,6 @@ namespace Chatterino.Controls
 
         ChatControlHeader _header = null;
 
-
         // vars
         private bool scrollAtBottom = true;
 
@@ -152,17 +151,63 @@ namespace Chatterino.Controls
             }
         }
 
+        protected override void OnKeyPress(KeyPressEventArgs e)
+        {
+            base.OnKeyPress(e);
+
+            if ((ModifierKeys & ~Keys.Shift) == Keys.None)
+            {
+                if (e.KeyChar == '\b')
+                {
+                    if (SendMessage != null)
+                    {
+                        var message = SendMessage.RawMessage;
+                        if (message.Length > 1)
+                        {
+                            SendMessage = new Message(message.Remove(message.Length - 1));
+                        }
+                        else
+                        {
+                            SendMessage = null;
+                        }
+                    }
+                }
+                else if (e.KeyChar == '\r')
+                {
+                    if (SendMessage != null)
+                    {
+                        App.SendMessage(ircChannelName, SendMessage.RawMessage);
+                        SendMessage = null;
+                    }
+                }
+                else if (e.KeyChar >= ' ')
+                {
+                    if (SendMessage == null)
+                    {
+                        SendMessage = new Message(e.KeyChar.ToString());
+                    }
+                    else
+                    {
+                        SendMessage = new Message(SendMessage.RawMessage + e.KeyChar.ToString());
+                    }
+                }
+                updateMessageBounds();
+                Invalidate();
+            }
+        }
+
         protected override void OnResize(EventArgs e)
         {
             base.OnResize(e);
 
             updateMessageBounds();
-
         }
 
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
+
+            var borderPen = Focused ? App.ColorScheme.ChatBorderFocused : App.ColorScheme.ChatBorder;
 
             e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
             e.Graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
@@ -197,15 +242,15 @@ namespace Chatterino.Controls
                 }
             }
 
-            e.Graphics.DrawRectangle(Focused ? App.ColorScheme.ChatBorderFocused : App.ColorScheme.ChatBorder, 0, 0, Width - 1/* - SystemInformation.VerticalScrollBarWidth*/, Height - 1);
+            e.Graphics.DrawRectangle(borderPen, 0, 0, Width - 1/* - SystemInformation.VerticalScrollBarWidth*/, Height - 1);
 
             if (SendMessage != null)
             {
-                e.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(222, Color.White)), 1, Height - SendMessage.Height - TextPadding.Bottom, Width - 3 - SystemInformation.VerticalScrollBarWidth, SendMessage.Height + TextPadding.Bottom - 1);
-                SendMessage.Draw(e.Graphics, Font, TextPadding.Left, Height - SendMessage.Height - TextPadding.Bottom);
+                e.Graphics.FillRectangle(App.ColorScheme.ChatBackground, 1, Height - SendMessage.Height - TextPadding.Bottom, Width - 3 - SystemInformation.VerticalScrollBarWidth, SendMessage.Height + TextPadding.Bottom - 1);
+                e.Graphics.DrawLine(borderPen, 1, Height - SendMessage.Height - TextPadding.Bottom, Width - 2 - SystemInformation.VerticalScrollBarWidth, Height - SendMessage.Height - TextPadding.Bottom);
+                SendMessage.Draw(e.Graphics, Font, TextPadding.Left, Height - SendMessage.Height);
             }
         }
-
 
         // controls
         void updateMessageBounds(bool emoteChanged = false)

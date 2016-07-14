@@ -52,6 +52,8 @@ namespace Chatterino
             Settings.Save("./settings.ini");
         }
 
+        public const int MaxMessageLength = 500;
+
         public const TextFormatFlags DefaultTextFormatFlags = TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix;
 
         //public static IniSettings Settings { get; set; } = new IniSettings();
@@ -80,7 +82,13 @@ namespace Chatterino
 
         // IRC
         public static event EventHandler<IrcEventArgs> IrcMessageReceived;
-        public static IrcClient IrcClient { get; set; }
+        public static IrcClient IrcReadClient { get; set; }
+        public static IrcClient IrcWriteClient { get; set; }
+
+        public static void SendMessage(string channel, string message)
+        {
+            IrcWriteClient?.SendMessage(SendType.Message, "#" + channel.TrimStart('#'), message);
+        }
 
         static void runIrc()
         {
@@ -95,17 +103,39 @@ namespace Chatterino
                 Username = username;
                 MainForm?.SetTitle();
 
-                IrcClient = new IrcClient
+                IrcReadClient = new IrcClient
                 {
                     Encoding = new UTF8Encoding(),
                     EnableUTF8Recode = true
                 };
 
+                Task.Run(() =>
+                {
+                    IrcWriteClient = new IrcClient
+                    {
+                        Encoding = new UTF8Encoding(),
+                        EnableUTF8Recode = true
+                    };
+
+                    IrcWriteClient.OnRawMessage += (s, e) => { e.Data.RawMessage.Log(); };
+
+                    "Connecting writeclient to irc.twitch.tv:6667".Log();
+                    IrcWriteClient.Connect("irc.twitch.tv", 6667);
+                    "Connected writeclient to irc.twitch.tv:6667".Log();
+
+                    IrcWriteClient.Login(username, username, 0, username, (oauth.StartsWith("oauth:") ? oauth : "oauth:" + oauth));
+
+                    new Task(() =>
+                    {
+                        IrcWriteClient.Listen();
+                    }).Start();
+                });
+
                 try
                 {
-                    "Connecting to irc.twitch.tv:6667".Log();
-                    IrcClient.Connect("irc.twitch.tv", 6667);
-                    "Connected to irc.twitch.tv:6667".Log();
+                    "Connecting readclient to irc.twitch.tv:6667".Log();
+                    IrcReadClient.Connect("irc.twitch.tv", 6667);
+                    "Connected readclient to irc.twitch.tv:6667".Log();
                 }
                 catch (ConnectionException e)
                 {
@@ -114,16 +144,17 @@ namespace Chatterino
 
                 "logging in".Log("irc");
 
-                IrcClient.Login(username, username, 0, username, (oauth.StartsWith("oauth:") ? oauth : "oauth:" + oauth));
+                IrcReadClient.Login(username, username, 0, username, (oauth.StartsWith("oauth:") ? oauth : "oauth:" + oauth));
+                //IrcReadClient.WriteLine("NICK justinfan987123");
 
-                IrcClient.WriteLine("CAP REQ :twitch.tv/commands");
-                IrcClient.WriteLine("CAP REQ :twitch.tv/tags");
+                IrcReadClient.WriteLine("CAP REQ :twitch.tv/commands");
+                IrcReadClient.WriteLine("CAP REQ :twitch.tv/tags");
 
-                IrcClient.OnRawMessage += onRawMessage;
+                IrcReadClient.OnRawMessage += onRawMessage;
 
                 new Task(() =>
                 {
-                    IrcClient.Listen();
+                    IrcReadClient.Listen();
                 }).Start();
             }
         }

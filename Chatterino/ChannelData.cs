@@ -68,7 +68,7 @@ namespace Chatterino
 
             string bttvChannelEmotesCache = $"./cache/bttv_channel_{channelName}";
 
-            App.IrcClient.RfcJoin("#" + channelName);
+            App.IrcReadClient.RfcJoin("#" + channelName);
 
             Task.Run(() =>
             {
@@ -131,7 +131,7 @@ namespace Chatterino
 
         public void Disconnect()
         {
-            App.IrcClient.RfcPart("#" + Name);
+            App.IrcReadClient.RfcPart("#" + Name);
         }
     }
 }
