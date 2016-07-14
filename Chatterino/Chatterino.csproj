@@ -1,0 +1,208 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{866998E7-3AA7-4D82-B392-C1BFF18E19F8}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Chatterino</RootNamespace>
+    <AssemblyName>Chatterino</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Meebey.SmartIrc4net">
+      <HintPath>lib\Meebey.SmartIrc4net.dll</HintPath>
+    </Reference>
+    <Reference Include="StarkSoftProxy">
+      <HintPath>lib\StarkSoftProxy.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Text.Json, Version=2.0.0.11, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Text.Json.2.0.0.11\lib\net40\System.Text.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ChannelData.cs" />
+    <Compile Include="ColorScheme.cs" />
+    <Compile Include="Controls\ChatControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\ColumnLayoutControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\ColumnLayoutDragDropContainer.cs" />
+    <Compile Include="Controls\ColumnLayoutItemBase.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\ColumnLayoutPreviewItem.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\ScrollBarArrowButtonState.cs" />
+    <Compile Include="Controls\ScrollBarEx.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\ScrollBarExRenderer.cs" />
+    <Compile Include="Controls\ScrollBarOrientation.cs" />
+    <Compile Include="Controls\ScrollBarState.cs" />
+    <Compile Include="InputDialogForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="InputDialogForm.Designer.cs">
+      <DependentUpon>InputDialogForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="MainForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MainForm.Designer.cs">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="IniSettings.cs" />
+    <Compile Include="App.cs" />
+    <Compile Include="Message.cs" />
+    <Compile Include="MessageBadges.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Settings.cs" />
+    <Compile Include="Span.cs" />
+    <Compile Include="TwitchEmote.cs" />
+    <Compile Include="Util.cs" />
+    <Compile Include="ValueEventArgs.cs" />
+    <EmbeddedResource Include="Controls\ScrollBarEx.resx">
+      <DependentUpon>ScrollBarEx.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="InputDialogForm.resx">
+      <DependentUpon>InputDialogForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MainForm.resx">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\admin_1x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\broadcaster_1x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\mod_1x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\turbo_1x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\dev_1x.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\admin_bg.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\broadcaster_bg.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\dev_bg.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\globalmod_bg.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\moderator_bg.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\staff_bg.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\turbo_bg.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ThumbSpanBottom.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ThumbSpanTop.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ThumbTop.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\uparrow.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\downarrow.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ThumbBottom.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ThumbMiddle.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ScrollBarArrowDown.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ScrollBarArrowUp.png" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
