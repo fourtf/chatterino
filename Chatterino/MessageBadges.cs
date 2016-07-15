@@ -16,5 +16,6 @@ namespace Chatterino
         Staff = 8,
         GlobalMod = 16,
         Admin = 32,
+        Broadcaster = 64,
     }
 }

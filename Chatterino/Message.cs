@@ -103,6 +103,10 @@ namespace Chatterino
                             Badges |= MessageBadges.Turbo;
                             words.Add(new Span { Type = SpanType.Image, Value = Properties.Resources.turbo_bg });
                             break;
+                        case "broadcaster/1":
+                            Badges |= MessageBadges.Broadcaster;
+                            words.Add(new Span { Type = SpanType.Image, Value = Properties.Resources.broadcaster_bg });
+                            break;
                     }
                 }
             }
