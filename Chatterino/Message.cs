@@ -73,7 +73,20 @@ namespace Chatterino
                 DisplayName = value;
             }
 
+<<<<<<< HEAD
             words.Add(new Span { Type = SpanType.Text, Value = DateTime.Now.ToString(App.Settings.ChatShowSeconds ? "HH:mm:ss" : "HH:mm"), Color = Color.Gray });
+=======
+
+            // Add timestamp
+            if (true /* App.Settings.ShowTimestamp */) {
+                words.Add(new Span {
+                    Type = SpanType.Text,
+                    Value = DateTime.Now.ToString(App.Settings.ChatShowSeconds ? "HH:mm:ss" : "HH:mm"),
+                    Color = Color.Gray,
+                    Font = Fonts.Small,
+                });
+            }
+>>>>>>> origin/master
 
             if (Username.ToUpper() == "FOURTF")
                 words.Add(new Span { Type = SpanType.Image, Value = Properties.Resources.dev_bg });
@@ -248,8 +261,9 @@ namespace Chatterino
                     if (span.Type == SpanType.Text)
                     {
                         string s = (string)span.Value;
+                        var _font = span.Font ?? Fonts.Medium;
 
-                        var size = TextRenderer.MeasureText(g, s, font, Size.Empty, App.DefaultTextFormatFlags);
+                        var size = TextRenderer.MeasureText(g, s, _font, Size.Empty, App.DefaultTextFormatFlags);
                         span.Width = size.Width;
                         span.Height = xHeight;// size.Height;
                     }
@@ -390,14 +404,18 @@ namespace Chatterino
             lastFont = font;
         }
 
-        public void Draw(Graphics g, Font font, int xOffset, int yOffset)
+        public void Draw(Graphics g, int xOffset, int yOffset)
         {
             CurrentXOffset = xOffset;
             var textColor = App.ColorScheme.Text;
 
+            Font font;
+
             for (int i = 0; i < Words.Count; i++)
             {
                 var span = Words[i];
+
+                font = span.Font ?? Fonts.Medium;
 
                 if (span.Type == SpanType.Text)
                 {
