@@ -79,6 +79,7 @@
     <Compile Include="Controls\ScrollBarExRenderer.cs" />
     <Compile Include="Controls\ScrollBarOrientation.cs" />
     <Compile Include="Controls\ScrollBarState.cs" />
+    <Compile Include="Fonts.cs" />
     <Compile Include="InputDialogForm.cs">
       <SubType>Form</SubType>
     </Compile>

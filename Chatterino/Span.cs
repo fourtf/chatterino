@@ -13,6 +13,7 @@ namespace Chatterino
         public object Value { get; set; }
         public Color? Color { get; set; }
 
+        public Font Font { get; set; }
         public int Height { get; set; }
         public int Width { get; set; }
         public int X { get; set; }
