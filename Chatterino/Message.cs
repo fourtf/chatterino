@@ -73,12 +73,8 @@ namespace Chatterino
                 DisplayName = value;
             }
 
-<<<<<<< HEAD
-            words.Add(new Span { Type = SpanType.Text, Value = DateTime.Now.ToString(App.Settings.ChatShowSeconds ? "HH:mm:ss" : "HH:mm"), Color = Color.Gray });
-=======
-
             // Add timestamp
-            if (true /* App.Settings.ShowTimestamp */) {
+            if (App.Settings.ChatShowTimestamp) {
                 words.Add(new Span {
                     Type = SpanType.Text,
                     Value = DateTime.Now.ToString(App.Settings.ChatShowSeconds ? "HH:mm:ss" : "HH:mm"),
@@ -86,7 +82,6 @@ namespace Chatterino
                     Font = Fonts.Small,
                 });
             }
->>>>>>> origin/master
 
             if (Username.ToUpper() == "FOURTF")
                 words.Add(new Span { Type = SpanType.Image, Value = Properties.Resources.dev_bg });

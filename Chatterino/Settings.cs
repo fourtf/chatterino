@@ -10,6 +10,7 @@ namespace Chatterino
 {
     public class AppSettings
     {
+        public bool ChatShowTimestamp { get; set; } = true;
         public bool ChatShowSeconds { get; set; } = false;
 
         public bool ProxyEnable { get; set; } = false;
