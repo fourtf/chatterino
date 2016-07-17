@@ -54,7 +54,7 @@ namespace Chatterino.Controls
                 App.RemoveChannel(ChannelName);
             };
 
-            Font = new Font("Helvetica Neue", 9.5f);
+            Font = Fonts.Medium;
 
             ChatControlHeader header = _header = new ChatControlHeader(this);
             Controls.Add(header);
@@ -230,7 +230,7 @@ namespace Chatterino.Controls
                             }
                             break;
                         }
-                        msg.Draw(e.Graphics, Font, TextPadding.Left, y);
+                        msg.Draw(e.Graphics, TextPadding.Left, y);
                         msg.IsVisible = true;
                     }
                     else
@@ -248,7 +248,7 @@ namespace Chatterino.Controls
             {
                 e.Graphics.FillRectangle(App.ColorScheme.ChatBackground, 1, Height - SendMessage.Height - TextPadding.Bottom, Width - 3 - SystemInformation.VerticalScrollBarWidth, SendMessage.Height + TextPadding.Bottom - 1);
                 e.Graphics.DrawLine(borderPen, 1, Height - SendMessage.Height - TextPadding.Bottom, Width - 2 - SystemInformation.VerticalScrollBarWidth, Height - SendMessage.Height - TextPadding.Bottom);
-                SendMessage.Draw(e.Graphics, Font, TextPadding.Left, Height - SendMessage.Height);
+                SendMessage.Draw(e.Graphics, TextPadding.Left, Height - SendMessage.Height);
             }
         }
 
