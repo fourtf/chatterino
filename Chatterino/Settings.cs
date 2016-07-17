@@ -12,6 +12,14 @@ namespace Chatterino
     {
         public bool ChatShowSeconds { get; set; } = false;
 
+        public bool ProxyEnable { get; set; } = false;
+        public string ProxyHost { get; set; } = "";
+        public string ProxyUsername { get; set; } = "";
+        public string ProxyPassword { get; set; } = "";
+        public string ProxyType { get; set; } = "http";
+        public int ProxyPort { get; set; } = 6667;
+
+
         // static stuff
         static ConcurrentDictionary<string, PropertyInfo> properties = new ConcurrentDictionary<string, PropertyInfo>();
 

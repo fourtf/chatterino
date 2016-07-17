@@ -2,8 +2,10 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 namespace Chatterino
@@ -12,7 +14,10 @@ namespace Chatterino
     {
         public int Height { get; private set; }
 
+        public bool Disabled { get; set; } = false;
+
         public string Username { get; set; }
+        public string DisplayName { get; set; }
         public Color UsernameColor { get; set; }
 
         public MessageBadges Badges { get; set; }
@@ -27,6 +32,8 @@ namespace Chatterino
         public Tuple<string, Point>[][] SplitWordSegments { get; set; }
         public TwitchChannel Channel { get; set; }
 
+        Regex linkRegex = new Regex(@"\w+\.\w+");
+
         public Message(IrcMessageData data, TwitchChannel channel)
         {
             Channel = channel;
@@ -34,7 +41,7 @@ namespace Chatterino
             List<Span> words = new List<Span>();
 
             string text = data.Message;
-            Username = data.From;
+            Username = data.Nick;
 
             bool slashMe = false;
 
@@ -63,9 +70,8 @@ namespace Chatterino
             }
             if (data.Tags.TryGetValue("display-name", out value))
             {
-                Username = value;
+                DisplayName = value;
             }
-
 
             words.Add(new Span { Type = SpanType.Text, Value = DateTime.Now.ToString(App.Settings.ChatShowSeconds ? "HH:mm:ss" : "HH:mm"), Color = Color.Gray });
 
@@ -113,7 +119,8 @@ namespace Chatterino
 
             //  93064:0-6,8-14/80481:16-20,22-26
 
-            words.Add(new Span { Type = SpanType.Text, Value = Username + (slashMe ? "" : ":"), Color = UsernameColor });
+            DisplayName = DisplayName ?? Username;
+            words.Add(new Span { Type = SpanType.Text, Value = DisplayName + (slashMe ? "" : ":"), Color = UsernameColor });
 
             List<Tuple<int, TwitchEmote>> twitchEmotes = new List<Tuple<int, TwitchEmote>>();
 
@@ -140,6 +147,7 @@ namespace Chatterino
                         });
                     }
                 });
+                twitchEmotes.Sort((e1, e2) => e1.Item1.CompareTo(e2.Item1));
             }
 
             //if (data.Tags.TryGetValue("id", out value))
@@ -186,7 +194,18 @@ namespace Chatterino
                 }
                 else
                 {
-                    words.Add(new Span { Type = SpanType.Text, Value = s, Color = slashMe ? UsernameColor : new Color?() });
+                    string link = null;
+
+                    //Match m = linkRegex.Match(s);
+                    //foreach (Match m in linkRegex.Matches(s))
+                    //{
+
+                    //}
+
+                    //if (m.Success)
+                    //    link = m.Value;
+
+                    words.Add(new Span { Type = SpanType.Text, Value = s, Color = slashMe ? UsernameColor : new Color?(), Link = link });
                 }
 
                 i += s.Length + 1;
@@ -426,6 +445,12 @@ namespace Chatterino
                         g.DrawImage(img, span.X + xOffset, span.Y + yOffset, span.Width, span.Height);
                 }
             }
+
+            if (Disabled)
+            {
+                Brush disabledBrush = new SolidBrush(Color.FromArgb(172, (App.ColorScheme.ChatBackground as SolidBrush)?.Color ?? Color.Black));
+                g.FillRectangle(disabledBrush, xOffset, yOffset, 1000, Height);
+            }
         }
 
         public void UpdateGifEmotes(Graphics g)
@@ -445,6 +470,10 @@ namespace Chatterino
 
                         buffer.Graphics.FillRectangle(App.ColorScheme.ChatBackground, span.X + CurrentXOffset, span.Y + CurrentYOffset, span.Width, span.Height);
                         buffer.Graphics.DrawImage(emote.Image, span.X + CurrentXOffset, span.Y + CurrentYOffset, span.Width, span.Height);
+                        if (Disabled)
+
+                            buffer.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(172, (App.ColorScheme.ChatBackground as SolidBrush)?.Color ?? Color.Black)),
+                                 span.X + CurrentXOffset, span.Y + CurrentYOffset, span.Width, span.Height);
 
                         buffer.Render(g);
 

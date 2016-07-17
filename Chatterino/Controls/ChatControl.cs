@@ -30,9 +30,10 @@ namespace Chatterino.Controls
 
         Timer gifEmoteTimer = new Timer { Interval = 33 };
 
-        CustomScrollBar.ScrollBarEx vscroll = new CustomScrollBar.ScrollBarEx
+        CustomScrollBar vscroll = new CustomScrollBar
         {
-            Enabled = false
+            Enabled = false,
+            SmallChange = 1,
         };
 
 
@@ -63,8 +64,6 @@ namespace Chatterino.Controls
             LostFocus += (s, e) => { header.Invalidate(); };
 
             Controls.Add(vscroll);
-
-            vscroll.SmallChange = 16;
 
             vscroll.Height = Height - TopMenuBarHeight;
             vscroll.Location = new Point(Width - SystemInformation.VerticalScrollBarWidth - 1, TopMenuBarHeight);
@@ -109,6 +108,36 @@ namespace Chatterino.Controls
 
         void onRawMessage(object s, IrcEventArgs e)
         {
+            if (e.Data.RawMessageArray[2] == "CLEARCHAT")
+            {
+                var channel = e.Data.RawMessageArray[3].TrimStart('#');
+
+                if (channel == ChannelName)
+                {
+                    var reason = e.Data.Tags["ban-reason"];
+                    var duration = e.Data.Tags["ban-duration"];
+                    var user = e.Data.Message;
+
+                    //lock (Messages)
+                    {
+                        Messages.Add(new Message($"{user} was timed out for {duration} second{(duration == "1" ? "" : "s")}{(string.IsNullOrEmpty(reason) ? "." : ": " + reason)}"));
+                        foreach (var msg in Messages)
+                        {
+                            updateMessageBounds();
+
+                            if (msg.Username == user)
+                            {
+                                msg.Disabled = true;
+                                this.Invoke(() =>
+                                {
+                                    Invalidate();
+                                });
+                            }
+                        }
+                    }
+                }
+            }
+
             if ((e.Data.Channel?.Length ?? 0) > 1 && (e.Data.Channel?.Substring(1) ?? "") == ChannelName)
             {
                 if (e.Data.RawMessageArray.Length > 4 && e.Data.RawMessageArray[2] == "PRIVMSG")
@@ -137,7 +166,7 @@ namespace Chatterino.Controls
                             if (vscroll.Enabled)
                             {
                                 if (bottom)
-                                    vscroll.Value = vscroll.Maximum;
+                                    vscroll.Value = vscroll.Maximum - vscroll.LargeChange;
                                 else if (firstMessage != null)
                                     vscroll.Value = Math.Max(0, vscroll.Value - firstMessage.Height);
                             }
@@ -212,7 +241,7 @@ namespace Chatterino.Controls
             e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
             e.Graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
 
-            int y = -vscroll.Value + TextPadding.Top;
+            int y = (int)(-vscroll.Value + TextPadding.Top);
 
             // DRAW MESSAGES
             lock (Messages)
@@ -284,11 +313,11 @@ namespace Chatterino.Controls
             {
                 vscroll.Invoke(() =>
                 {
-                    if (totalMessageHeight > Height)
+                    if (totalMessageHeight > Height - TextPadding.Top - TextPadding.Bottom)
                     {
                         vscroll.Enabled = true;
-                        vscroll.Maximum = totalMessageHeight - Height + TextPadding.Top + TextPadding.Bottom;
                         vscroll.LargeChange = Height - TextPadding.Top - TextPadding.Bottom;
+                        vscroll.Maximum = totalMessageHeight - Height + TextPadding.Top + TextPadding.Bottom + vscroll.LargeChange;
 
                         if (scrollAtBottom)
                         {

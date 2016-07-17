@@ -12,6 +12,7 @@ namespace Chatterino
         public SpanType Type { get; set; }
         public object Value { get; set; }
         public Color? Color { get; set; }
+        public string Link { get; set; }
 
         public int Height { get; set; }
         public int Width { get; set; }
@@ -22,6 +23,7 @@ namespace Chatterino
     public enum SpanType
     {
         Text,
+        SmallText,
         Emote,
         Image
     }

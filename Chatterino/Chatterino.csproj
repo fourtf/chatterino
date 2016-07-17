@@ -72,13 +72,10 @@
     <Compile Include="Controls\ColumnLayoutPreviewItem.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\ScrollBarArrowButtonState.cs" />
-    <Compile Include="Controls\ScrollBarEx.cs">
+    <Compile Include="Controls\CustomScrollBar.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\ScrollBarExRenderer.cs" />
-    <Compile Include="Controls\ScrollBarOrientation.cs" />
-    <Compile Include="Controls\ScrollBarState.cs" />
+    <Compile Include="Controls\CustomScrollBarEventArgs.cs" />
     <Compile Include="InputDialogForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -101,9 +98,6 @@
     <Compile Include="TwitchEmote.cs" />
     <Compile Include="Util.cs" />
     <Compile Include="ValueEventArgs.cs" />
-    <EmbeddedResource Include="Controls\ScrollBarEx.resx">
-      <DependentUpon>ScrollBarEx.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="InputDialogForm.resx">
       <DependentUpon>InputDialogForm.cs</DependentUpon>
     </EmbeddedResource>

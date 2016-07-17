@@ -82,6 +82,7 @@ namespace Chatterino
 
         // IRC
         public static event EventHandler<IrcEventArgs> IrcMessageReceived;
+
         public static IrcClient IrcReadClient { get; set; }
         public static IrcClient IrcWriteClient { get; set; }
 
@@ -109,6 +110,25 @@ namespace Chatterino
                     EnableUTF8Recode = true
                 };
 
+                Action<IrcClient> setProxy = client =>
+                {
+                    if (Settings.ProxyEnable)
+                    {
+                        ProxyType type;
+                        Enum.TryParse(Settings.ProxyType, out type);
+                        if (type != ProxyType.None)
+                        {
+                            IrcWriteClient.ProxyType = type;
+                            IrcWriteClient.ProxyPort = Settings.ProxyPort;
+                            IrcWriteClient.ProxyHost = Settings.ProxyHost;
+                            IrcWriteClient.ProxyUsername = Settings.ProxyUsername;
+                            IrcWriteClient.ProxyPassword = Settings.ProxyPassword;
+                        }
+                    }
+                };
+
+                setProxy(IrcReadClient);
+
                 Task.Run(() =>
                 {
                     IrcWriteClient = new IrcClient
@@ -116,6 +136,8 @@ namespace Chatterino
                         Encoding = new UTF8Encoding(),
                         EnableUTF8Recode = true
                     };
+
+                    setProxy(IrcWriteClient);
 
                     IrcWriteClient.OnRawMessage += (s, e) => { e.Data.RawMessage.Log(); };
 
@@ -173,9 +195,11 @@ namespace Chatterino
 
         public static ConcurrentDictionary<string, TwitchChannel> Channels { get; private set; } = new ConcurrentDictionary<string, TwitchChannel>();
 
-        public static TwitchChannel AddChannel(string channel) => Channels.AddOrUpdate(channel ?? "", cname => new TwitchChannel(cname), (cname, c) => { c.Uses++; return c; });
+        public static TwitchChannel AddChannel(string channel) => Channels.AddOrUpdate((channel ?? "").ToLower(), cname => new TwitchChannel(cname), (cname, c) => { c.Uses++; return c; });
         public static void RemoveChannel(string channel)
         {
+            channel = channel.ToLower();
+
             TwitchChannel data;
             if (Channels.TryGetValue(channel ?? "", out data))
             {
