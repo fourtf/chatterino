@@ -1,6 +1,7 @@
 ﻿using Meebey.SmartIrc4net;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
@@ -41,7 +42,6 @@ namespace Chatterino
                     var b = buffer;
                     buffer = null;
                     b.Dispose();
-                    Console.WriteLine("asd");
                 }
             }
         }
@@ -57,6 +57,8 @@ namespace Chatterino
 
         public Message(IrcMessageData data, TwitchChannel channel)
         {
+            var w = Stopwatch.StartNew();
+
             Channel = channel;
 
             List<Span> words = new List<Span>();
@@ -247,6 +249,9 @@ namespace Chatterino
             RawMessage = text;
 
             SplitWordSegments = new Tuple<string, Point>[words.Count][];
+
+            w.Stop();
+            Console.WriteLine("Message parsed in " + w.Elapsed.TotalSeconds.ToString("0.000000") + " seconds");
         }
 
         public Message(string text)
@@ -360,13 +365,15 @@ namespace Chatterino
                         x = 0;
 
                         span.X = 0;
-                        span.Y = y;
 
                         currentLineHeight = span.Height;
 
                         string text = (string)span.Value;
                         int startIndex = 0;
                         List<Tuple<string, Point>> items = new List<Tuple<string, Point>>();
+
+                        span.Y = y;
+
 
                         string s;
                         for (int i = 1; i < text.Length; i++)
@@ -384,7 +391,7 @@ namespace Chatterino
                         }
 
                         s = text.Substring(startIndex);
-                        items.Add(Tuple.Create(s, new Point(x, y)));
+                        items.Add(Tuple.Create(s, new Point(x, y + span.Height)));
                         x += TextRenderer.MeasureText(s, font, Size.Empty, App.DefaultTextFormatFlags).Width;
                         SplitWordSegments[wordIndex] = items.ToArray();
 
