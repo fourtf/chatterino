@@ -23,7 +23,7 @@ namespace Chatterino.Controls
         public double Maximum
         {
             get { return max; }
-            set { max = value; updateScroll(); Invalidate(); }
+            set { max = value; Value = Value; updateScroll(); Invalidate(); }
         }
 
         private double min;
@@ -39,7 +39,7 @@ namespace Chatterino.Controls
         public double LargeChange
         {
             get { return large; }
-            set { large = value; updateScroll(); Invalidate(); }
+            set { large = value; Value = Value; updateScroll(); Invalidate(); }
         }
 
         private double small;
@@ -69,6 +69,8 @@ namespace Chatterino.Controls
         {
             SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
             SetStyle(ControlStyles.ResizeRedraw, true);
+            SetStyle(ControlStyles.AllPaintingInWmPaint, true);
+
             new VScrollBar().Scroll += (s, e) => { };
             Width = buttonSize;
         }

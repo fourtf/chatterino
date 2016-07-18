@@ -26,7 +26,7 @@ namespace Chatterino.Controls
 
         public int totalMessageHeight = 0;
 
-        List<Message> Messages = new List<Message>();
+        Message[] Messages = new Message[0];
 
         Timer gifEmoteTimer = new Timer { Interval = 33 };
 
@@ -108,7 +108,7 @@ namespace Chatterino.Controls
 
         void onRawMessage(object s, IrcEventArgs e)
         {
-            if (e.Data.RawMessageArray[2] == "CLEARCHAT")
+            if (e.Data.RawMessageArray.Length > 2 && e.Data.RawMessageArray[2] == "CLEARCHAT")
             {
                 var channel = e.Data.RawMessageArray[3].TrimStart('#');
 
@@ -120,7 +120,7 @@ namespace Chatterino.Controls
 
                     //lock (Messages)
                     {
-                        Messages.Add(new Message($"{user} was timed out for {duration} second{(duration == "1" ? "" : "s")}{(string.IsNullOrEmpty(reason) ? "." : ": " + reason)}"));
+                        addMessage(new Message($"{user} was timed out for {duration} second{(duration == "1" ? "" : "s")}{(string.IsNullOrEmpty(reason) ? "." : ": " + reason)}"));
                         foreach (var msg in Messages)
                         {
                             updateMessageBounds();
@@ -151,12 +151,11 @@ namespace Chatterino.Controls
                         Message msg = new Message(e.Data, c);
                         lock (Messages)
                         {
-                            if (Messages.Count == MaxMessages)
+                            if (Messages.Length == MaxMessages)
                             {
                                 firstMessage = Messages[0];
-                                Messages = new List<Message>(Messages.Skip(1));
                             }
-                            Messages.Add(msg);
+                            addMessage(msg);
                         }
 
                         bool bottom = scrollAtBottom;
@@ -246,14 +245,14 @@ namespace Chatterino.Controls
             // DRAW MESSAGES
             lock (Messages)
             {
-                for (int i = 0; i < Messages.Count; i++)
+                for (int i = 0; i < Messages.Length; i++)
                 {
                     var msg = Messages[i];
                     if (y + msg.Height > 0)
                     {
                         if (y > Height)
                         {
-                            for (; i < Messages.Count; i++)
+                            for (; i < Messages.Length; i++)
                             {
                                 Messages[i].IsVisible = false;
                             }
@@ -275,9 +274,27 @@ namespace Chatterino.Controls
 
             if (SendMessage != null)
             {
-                e.Graphics.FillRectangle(App.ColorScheme.ChatBackground, 1, Height - SendMessage.Height - TextPadding.Bottom, Width - 3 - SystemInformation.VerticalScrollBarWidth, SendMessage.Height + TextPadding.Bottom - 1);
-                e.Graphics.DrawLine(borderPen, 1, Height - SendMessage.Height - TextPadding.Bottom, Width - 2 - SystemInformation.VerticalScrollBarWidth, Height - SendMessage.Height - TextPadding.Bottom);
+                e.Graphics.FillRectangle(App.ColorScheme.ChatBackground, 1, Height - SendMessage.Height - 4, Width - 3 - SystemInformation.VerticalScrollBarWidth, SendMessage.Height + TextPadding.Bottom - 1);
+                e.Graphics.DrawLine(borderPen, 1, Height - SendMessage.Height - 4, Width - 2 - SystemInformation.VerticalScrollBarWidth, Height - SendMessage.Height - 4);
                 SendMessage.Draw(e.Graphics, TextPadding.Left, Height - SendMessage.Height);
+            }
+        }
+
+        void addMessage(Message msg)
+        {
+            if (Messages.Length == MaxMessages)
+            {
+                Message[] M = new Message[Messages.Length];
+                Array.Copy(Messages, 1, M, 0, Messages.Length - 1);
+                M[M.Length - 1] = msg;
+                Messages = M;
+            }
+            else
+            {
+                Message[] M = new Message[Messages.Length + 1];
+                Messages.CopyTo(M, 0);
+                M[M.Length - 1] = msg;
+                Messages = M;
             }
         }
 
@@ -299,7 +316,10 @@ namespace Chatterino.Controls
                 if (SendMessage != null)
                 {
                     SendMessage.CalculateBounds(g, Font, Width - TextPadding.Left - TextPadding.Right);
+                    TextPadding = new Padding(TextPadding.Left, TextPadding.Top, TextPadding.Right, 4 + SendMessage.Height);
                 }
+                else
+                    TextPadding = new Padding(TextPadding.Left, TextPadding.Top, TextPadding.Right, 4);
 
                 totalMessageHeight = totalHeight;
 
@@ -334,7 +354,7 @@ namespace Chatterino.Controls
 
         void checkScrollBarPosition()
         {
-            scrollAtBottom = !vscroll.Enabled || vscroll.Maximum < vscroll.Value + vscroll.LargeChange;
+            scrollAtBottom = !vscroll.Enabled || vscroll.Maximum < vscroll.Value + vscroll.LargeChange + 40;
         }
 
         private string ircChannelName;
@@ -352,8 +372,8 @@ namespace Chatterino.Controls
 
                     ircChannelName = value;
 
-                    lock (Messages)
-                        Messages.Clear();
+                    //lock (Messages)
+                    Messages = new Message[0];
 
                     if (!string.IsNullOrWhiteSpace(ircChannelName))
                         App.AddChannel(ircChannelName);
