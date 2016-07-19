@@ -43,6 +43,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Design" />
     <Reference Include="System.Text.Json, Version=2.0.0.11, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Text.Json.2.0.0.11\lib\net40\System.Text.Json.dll</HintPath>
       <Private>True</Private>
@@ -74,6 +75,19 @@
     <None Include="AutocompleteMenu\ITextBoxWrapper.cs" />
     <None Include="AutocompleteMenu\Range.cs" />
     <None Include="AutocompleteMenu\TextBoxWrapper.cs" />
+    <Compile Include="Controls\SettingsDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls\SettingsDialog.designer.cs">
+      <DependentUpon>SettingsDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\SettingsTabControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\SettingsTabControlDesigner.cs" />
+    <Compile Include="Controls\SettingsTabPage.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="TwitchChannel.cs" />
     <Compile Include="ColorScheme.cs" />
     <Compile Include="Controls\ChatControl.cs">
@@ -119,6 +133,9 @@
     <Compile Include="ValueEventArgs.cs" />
     <EmbeddedResource Include="AutocompleteMenu\AutocompleteMenu.resx">
       <DependentUpon>AutocompleteMenu.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\SettingsDialog.resx">
+      <DependentUpon>SettingsDialog.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="InputDialogForm.resx">
       <DependentUpon>InputDialogForm.cs</DependentUpon>

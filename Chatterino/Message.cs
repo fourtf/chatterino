@@ -53,7 +53,7 @@ namespace Chatterino
         public Tuple<string, Rectangle>[][] SplitWordSegments { get; set; }
         public TwitchChannel Channel { get; set; }
 
-        Regex linkRegex = new Regex(@"^((?<Protocol>\w+):\/\/)?(?<Domain>[\w@][\w.:@]+)\/?[\w\.?=%&=\-@/$,]*$");
+        Regex linkRegex = new Regex(@"^((?<Protocol>\w+):\/\/)?(?<Domain>[\w@][\w.:@]+\w)\/?[\w\.?=%&=\-@/$,]*$");
 
         public Message(IrcMessageData data, TwitchChannel channel)
         {
@@ -97,12 +97,12 @@ namespace Chatterino
             }
 
             // Add timestamp
-            if (App.Settings.ChatShowTimestamp)
+            if (App.Settings.ChatShowTimestamps)
             {
                 words.Add(new Span
                 {
                     Type = SpanType.Text,
-                    Value = DateTime.Now.ToString(App.Settings.ChatShowSeconds ? "HH:mm:ss" : "HH:mm"),
+                    Value = DateTime.Now.ToString(App.Settings.ChatShowTimestampSeconds ? "HH:mm:ss" : "HH:mm"),
                     Color = Color.Gray,
                     Font = Fonts.Small,
                 });

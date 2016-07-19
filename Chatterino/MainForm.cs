@@ -71,6 +71,9 @@ namespace Chatterino
                             }
                         }
                         break;
+                    case Keys.P:
+                        App.ShowSettings();
+                        break;
                 }
             }
         }

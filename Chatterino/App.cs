@@ -91,6 +91,25 @@ namespace Chatterino
         // WINDOW
         public static MainForm MainForm { get; set; }
 
+        public static Controls.SettingsDialog SettingsDialog { get; set; }
+
+        public static void ShowSettings()
+        {
+            if (SettingsDialog == null)
+            {
+                SettingsDialog = new Controls.SettingsDialog();
+                SettingsDialog.Show();
+                SettingsDialog.FormClosing += (s, e) =>
+                {
+                    SettingsDialog = null;
+                };
+            }
+            else
+            {
+                SettingsDialog.Focus();
+            }
+        }
+
 
         // IRC
         public static event EventHandler<IrcEventArgs> IrcMessageReceived;
@@ -111,6 +130,10 @@ namespace Chatterino
                 {
                     message = command(message) ?? message;
                 }
+            }
+            else if (Settings.ChatAllowSameMessage && (message[0] != '/' && message[0] != '.'))
+            {
+                message = ". " + message;
             }
 
             IrcWriteClient?.SendMessage(SendType.Message, "#" + channel.TrimStart('#'), Emojis.ReplaceShortCodes(message));

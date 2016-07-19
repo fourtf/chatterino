@@ -10,23 +10,25 @@ namespace Chatterino
 {
     public class AppSettings
     {
-        public bool ChatShowTimestamp { get; set; } = true;
-        public bool ChatShowSeconds { get; set; } = false;
+        public bool ChatShowTimestamps { get; set; } = true;
+        public bool ChatShowTimestampSeconds { get; set; } = false;
+        public bool ChatAllowSameMessage { get; set; } = false;
 
         public bool ChatEnableBttvEmotes { get; set; } = true;
-        public bool ChatEnableBttvGifEmotes { get; set; } = true;
         public bool ChatEnableFfzEmotes { get; set; } = true;
+        public bool ChatEnableEmojis { get; set; } = true;
+        public bool ChatEnableGifEmotes { get; set; } = true;
 
         public bool ProxyEnable { get; set; } = false;
+        public string ProxyType { get; set; } = "http";
         public string ProxyHost { get; set; } = "";
         public string ProxyUsername { get; set; } = "";
         public string ProxyPassword { get; set; } = "";
-        public string ProxyType { get; set; } = "http";
         public int ProxyPort { get; set; } = 6667;
 
 
         // static stuff
-        static ConcurrentDictionary<string, PropertyInfo> properties = new ConcurrentDictionary<string, PropertyInfo>();
+        public static ConcurrentDictionary<string, PropertyInfo> Properties = new ConcurrentDictionary<string, PropertyInfo>();
 
         static AppSettings()
         {
@@ -35,7 +37,7 @@ namespace Chatterino
             foreach (var property in T.GetProperties())
             {
                 if (property.CanRead && property.CanWrite)
-                    properties[property.Name] = property;
+                    Properties[property.Name] = property;
             }
         }
 
@@ -45,7 +47,7 @@ namespace Chatterino
             IniSettings settings = new IniSettings();
             settings.Load(path);
 
-            foreach (var prop in properties.Values)
+            foreach (var prop in Properties.Values)
             {
                 if (prop.PropertyType == typeof(string))
                     prop.SetValue(this, settings.GetString(prop.Name, (string)prop.GetValue(this)));
@@ -62,7 +64,7 @@ namespace Chatterino
         {
             IniSettings settings = new IniSettings();
 
-            foreach (var prop in properties.Values)
+            foreach (var prop in Properties.Values)
             {
                 if (prop.PropertyType == typeof(string))
                     settings.Set(prop.Name, (string)prop.GetValue(this));
