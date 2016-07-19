@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Chatterino
 {
-    class Fonts
+    public static class Fonts
     {
         public static Font Small = new Font("Helvetica Neue", 6.5f);
         public static Font Medium = new Font("Helvetica Neue", 9.5f);

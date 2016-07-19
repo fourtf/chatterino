@@ -14,7 +14,19 @@ namespace Chatterino
     public class TwitchChannel
     {
         // properties
-        public string Name { get; private set; }
+        private string name;
+
+        public string Name
+        {
+            get { return name; }
+            set
+            {
+                name = value;
+                SubLink = "https://www.twitch.tv/" + value + "/subscribe?ref=in_chat_subscriber_link";
+            }
+        }
+
+        public string SubLink { get; private set; }
 
         public int Uses { get; set; } = 0;
 

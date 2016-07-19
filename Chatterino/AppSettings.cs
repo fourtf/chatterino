@@ -13,6 +13,10 @@ namespace Chatterino
         public bool ChatShowTimestamp { get; set; } = true;
         public bool ChatShowSeconds { get; set; } = false;
 
+        public bool ChatEnableBttvEmotes { get; set; } = true;
+        public bool ChatEnableBttvGifEmotes { get; set; } = true;
+        public bool ChatEnableFfzEmotes { get; set; } = true;
+
         public bool ProxyEnable { get; set; } = false;
         public string ProxyHost { get; set; } = "";
         public string ProxyUsername { get; set; } = "";

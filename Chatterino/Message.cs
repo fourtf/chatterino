@@ -50,10 +50,10 @@ namespace Chatterino
 
         public string RawMessage { get; private set; }
         public List<Span> Words { get; set; }
-        public Tuple<string, Point>[][] SplitWordSegments { get; set; }
+        public Tuple<string, Rectangle>[][] SplitWordSegments { get; set; }
         public TwitchChannel Channel { get; set; }
 
-        Regex linkRegex = new Regex(@"\w+\.\w+");
+        Regex linkRegex = new Regex(@"^((?<Protocol>\w+):\/\/)?(?<Domain>[\w@][\w.:@]+)\/?[\w\.?=%&=\-@/$,]*$");
 
         public Message(IrcMessageData data, TwitchChannel channel)
         {
@@ -136,7 +136,7 @@ namespace Chatterino
                             break;
                         case "subscriber/1":
                             Badges |= MessageBadges.Sub;
-                            words.Add(new Span { Type = SpanType.Emote, Value = channel.SubscriberBadge });
+                            words.Add(new Span { Type = SpanType.Emote, Value = channel.SubscriberBadge, Link = Channel.SubLink });
                             break;
                         case "turbo/1":
                             Badges |= MessageBadges.Turbo;
@@ -221,7 +221,7 @@ namespace Chatterino
                 }
 
                 TwitchEmote bttvEmote;
-                if (App.BttvGlobalEmotes.TryGetValue(s, out bttvEmote) || channel.BttvChannelEmotes.TryGetValue(s, out bttvEmote))
+                if (App.BttvGlobalEmotes.TryGetValue(s, out bttvEmote) || channel.BttvChannelEmotes.TryGetValue(s, out bttvEmote) || App.FfzGlobalEmotes.TryGetValue(s, out bttvEmote))
                 {
                     words.Add(new Span { Type = SpanType.Emote, Value = bttvEmote, Color = slashMe ? UsernameColor : new Color?() });
                 }
@@ -229,16 +229,23 @@ namespace Chatterino
                 {
                     string link = null;
 
-                    //Match m = linkRegex.Match(s);
-                    //foreach (Match m in linkRegex.Matches(s))
-                    //{
+                    Match m = linkRegex.Match(s);
 
-                    //}
+                    if (m.Success)
+                    {
+                        link = m.Value;
 
-                    //if (m.Success)
-                    //    link = m.Value;
+                        if (!m.Groups["Protocol"].Success)
+                            link = "http://" + link;
 
-                    words.Add(new Span { Type = SpanType.Text, Value = s, Color = slashMe ? UsernameColor : new Color?(), Link = link });
+                        if (!m.Groups["Protocol"].Success || m.Groups["Protocol"].Value.ToUpper() == "HTTP" || m.Groups["Protocol"].Value.ToUpper() == "HTTPS")
+                        {
+                            if (m.Groups["Domain"].Value.IndexOf('.') == -1)
+                                link = null;
+                        }
+                    }
+
+                    words.Add(new Span { Type = SpanType.Text, Value = s, Color = slashMe ? UsernameColor : (link == null ? new Color?() : App.ColorScheme.TextLink), Link = link });
                 }
 
                 i += s.Length + 1;
@@ -248,7 +255,7 @@ namespace Chatterino
 
             RawMessage = text;
 
-            SplitWordSegments = new Tuple<string, Point>[words.Count][];
+            SplitWordSegments = new Tuple<string, Rectangle>[words.Count][];
 
             w.Stop();
             Console.WriteLine("Message parsed in " + w.Elapsed.TotalSeconds.ToString("0.000000") + " seconds");
@@ -259,7 +266,7 @@ namespace Chatterino
             RawMessage = text;
 
             Words = text.Split(' ').Select(x => new Span { Type = SpanType.Text, Value = x }).ToList();
-            SplitWordSegments = new Tuple<string, Point>[Words.Count][];
+            SplitWordSegments = new Tuple<string, Rectangle>[Words.Count][];
         }
 
         Font lastFont = null;
@@ -353,11 +360,11 @@ namespace Chatterino
                     for (int i = linestart; i < wordIndex; i++)
                         Words[i].Y += lineHeight - Words[i].Height;
 
-                    if (linestart > 0 && SplitWordSegments[linestart - 1] != null)
+                    if (linestart > 0 && SplitWordSegments[linestart - 1] != null && lineHeight != 0)
                     {
                         var items = SplitWordSegments[linestart - 1];
                         var item = items[items.Length - 1];
-                        items[items.Length - 1] = Tuple.Create(item.Item1, new Point(item.Item2.X, item.Item2.Y + lineHeight - Words[linestart - 1].Height));
+                        items[items.Length - 1] = Tuple.Create(item.Item1, new Rectangle(item.Item2.X, item.Item2.Y + lineHeight - Words[linestart - 1].Height, item.Item2.Width, item.Item2.Height));
                     }
 
                     if (span.Type == SpanType.Text && span.Width > width)
@@ -370,28 +377,30 @@ namespace Chatterino
 
                         string text = (string)span.Value;
                         int startIndex = 0;
-                        List<Tuple<string, Point>> items = new List<Tuple<string, Point>>();
+                        List<Tuple<string, Rectangle>> items = new List<Tuple<string, Rectangle>>();
 
                         span.Y = y;
 
 
                         string s;
+                        Size size = Size.Empty;
                         for (int i = 1; i < text.Length; i++)
                         {
                             s = text.Substring(startIndex, i - startIndex);
-                            if (TextRenderer.MeasureText(s, font, Size.Empty, App.DefaultTextFormatFlags).Width + x > width)
+                            if ((size = TextRenderer.MeasureText(s, font, Size.Empty, App.DefaultTextFormatFlags)).Width + x > width)
                             {
-                                items.Add(Tuple.Create(s, new Point(x, y)));
+                                items.Add(Tuple.Create(s, new Rectangle(x, y, size.Width, size.Height)));
                                 startIndex = i;
                                 x = 0;
-                                //y += xHeight;
-                                y += span.Height;
+                                y += xHeight;
+                                //y += span.Height;
                                 i++;
                             }
                         }
 
                         s = text.Substring(startIndex);
-                        items.Add(Tuple.Create(s, new Point(x, y + span.Height)));
+#warning ignores 1-width lines
+                        items.Add(Tuple.Create(s, new Rectangle(x, y + span.Height, size.Width, size.Height)));
                         x += TextRenderer.MeasureText(s, font, Size.Empty, App.DefaultTextFormatFlags).Width;
                         SplitWordSegments[wordIndex] = items.ToArray();
 
@@ -424,11 +433,11 @@ namespace Chatterino
             for (int i = linestart; i < Words.Count; i++)
                 Words[i].Y += lineHeight - Words[i].Height;
 
-            if (linestart > 0 && SplitWordSegments[linestart - 1] != null)
+            if (linestart > 0 && SplitWordSegments[linestart - 1] != null && lineHeight != 0)
             {
                 var items = SplitWordSegments[linestart - 1];
                 var item = items[items.Length - 1];
-                items[items.Length - 1] = Tuple.Create(item.Item1, new Point(item.Item2.X, item.Item2.Y + lineHeight - Words[linestart - 1].Height));
+                items[items.Length - 1] = Tuple.Create(item.Item1, new Rectangle(item.Item2.X, item.Item2.Y + lineHeight - Words[linestart - 1].Height, item.Item2.Width, item.Item2.Height));
             }
 
             Height = y + currentLineHeight + 8;
@@ -563,6 +572,28 @@ namespace Chatterino
                     }
                 }
             }
+        }
+
+        public Span SpanAtPoint(Point point)
+        {
+            for (int i = 0; i < Words.Count; i++)
+            {
+                var span = Words[i];
+                Tuple<string, Rectangle>[] segments;
+                //if (span.Type == SpanType.Text && (segments = SplitWordSegments[i]) != null)
+                {
+
+                }
+                //else
+                {
+                    if (span.X < point.X && span.Y < point.Y && span.X + span.Width > point.X && span.Y + span.Height > point.Y)
+                    {
+                        return span;
+                    }
+                }
+            }
+
+            return null;
         }
     }
 }

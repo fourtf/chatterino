@@ -33,9 +33,14 @@ namespace Chatterino.Controls
         CustomScrollBar vscroll = new CustomScrollBar
         {
             Enabled = false,
-            SmallChange = 1,
+            SmallChange = 32,
         };
 
+        bool isSelecting = false;
+        int messageSelectionStartIndex = 0;
+        int spanSelectionStartIndex = 0;
+        int messageSelectionEndIndex = 0;
+        int spanSelectionEndIndex = 0;
 
         // ctor
         public ChatControl()
@@ -84,6 +89,60 @@ namespace Chatterino.Controls
             //MouseLeave += (s, e) => { vscroll.Visible = false; };
         }
 
+        protected override void OnMouseMove(MouseEventArgs e)
+        {
+            base.OnMouseMove(e);
+
+            var msg = MessageAtPoint(e.Location);
+            if (msg != null)
+            {
+                var span = msg.SpanAtPoint(new Point(e.X - TextPadding.Left, e.Y - msg.CurrentYOffset));
+                if (span != null)
+                {
+                    if (span.Link != null)
+                    {
+                        Cursor = Cursors.Hand;
+                    }
+                    else
+                        Cursor = Cursors.Default;
+                }
+                else
+                    Cursor = Cursors.Default;
+                Invalidate();
+            }
+        }
+
+        string mouseDownLink = null;
+
+        protected override void OnMouseDown(MouseEventArgs e)
+        {
+            base.OnMouseDown(e);
+
+            var msg = MessageAtPoint(e.Location);
+            if (msg != null)
+            {
+                var span = msg.SpanAtPoint(new Point(e.X - TextPadding.Left, e.Y - msg.CurrentYOffset));
+                if (span != null)
+                {
+                    if (span.Link != null)
+                    {
+                        mouseDownLink = span.Link;
+                    }
+                }
+            }
+        }
+
+        protected override void OnMouseUp(MouseEventArgs e)
+        {
+            base.OnMouseUp(e);
+
+            if (mouseDownLink != null)
+            {
+                App.HandleLink(mouseDownLink);
+            }
+
+            mouseDownLink = null;
+        }
 
         // event handlers
         void onEmoteUpdated(object s, EventArgs e)
@@ -183,7 +242,7 @@ namespace Chatterino.Controls
         {
             base.OnKeyPress(e);
 
-            if ((ModifierKeys & ~Keys.Shift) == Keys.None)
+            //if ((ModifierKeys & ~Keys.Shift) == Keys.None)
             {
                 if (e.KeyChar == '\b')
                 {
@@ -254,7 +313,10 @@ namespace Chatterino.Controls
                         {
                             for (; i < Messages.Length; i++)
                             {
+#warning move out of drawing function
                                 Messages[i].IsVisible = false;
+                                msg.CurrentYOffset = y;
+                                y += msg.Height;
                             }
                             break;
                         }
@@ -297,6 +359,7 @@ namespace Chatterino.Controls
                 Messages = M;
             }
         }
+
 
         // controls
         void updateMessageBounds(bool emoteChanged = false)
@@ -354,7 +417,7 @@ namespace Chatterino.Controls
 
         void checkScrollBarPosition()
         {
-            scrollAtBottom = !vscroll.Enabled || vscroll.Maximum < vscroll.Value + vscroll.LargeChange + 40;
+            scrollAtBottom = !vscroll.Enabled || vscroll.Maximum < vscroll.Value + vscroll.LargeChange + 30;
         }
 
         private string ircChannelName;
@@ -383,6 +446,19 @@ namespace Chatterino.Controls
                     Invalidate();
                 }
             }
+        }
+
+        public Message MessageAtY(int y) => MessageAtPoint(new Point(0, y));
+
+        public Message MessageAtPoint(Point p)
+        {
+            lock (Messages)
+                foreach (Message m in Messages)
+                {
+                    if (m.CurrentYOffset > p.Y - m.Height)
+                        return m;
+                }
+            return null;
         }
 
 

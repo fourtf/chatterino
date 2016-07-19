@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -25,6 +26,7 @@ namespace Chatterino
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
+            // Exceptions
             Application.ThreadException += (s, e) =>
             {
                 e.Exception.Log("exception", "{0}\n");
@@ -34,21 +36,29 @@ namespace Chatterino
                 (e.ExceptionObject as Exception).Log("exception", "{0}\n");
             };
 
+            // Update gif emotes
             new Timer { Interval = 20, Enabled = true }.Tick += (s, e) =>
             {
                 UpdateGifEmotes?.Invoke(null, EventArgs.Empty);
             };
 
+            // Commands
+            ChatCommands.TryAdd("shrug", s => ". " + s + " ¯\\_(ツ)_/¯");
+
+            // Settings/Colors
             Settings.Load("./settings.ini");
             ColorScheme.Load("./colors.ini");
 
+            // Start irc
             runIrc();
             loadGlobalEmotes();
 
+            // Show form
             MainForm = new MainForm();
 
             Application.Run(MainForm);
 
+            // Save settings
             Settings.Save("./settings.ini");
         }
 
@@ -57,6 +67,8 @@ namespace Chatterino
         public const TextFormatFlags DefaultTextFormatFlags = TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix;
 
         //public static IniSettings Settings { get; set; } = new IniSettings();
+
+        public static ConcurrentDictionary<string, Func<string, string>> ChatCommands = new ConcurrentDictionary<string, Func<string, string>>();
 
         public static event EventHandler UpdateGifEmotes;
 
@@ -88,7 +100,20 @@ namespace Chatterino
 
         public static void SendMessage(string channel, string message)
         {
-            IrcWriteClient?.SendMessage(SendType.Message, "#" + channel.TrimStart('#'), message);
+            if (message.Length > 1 && message[0] == '/')
+            {
+                int index = message.IndexOf(' ');
+                string _command = index == -1 ? message.Substring(1) : message.Substring(1, index - 1);
+                message = index == -1 ? "" : message.Substring(index + 1);
+
+                Func<string, string> command;
+                if (ChatCommands.TryGetValue(_command, out command))
+                {
+                    message = command(message) ?? message;
+                }
+            }
+
+            IrcWriteClient?.SendMessage(SendType.Message, "#" + channel.TrimStart('#'), Emojis.ReplaceShortCodes(message));
         }
 
         static void runIrc()
@@ -181,6 +206,17 @@ namespace Chatterino
             }
         }
 
+        public static void HandleLink(string mouseDownLink)
+        {
+            try
+            {
+                if (mouseDownLink.StartsWith("http://") || mouseDownLink.StartsWith("https://")
+                    || MessageBox.Show($"The link \"{mouseDownLink}\" will be opened in an external application.", "open link", MessageBoxButtons.OKCancel) == DialogResult.OK)
+                    Process.Start(mouseDownLink);
+            }
+            catch { }
+        }
+
         static void onRawMessage(object sender, IrcEventArgs e)
         {
             IrcMessageReceived?.Invoke(sender, e);
@@ -222,7 +258,9 @@ namespace Chatterino
         }
 
         private const string bttvEmotesGlobalCache = "./cache/bttv_global.json";
+        private const string ffzEmotesGlobalCache = "./cache/ffz_global.json";
         public static ConcurrentDictionary<string, TwitchEmote> BttvGlobalEmotes = new ConcurrentDictionary<string, TwitchEmote>();
+        public static ConcurrentDictionary<string, TwitchEmote> FfzGlobalEmotes = new ConcurrentDictionary<string, TwitchEmote>();
         public static ConcurrentDictionary<string, TwitchEmote> BttvChannelEmotesCache = new ConcurrentDictionary<string, TwitchEmote>();
         public static ConcurrentDictionary<int, TwitchEmote> TwitchEmotes = new ConcurrentDictionary<int, TwitchEmote>();
 
@@ -281,6 +319,62 @@ namespace Chatterino
                     Console.WriteLine("error loading emotes: " + exc.Message);
                 }
             });
+
+            Task.Run(() =>
+            {
+                try
+                {
+                    Directory.CreateDirectory("./cache");
+                    System.Text.Json.JsonParser parser = new System.Text.Json.JsonParser();
+
+                    // better twitch tv emotes
+                    if (!File.Exists(ffzEmotesGlobalCache) || DateTime.Now - new FileInfo(ffzEmotesGlobalCache).LastWriteTime > TimeSpan.FromHours(24))
+                    {
+                        try
+                        {
+                            if (Util.IsLinux)
+                            {
+                                Util.LinuxDownloadFile("https://api.frankerfacez.com/v1/set/global", ffzEmotesGlobalCache);
+                            }
+                            else
+                            {
+                                using (var webClient = new WebClient())
+                                using (var readStream = webClient.OpenRead("https://api.frankerfacez.com/v1/set/global"))
+                                using (var writeStream = File.OpenWrite(ffzEmotesGlobalCache))
+                                {
+                                    readStream.CopyTo(writeStream);
+                                }
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            e.Message.Log("emotes");
+                        }
+                    }
+
+                    using (var stream = File.OpenRead(ffzEmotesGlobalCache))
+                    {
+                        dynamic json = parser.Parse(stream);
+
+                        foreach (var set in json["sets"])
+                        {
+                            var val = set.Value;
+                            foreach (var emote in val["emoticons"])
+                            {
+                                var name = emote["name"];
+                                var urlX1 = "http:" + emote["urls"]["1"];
+
+                                FfzGlobalEmotes[name] = new TwitchEmote { Name = name, Url = urlX1 };
+                            }
+                        }
+                    }
+                }
+                catch (Exception exc)
+                {
+                    Console.WriteLine("error loading emotes: " + exc.Message);
+                }
+            });
+
         }
 
 

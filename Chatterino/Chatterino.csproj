@@ -57,7 +57,24 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ChannelData.cs" />
+    <None Include="AutocompleteMenu\AutocompleteItem.cs" />
+    <None Include="AutocompleteMenu\AutocompleteItems.cs" />
+    <None Include="AutocompleteMenu\AutocompleteListView.cs">
+      <SubType>UserControl</SubType>
+    </None>
+    <None Include="AutocompleteMenu\AutocompleteMenu.cs">
+      <SubType>Component</SubType>
+    </None>
+    <None Include="AutocompleteMenu\AutocompleteMenuHost.cs">
+      <SubType>Component</SubType>
+    </None>
+    <None Include="AutocompleteMenu\Colors.cs" />
+    <None Include="AutocompleteMenu\EventArgs.cs" />
+    <None Include="AutocompleteMenu\IAutocompleteListView.cs" />
+    <None Include="AutocompleteMenu\ITextBoxWrapper.cs" />
+    <None Include="AutocompleteMenu\Range.cs" />
+    <None Include="AutocompleteMenu\TextBoxWrapper.cs" />
+    <Compile Include="TwitchChannel.cs" />
     <Compile Include="ColorScheme.cs" />
     <Compile Include="Controls\ChatControl.cs">
       <SubType>Component</SubType>
@@ -76,6 +93,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\CustomScrollBarEventArgs.cs" />
+    <Compile Include="Emojis.cs" />
     <Compile Include="Fonts.cs" />
     <Compile Include="InputDialogForm.cs">
       <SubType>Form</SubType>
@@ -94,11 +112,14 @@
     <Compile Include="Message.cs" />
     <Compile Include="MessageBadges.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Settings.cs" />
+    <Compile Include="AppSettings.cs" />
     <Compile Include="Span.cs" />
     <Compile Include="TwitchEmote.cs" />
     <Compile Include="Util.cs" />
     <Compile Include="ValueEventArgs.cs" />
+    <EmbeddedResource Include="AutocompleteMenu\AutocompleteMenu.resx">
+      <DependentUpon>AutocompleteMenu.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="InputDialogForm.resx">
       <DependentUpon>InputDialogForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -194,6 +215,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\ScrollBarArrowUp.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="AutocompleteMenu\LICENSE.txt" />
+    <Content Include="emojidata.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
