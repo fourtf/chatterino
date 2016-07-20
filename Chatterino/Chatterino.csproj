@@ -58,23 +58,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="AutocompleteMenu\AutocompleteItem.cs" />
-    <None Include="AutocompleteMenu\AutocompleteItems.cs" />
-    <None Include="AutocompleteMenu\AutocompleteListView.cs">
-      <SubType>UserControl</SubType>
-    </None>
-    <None Include="AutocompleteMenu\AutocompleteMenu.cs">
-      <SubType>Component</SubType>
-    </None>
-    <None Include="AutocompleteMenu\AutocompleteMenuHost.cs">
-      <SubType>Component</SubType>
-    </None>
-    <None Include="AutocompleteMenu\Colors.cs" />
-    <None Include="AutocompleteMenu\EventArgs.cs" />
-    <None Include="AutocompleteMenu\IAutocompleteListView.cs" />
-    <None Include="AutocompleteMenu\ITextBoxWrapper.cs" />
-    <None Include="AutocompleteMenu\Range.cs" />
-    <None Include="AutocompleteMenu\TextBoxWrapper.cs" />
     <Compile Include="Controls\SettingsDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -131,9 +114,6 @@
     <Compile Include="TwitchEmote.cs" />
     <Compile Include="Util.cs" />
     <Compile Include="ValueEventArgs.cs" />
-    <None Include="AutocompleteMenu\AutocompleteMenu.resx">
-      <DependentUpon>AutocompleteMenu.cs</DependentUpon>
-    </None>
     <EmbeddedResource Include="Controls\SettingsDialog.resx">
       <DependentUpon>SettingsDialog.cs</DependentUpon>
     </EmbeddedResource>
@@ -232,9 +212,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\ScrollBarArrowUp.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="AutocompleteMenu\LICENSE.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
