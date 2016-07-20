@@ -153,7 +153,7 @@ namespace Chatterino
             //  93064:0-6,8-14/80481:16-20,22-26
 
             DisplayName = DisplayName ?? Username;
-            words.Add(new Span { Type = SpanType.Text, Value = DisplayName + (slashMe ? "" : ":"), Color = UsernameColor });
+            words.Add(new Span { Type = SpanType.Text, Value = DisplayName + (slashMe ? "" : ":"), Color = UsernameColor, Font = Fonts.MediumBold });
 
             List<Tuple<int, TwitchEmote>> twitchEmotes = new List<Tuple<int, TwitchEmote>>();
 
@@ -221,7 +221,8 @@ namespace Chatterino
                 }
 
                 TwitchEmote bttvEmote;
-                if (App.BttvGlobalEmotes.TryGetValue(s, out bttvEmote) || channel.BttvChannelEmotes.TryGetValue(s, out bttvEmote) || App.FfzGlobalEmotes.TryGetValue(s, out bttvEmote))
+                if (App.Settings.ChatEnableBttvEmotes && (App.BttvGlobalEmotes.TryGetValue(s, out bttvEmote) || channel.BttvChannelEmotes.TryGetValue(s, out bttvEmote))
+                    || (App.Settings.ChatEnableFfzEmotes && App.FfzGlobalEmotes.TryGetValue(s, out bttvEmote)))
                 {
                     words.Add(new Span { Type = SpanType.Emote, Value = bttvEmote, Color = slashMe ? UsernameColor : new Color?() });
                 }
@@ -541,6 +542,8 @@ namespace Chatterino
 
             if (enableBitmapDoubleBuffering)
                 g2.DrawImageUnscaled(buffer, xOffset2, yOffset2);
+
+            //UpdateGifEmotes(g2);
         }
 
         public void UpdateGifEmotes(Graphics g)

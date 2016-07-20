@@ -108,7 +108,6 @@ namespace Chatterino.Controls
                 }
                 else
                     Cursor = Cursors.Default;
-                Invalidate();
             }
         }
 

@@ -131,9 +131,9 @@
     <Compile Include="TwitchEmote.cs" />
     <Compile Include="Util.cs" />
     <Compile Include="ValueEventArgs.cs" />
-    <EmbeddedResource Include="AutocompleteMenu\AutocompleteMenu.resx">
+    <None Include="AutocompleteMenu\AutocompleteMenu.resx">
       <DependentUpon>AutocompleteMenu.cs</DependentUpon>
-    </EmbeddedResource>
+    </None>
     <EmbeddedResource Include="Controls\SettingsDialog.resx">
       <DependentUpon>SettingsDialog.cs</DependentUpon>
     </EmbeddedResource>
@@ -235,9 +235,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="AutocompleteMenu\LICENSE.txt" />
-    <Content Include="emojidata.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
