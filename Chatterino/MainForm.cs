@@ -27,11 +27,16 @@ namespace Chatterino
             KeyPreview = true;
 
             SetTitle();
+
+            Deactivate += (s, e) =>
+            {
+                App.ToolTip?.Hide();
+            };
         }
 
         public void SetTitle()
         {
-            Text = $"{IrcManager.Username ?? "<not logged in>"} - Chatterino";
+            Text = $"{IrcManager.Username ?? "<not logged in>"} - Chatterino for Twitch";
         }
 
         //protected override void OnPreviewKeyDown(PreviewKeyDownEventArgs e)

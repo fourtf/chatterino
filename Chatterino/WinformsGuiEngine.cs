@@ -33,7 +33,16 @@ namespace Chatterino
         SoundPlayer snd = new SoundPlayer(Properties.Resources.ping2);
         public void PlaySound(NotificationSound sound)
         {
-            snd.Play();
+            try
+            {
+                bool focused = false;
+
+                App.MainForm.Invoke(() => focused = App.MainForm.ContainsFocus);
+
+                if (!focused)
+                    snd.Play();
+            }
+            catch { }
         }
 
 
@@ -156,6 +165,8 @@ namespace Chatterino
                 message.CurrentXOffset = xOffset2;
                 var textColor = App.ColorScheme.Text;
 
+                if (message.Highlighted)
+                    g.FillRectangle(App.ColorScheme.ChatBackgroundHighlighted, 0, 0, message.Width, message.Height);
 
                 for (int i = 0; i < message.Words.Count; i++)
                 {

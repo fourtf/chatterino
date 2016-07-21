@@ -13,6 +13,8 @@ namespace Chatterino.Common
         public bool Animated { get; set; } = false;
         public Func<object> LoadAction { get; set; } = null;
 
+        public string Tooltip { get; set; } = null;
+
         bool loading = false;
         private object image = null;
 

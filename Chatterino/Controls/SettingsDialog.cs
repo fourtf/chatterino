@@ -40,6 +40,9 @@ namespace Chatterino.Controls
             BindCheckBox(chkTimestampSeconds, "ChatShowTimestampSeconds");
             BindCheckBox(chkAllowSameMessages, "ChatAllowSameMessage");
 
+            BindCheckBox(chkHighlight, "ChatEnableHighlight");
+            BindCheckBox(chkPings, "ChatEnableHighlightSound");
+
             BindCheckBox(chkBttvEmotes, "ChatEnableBttvEmotes");
             BindCheckBox(chkFFzEmotes, "ChatEnableFfzEmotes");
             BindCheckBox(chkEmojis, "ChatEnableEmojis");

@@ -13,6 +13,7 @@ namespace Chatterino.Common
         public object Value { get; set; }
         public int? Color { get; set; }
         public string Link { get; set; }
+        public string Tooltip { get; set; }
 
         public FontType Font { get; set; }
         public int Height { get; set; } = 16;

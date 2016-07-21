@@ -108,10 +108,23 @@ namespace Chatterino.Controls
                         Cursor = Cursors.Hand;
                     }
                     else
+                    {
                         Cursor = Cursors.Default;
+                    }
+
+                    if (span.Tooltip != null)
+                    {
+                    }
+                    else
+                    {
+                        App.ToolTip?.Hide();
+                    }
                 }
                 else
+                {
                     Cursor = Cursors.Default;
+                    App.ToolTip?.Hide();
+                }
             }
         }
 

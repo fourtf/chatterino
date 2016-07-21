@@ -101,6 +101,22 @@ namespace Chatterino
             }
         }
 
+        public static Controls.ToolTip ToolTip { get; private set; } = null;
+
+        public static void ShowToolTip(System.Drawing.Point point, string text)
+        {
+            if (ToolTip == null)
+            {
+                ToolTip = new Controls.ToolTip() { Enabled = false };
+            }
+
+            ToolTip.TooltipText = text;
+            ToolTip.Location = point;
+
+            if (!ToolTip.Visible)
+                ToolTip.Show();
+        }
+
         // EMOTES
         public static event EventHandler EmoteLoaded;
 

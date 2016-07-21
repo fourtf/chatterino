@@ -35,9 +35,10 @@ namespace Chatterino.Common
                     message = command(message) ?? message;
                 }
             }
-            else if (AppSettings.ChatAllowSameMessage && (message[0] != '/' && message[0] != '.'))
+
+            if (AppSettings.ChatAllowSameMessage)
             {
-                message = ". " + message;
+                message = message + " ";
             }
 
             IrcWriteClient?.SendMessage(SendType.Message, "#" + channel.TrimStart('#'), Common.Emojis.ReplaceShortCodes(message));

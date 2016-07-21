@@ -16,6 +16,7 @@ namespace Chatterino.Common
         public int Width { get; set; } = 0;
 
         public bool Disabled { get; set; } = false;
+        public bool Highlighted { get; set; } = false;
 
         public string Username { get; set; }
         public string DisplayName { get; set; }
@@ -46,7 +47,8 @@ namespace Chatterino.Common
         public List<Span> Words { get; set; }
         public TwitchChannel Channel { get; set; }
 
-        Regex linkRegex = new Regex(@"^((?<Protocol>\w+):\/\/)?(?<Domain>[\w@][\w.:@]+\w)\/?[\w\.?=#%&=\-@/$,]*$", RegexOptions.Compiled);
+        Regex linkRegex = new Regex(@"^((?<Protocol>\w+):\/\/)?(?<Domain>[\w@][\w.:@]+\w)\/?[\w\.?=#%&=\-@/$,]*$");
+        static char[] linkIdentifiers = new char[] { '.', ':' };
 
         public Message(IrcMessageData data, TwitchChannel channel)
         {
@@ -70,6 +72,21 @@ namespace Chatterino.Common
 
             // Split the message
             var S = text.Split(' ');
+
+            if ((AppSettings.ChatEnableHighlight || AppSettings.ChatEnableHighlightSound) && Username != IrcManager.Username.ToLower())
+            {
+                foreach (string s in S)
+                {
+                    if (s.ToLower() == IrcManager.Username.ToLower())
+                    {
+                        if (AppSettings.ChatEnableHighlightSound)
+                            GuiEngine.Current.PlaySound(NotificationSound.Ping);
+                        if (AppSettings.ChatEnableHighlight)
+                            Highlighted = true;
+                        break;
+                    }
+                }
+            }
 
             // Read Tags
             string value;
@@ -102,7 +119,7 @@ namespace Chatterino.Common
             }
 
             if (Username.ToUpper() == "FOURTF")
-                words.Add(new Span { Type = SpanType.Image, Value = GuiEngine.Current.GetImage(ImageType.BadgeDev) });
+                words.Add(new Span { Type = SpanType.Image, Value = GuiEngine.Current.GetImage(ImageType.BadgeDev), Tooltip = "Chatterino Developer" });
 
             if (data.Tags.TryGetValue("badges", out value))
             {
@@ -114,31 +131,31 @@ namespace Chatterino.Common
                     {
                         case "staff/1":
                             Badges |= MessageBadges.Staff;
-                            words.Add(new Span { Type = SpanType.Image, Value = GuiEngine.Current.GetImage(ImageType.BadgeStaff) });
+                            words.Add(new Span { Type = SpanType.Image, Value = GuiEngine.Current.GetImage(ImageType.BadgeStaff), Tooltip = "Twitch Staff" });
                             break;
                         case "admin/1":
                             Badges |= MessageBadges.Admin;
-                            words.Add(new Span { Type = SpanType.Image, Value = GuiEngine.Current.GetImage(ImageType.BadgeAdmin) });
+                            words.Add(new Span { Type = SpanType.Image, Value = GuiEngine.Current.GetImage(ImageType.BadgeAdmin), Tooltip = "Twitch Admin" });
                             break;
                         case "global_mod/1":
                             Badges |= MessageBadges.GlobalMod;
-                            words.Add(new Span { Type = SpanType.Image, Value = GuiEngine.Current.GetImage(ImageType.BadgeGlobalmod) });
+                            words.Add(new Span { Type = SpanType.Image, Value = GuiEngine.Current.GetImage(ImageType.BadgeGlobalmod), Tooltip = "Global Moderator" });
                             break;
                         case "moderator/1":
                             Badges |= MessageBadges.Mod;
-                            words.Add(new Span { Type = SpanType.Image, Value = GuiEngine.Current.GetImage(ImageType.BadgeModerator) });
+                            words.Add(new Span { Type = SpanType.Image, Value = GuiEngine.Current.GetImage(ImageType.BadgeModerator), Tooltip = "Channel Moderator" });
                             break;
                         case "subscriber/1":
                             Badges |= MessageBadges.Sub;
-                            words.Add(new Span { Type = SpanType.Emote, Value = channel.SubscriberBadge, Link = Channel.SubLink });
+                            words.Add(new Span { Type = SpanType.Emote, Value = channel.SubscriberBadge, Link = Channel.SubLink, Tooltip = "Channel Subscriber" });
                             break;
                         case "turbo/1":
                             Badges |= MessageBadges.Turbo;
-                            words.Add(new Span { Type = SpanType.Image, Value = GuiEngine.Current.GetImage(ImageType.BadgeTurbo) });
+                            words.Add(new Span { Type = SpanType.Image, Value = GuiEngine.Current.GetImage(ImageType.BadgeTurbo), Tooltip = "Turbo Subscriber" });
                             break;
                         case "broadcaster/1":
                             Badges |= MessageBadges.Broadcaster;
-                            words.Add(new Span { Type = SpanType.Image, Value = GuiEngine.Current.GetImage(ImageType.BadgeBroadcaster) });
+                            words.Add(new Span { Type = SpanType.Image, Value = GuiEngine.Current.GetImage(ImageType.BadgeBroadcaster), Tooltip = "Channel Broadcaster" });
                             break;
                     }
                 }
@@ -146,8 +163,8 @@ namespace Chatterino.Common
 
             //  93064:0-6,8-14/80481:16-20,22-26
 
-            DisplayName = DisplayName ?? Username;
-            words.Add(new Span { Type = SpanType.Text, Value = DisplayName + (slashMe ? "" : ":"), Color = UsernameColor, Font = FontType.MediumBold });
+            DisplayName = string.IsNullOrWhiteSpace(DisplayName) ? Username : DisplayName;
+            words.Add(new Span { Type = SpanType.Text, Value = DisplayName + (slashMe ? "" : ":"), Color = UsernameColor, Font = FontType.MediumBold, Link = "http://twitch.tv/" + Username });
 
             List<Tuple<int, TwitchEmote>> twitchEmotes = new List<Tuple<int, TwitchEmote>>();
 
@@ -167,7 +184,7 @@ namespace Chatterino.Common
                             TwitchEmote e;
                             if (!Emotes.TwitchEmotes.TryGetValue(id, out e))
                             {
-                                e = new TwitchEmote { Name = name, Url = Emotes.TwitchEmoteTemplate.Replace("{id}", id.ToString()) };
+                                e = new TwitchEmote { Name = name, Url = Emotes.TwitchEmoteTemplate.Replace("{id}", id.ToString()), Tooltip = "Twitch Emote" };
                                 Emotes.TwitchEmotes[id] = e;
                             }
                             twitchEmotes.Add(Tuple.Create(index, e));
@@ -206,7 +223,7 @@ namespace Chatterino.Common
                 {
                     if (currentTwitchEmote.Item1 == i)
                     {
-                        words.Add(new Span { Type = SpanType.Emote, Value = currentTwitchEmote.Item2 });
+                        words.Add(new Span { Type = SpanType.Emote, Value = currentTwitchEmote.Item2, Link = currentTwitchEmote.Item2.Url, Tooltip = currentTwitchEmote.Item2.Tooltip });
                         i += s.Length + 1;
                         currentTwitchEmoteIndex++;
                         currentTwitchEmote = currentTwitchEmoteIndex == twitchEmotes.Count ? null : twitchEmotes[currentTwitchEmoteIndex];
@@ -218,29 +235,32 @@ namespace Chatterino.Common
                 if (AppSettings.ChatEnableBttvEmotes && (Emotes.BttvGlobalEmotes.TryGetValue(s, out bttvEmote) || channel.BttvChannelEmotes.TryGetValue(s, out bttvEmote))
                     || (AppSettings.ChatEnableFfzEmotes && Emotes.FfzGlobalEmotes.TryGetValue(s, out bttvEmote)))
                 {
-                    words.Add(new Span { Type = SpanType.Emote, Value = bttvEmote, Color = slashMe ? UsernameColor : new int?() });
+                    words.Add(new Span { Type = SpanType.Emote, Value = bttvEmote, Color = slashMe ? UsernameColor : new int?(), Tooltip = bttvEmote.Tooltip, Link = bttvEmote.Url });
                 }
                 else
                 {
                     string link = null;
 
-                    Match m = linkRegex.Match(s);
-
-                    if (m.Success)
+                    if (s.IndexOfAny(linkIdentifiers) != -1)
                     {
-                        link = m.Value;
+                        Match m = linkRegex.Match(s);
 
-                        if (!m.Groups["Protocol"].Success)
-                            link = "http://" + link;
-
-                        if (!m.Groups["Protocol"].Success || m.Groups["Protocol"].Value.ToUpper() == "HTTP" || m.Groups["Protocol"].Value.ToUpper() == "HTTPS")
+                        if (m.Success)
                         {
-                            if (m.Groups["Domain"].Value.IndexOf('.') == -1)
-                                link = null;
+                            link = m.Value;
+
+                            if (!m.Groups["Protocol"].Success)
+                                link = "http://" + link;
+
+                            if (!m.Groups["Protocol"].Success || m.Groups["Protocol"].Value.ToUpper() == "HTTP" || m.Groups["Protocol"].Value.ToUpper() == "HTTPS")
+                            {
+                                if (m.Groups["Domain"].Value.IndexOf('.') == -1)
+                                    link = null;
+                            }
                         }
                     }
 
-                    words.Add(new Span { Type = SpanType.Text, Value = s, Color = slashMe ? UsernameColor : (link == null ? new int?() : -16776961), Link = link });
+                    words.Add(new Span { Type = SpanType.Text, Value = s, Color = slashMe ? UsernameColor : (link == null ? new int?() : -8355712), Link = link });
                 }
 
                 i += s.Length + 1;

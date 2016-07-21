@@ -14,6 +14,10 @@ namespace Chatterino.Common
         public static bool ChatShowTimestampSeconds { get; set; } = false;
         public static bool ChatAllowSameMessage { get; set; } = false;
 
+        public static bool ChatEnableHighlight { get; set; } = true;
+        public static bool ChatEnableHighlightSound { get; set; } = true;
+        //public static bool PingIgnoreBots { get; set; } = false;
+
         public static bool ChatEnableBttvEmotes { get; set; } = true;
         public static bool ChatEnableFfzEmotes { get; set; } = true;
         public static bool ChatEnableEmojis { get; set; } = true;
@@ -25,9 +29,6 @@ namespace Chatterino.Common
         public static string ProxyUsername { get; set; } = "";
         public static string ProxyPassword { get; set; } = "";
         public static int ProxyPort { get; set; } = 6667;
-
-        public static bool PingEnabled { get; set; } = true;
-        public static bool PingIgnoreBots { get; set; } = false;
 
 
         // static stuff

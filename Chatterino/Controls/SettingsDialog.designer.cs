@@ -30,6 +30,17 @@
         {
             this.tabs = new Chatterino.Controls.SettingsTabControl();
             this.RightPanel = new System.Windows.Forms.Panel();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.chkHighlight = new System.Windows.Forms.CheckBox();
+            this.chkEmojis = new System.Windows.Forms.CheckBox();
+            this.chkAllowSameMessages = new System.Windows.Forms.CheckBox();
+            this.chkGifEmotes = new System.Windows.Forms.CheckBox();
+            this.chkBttvEmotes = new System.Windows.Forms.CheckBox();
+            this.chkFFzEmotes = new System.Windows.Forms.CheckBox();
+            this.lblEmotes = new System.Windows.Forms.Label();
+            this.lblTabs = new System.Windows.Forms.Label();
+            this.chkTimestampSeconds = new System.Windows.Forms.CheckBox();
+            this.chkTimestamps = new System.Windows.Forms.CheckBox();
             this.panel2 = new System.Windows.Forms.Panel();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.label4 = new System.Windows.Forms.Label();
@@ -43,22 +54,13 @@
             this.lblProxyType = new System.Windows.Forms.Label();
             this.lblProxy = new System.Windows.Forms.Label();
             this.chkProxyEnabled = new System.Windows.Forms.CheckBox();
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.chkAllowSameMessages = new System.Windows.Forms.CheckBox();
-            this.chkGifEmotes = new System.Windows.Forms.CheckBox();
-            this.chkBttvEmotes = new System.Windows.Forms.CheckBox();
-            this.chkFFzEmotes = new System.Windows.Forms.CheckBox();
-            this.lblEmotes = new System.Windows.Forms.Label();
-            this.lblTabs = new System.Windows.Forms.Label();
-            this.chkTimestampSeconds = new System.Windows.Forms.CheckBox();
-            this.chkTimestamps = new System.Windows.Forms.CheckBox();
             this.spAppearance = new Chatterino.Controls.SettingsTabPage();
             this.spConnection = new Chatterino.Controls.SettingsTabPage();
-            this.chkEmojis = new System.Windows.Forms.CheckBox();
+            this.chkPings = new System.Windows.Forms.CheckBox();
             this.tabs.SuspendLayout();
             this.RightPanel.SuspendLayout();
-            this.panel2.SuspendLayout();
             this.panel1.SuspendLayout();
+            this.panel2.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabs
@@ -71,8 +73,8 @@
             this.tabs.Location = new System.Drawing.Point(0, 0);
             this.tabs.Name = "tabs";
             this.tabs.Panel = this.RightPanel;
-            this.tabs.SelectedIndex = 1;
-            this.tabs.SelectedTab = this.spConnection;
+            this.tabs.SelectedIndex = 0;
+            this.tabs.SelectedTab = this.spAppearance;
             this.tabs.Size = new System.Drawing.Size(598, 448);
             this.tabs.TabIndex = 0;
             this.tabs.TabsWidth = 150;
@@ -83,13 +85,154 @@
             this.RightPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.RightPanel.Controls.Add(this.panel2);
             this.RightPanel.Controls.Add(this.panel1);
+            this.RightPanel.Controls.Add(this.panel2);
             this.RightPanel.Location = new System.Drawing.Point(150, 0);
             this.RightPanel.Name = "RightPanel";
             this.RightPanel.Padding = new System.Windows.Forms.Padding(0, 0, 0, 42);
             this.RightPanel.Size = new System.Drawing.Size(448, 448);
             this.RightPanel.TabIndex = 0;
+            // 
+            // panel1
+            // 
+            this.panel1.Controls.Add(this.chkPings);
+            this.panel1.Controls.Add(this.chkHighlight);
+            this.panel1.Controls.Add(this.chkEmojis);
+            this.panel1.Controls.Add(this.chkAllowSameMessages);
+            this.panel1.Controls.Add(this.chkGifEmotes);
+            this.panel1.Controls.Add(this.chkBttvEmotes);
+            this.panel1.Controls.Add(this.chkFFzEmotes);
+            this.panel1.Controls.Add(this.lblEmotes);
+            this.panel1.Controls.Add(this.lblTabs);
+            this.panel1.Controls.Add(this.chkTimestampSeconds);
+            this.panel1.Controls.Add(this.chkTimestamps);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel1.Location = new System.Drawing.Point(0, 0);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(448, 406);
+            this.panel1.TabIndex = 0;
+            // 
+            // chkHighlight
+            // 
+            this.chkHighlight.AutoSize = true;
+            this.chkHighlight.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.chkHighlight.Location = new System.Drawing.Point(21, 100);
+            this.chkHighlight.Name = "chkHighlight";
+            this.chkHighlight.Size = new System.Drawing.Size(224, 17);
+            this.chkHighlight.TabIndex = 10;
+            this.chkHighlight.Text = "Highlight Messages containing your Name";
+            this.chkHighlight.UseVisualStyleBackColor = true;
+            // 
+            // chkEmojis
+            // 
+            this.chkEmojis.AutoSize = true;
+            this.chkEmojis.Checked = true;
+            this.chkEmojis.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkEmojis.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.chkEmojis.Location = new System.Drawing.Point(21, 249);
+            this.chkEmojis.Name = "chkEmojis";
+            this.chkEmojis.Size = new System.Drawing.Size(92, 17);
+            this.chkEmojis.TabIndex = 9;
+            this.chkEmojis.Text = "Enable Emojis";
+            this.chkEmojis.UseVisualStyleBackColor = true;
+            // 
+            // chkAllowSameMessages
+            // 
+            this.chkAllowSameMessages.AutoSize = true;
+            this.chkAllowSameMessages.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.chkAllowSameMessages.Location = new System.Drawing.Point(21, 77);
+            this.chkAllowSameMessages.Name = "chkAllowSameMessages";
+            this.chkAllowSameMessages.Size = new System.Drawing.Size(315, 17);
+            this.chkAllowSameMessages.TabIndex = 8;
+            this.chkAllowSameMessages.Text = "Allow sending Douplicate Messages (add a space at the end)";
+            this.chkAllowSameMessages.UseVisualStyleBackColor = true;
+            // 
+            // chkGifEmotes
+            // 
+            this.chkGifEmotes.AutoSize = true;
+            this.chkGifEmotes.Checked = true;
+            this.chkGifEmotes.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkGifEmotes.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.chkGifEmotes.Location = new System.Drawing.Point(21, 226);
+            this.chkGifEmotes.Name = "chkGifEmotes";
+            this.chkGifEmotes.Size = new System.Drawing.Size(117, 17);
+            this.chkGifEmotes.TabIndex = 7;
+            this.chkGifEmotes.Text = "Enable GIF Emotes";
+            this.chkGifEmotes.UseVisualStyleBackColor = true;
+            // 
+            // chkBttvEmotes
+            // 
+            this.chkBttvEmotes.AutoSize = true;
+            this.chkBttvEmotes.Checked = true;
+            this.chkBttvEmotes.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkBttvEmotes.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.chkBttvEmotes.Location = new System.Drawing.Point(21, 180);
+            this.chkBttvEmotes.Name = "chkBttvEmotes";
+            this.chkBttvEmotes.Size = new System.Drawing.Size(149, 17);
+            this.chkBttvEmotes.TabIndex = 6;
+            this.chkBttvEmotes.Text = "Enable BetterTTV Emotes";
+            this.chkBttvEmotes.UseVisualStyleBackColor = true;
+            // 
+            // chkFFzEmotes
+            // 
+            this.chkFFzEmotes.AutoSize = true;
+            this.chkFFzEmotes.Checked = true;
+            this.chkFFzEmotes.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkFFzEmotes.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.chkFFzEmotes.Location = new System.Drawing.Point(21, 203);
+            this.chkFFzEmotes.Name = "chkFFzEmotes";
+            this.chkFFzEmotes.Size = new System.Drawing.Size(167, 17);
+            this.chkFFzEmotes.TabIndex = 4;
+            this.chkFFzEmotes.Text = "Enable FrankerFaceZ Emotes";
+            this.chkFFzEmotes.UseVisualStyleBackColor = true;
+            // 
+            // lblEmotes
+            // 
+            this.lblEmotes.AutoSize = true;
+            this.lblEmotes.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblEmotes.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.lblEmotes.Location = new System.Drawing.Point(18, 156);
+            this.lblEmotes.Name = "lblEmotes";
+            this.lblEmotes.Size = new System.Drawing.Size(51, 17);
+            this.lblEmotes.TabIndex = 3;
+            this.lblEmotes.Text = "Emotes";
+            // 
+            // lblTabs
+            // 
+            this.lblTabs.AutoSize = true;
+            this.lblTabs.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblTabs.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.lblTabs.Location = new System.Drawing.Point(18, 7);
+            this.lblTabs.Name = "lblTabs";
+            this.lblTabs.Size = new System.Drawing.Size(34, 17);
+            this.lblTabs.TabIndex = 2;
+            this.lblTabs.Text = "Chat";
+            // 
+            // chkTimestampSeconds
+            // 
+            this.chkTimestampSeconds.AutoSize = true;
+            this.chkTimestampSeconds.Checked = true;
+            this.chkTimestampSeconds.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkTimestampSeconds.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.chkTimestampSeconds.Location = new System.Drawing.Point(21, 54);
+            this.chkTimestampSeconds.Name = "chkTimestampSeconds";
+            this.chkTimestampSeconds.Size = new System.Drawing.Size(168, 17);
+            this.chkTimestampSeconds.TabIndex = 1;
+            this.chkTimestampSeconds.Text = "Show Seconds in Timestamps";
+            this.chkTimestampSeconds.UseVisualStyleBackColor = true;
+            // 
+            // chkTimestamps
+            // 
+            this.chkTimestamps.AutoSize = true;
+            this.chkTimestamps.Checked = true;
+            this.chkTimestamps.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkTimestamps.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.chkTimestamps.Location = new System.Drawing.Point(21, 31);
+            this.chkTimestamps.Name = "chkTimestamps";
+            this.chkTimestamps.Size = new System.Drawing.Size(112, 17);
+            this.chkTimestamps.TabIndex = 0;
+            this.chkTimestamps.Text = "Show Timestamps";
+            this.chkTimestamps.UseVisualStyleBackColor = true;
             // 
             // panel2
             // 
@@ -221,121 +364,6 @@
             this.chkProxyEnabled.Text = "Enable Proxy";
             this.chkProxyEnabled.UseVisualStyleBackColor = true;
             // 
-            // panel1
-            // 
-            this.panel1.Controls.Add(this.chkEmojis);
-            this.panel1.Controls.Add(this.chkAllowSameMessages);
-            this.panel1.Controls.Add(this.chkGifEmotes);
-            this.panel1.Controls.Add(this.chkBttvEmotes);
-            this.panel1.Controls.Add(this.chkFFzEmotes);
-            this.panel1.Controls.Add(this.lblEmotes);
-            this.panel1.Controls.Add(this.lblTabs);
-            this.panel1.Controls.Add(this.chkTimestampSeconds);
-            this.panel1.Controls.Add(this.chkTimestamps);
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel1.Location = new System.Drawing.Point(0, 0);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(448, 406);
-            this.panel1.TabIndex = 0;
-            // 
-            // chkAllowSameMessages
-            // 
-            this.chkAllowSameMessages.AutoSize = true;
-            this.chkAllowSameMessages.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.chkAllowSameMessages.Location = new System.Drawing.Point(21, 77);
-            this.chkAllowSameMessages.Name = "chkAllowSameMessages";
-            this.chkAllowSameMessages.Size = new System.Drawing.Size(279, 17);
-            this.chkAllowSameMessages.TabIndex = 8;
-            this.chkAllowSameMessages.Text = "Allow Sending Douplicate Messages (add \". \" at start)";
-            this.chkAllowSameMessages.UseVisualStyleBackColor = true;
-            // 
-            // chkGifEmotes
-            // 
-            this.chkGifEmotes.AutoSize = true;
-            this.chkGifEmotes.Checked = true;
-            this.chkGifEmotes.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkGifEmotes.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.chkGifEmotes.Location = new System.Drawing.Point(21, 176);
-            this.chkGifEmotes.Name = "chkGifEmotes";
-            this.chkGifEmotes.Size = new System.Drawing.Size(117, 17);
-            this.chkGifEmotes.TabIndex = 7;
-            this.chkGifEmotes.Text = "Enable GIF Emotes";
-            this.chkGifEmotes.UseVisualStyleBackColor = true;
-            // 
-            // chkBttvEmotes
-            // 
-            this.chkBttvEmotes.AutoSize = true;
-            this.chkBttvEmotes.Checked = true;
-            this.chkBttvEmotes.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkBttvEmotes.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.chkBttvEmotes.Location = new System.Drawing.Point(21, 130);
-            this.chkBttvEmotes.Name = "chkBttvEmotes";
-            this.chkBttvEmotes.Size = new System.Drawing.Size(149, 17);
-            this.chkBttvEmotes.TabIndex = 6;
-            this.chkBttvEmotes.Text = "Enable BetterTTV Emotes";
-            this.chkBttvEmotes.UseVisualStyleBackColor = true;
-            // 
-            // chkFFzEmotes
-            // 
-            this.chkFFzEmotes.AutoSize = true;
-            this.chkFFzEmotes.Checked = true;
-            this.chkFFzEmotes.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkFFzEmotes.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.chkFFzEmotes.Location = new System.Drawing.Point(21, 153);
-            this.chkFFzEmotes.Name = "chkFFzEmotes";
-            this.chkFFzEmotes.Size = new System.Drawing.Size(167, 17);
-            this.chkFFzEmotes.TabIndex = 4;
-            this.chkFFzEmotes.Text = "Enable FrankerFaceZ Emotes";
-            this.chkFFzEmotes.UseVisualStyleBackColor = true;
-            // 
-            // lblEmotes
-            // 
-            this.lblEmotes.AutoSize = true;
-            this.lblEmotes.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblEmotes.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.lblEmotes.Location = new System.Drawing.Point(18, 106);
-            this.lblEmotes.Name = "lblEmotes";
-            this.lblEmotes.Size = new System.Drawing.Size(51, 17);
-            this.lblEmotes.TabIndex = 3;
-            this.lblEmotes.Text = "Emotes";
-            // 
-            // lblTabs
-            // 
-            this.lblTabs.AutoSize = true;
-            this.lblTabs.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblTabs.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.lblTabs.Location = new System.Drawing.Point(18, 7);
-            this.lblTabs.Name = "lblTabs";
-            this.lblTabs.Size = new System.Drawing.Size(34, 17);
-            this.lblTabs.TabIndex = 2;
-            this.lblTabs.Text = "Chat";
-            // 
-            // chkTimestampSeconds
-            // 
-            this.chkTimestampSeconds.AutoSize = true;
-            this.chkTimestampSeconds.Checked = true;
-            this.chkTimestampSeconds.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkTimestampSeconds.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.chkTimestampSeconds.Location = new System.Drawing.Point(21, 54);
-            this.chkTimestampSeconds.Name = "chkTimestampSeconds";
-            this.chkTimestampSeconds.Size = new System.Drawing.Size(168, 17);
-            this.chkTimestampSeconds.TabIndex = 1;
-            this.chkTimestampSeconds.Text = "Show Seconds in Timestamps";
-            this.chkTimestampSeconds.UseVisualStyleBackColor = true;
-            // 
-            // chkTimestamps
-            // 
-            this.chkTimestamps.AutoSize = true;
-            this.chkTimestamps.Checked = true;
-            this.chkTimestamps.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkTimestamps.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.chkTimestamps.Location = new System.Drawing.Point(21, 31);
-            this.chkTimestamps.Name = "chkTimestamps";
-            this.chkTimestamps.Size = new System.Drawing.Size(112, 17);
-            this.chkTimestamps.TabIndex = 0;
-            this.chkTimestamps.Text = "Show Timestamps";
-            this.chkTimestamps.UseVisualStyleBackColor = true;
-            // 
             // spAppearance
             // 
             this.spAppearance.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
@@ -343,7 +371,6 @@
             this.spAppearance.Location = new System.Drawing.Point(0, 0);
             this.spAppearance.Name = "spAppearance";
             this.spAppearance.Panel = this.panel1;
-            this.spAppearance.Selected = false;
             this.spAppearance.Size = new System.Drawing.Size(150, 30);
             this.spAppearance.TabIndex = 1;
             this.spAppearance.Text = "Appearance";
@@ -355,22 +382,21 @@
             this.spConnection.Location = new System.Drawing.Point(0, 30);
             this.spConnection.Name = "spConnection";
             this.spConnection.Panel = this.panel2;
+            this.spConnection.Selected = false;
             this.spConnection.Size = new System.Drawing.Size(150, 30);
             this.spConnection.TabIndex = 2;
             this.spConnection.Text = "Connection";
             // 
-            // chkEmojis
+            // chkPings
             // 
-            this.chkEmojis.AutoSize = true;
-            this.chkEmojis.Checked = true;
-            this.chkEmojis.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkEmojis.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.chkEmojis.Location = new System.Drawing.Point(21, 199);
-            this.chkEmojis.Name = "chkEmojis";
-            this.chkEmojis.Size = new System.Drawing.Size(92, 17);
-            this.chkEmojis.TabIndex = 9;
-            this.chkEmojis.Text = "Enable Emojis";
-            this.chkEmojis.UseVisualStyleBackColor = true;
+            this.chkPings.AutoSize = true;
+            this.chkPings.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.chkPings.Location = new System.Drawing.Point(21, 123);
+            this.chkPings.Name = "chkPings";
+            this.chkPings.Size = new System.Drawing.Size(222, 17);
+            this.chkPings.TabIndex = 11;
+            this.chkPings.Text = "Play Sound when you Name is mentioned";
+            this.chkPings.UseVisualStyleBackColor = true;
             // 
             // SettingsDialog
             // 
@@ -389,10 +415,10 @@
             this.Text = "Preferences";
             this.tabs.ResumeLayout(false);
             this.RightPanel.ResumeLayout(false);
-            this.panel2.ResumeLayout(false);
-            this.panel2.PerformLayout();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
+            this.panel2.ResumeLayout(false);
+            this.panel2.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -426,5 +452,7 @@
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.ComboBox comboBox1;
         private System.Windows.Forms.CheckBox chkEmojis;
+        private System.Windows.Forms.CheckBox chkHighlight;
+        private System.Windows.Forms.CheckBox chkPings;
     }
 }

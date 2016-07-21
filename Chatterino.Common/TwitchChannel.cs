@@ -131,7 +131,7 @@ namespace Chatterino.Common
                             {
                                 string imageType = e["imageType"];
                                 string url = template.Replace("{{id}}", id).Replace("{{image}}", "1x");
-                                Emotes.BttvChannelEmotesCache[id] = BttvChannelEmotes[code] = new TwitchEmote { Name = code, Url = url };
+                                Emotes.BttvChannelEmotesCache[id] = BttvChannelEmotes[code] = new TwitchEmote { Name = code, Url = url, Tooltip = code + "\nBetterTTV Channel Emote" };
                             }
                         }
                     }

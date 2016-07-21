@@ -67,7 +67,7 @@ namespace Chatterino.Common
                             string imageType = e["imageType"];
                             string url = template.Replace("{{id}}", id).Replace("{{image}}", "1x");
 
-                            BttvGlobalEmotes[code] = new TwitchEmote { Name = code, Url = url };
+                            BttvGlobalEmotes[code] = new TwitchEmote { Name = code, Url = url, Tooltip = code + "\nBetterTTV Global Emote" };
                         }
                     }
                 }
@@ -121,7 +121,7 @@ namespace Chatterino.Common
                                 var name = emote["name"];
                                 var urlX1 = "http:" + emote["urls"]["1"];
 
-                                FfzGlobalEmotes[name] = new TwitchEmote { Name = name, Url = urlX1 };
+                                FfzGlobalEmotes[name] = new TwitchEmote { Name = name, Url = urlX1, Tooltip = name + "\nFrankerFaceZ Global Emote" };
                             }
                         }
                     }

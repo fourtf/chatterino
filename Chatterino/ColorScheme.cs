@@ -8,7 +8,11 @@ namespace Chatterino
 {
     public class ColorScheme
     {
+        public Brush TooltipBackground { get; set; } = Brushes.Black;
+        public Brush TooltipText { get; set; } = Brushes.White;
+
         public Brush ChatBackground { get; set; } = Brushes.White;
+        public Brush ChatBackgroundHighlighted { get; set; } = Brushes.LightBlue;
         public Pen ChatBorder { get; set; } = Pens.LightGray;
         public Pen ChatBorderFocused { get; set; } = Pens.Black;
         public Color Text { get; set; } = Color.Black;
