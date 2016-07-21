@@ -5,6 +5,8 @@ VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chatterino", "Chatterino\Chatterino.csproj", "{866998E7-3AA7-4D82-B392-C1BFF18E19F8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chatterino.Common", "Chatterino.Common\Chatterino.Common.csproj", "{D6032F9B-B3AD-4D1A-942A-ACD06EA16A4A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{866998E7-3AA7-4D82-B392-C1BFF18E19F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{866998E7-3AA7-4D82-B392-C1BFF18E19F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{866998E7-3AA7-4D82-B392-C1BFF18E19F8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D6032F9B-B3AD-4D1A-942A-ACD06EA16A4A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D6032F9B-B3AD-4D1A-942A-ACD06EA16A4A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D6032F9B-B3AD-4D1A-942A-ACD06EA16A4A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D6032F9B-B3AD-4D1A-942A-ACD06EA16A4A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

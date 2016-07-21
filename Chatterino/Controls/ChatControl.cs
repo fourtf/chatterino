@@ -1,10 +1,12 @@
-﻿using Meebey.SmartIrc4net;
+﻿using Chatterino.Common;
+using Meebey.SmartIrc4net;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Windows.Forms;
+using Message = Chatterino.Common.Message;
 
 namespace Chatterino.Controls
 {
@@ -17,7 +19,7 @@ namespace Chatterino.Controls
 
         public Padding TextPadding { get; set; } = new Padding(12, 12 + TopMenuBarHeight, 16 + SystemInformation.VerticalScrollBarWidth, 4);
 
-        public Message SendMessage { get; set; } = null; // new Message("xD xD xD xD xD xD xD xD xD xD xD xD xD xD xD xD xD xD xD xD xD xD xD xD xD xD xD xD ");
+        public Message SendMessage { get; set; } = null;
 
         ChatControlHeader _header = null;
 
@@ -48,16 +50,16 @@ namespace Chatterino.Controls
             SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
             SetStyle(ControlStyles.ResizeRedraw, true);
 
-            App.IrcMessageReceived += onRawMessage;
+            IrcManager.IrcMessageReceived += onRawMessage;
             App.EmoteLoaded += onEmoteLoaded;
             //App.GifEmoteFramesUpdated += onEmoteUpdated;
 
             Disposed += (s, e) =>
             {
-                App.IrcMessageReceived -= onRawMessage;
+                IrcManager.IrcMessageReceived -= onRawMessage;
                 App.EmoteLoaded -= onEmoteLoaded;
                 //App.GifEmoteFramesUpdated -= onEmoteUpdated;
-                App.RemoveChannel(ChannelName);
+                IrcManager.RemoveChannel(ChannelName);
             };
 
             Font = Fonts.Medium;
@@ -81,8 +83,10 @@ namespace Chatterino.Controls
                 checkScrollBarPosition();
             };
 
-            gifEmoteTimer.Tick += onEmoteUpdated;
-            gifEmoteTimer.Start();
+            App.GifEmoteFramesUpdated += onRedrawGifEmotes;
+
+            //gifEmoteTimer.Tick += onEmoteUpdated;
+            //gifEmoteTimer.Start();
 
             //vscroll.Visible = false;
             //MouseEnter += (s, e) => { vscroll.Visible = true; };
@@ -96,7 +100,7 @@ namespace Chatterino.Controls
             var msg = MessageAtPoint(e.Location);
             if (msg != null)
             {
-                var span = msg.SpanAtPoint(new Point(e.X - TextPadding.Left, e.Y - msg.CurrentYOffset));
+                var span = msg.SpanAtPoint(new CommonPoint(e.X - TextPadding.Left, e.Y - msg.CurrentYOffset));
                 if (span != null)
                 {
                     if (span.Link != null)
@@ -120,7 +124,7 @@ namespace Chatterino.Controls
             var msg = MessageAtPoint(e.Location);
             if (msg != null)
             {
-                var span = msg.SpanAtPoint(new Point(e.X - TextPadding.Left, e.Y - msg.CurrentYOffset));
+                var span = msg.SpanAtPoint(new CommonPoint(e.X - TextPadding.Left, e.Y - msg.CurrentYOffset));
                 if (span != null)
                 {
                     if (span.Link != null)
@@ -137,20 +141,19 @@ namespace Chatterino.Controls
 
             if (mouseDownLink != null)
             {
-                App.HandleLink(mouseDownLink);
+                GuiEngine.Current.HandleLink(mouseDownLink);
             }
 
             mouseDownLink = null;
         }
 
         // event handlers
-        void onEmoteUpdated(object s, EventArgs e)
+        void onRedrawGifEmotes(object s, EventArgs e)
         {
             var g = CreateGraphics();
             lock (Messages)
                 foreach (Message msg in Messages)
                 {
-                    //if (msg.CurrentYOffset > -msg.Height && msg.CurrentYOffset < Height)
                     if (msg.IsVisible)
                     {
                         msg.UpdateGifEmotes(g);
@@ -202,7 +205,7 @@ namespace Chatterino.Controls
                 {
                     TwitchChannel c;
 
-                    if (App.Channels.TryGetValue((e.Data.Channel ?? "").TrimStart('#'), out c))
+                    if (IrcManager.Channels.TryGetValue((e.Data.Channel ?? "").TrimStart('#'), out c))
                     {
                         Message firstMessage = null;
 
@@ -262,7 +265,7 @@ namespace Chatterino.Controls
                 {
                     if (SendMessage != null)
                     {
-                        App.SendMessage(ircChannelName, SendMessage.RawMessage);
+                        IrcManager.SendMessage(ircChannelName, SendMessage.RawMessage);
                         SendMessage = null;
                     }
                 }
@@ -370,14 +373,14 @@ namespace Chatterino.Controls
                 {
                     foreach (var msg in Messages)
                     {
-                        msg.CalculateBounds(g, Font, Width - TextPadding.Left - TextPadding.Right, emoteChanged);
+                        msg.CalculateBounds(g, Width - TextPadding.Left - TextPadding.Right, emoteChanged);
                         totalHeight += msg.Height;
                     }
                 }
 
                 if (SendMessage != null)
                 {
-                    SendMessage.CalculateBounds(g, Font, Width - TextPadding.Left - TextPadding.Right);
+                    SendMessage.CalculateBounds(g, Width - TextPadding.Left - TextPadding.Right);
                     TextPadding = new Padding(TextPadding.Left, TextPadding.Top, TextPadding.Right, 4 + SendMessage.Height);
                 }
                 else
@@ -430,7 +433,7 @@ namespace Chatterino.Controls
                 if (value != ircChannelName)
                 {
                     if (!string.IsNullOrWhiteSpace(ircChannelName))
-                        App.RemoveChannel(ChannelName);
+                        IrcManager.RemoveChannel(ChannelName);
 
                     ircChannelName = value;
 
@@ -438,7 +441,7 @@ namespace Chatterino.Controls
                     Messages = new Message[0];
 
                     if (!string.IsNullOrWhiteSpace(ircChannelName))
-                        App.AddChannel(ircChannelName);
+                        IrcManager.AddChannel(ircChannelName);
 
                     _header?.Invalidate();
 

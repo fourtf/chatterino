@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Chatterino.Common;
+using System;
 using System.Collections.Concurrent;
 using System.Drawing;
 using System.Reflection;

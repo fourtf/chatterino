@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace Chatterino
+namespace Chatterino.Controls
 {
     public partial class InputDialogForm : Form
     {

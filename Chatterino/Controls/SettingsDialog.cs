@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Chatterino.Common;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
@@ -138,13 +139,13 @@ namespace Chatterino.Controls
             PropertyInfo prop;
             if (AppSettings.Properties.TryGetValue(name, out prop))
             {
-                var value = prop.GetValue(App.Settings);
+                var value = prop.GetValue(null);
                 c.Checked = (bool)value;
             }
             else
                 throw new ArgumentException($"The settings {name} doesn't exist.");
 
-            onSave += (s, e) => { prop.SetValue(App.Settings, c.Checked); };
+            onSave += (s, e) => { prop.SetValue(null, c.Checked); };
         }
 
         private void BindTextBox(TextBox c, string name)
@@ -156,7 +157,7 @@ namespace Chatterino.Controls
             {
                 isNumeric = prop.PropertyType == typeof(int);
 
-                var value = prop.GetValue(App.Settings);
+                var value = prop.GetValue(null);
                 c.Text = value.ToString();
             }
             else
@@ -166,7 +167,7 @@ namespace Chatterino.Controls
             {
                 try
                 {
-                    prop.SetValue(App.Settings, int.Parse(c.Text));
+                    prop.SetValue(null, int.Parse(c.Text));
                 }
                 catch { }
             };

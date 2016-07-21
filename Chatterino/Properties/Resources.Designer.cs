@@ -111,22 +111,11 @@ namespace Chatterino.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        ///   Sucht eine lokalisierte Ressource vom Typ System.IO.UnmanagedMemoryStream ähnlich wie System.IO.MemoryStream.
         /// </summary>
-        internal static System.Drawing.Bitmap ScrollBarArrowDown {
+        internal static System.IO.UnmanagedMemoryStream ping2 {
             get {
-                object obj = ResourceManager.GetObject("ScrollBarArrowDown", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap ScrollBarArrowUp {
-            get {
-                object obj = ResourceManager.GetObject("ScrollBarArrowUp", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
+                return ResourceManager.GetStream("ping2", resourceCulture);
             }
         }
         

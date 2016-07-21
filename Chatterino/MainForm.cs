@@ -1,4 +1,5 @@
-﻿using Chatterino.Controls;
+﻿using Chatterino.Common;
+using Chatterino.Controls;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -30,7 +31,7 @@ namespace Chatterino
 
         public void SetTitle()
         {
-            Text = $"{App.Username ?? "<not logged in>"} - Chatterino";
+            Text = $"{IrcManager.Username ?? "<not logged in>"} - Chatterino";
         }
 
         //protected override void OnPreviewKeyDown(PreviewKeyDownEventArgs e)

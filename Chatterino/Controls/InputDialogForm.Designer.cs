@@ -1,4 +1,4 @@
-﻿namespace Chatterino
+﻿namespace Chatterino.Controls
 {
     partial class InputDialogForm
     {

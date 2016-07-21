@@ -9,7 +9,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace Chatterino
+namespace Chatterino.Common
 {
     public class TwitchChannel
     {
@@ -60,7 +60,7 @@ namespace Chatterino
                             using (var response = request.GetResponse())
                             using (var stream = response.GetResponseStream())
                             {
-                                return Image.FromStream(stream);
+                                return GuiEngine.Current.ReadImageFromStream(stream);
                             }
                         }
                         catch
@@ -72,7 +72,6 @@ namespace Chatterino
             }
         }
 
-
         // ctor
         public TwitchChannel(string channelName)
         {
@@ -80,8 +79,8 @@ namespace Chatterino
 
             string bttvChannelEmotesCache = $"./cache/bttv_channel_{channelName}";
 
-            App.IrcReadClient.RfcJoin("#" + channelName);
-            App.IrcWriteClient.RfcJoin("#" + channelName);
+            IrcManager.IrcReadClient.RfcJoin("#" + channelName);
+            IrcManager.IrcWriteClient.RfcJoin("#" + channelName);
 
             Task.Run(() =>
             {
@@ -124,7 +123,7 @@ namespace Chatterino
                             string code = e["code"];
 
                             TwitchEmote emote;
-                            if (App.BttvChannelEmotesCache.TryGetValue(id, out emote))
+                            if (Emotes.BttvChannelEmotesCache.TryGetValue(id, out emote))
                             {
                                 BttvChannelEmotes[code] = emote;
                             }
@@ -132,7 +131,7 @@ namespace Chatterino
                             {
                                 string imageType = e["imageType"];
                                 string url = template.Replace("{{id}}", id).Replace("{{image}}", "1x");
-                                App.BttvChannelEmotesCache[id] = BttvChannelEmotes[code] = new TwitchEmote { Name = code, Url = url };
+                                Emotes.BttvChannelEmotesCache[id] = BttvChannelEmotes[code] = new TwitchEmote { Name = code, Url = url };
                             }
                         }
                     }
@@ -144,8 +143,8 @@ namespace Chatterino
 
         public void Disconnect()
         {
-            App.IrcReadClient.RfcPart("#" + Name);
-            App.IrcWriteClient.RfcPart("#" + Name);
+            IrcManager.IrcReadClient.RfcPart("#" + Name);
+            IrcManager.IrcWriteClient.RfcPart("#" + Name);
         }
     }
 }

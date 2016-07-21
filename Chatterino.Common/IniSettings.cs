@@ -4,7 +4,7 @@ using System.Globalization;
 using System.IO;
 using Map = System.Collections.Concurrent.ConcurrentDictionary<string, string>;
 
-namespace Chatterino
+namespace Chatterino.Common
 {
     public class IniSettings
     {

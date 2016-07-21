@@ -8,7 +8,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace Chatterino
+namespace Chatterino.Common
 {
     public static class Util
     {
@@ -128,18 +128,6 @@ namespace Chatterino
             random2.GetBytes(bytes);
 
             return ((BitConverter.ToUInt32(bytes, 0) / (double)uint.MaxValue) * 100) < percent;
-        }
-
-        public static void Invoke(this System.Windows.Forms.Control c, Action action)
-        {
-            if (c.InvokeRequired)
-            {
-                c.Invoke((System.Windows.Forms.MethodInvoker)delegate { action(); });
-            }
-            else
-            {
-                action();
-            }
         }
 
         //  Logs a message in a specific color if not in quiet mode

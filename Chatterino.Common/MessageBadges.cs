@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Chatterino
+namespace Chatterino.Common
 {
     [Flags]
     public enum MessageBadges : byte
