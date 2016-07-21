@@ -176,28 +176,7 @@
     <None Include="Resources\turbo_bg.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\ThumbSpanBottom.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\ThumbSpanTop.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\ThumbTop.png" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Resources\downarrow.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\ThumbBottom.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\ThumbMiddle.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\ScrollBarArrowDown.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\ScrollBarArrowUp.png" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Chatterino.Common\Chatterino.Common.csproj">
