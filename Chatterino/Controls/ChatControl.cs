@@ -114,6 +114,7 @@ namespace Chatterino.Controls
 
                     if (span.Tooltip != null)
                     {
+                        App.ShowToolTip(PointToScreen(new Point(e.Location.X + 16, e.Location.Y + 16)), span.Tooltip);
                     }
                     else
                     {
