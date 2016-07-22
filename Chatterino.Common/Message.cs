@@ -73,7 +73,7 @@ namespace Chatterino.Common
             // Split the message
             var S = text.Split(' ');
 
-            if ((AppSettings.ChatEnableHighlight || AppSettings.ChatEnableHighlightSound) && Username != IrcManager.Username.ToLower())
+            if ((AppSettings.ChatEnableHighlight || AppSettings.ChatEnableHighlightSound || AppSettings.ChatEnableHighlightTaskbar) && Username != IrcManager.Username.ToLower())
             {
                 foreach (string s in S)
                 {
@@ -83,6 +83,8 @@ namespace Chatterino.Common
                             GuiEngine.Current.PlaySound(NotificationSound.Ping);
                         if (AppSettings.ChatEnableHighlight)
                             Highlighted = true;
+                        if (AppSettings.ChatEnableHighlightTaskbar)
+                            GuiEngine.Current.FlashTaskbar();
                         break;
                     }
                 }
@@ -507,9 +509,9 @@ namespace Chatterino.Common
             GuiEngine.Current.DrawMessage(graphics, this, xOffset, yOffset, selection, currentLine);
         }
 
-        public void UpdateGifEmotes(object graphics)
+        public void UpdateGifEmotes(object graphics, Selection selection, int currentLine)
         {
-            GuiEngine.Current.DrawGifEmotes(graphics, this);
+            GuiEngine.Current.DrawGifEmotes(graphics, this, selection, currentLine);
         }
 
         public Word WordAtPoint(CommonPoint point)

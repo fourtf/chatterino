@@ -32,7 +32,7 @@ namespace Chatterino.Controls
         public ToolTip()
         {
             FormBorderStyle = FormBorderStyle.None;
-            Opacity = 0.8;
+            Opacity = 0.9;
 
             Padding = new Padding(8, 4, 8, 4);
             ShowInTaskbar = false;

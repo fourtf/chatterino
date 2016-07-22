@@ -31,6 +31,7 @@
             this.tabs = new Chatterino.Controls.SettingsTabControl();
             this.RightPanel = new System.Windows.Forms.Panel();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.chkPings = new System.Windows.Forms.CheckBox();
             this.chkHighlight = new System.Windows.Forms.CheckBox();
             this.chkEmojis = new System.Windows.Forms.CheckBox();
             this.chkAllowSameMessages = new System.Windows.Forms.CheckBox();
@@ -56,7 +57,7 @@
             this.chkProxyEnabled = new System.Windows.Forms.CheckBox();
             this.spAppearance = new Chatterino.Controls.SettingsTabPage();
             this.spConnection = new Chatterino.Controls.SettingsTabPage();
-            this.chkPings = new System.Windows.Forms.CheckBox();
+            this.chkFlashTaskbar = new System.Windows.Forms.CheckBox();
             this.tabs.SuspendLayout();
             this.RightPanel.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -95,6 +96,7 @@
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.chkFlashTaskbar);
             this.panel1.Controls.Add(this.chkPings);
             this.panel1.Controls.Add(this.chkHighlight);
             this.panel1.Controls.Add(this.chkEmojis);
@@ -111,6 +113,17 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(448, 406);
             this.panel1.TabIndex = 0;
+            // 
+            // chkPings
+            // 
+            this.chkPings.AutoSize = true;
+            this.chkPings.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.chkPings.Location = new System.Drawing.Point(21, 123);
+            this.chkPings.Name = "chkPings";
+            this.chkPings.Size = new System.Drawing.Size(222, 17);
+            this.chkPings.TabIndex = 11;
+            this.chkPings.Text = "Play Sound when you Name is mentioned";
+            this.chkPings.UseVisualStyleBackColor = true;
             // 
             // chkHighlight
             // 
@@ -129,7 +142,7 @@
             this.chkEmojis.Checked = true;
             this.chkEmojis.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkEmojis.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.chkEmojis.Location = new System.Drawing.Point(21, 249);
+            this.chkEmojis.Location = new System.Drawing.Point(21, 275);
             this.chkEmojis.Name = "chkEmojis";
             this.chkEmojis.Size = new System.Drawing.Size(92, 17);
             this.chkEmojis.TabIndex = 9;
@@ -153,7 +166,7 @@
             this.chkGifEmotes.Checked = true;
             this.chkGifEmotes.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkGifEmotes.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.chkGifEmotes.Location = new System.Drawing.Point(21, 226);
+            this.chkGifEmotes.Location = new System.Drawing.Point(21, 252);
             this.chkGifEmotes.Name = "chkGifEmotes";
             this.chkGifEmotes.Size = new System.Drawing.Size(117, 17);
             this.chkGifEmotes.TabIndex = 7;
@@ -166,7 +179,7 @@
             this.chkBttvEmotes.Checked = true;
             this.chkBttvEmotes.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkBttvEmotes.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.chkBttvEmotes.Location = new System.Drawing.Point(21, 180);
+            this.chkBttvEmotes.Location = new System.Drawing.Point(21, 206);
             this.chkBttvEmotes.Name = "chkBttvEmotes";
             this.chkBttvEmotes.Size = new System.Drawing.Size(149, 17);
             this.chkBttvEmotes.TabIndex = 6;
@@ -179,7 +192,7 @@
             this.chkFFzEmotes.Checked = true;
             this.chkFFzEmotes.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkFFzEmotes.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.chkFFzEmotes.Location = new System.Drawing.Point(21, 203);
+            this.chkFFzEmotes.Location = new System.Drawing.Point(21, 229);
             this.chkFFzEmotes.Name = "chkFFzEmotes";
             this.chkFFzEmotes.Size = new System.Drawing.Size(167, 17);
             this.chkFFzEmotes.TabIndex = 4;
@@ -191,7 +204,7 @@
             this.lblEmotes.AutoSize = true;
             this.lblEmotes.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblEmotes.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.lblEmotes.Location = new System.Drawing.Point(18, 156);
+            this.lblEmotes.Location = new System.Drawing.Point(18, 182);
             this.lblEmotes.Name = "lblEmotes";
             this.lblEmotes.Size = new System.Drawing.Size(51, 17);
             this.lblEmotes.TabIndex = 3;
@@ -387,16 +400,16 @@
             this.spConnection.TabIndex = 2;
             this.spConnection.Text = "Connection";
             // 
-            // chkPings
+            // checkBox1
             // 
-            this.chkPings.AutoSize = true;
-            this.chkPings.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.chkPings.Location = new System.Drawing.Point(21, 123);
-            this.chkPings.Name = "chkPings";
-            this.chkPings.Size = new System.Drawing.Size(222, 17);
-            this.chkPings.TabIndex = 11;
-            this.chkPings.Text = "Play Sound when you Name is mentioned";
-            this.chkPings.UseVisualStyleBackColor = true;
+            this.chkFlashTaskbar.AutoSize = true;
+            this.chkFlashTaskbar.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.chkFlashTaskbar.Location = new System.Drawing.Point(21, 147);
+            this.chkFlashTaskbar.Name = "checkBox1";
+            this.chkFlashTaskbar.Size = new System.Drawing.Size(235, 17);
+            this.chkFlashTaskbar.TabIndex = 12;
+            this.chkFlashTaskbar.Text = "Flash Taskbar when you Name is mentioned";
+            this.chkFlashTaskbar.UseVisualStyleBackColor = true;
             // 
             // SettingsDialog
             // 
@@ -454,5 +467,6 @@
         private System.Windows.Forms.CheckBox chkEmojis;
         private System.Windows.Forms.CheckBox chkHighlight;
         private System.Windows.Forms.CheckBox chkPings;
+        private System.Windows.Forms.CheckBox chkFlashTaskbar;
     }
 }

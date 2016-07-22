@@ -16,6 +16,7 @@ namespace Chatterino.Common
 
         public static bool ChatEnableHighlight { get; set; } = true;
         public static bool ChatEnableHighlightSound { get; set; } = true;
+        public static bool ChatEnableHighlightTaskbar { get; set; } = true;
         //public static bool PingIgnoreBots { get; set; } = false;
 
         public static bool ChatEnableBttvEmotes { get; set; } = true;

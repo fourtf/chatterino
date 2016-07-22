@@ -42,6 +42,7 @@ namespace Chatterino.Controls
 
             BindCheckBox(chkHighlight, "ChatEnableHighlight");
             BindCheckBox(chkPings, "ChatEnableHighlightSound");
+            BindCheckBox(chkFlashTaskbar, "ChatEnableHighlightTaskbar");
 
             BindCheckBox(chkBttvEmotes, "ChatEnableBttvEmotes");
             BindCheckBox(chkFFzEmotes, "ChatEnableFfzEmotes");

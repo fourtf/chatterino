@@ -39,8 +39,6 @@ namespace Chatterino.Controls
             SmallChange = 32,
         };
 
-        bool isSelecting = false;
-
         // ctor
         public ChatControl()
         {
@@ -93,6 +91,8 @@ namespace Chatterino.Controls
         protected override void OnMouseWheel(MouseEventArgs e)
         {
             vscroll.Value -= e.Delta;
+
+            checkScrollBarPosition();
 
             Invalidate();
 
@@ -222,11 +222,12 @@ namespace Chatterino.Controls
         {
             var g = CreateGraphics();
             lock (Messages)
-                foreach (Message msg in Messages)
+                for (int i = 0; i < Messages.Length; i++)
                 {
+                    var msg = Messages[i];
                     if (msg.IsVisible)
                     {
-                        msg.UpdateGifEmotes(g);
+                        msg.UpdateGifEmotes(g, selection, i);
                     }
                 }
         }

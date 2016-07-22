@@ -72,15 +72,30 @@ namespace Chatterino
 
                     var dimension = new FrameDimension(img.FrameDimensionsList[0]);
                     var frameCount = img.GetFrameCount(dimension);
+                    int[] frameDuration = new int[frameCount];
                     int currentFrame = 0;
+                    int currentFrameOffset = 0;
+
+                    byte[] times = img.GetPropertyItem(0x5100).Value;
+                    int frame = 0;
+                    for (int i = 0; i < frameCount; i++)
+                    {
+                        frameDuration[i] = BitConverter.ToInt32(times, 4 * frame);
+                    }
 
                     App.GifEmoteFramesUpdating += (s, e) =>
                     {
-                        currentFrame += 1;
+                        currentFrameOffset += 3;
 
-                        if (currentFrame >= frameCount)
+                        while (true)
                         {
-                            currentFrame = 0;
+                            if (currentFrameOffset > frameDuration[currentFrame])
+                            {
+                                currentFrameOffset -= frameDuration[currentFrame];
+                                currentFrame = (currentFrame + 1) % frameCount;
+                            }
+                            else
+                                break;
                         }
 
                         lock (img)
@@ -235,7 +250,7 @@ namespace Chatterino
             if (enableBitmapDoubleBuffering)
             {
                 g2.DrawImageUnscaled((Image)message.buffer, xOffset2, yOffset2);
-                DrawGifEmotes(graphics, message);
+                DrawGifEmotes(graphics, message, selection, currentLine);
             }
 
             if (selection != null && !selection.IsEmpty && selection.First.MessageIndex <= currentLine && selection.Last.MessageIndex >= currentLine)
@@ -246,7 +261,8 @@ namespace Chatterino
                     {
                         var word = message.Words[i];
 
-                        g2.FillRectangle(selectionBrush, word.X + xOffset2, word.Y + yOffset2, word.Width + spaceWidth, word.Height);
+                        if (!(word.Type == SpanType.Emote) || !((TwitchEmote)word.Value).Animated)
+                            g2.FillRectangle(selectionBrush, word.X + xOffset2, word.Y + yOffset2, word.Width + spaceWidth, word.Height);
                     }
                 }
             }
@@ -254,10 +270,12 @@ namespace Chatterino
 
         Brush selectionBrush = new SolidBrush(Color.FromArgb(127, Color.Orange));
 
-        public void DrawGifEmotes(object graphics, Common.Message message)
+        public void DrawGifEmotes(object graphics, Common.Message message, Selection selection, int currentLine)
         {
             var Words = message.Words;
             Graphics g = (Graphics)graphics;
+
+            int spaceWidth = TextRenderer.MeasureText(g, " ", Fonts.Medium, Size.Empty, App.DefaultTextFormatFlags).Width;
 
             for (int i = 0; i < Words.Count; i++)
             {
@@ -279,10 +297,14 @@ namespace Chatterino
 
                             buffer.Graphics.FillRectangle(App.ColorScheme.ChatBackground, word.X + CurrentXOffset, word.Y + CurrentYOffset, word.Width, word.Height);
                             buffer.Graphics.DrawImage((Image)emote.Image, word.X + CurrentXOffset, word.Y + CurrentYOffset, word.Width, word.Height);
+
+                            if (selection != null && !selection.IsEmpty && (currentLine > selection.First.MessageIndex || (currentLine == selection.First.MessageIndex && i >= selection.First.WordIndex)) && (currentLine < selection.Last.MessageIndex || (selection.Last.MessageIndex == currentLine && i < selection.Last.WordIndex)))
+                                buffer.Graphics.FillRectangle(selectionBrush, word.X + CurrentXOffset, word.Y + CurrentYOffset, word.Width, word.Height);
+
                             if (message.Disabled)
                             {
                                 buffer.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(172, (App.ColorScheme.ChatBackground as SolidBrush)?.Color ?? Color.Black)),
-                                    word.X + CurrentXOffset, word.Y + CurrentYOffset, word.Width, word.Height);
+                                    word.X + CurrentXOffset, word.Y + CurrentYOffset, word.Width + spaceWidth, word.Height);
                             }
 
                             buffer.Render(g);
@@ -296,6 +318,17 @@ namespace Chatterino
         {
             if (message.buffer != null)
                 ((IDisposable)message.buffer).Dispose();
+        }
+
+        public void FlashTaskbar()
+        {
+            if (!Util.IsLinux && App.MainForm != null)
+            {
+                
+                    App.MainForm.Invoke(() => Win32.FlashWindow.Flash(App.MainForm, 1));
+
+                //App.MainForm.Invoke(() => Win32.FlashWindowEx(App.MainForm));
+            }
         }
     }
 }

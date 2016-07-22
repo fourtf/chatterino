@@ -113,6 +113,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="ValueEventArgs.cs" />
+    <Compile Include="Win32.cs" />
     <Compile Include="WinformsGuiEngine.cs" />
     <EmbeddedResource Include="Controls\SettingsDialog.resx">
       <DependentUpon>SettingsDialog.cs</DependentUpon>

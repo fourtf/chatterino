@@ -26,12 +26,13 @@ namespace Chatterino.Common
         void PlaySound(NotificationSound sound);
         object GetImage(ImageType type);
         void HandleAnimatedTwitchEmote(TwitchEmote emote);
+        void FlashTaskbar();
 
         object ReadImageFromStream(Stream stream);
 
         CommonSize MeasureStringSize(object graphics, FontType font, string text);
         void DrawMessage(object graphics, Message message, int xOffset, int yOffset, Selection selection, int currentLineIndex);
-        void DrawGifEmotes(object graphics, Message message);
+        void DrawGifEmotes(object graphics, Message message, Selection selection, int currentLineIndex);
 
         void DisposeMessageGraphicsBuffer(Message message);
 
