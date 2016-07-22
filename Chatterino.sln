@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chatterino", "Chatterino\Ch
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chatterino.Common", "Chatterino.Common\Chatterino.Common.csproj", "{D6032F9B-B3AD-4D1A-942A-ACD06EA16A4A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chatterino.Android", "Chatterino.Android\Chatterino.Android.csproj", "{E7E214EB-BF47-45F1-AC72-B10046828E8A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,12 @@ Global
 		{D6032F9B-B3AD-4D1A-942A-ACD06EA16A4A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D6032F9B-B3AD-4D1A-942A-ACD06EA16A4A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D6032F9B-B3AD-4D1A-942A-ACD06EA16A4A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E7E214EB-BF47-45F1-AC72-B10046828E8A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E7E214EB-BF47-45F1-AC72-B10046828E8A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E7E214EB-BF47-45F1-AC72-B10046828E8A}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{E7E214EB-BF47-45F1-AC72-B10046828E8A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E7E214EB-BF47-45F1-AC72-B10046828E8A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E7E214EB-BF47-45F1-AC72-B10046828E8A}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

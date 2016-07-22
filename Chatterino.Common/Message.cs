@@ -10,8 +10,8 @@ namespace Chatterino.Common
 {
     public class Message
     {
-        public int CurrentXOffset { get; set; } = 0;
-        public int CurrentYOffset { get; set; } = 0;
+        public int X { get; set; } = 0;
+        public int Y { get; set; } = 0;
         public int Height { get; private set; }
         public int Width { get; set; } = 0;
 
@@ -44,10 +44,10 @@ namespace Chatterino.Common
         public object buffer = null;
 
         public string RawMessage { get; private set; }
-        public List<Span> Words { get; set; }
+        public List<Word> Words { get; set; }
         public TwitchChannel Channel { get; set; }
 
-        Regex linkRegex = new Regex(@"^((?<Protocol>\w+):\/\/)?(?<Domain>[\w@][\w.:@]+\w)\/?[\w\.?=#%&=\-@/$,]*$");
+        Regex linkRegex = new Regex(@"^((?<Protocol>\w+):\/\/)?(?<Domain>[\w%@][\w.%:@]+\w)\/?[\w\.?=#%&=\-@/$,]*$");
         static char[] linkIdentifiers = new char[] { '.', ':' };
 
         public Message(IrcMessageData data, TwitchChannel channel)
@@ -56,7 +56,7 @@ namespace Chatterino.Common
 
             Channel = channel;
 
-            List<Span> words = new List<Span>();
+            List<Word> words = new List<Word>();
 
             string text = data.Message;
             Username = data.Nick;
@@ -77,7 +77,7 @@ namespace Chatterino.Common
             {
                 foreach (string s in S)
                 {
-                    if (s.ToLower() == IrcManager.Username.ToLower())
+                    if (s.ToLower().Trim('@', ',', '.', ':') == IrcManager.Username.ToLower())
                     {
                         if (AppSettings.ChatEnableHighlightSound)
                             GuiEngine.Current.PlaySound(NotificationSound.Ping);
@@ -107,19 +107,22 @@ namespace Chatterino.Common
             }
 
             // Add timestamp
+            var timestamp = DateTime.Now.ToString(AppSettings.ChatShowTimestampSeconds ? "HH:mm:ss" : "HH:mm");
+
             if (AppSettings.ChatShowTimestamps)
             {
-                words.Add(new Span
+                words.Add(new Word
                 {
                     Type = SpanType.Text,
-                    Value = DateTime.Now.ToString(AppSettings.ChatShowTimestampSeconds ? "HH:mm:ss" : "HH:mm"),
+                    Value = timestamp,
                     Color = -8355712,
                     Font = FontType.Small,
+                    CopyText = timestamp
                 });
             }
 
             if (Username.ToUpper() == "FOURTF")
-                words.Add(new Span { Type = SpanType.Image, Value = GuiEngine.Current.GetImage(ImageType.BadgeDev), Tooltip = "Chatterino Developer" });
+                words.Add(new Word { Type = SpanType.Image, Value = GuiEngine.Current.GetImage(ImageType.BadgeDev), Tooltip = "Chatterino Developer" });
 
             if (data.Tags.TryGetValue("badges", out value))
             {
@@ -131,31 +134,31 @@ namespace Chatterino.Common
                     {
                         case "staff/1":
                             Badges |= MessageBadges.Staff;
-                            words.Add(new Span { Type = SpanType.Image, Value = GuiEngine.Current.GetImage(ImageType.BadgeStaff), Tooltip = "Twitch Staff" });
+                            words.Add(new Word { Type = SpanType.Image, Value = GuiEngine.Current.GetImage(ImageType.BadgeStaff), Tooltip = "Twitch Staff" });
                             break;
                         case "admin/1":
                             Badges |= MessageBadges.Admin;
-                            words.Add(new Span { Type = SpanType.Image, Value = GuiEngine.Current.GetImage(ImageType.BadgeAdmin), Tooltip = "Twitch Admin" });
+                            words.Add(new Word { Type = SpanType.Image, Value = GuiEngine.Current.GetImage(ImageType.BadgeAdmin), Tooltip = "Twitch Admin" });
                             break;
                         case "global_mod/1":
                             Badges |= MessageBadges.GlobalMod;
-                            words.Add(new Span { Type = SpanType.Image, Value = GuiEngine.Current.GetImage(ImageType.BadgeGlobalmod), Tooltip = "Global Moderator" });
+                            words.Add(new Word { Type = SpanType.Image, Value = GuiEngine.Current.GetImage(ImageType.BadgeGlobalmod), Tooltip = "Global Moderator" });
                             break;
                         case "moderator/1":
                             Badges |= MessageBadges.Mod;
-                            words.Add(new Span { Type = SpanType.Image, Value = GuiEngine.Current.GetImage(ImageType.BadgeModerator), Tooltip = "Channel Moderator" });
+                            words.Add(new Word { Type = SpanType.Image, Value = GuiEngine.Current.GetImage(ImageType.BadgeModerator), Tooltip = "Channel Moderator" });
                             break;
                         case "subscriber/1":
                             Badges |= MessageBadges.Sub;
-                            words.Add(new Span { Type = SpanType.Emote, Value = channel.SubscriberBadge, Link = Channel.SubLink, Tooltip = "Channel Subscriber" });
+                            words.Add(new Word { Type = SpanType.Emote, Value = channel.SubscriberBadge, Link = Channel.SubLink, Tooltip = "Channel Subscriber" });
                             break;
                         case "turbo/1":
                             Badges |= MessageBadges.Turbo;
-                            words.Add(new Span { Type = SpanType.Image, Value = GuiEngine.Current.GetImage(ImageType.BadgeTurbo), Tooltip = "Turbo Subscriber" });
+                            words.Add(new Word { Type = SpanType.Image, Value = GuiEngine.Current.GetImage(ImageType.BadgeTurbo), Tooltip = "Turbo Subscriber" });
                             break;
                         case "broadcaster/1":
                             Badges |= MessageBadges.Broadcaster;
-                            words.Add(new Span { Type = SpanType.Image, Value = GuiEngine.Current.GetImage(ImageType.BadgeBroadcaster), Tooltip = "Channel Broadcaster" });
+                            words.Add(new Word { Type = SpanType.Image, Value = GuiEngine.Current.GetImage(ImageType.BadgeBroadcaster), Tooltip = "Channel Broadcaster" });
                             break;
                     }
                 }
@@ -164,7 +167,16 @@ namespace Chatterino.Common
             //  93064:0-6,8-14/80481:16-20,22-26
 
             DisplayName = string.IsNullOrWhiteSpace(DisplayName) ? Username : DisplayName;
-            words.Add(new Span { Type = SpanType.Text, Value = DisplayName + (slashMe ? "" : ":"), Color = UsernameColor, Font = FontType.MediumBold, Link = "http://twitch.tv/" + Username });
+            var messageUser = DisplayName + (slashMe ? "" : ":");
+            words.Add(new Word
+            {
+                Type = SpanType.Text,
+                Value = messageUser,
+                Color = UsernameColor,
+                Font = FontType.MediumBold,
+                Link = "http://twitch.tv/" + Username,
+                CopyText = messageUser
+            });
 
             List<Tuple<int, TwitchEmote>> twitchEmotes = new List<Tuple<int, TwitchEmote>>();
 
@@ -176,19 +188,24 @@ namespace Chatterino.Common
                     {
                         var x = emote.Split(':');
                         var id = int.Parse(x[0]);
-                        x[1].Split(',').Do(y =>
+                        foreach (var y in x[1].Split(','))
                         {
                             var coords = y.Split('-');
                             int index = int.Parse(coords[0]);
-                            string name = text.Substring(index, int.Parse(coords[1]) - index);
+                            string name = text.Substring(index, int.Parse(coords[1]) - index + 1);
                             TwitchEmote e;
                             if (!Emotes.TwitchEmotes.TryGetValue(id, out e))
                             {
-                                e = new TwitchEmote { Name = name, Url = Emotes.TwitchEmoteTemplate.Replace("{id}", id.ToString()), Tooltip = "Twitch Emote" };
+                                e = new TwitchEmote
+                                {
+                                    Name = name,
+                                    Url = Emotes.TwitchEmoteTemplate.Replace("{id}", id.ToString()),
+                                    Tooltip = name + "\nTwitch Emote"
+                                };
                                 Emotes.TwitchEmotes[id] = e;
                             }
                             twitchEmotes.Add(Tuple.Create(index, e));
-                        });
+                        };
                     }
                 });
                 twitchEmotes.Sort((e1, e2) => e1.Item1.CompareTo(e2.Item1));
@@ -223,7 +240,14 @@ namespace Chatterino.Common
                 {
                     if (currentTwitchEmote.Item1 == i)
                     {
-                        words.Add(new Span { Type = SpanType.Emote, Value = currentTwitchEmote.Item2, Link = currentTwitchEmote.Item2.Url, Tooltip = currentTwitchEmote.Item2.Tooltip });
+                        words.Add(new Word
+                        {
+                            Type = SpanType.Emote,
+                            Value = currentTwitchEmote.Item2,
+                            Link = currentTwitchEmote.Item2.Url,
+                            Tooltip = currentTwitchEmote.Item2.Tooltip,
+                            CopyText = currentTwitchEmote.Item2.Name
+                        });
                         i += s.Length + 1;
                         currentTwitchEmoteIndex++;
                         currentTwitchEmote = currentTwitchEmoteIndex == twitchEmotes.Count ? null : twitchEmotes[currentTwitchEmoteIndex];
@@ -235,7 +259,15 @@ namespace Chatterino.Common
                 if (AppSettings.ChatEnableBttvEmotes && (Emotes.BttvGlobalEmotes.TryGetValue(s, out bttvEmote) || channel.BttvChannelEmotes.TryGetValue(s, out bttvEmote))
                     || (AppSettings.ChatEnableFfzEmotes && Emotes.FfzGlobalEmotes.TryGetValue(s, out bttvEmote)))
                 {
-                    words.Add(new Span { Type = SpanType.Emote, Value = bttvEmote, Color = slashMe ? UsernameColor : new int?(), Tooltip = bttvEmote.Tooltip, Link = bttvEmote.Url });
+                    words.Add(new Word
+                    {
+                        Type = SpanType.Emote,
+                        Value = bttvEmote,
+                        Color = slashMe ? UsernameColor : new int?(),
+                        Tooltip = bttvEmote.Tooltip,
+                        Link = bttvEmote.Url,
+                        CopyText = bttvEmote.Name
+                    });
                 }
                 else
                 {
@@ -260,7 +292,14 @@ namespace Chatterino.Common
                         }
                     }
 
-                    words.Add(new Span { Type = SpanType.Text, Value = s, Color = slashMe ? UsernameColor : (link == null ? new int?() : -8355712), Link = link });
+                    words.Add(new Word
+                    {
+                        Type = SpanType.Text,
+                        Value = s,
+                        Color = slashMe ? UsernameColor : (link == null ? new int?() : -8355712),
+                        Link = link,
+                        CopyText = s
+                    });
                 }
 
                 i += s.Length + 1;
@@ -275,10 +314,17 @@ namespace Chatterino.Common
         }
 
         public Message(string text)
+            : this(text, -1)
+        {
+
+        }
+
+        public Message(string text, int color)
         {
             RawMessage = text;
 
-            Words = text.Split(' ').Select(x => new Span { Type = SpanType.Text, Value = x }).ToList();
+
+            Words = text.Split(' ').Select(x => new Word { Type = SpanType.Text, Value = x, Color = color, CopyText = x }).ToList();
         }
 
         bool measureText = true;
@@ -298,41 +344,41 @@ namespace Chatterino.Common
             // check if any words need to be recalculated
             if (emotesChanged || measureText || measureImages)
             {
-                foreach (Span span in Words)
+                foreach (Word word in Words)
                 {
-                    if (span.Type == SpanType.Text)
+                    if (word.Type == SpanType.Text)
                     {
                         if (measureText)
                         {
-                            CommonSize size = GuiEngine.Current.MeasureStringSize(graphics, span.Font, (string)span.Value);
-                            span.Width = size.Width;
-                            span.Height = size.Height;
+                            CommonSize size = GuiEngine.Current.MeasureStringSize(graphics, word.Font, (string)word.Value);
+                            word.Width = size.Width;
+                            word.Height = size.Height;
                         }
                     }
-                    else if (span.Type == SpanType.Image)
+                    else if (word.Type == SpanType.Image)
                     {
                         if (measureImages)
                         {
-                            CommonSize size = GuiEngine.Current.GetImageSize(span.Value);
-                            span.Width = size.Width;
-                            span.Height = size.Height;
+                            CommonSize size = GuiEngine.Current.GetImageSize(word.Value);
+                            word.Width = size.Width;
+                            word.Height = size.Height;
                         }
                     }
-                    else if (span.Type == SpanType.Emote)
+                    else if (word.Type == SpanType.Emote)
                     {
                         if (emotesChanged || measureImages)
                         {
-                            TwitchEmote emote = (TwitchEmote)span.Value;
+                            TwitchEmote emote = (TwitchEmote)word.Value;
                             object image = emote.Image;
                             if (image == null)
                             {
-                                span.Width = span.Height = 16;
+                                word.Width = word.Height = 16;
                             }
                             else
                             {
                                 CommonSize size = GuiEngine.Current.GetImageSize(image);
-                                span.Width = size.Width;
-                                span.Height = size.Height;
+                                word.Width = size.Width;
+                                word.Height = size.Height;
                             }
                         }
                     }
@@ -366,16 +412,16 @@ namespace Chatterino.Common
 
                     for (int j = lineStartIndex; j < i; j++)
                     {
-                        var span = Words[j];
-                        if (j == lineStartIndex && span.Type == SpanType.Text && span.SplitSegments != null)
+                        var word = Words[j];
+                        if (j == lineStartIndex && word.Type == SpanType.Text && word.SplitSegments != null)
                         {
-                            var segment = span.SplitSegments[span.SplitSegments.Length - 1];
+                            var segment = word.SplitSegments[word.SplitSegments.Length - 1];
                             CommonRectangle rec = segment.Item2;
-                            span.SplitSegments[span.SplitSegments.Length - 1] = Tuple.Create(segment.Item1, new CommonRectangle(rec.X, rec.Y + lineHeight - span.Height, rec.Width, rec.Height));
+                            word.SplitSegments[word.SplitSegments.Length - 1] = Tuple.Create(segment.Item1, new CommonRectangle(rec.X, rec.Y + lineHeight - word.Height, rec.Width, rec.Height));
                         }
                         else
                         {
-                            span.Y += lineHeight - span.Height;
+                            word.Y += lineHeight - word.Height;
                         }
                     }
 
@@ -384,21 +430,21 @@ namespace Chatterino.Common
 
                 for (; i < Words.Count; i++)
                 {
-                    Span span = Words[i];
+                    Word word = Words[i];
 
-                    span.SplitSegments = null;
+                    word.SplitSegments = null;
 
                     // word wrapped text
-                    if (span.Width > width && span.Type == SpanType.Text && ((string)span.Value).Length > 2)
+                    if (word.Width > width && word.Type == SpanType.Text && ((string)word.Value).Length > 2)
                     {
                         y += fixCurrentLineHeight();
 
                         lineStartIndex = i;
 
-                        span.X = 0;
-                        span.Y = y;
+                        word.X = 0;
+                        word.Y = y;
 
-                        string text = (string)span.Value;
+                        string text = (string)word.Value;
                         int startIndex = 0;
                         List<Tuple<string, CommonRectangle>> items = new List<Tuple<string, CommonRectangle>>();
 
@@ -407,11 +453,11 @@ namespace Chatterino.Common
                         for (int j = 1; j < text.Length; j++)
                         {
                             s = text.Substring(startIndex, j - startIndex);
-                            if ((size = GuiEngine.Current.MeasureStringSize(graphics, span.Font, s)).Width > width - spaceWidth - spaceWidth - spaceWidth)
+                            if ((size = GuiEngine.Current.MeasureStringSize(graphics, word.Font, s)).Width > width - spaceWidth - spaceWidth - spaceWidth)
                             {
                                 items.Add(Tuple.Create(s, new CommonRectangle(0, y, size.Width, size.Height)));
                                 startIndex = j;
-                                y += span.Height;
+                                y += word.Height;
                                 j++;
                             }
                         }
@@ -422,27 +468,27 @@ namespace Chatterino.Common
                         x = size.Width + spaceWidth;
 
                         if (items.Count > 1)
-                            span.SplitSegments = items.ToArray();
+                            word.SplitSegments = items.ToArray();
                     }
                     // word in new line
-                    else if (span.Width > width - x)
+                    else if (word.Width > width - x)
                     {
                         y += fixCurrentLineHeight();
 
-                        span.X = 0;
-                        span.Y = y;
+                        word.X = 0;
+                        word.Y = y;
 
-                        x = span.Width + spaceWidth;
+                        x = word.Width + spaceWidth;
 
                         lineStartIndex = i;
                     }
                     // word fits in current line
                     else
                     {
-                        span.X = x;
-                        span.Y = y;
+                        word.X = x;
+                        word.Y = y;
 
-                        x += span.Width + spaceWidth;
+                        x += word.Width + spaceWidth;
                     }
                 }
 
@@ -456,9 +502,9 @@ namespace Chatterino.Common
             return redraw;
         }
 
-        public void Draw(object graphics, int xOffset, int yOffset)
+        public void Draw(object graphics, int xOffset, int yOffset, Selection selection, int currentLine)
         {
-            GuiEngine.Current.DrawMessage(graphics, this, xOffset, yOffset);
+            GuiEngine.Current.DrawMessage(graphics, this, xOffset, yOffset, selection, currentLine);
         }
 
         public void UpdateGifEmotes(object graphics)
@@ -466,23 +512,48 @@ namespace Chatterino.Common
             GuiEngine.Current.DrawGifEmotes(graphics, this);
         }
 
-        public Span SpanAtPoint(CommonPoint point)
+        public Word WordAtPoint(CommonPoint point)
         {
             for (int i = 0; i < Words.Count; i++)
             {
-                var span = Words[i];
-                if (span.Type == SpanType.Text && span.SplitSegments != null)
+                var word = Words[i];
+                if (word.Type == SpanType.Text && word.SplitSegments != null)
                 {
-                    if (span.SplitSegments.Any(x => x.Item2.Contains(point)))
-                        return span;
+                    if (word.SplitSegments.Any(x => x.Item2.Contains(point)))
+                        return word;
                 }
-                else if (span.X < point.X && span.Y < point.Y && span.X + span.Width > point.X && span.Y + span.Height > point.Y)
+                else if (word.X < point.X && word.Y < point.Y && word.X + word.Width > point.X && word.Y + word.Height > point.Y)
                 {
-                    return span;
+                    return word;
                 }
             }
 
             return null;
+        }
+
+        public MessagePosition MessagePositionAtPoint(CommonPoint point, int messageIndex)
+        {
+            int currentWord = 0;
+            int currentChar = 0;
+
+            for (int i = 0; i < Words.Count; i++)
+            {
+                var word = Words[i];
+
+                if (word.Y <= point.Y && word.X < point.X)
+                {
+                    if (word.X + word.Width < point.X)
+                        currentWord = i + 1;
+                    else
+                        currentWord = i;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            return new MessagePosition(messageIndex, currentWord, currentChar);
         }
     }
 }

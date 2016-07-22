@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
+using System.Text;
 using System.Windows.Forms;
 using Message = Chatterino.Common.Message;
 
@@ -39,10 +40,6 @@ namespace Chatterino.Controls
         };
 
         bool isSelecting = false;
-        int messageSelectionStartIndex = 0;
-        int spanSelectionStartIndex = 0;
-        int messageSelectionEndIndex = 0;
-        int spanSelectionEndIndex = 0;
 
         // ctor
         public ChatControl()
@@ -93,17 +90,42 @@ namespace Chatterino.Controls
             //MouseLeave += (s, e) => { vscroll.Visible = false; };
         }
 
+        protected override void OnMouseWheel(MouseEventArgs e)
+        {
+            vscroll.Value -= e.Delta;
+
+            Invalidate();
+
+            base.OnMouseWheel(e);
+        }
+
         protected override void OnMouseMove(MouseEventArgs e)
         {
             base.OnMouseMove(e);
 
-            var msg = MessageAtPoint(e.Location);
+            int index;
+
+            var msg = MessageAtPoint(e.Location, out index);
             if (msg != null)
             {
-                var span = msg.SpanAtPoint(new CommonPoint(e.X - TextPadding.Left, e.Y - msg.CurrentYOffset));
-                if (span != null)
+                var word = msg.WordAtPoint(new CommonPoint(e.X - TextPadding.Left, e.Y - msg.Y));
+
+                var pos = msg.MessagePositionAtPoint(new CommonPoint(e.X, e.Y - msg.Y), index);
+                //Console.WriteLine($"pos: {pos.MessageIndex} : {pos.WordIndex} : {pos.CharIndex}");
+
+                if (selection != null && mouseDown)
                 {
-                    if (span.Link != null)
+                    var newSelection = new Selection(selection.Start, pos);
+                    if (!newSelection.Equals(selection))
+                    {
+                        selection = newSelection;
+                        Invalidate();
+                    }
+                }
+
+                if (word != null)
+                {
+                    if (word.Link != null)
                     {
                         Cursor = Cursors.Hand;
                     }
@@ -112,9 +134,9 @@ namespace Chatterino.Controls
                         Cursor = Cursors.Default;
                     }
 
-                    if (span.Tooltip != null)
+                    if (word.Tooltip != null)
                     {
-                        App.ShowToolTip(PointToScreen(new Point(e.Location.X + 16, e.Location.Y + 16)), span.Tooltip);
+                        App.ShowToolTip(PointToScreen(new Point(e.Location.X + 16, e.Location.Y + 16)), word.Tooltip);
                     }
                     else
                     {
@@ -130,36 +152,70 @@ namespace Chatterino.Controls
         }
 
         string mouseDownLink = null;
+        Word mouseDownWord = null;
+        Selection selection = null;
+        bool mouseDown = false;
 
         protected override void OnMouseDown(MouseEventArgs e)
         {
             base.OnMouseDown(e);
 
-            var msg = MessageAtPoint(e.Location);
-            if (msg != null)
+            if (e.Button == MouseButtons.Left)
             {
-                var span = msg.SpanAtPoint(new CommonPoint(e.X - TextPadding.Left, e.Y - msg.CurrentYOffset));
-                if (span != null)
+                mouseDown = true;
+
+                int index;
+
+                var msg = MessageAtPoint(e.Location, out index);
+                if (msg != null)
                 {
-                    if (span.Link != null)
+                    var position = msg.MessagePositionAtPoint(new CommonPoint(e.X, e.Y - msg.Y), index);
+                    selection = new Selection(position, position);
+
+                    var word = msg.WordAtPoint(new CommonPoint(e.X - TextPadding.Left, e.Y - msg.Y));
+                    if (word != null)
                     {
-                        mouseDownLink = span.Link;
+                        if (word.Link != null)
+                        {
+                            mouseDownLink = word.Link;
+                            mouseDownWord = word;
+                        }
                     }
                 }
+                else
+                    selection = null;
             }
+
+            Invalidate();
         }
 
         protected override void OnMouseUp(MouseEventArgs e)
         {
             base.OnMouseUp(e);
 
-            if (mouseDownLink != null)
+            if (e.Button == MouseButtons.Left)
             {
-                GuiEngine.Current.HandleLink(mouseDownLink);
-            }
+                mouseDown = false;
 
-            mouseDownLink = null;
+                int index;
+
+                var msg = MessageAtPoint(e.Location, out index);
+                if (msg != null)
+                {
+                    var word = msg.WordAtPoint(new CommonPoint(e.X - TextPadding.Left, e.Y - msg.Y));
+                    if (word != null)
+                    {
+                        if (mouseDownLink != null && mouseDownWord == word)
+                        {
+                            GuiEngine.Current.HandleLink(mouseDownLink);
+                        }
+                    }
+                }
+
+                mouseDownLink = null;
+            }
         }
+
 
         // event handlers
         void onRedrawGifEmotes(object s, EventArgs e)
@@ -195,7 +251,7 @@ namespace Chatterino.Controls
 
                     //lock (Messages)
                     {
-                        addMessage(new Message($"{user} was timed out for {duration} second{(duration == "1" ? "" : "s")}{(string.IsNullOrEmpty(reason) ? "." : ": " + reason)}"));
+                        addMessage(new Message($"{user} was timed out for {duration} second{(duration == "1" ? "" : "s")}{(string.IsNullOrEmpty(reason) ? "." : ": " + reason)}", -8355712));
                         foreach (var msg in Messages)
                         {
                             updateMessageBounds();
@@ -331,19 +387,19 @@ namespace Chatterino.Controls
                             {
 #warning move out of drawing function
                                 Messages[i].IsVisible = false;
-                                msg.CurrentYOffset = y;
+                                msg.Y = y;
                                 y += msg.Height;
                             }
                             break;
                         }
-                        msg.Draw(e.Graphics, TextPadding.Left, y);
+                        msg.Draw(e.Graphics, TextPadding.Left, y, selection, i);
                         msg.IsVisible = true;
                     }
                     else
                     {
                         msg.IsVisible = false;
                     }
-                    msg.CurrentYOffset = y;
+                    msg.Y = y;
                     y += msg.Height;
                 }
             }
@@ -354,7 +410,7 @@ namespace Chatterino.Controls
             {
                 e.Graphics.FillRectangle(App.ColorScheme.ChatBackground, 1, Height - SendMessage.Height - 4, Width - 3 - SystemInformation.VerticalScrollBarWidth, SendMessage.Height + TextPadding.Bottom - 1);
                 e.Graphics.DrawLine(borderPen, 1, Height - SendMessage.Height - 4, Width - 2 - SystemInformation.VerticalScrollBarWidth, Height - SendMessage.Height - 4);
-                SendMessage.Draw(e.Graphics, TextPadding.Left, Height - SendMessage.Height);
+                SendMessage.Draw(e.Graphics, TextPadding.Left, Height - SendMessage.Height, null, -1);
             }
         }
 
@@ -362,6 +418,15 @@ namespace Chatterino.Controls
         {
             if (Messages.Length == MaxMessages)
             {
+                if (selection != null)
+                {
+                    if (selection.Start.MessageIndex == 0)
+                        selection = null;
+                    else
+                        selection = new Selection(new MessagePosition(selection.Start.MessageIndex, selection.Start.WordIndex, selection.Start.CharIndex),
+                            new MessagePosition(selection.End.MessageIndex, selection.End.WordIndex, selection.End.CharIndex));
+                }
+
                 Message[] M = new Message[Messages.Length];
                 Array.Copy(Messages, 1, M, 0, Messages.Length - 1);
                 M[M.Length - 1] = msg;
@@ -464,19 +529,65 @@ namespace Chatterino.Controls
             }
         }
 
-        public Message MessageAtY(int y) => MessageAtPoint(new Point(0, y));
-
-        public Message MessageAtPoint(Point p)
+        public Message MessageAtPoint(Point p, out int index)
         {
             lock (Messages)
-                foreach (Message m in Messages)
+                for (int i = 0; i < Messages.Length; i++)
                 {
-                    if (m.CurrentYOffset > p.Y - m.Height)
+                    var m = Messages[i];
+                    if (m.Y > p.Y - m.Height)
+                    {
+                        index = i;
                         return m;
+                    }
                 }
+            index = -1;
             return null;
         }
 
+        public void CopySelection()
+        {
+            var text = GetSelectedText();
+
+            if (text != null)
+                Clipboard.SetText(text);
+        }
+
+        public string GetSelectedText()
+        {
+            if (selection == null || selection.IsEmpty)
+                return null;
+
+            StringBuilder b = new StringBuilder();
+
+            lock (Messages)
+                for (int i = selection.First.MessageIndex; i <= selection.Last.MessageIndex; i++)
+                {
+                    if (i != selection.First.MessageIndex)
+                        b.AppendLine();
+
+                    for (int j =(i == selection.First.MessageIndex ? selection.First.WordIndex : 0); j < (i == selection.Last.MessageIndex ? selection.Last.WordIndex : Messages[i].Words.Count); j++)
+                    {
+                        if (Messages[i].Words[j].CopyText != null)
+                        {
+                            b.Append(Messages[i].Words[j].CopyText);
+                            b.Append(' ');
+                        }
+                    }
+                }
+
+            return b.ToString();
+        }
+
+        public void PasteText(string text)
+        {
+            if (SendMessage == null)
+                SendMessage = new Message(text);
+            else
+                SendMessage = new Message(SendMessage.RawMessage + text);
+
+            Invalidate();
+        }
 
         // header
         class ChatControlHeader : Control

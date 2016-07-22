@@ -30,7 +30,7 @@ namespace Chatterino.Common
         object ReadImageFromStream(Stream stream);
 
         CommonSize MeasureStringSize(object graphics, FontType font, string text);
-        void DrawMessage(object graphics, Message message, int xOffset, int yOffset);
+        void DrawMessage(object graphics, Message message, int xOffset, int yOffset, Selection selection, int currentLineIndex);
         void DrawGifEmotes(object graphics, Message message);
 
         void DisposeMessageGraphicsBuffer(Message message);

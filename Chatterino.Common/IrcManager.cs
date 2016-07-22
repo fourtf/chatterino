@@ -23,25 +23,28 @@ namespace Chatterino.Common
 
         public static void SendMessage(string channel, string message)
         {
-            if (message.Length > 1 && message[0] == '/')
+            if (channel != null)
             {
-                int index = message.IndexOf(' ');
-                string _command = index == -1 ? message.Substring(1) : message.Substring(1, index - 1);
-                message = index == -1 ? "" : message.Substring(index + 1);
-
-                Func<string, string> command;
-                if (ChatCommands.TryGetValue(_command, out command))
+                if (message.Length > 1 && message[0] == '/')
                 {
-                    message = command(message) ?? message;
+                    int index = message.IndexOf(' ');
+                    string _command = index == -1 ? message.Substring(1) : message.Substring(1, index - 1);
+                    message = index == -1 ? "" : message.Substring(index + 1);
+
+                    Func<string, string> command;
+                    if (ChatCommands.TryGetValue(_command, out command))
+                    {
+                        message = command(message) ?? message;
+                    }
                 }
-            }
 
-            if (AppSettings.ChatAllowSameMessage)
-            {
-                message = message + " ";
-            }
+                if (AppSettings.ChatAllowSameMessage)
+                {
+                    message = message + " ";
+                }
 
-            IrcWriteClient?.SendMessage(SendType.Message, "#" + channel.TrimStart('#'), Common.Emojis.ReplaceShortCodes(message));
+                IrcWriteClient?.SendMessage(SendType.Message, "#" + channel.TrimStart('#'), Common.Emojis.ReplaceShortCodes(message));
+            }
         }
 
         // Static Ctor

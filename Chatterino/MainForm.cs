@@ -44,6 +44,14 @@ namespace Chatterino
         //    base.OnPreviewKeyDown(e);
         //}
 
+        public Control SelectedControl
+        {
+            get
+            {
+                return columnLayoutControl1.Columns.SelectMany(x => x).FirstOrDefault(x => x.Focused);
+            }
+        }
+
         protected override void OnKeyDown(KeyEventArgs e)
         {
             base.OnKeyDown(e);
@@ -79,6 +87,19 @@ namespace Chatterino
                         break;
                     case Keys.P:
                         App.ShowSettings();
+                        break;
+                    case Keys.C:
+                        (App.MainForm?.SelectedControl as ChatControl)?.CopySelection();
+                        break;
+                    case Keys.V:
+                        try
+                        {
+                            if (Clipboard.ContainsText())
+                            {
+                                (App.MainForm?.SelectedControl as ChatControl)?.PasteText(Clipboard.GetText());
+                            }
+                        }
+                        catch { }
                         break;
                 }
             }
