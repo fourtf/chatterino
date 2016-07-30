@@ -12,6 +12,7 @@ namespace Chatterino.Common
     {
         public int X { get; set; } = 0;
         public int Y { get; set; } = 0;
+        public int TotalY { get; set; }
         public int Height { get; private set; }
         public int Width { get; set; } = 0;
 
@@ -47,7 +48,7 @@ namespace Chatterino.Common
         public List<Word> Words { get; set; }
         public TwitchChannel Channel { get; set; }
 
-        Regex linkRegex = new Regex(@"^((?<Protocol>\w+):\/\/)?(?<Domain>[\w%@][\w.%:@]+\w)\/?[\w\.?=#%&=\-@/$,]*$");
+        Regex linkRegex = new Regex(@"^((?<Protocol>\w+):\/\/)?(?<Domain>[\w%@-][\w.%-:@]+\w)\/?[\w\.?=#%&=\-@/$,]*$");
         static char[] linkIdentifiers = new char[] { '.', ':' };
 
         public Message(IrcMessageData data, TwitchChannel channel)
@@ -123,8 +124,12 @@ namespace Chatterino.Common
                 });
             }
 
-            if (Username.ToUpper() == "FOURTF")
-                words.Add(new Word { Type = SpanType.Image, Value = GuiEngine.Current.GetImage(ImageType.BadgeDev), Tooltip = "Chatterino Developer" });
+            //if (Username.ToUpper() == "FOURTF")
+            //    words.Add(new Word { Type = SpanType.Image, Value = GuiEngine.Current.GetImage(ImageType.BadgeDev), Tooltip = "Chatterino Developer" });
+
+            TwitchEmote fourtfBadge;
+            if (Common.Badges.FourtfGlobalBadges.TryGetValue(Username, out fourtfBadge))
+                words.Add(new Word { Type = SpanType.Emote, Value = fourtfBadge, Tooltip = fourtfBadge.Tooltip });
 
             if (data.Tags.TryGetValue("badges", out value))
             {
@@ -196,7 +201,7 @@ namespace Chatterino.Common
                             int index = int.Parse(coords[0]);
                             string name = text.Substring(index, int.Parse(coords[1]) - index + 1);
                             TwitchEmote e;
-                            if (!Emotes.TwitchEmotes.TryGetValue(id, out e))
+                            if (!Emotes.TwitchEmotesByIDCache.TryGetValue(id, out e))
                             {
                                 e = new TwitchEmote
                                 {
@@ -204,7 +209,7 @@ namespace Chatterino.Common
                                     Url = Emotes.TwitchEmoteTemplate.Replace("{id}", id.ToString()),
                                     Tooltip = name + "\nTwitch Emote"
                                 };
-                                Emotes.TwitchEmotes[id] = e;
+                                Emotes.TwitchEmotesByIDCache[id] = e;
                             }
                             twitchEmotes.Add(Tuple.Create(index, e));
                         };
@@ -316,17 +321,32 @@ namespace Chatterino.Common
         }
 
         public Message(string text)
-            : this(text, -1)
+            : this(text, -1, false)
         {
 
         }
 
-        public Message(string text, int color)
+        public Message(string text, int? color, bool addTimeStamp)
         {
             RawMessage = text;
+            Words = new List<Word>();
 
+            // Add timestamp
+            if (addTimeStamp && AppSettings.ChatShowTimestamps)
+            {
+                var timestamp = DateTime.Now.ToString(AppSettings.ChatShowTimestampSeconds ? "HH:mm:ss" : "HH:mm");
 
-            Words = text.Split(' ').Select(x => new Word { Type = SpanType.Text, Value = x, Color = color, CopyText = x }).ToList();
+                Words.Add(new Word
+                {
+                    Type = SpanType.Text,
+                    Value = timestamp,
+                    Color = color ?? -8355712,
+                    Font = FontType.Small,
+                    CopyText = timestamp
+                });
+            }
+
+            Words.AddRange(text.Split(' ').Select(x => new Word { Type = SpanType.Text, Value = x, Color = color, CopyText = x }));
         }
 
         bool measureText = true;
@@ -359,19 +379,26 @@ namespace Chatterino.Common
                     }
                     else if (word.Type == SpanType.Image)
                     {
-                        if (measureImages)
-                        {
-                            CommonSize size = GuiEngine.Current.GetImageSize(word.Value);
-                            word.Width = size.Width;
-                            word.Height = size.Height;
-                        }
+                        //if (measureImages)
+                        //{
+                        //    if (word.Value == null)
+                        //    {
+                        //        CommonSize size = GuiEngine.Current.GetImageSize(word.Value);
+                        //        word.Width = size.Width;
+                        //        word.Height = size.Height;
+                        //    }
+                        //    else
+                        //    {
+                        //        word.Width = word.Height = 16;
+                        //    }
+                        //}
                     }
                     else if (word.Type == SpanType.Emote)
                     {
                         if (emotesChanged || measureImages)
                         {
-                            TwitchEmote emote = (TwitchEmote)word.Value;
-                            object image = emote.Image;
+                            TwitchEmote emote = word.Value as TwitchEmote;
+                            object image = emote?.Image;
                             if (image == null)
                             {
                                 word.Width = word.Height = 16;
@@ -533,7 +560,7 @@ namespace Chatterino.Common
             return null;
         }
 
-        public MessagePosition MessagePositionAtPoint(CommonPoint point, int messageIndex)
+        public MessagePosition MessagePositionAtPoint(object graphics, CommonPoint point, int messageIndex)
         {
             int currentWord = 0;
             int currentChar = 0;

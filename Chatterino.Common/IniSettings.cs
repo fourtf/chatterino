@@ -30,25 +30,30 @@ namespace Chatterino.Common
                 {
                     using (StreamReader reader = new StreamReader(path))
                     {
-                        string line;
-                        while ((line = reader.ReadLine()) != null)
-                        {
-                            int index;
-                            if ((index = line.IndexOf('=')) != -1)
-                            {
-                                string key = line.Remove(index).Trim();
-                                if (key != "")
-                                {
-                                    map[key] = line.Substring(index + 1).Trim();
-                                }
-                            }
-                        }
+                        Load(reader);
                     }
                 }
             }
             catch (Exception exc)
             {
                 Console.WriteLine("Error while loading settings: \"" + exc.Message + "\"");
+            }
+        }
+
+        public void Load(TextReader reader)
+        {
+            string line;
+            while ((line = reader.ReadLine()) != null)
+            {
+                int index;
+                if ((index = line.IndexOf('=')) != -1)
+                {
+                    string key = line.Remove(index).Trim();
+                    if (key != "")
+                    {
+                        map[key] = line.Substring(index + 1).Trim();
+                    }
+                }
             }
         }
 

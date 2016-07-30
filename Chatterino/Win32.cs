@@ -11,44 +11,7 @@ namespace Chatterino
 {
     public static class Win32
     {
-        //// To support flashing.
-        //[DllImport("user32.dll")]
-        //[return: MarshalAs(UnmanagedType.Bool)]
-        //static extern bool FlashWindowEx(ref FLASHWINFO pwfi);
-
-        ////Flash both the window caption and taskbar button.
-        ////This is equivalent to setting the FLASHW_CAPTION | FLASHW_TRAY flags. 
-        //public const UInt32 FLASHW_ALL = 3;
-
-        //// Flash continuously until the window comes to the foreground. 
-        //public const UInt32 FLASHW_TIMERNOFG = 12;
-
-        //[StructLayout(LayoutKind.Sequential)]
-        //public struct FLASHWINFO
-        //{
-        //    public UInt32 cbSize;
-        //    public IntPtr hwnd;
-        //    public UInt32 dwFlags;
-        //    public UInt32 uCount;
-        //    public UInt32 dwTimeout;
-        //}
-
-        //// Do the flashing - this does not involve a raincoat.
-        //public static bool FlashWindowEx(Form form)
-        //{
-        //    IntPtr hWnd = form.Handle;
-        //    FLASHWINFO fInfo = new FLASHWINFO();
-
-        //    fInfo.cbSize = Convert.ToUInt32(Marshal.SizeOf(fInfo));
-        //    fInfo.hwnd = hWnd;
-        //    fInfo.dwFlags = FLASHW_ALL | FLASHW_TIMERNOFG;
-        //    fInfo.uCount = UInt32.MaxValue;
-        //    fInfo.dwTimeout = 0;
-
-        //    return FlashWindowEx(ref fInfo);
-        //}
-
-
+        #region Flash Window
         public static class FlashWindow
         {
             [DllImport("user32.dll")]
@@ -193,6 +156,62 @@ namespace Chatterino
                 get { return System.Environment.OSVersion.Version.Major >= 5; }
             }
         }
+        #endregion
 
+
+        [DllImport("user32.dll")]
+        internal static extern int SetWindowCompositionAttribute(IntPtr hwnd, ref WindowCompositionAttributeData data);
+
+        [StructLayout(LayoutKind.Sequential)]
+        internal struct WindowCompositionAttributeData
+        {
+            public WindowCompositionAttribute Attribute;
+            public IntPtr Data;
+            public int SizeOfData;
+        }
+
+        internal enum WindowCompositionAttribute
+        {
+            // ...
+            WCA_ACCENT_POLICY = 19
+            // ...
+        }
+
+        internal enum AccentState
+        {
+            ACCENT_DISABLED = 0,
+            ACCENT_ENABLE_GRADIENT = 1,
+            ACCENT_ENABLE_TRANSPARENTGRADIENT = 2,
+            ACCENT_ENABLE_BLURBEHIND = 3,
+            ACCENT_INVALID_STATE = 4
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        internal struct AccentPolicy
+        {
+            public AccentState AccentState;
+            public int AccentFlags;
+            public int GradientColor;
+            public int AnimationId;
+        }
+
+        public static void EnableWindowBlur(IntPtr windowHandle)
+        {
+            var accent = new AccentPolicy();
+            var accentStructSize = Marshal.SizeOf(accent);
+            accent.AccentState = AccentState.ACCENT_ENABLE_BLURBEHIND;
+
+            var accentPtr = Marshal.AllocHGlobal(accentStructSize);
+            Marshal.StructureToPtr(accent, accentPtr, false);
+
+            var data = new WindowCompositionAttributeData();
+            data.Attribute = WindowCompositionAttribute.WCA_ACCENT_POLICY;
+            data.SizeOfData = accentStructSize;
+            data.Data = accentPtr;
+
+            SetWindowCompositionAttribute(windowHandle, ref data);
+
+            Marshal.FreeHGlobal(accentPtr);
+        }
     }
 }

@@ -72,23 +72,28 @@ namespace Chatterino.Common
             }
         }
 
+        public ConcurrentDictionary<string, string> Users = new ConcurrentDictionary<string, string>();
+
+        List<KeyValuePair<string, string>> emoteNames = new List<KeyValuePair<string, string>>();
+
+
         // ctor
         public TwitchChannel(string channelName)
         {
             Name = channelName.Trim('#');
+            JoinWrite();
+            JoinRead();
 
             string bttvChannelEmotesCache = $"./cache/bttv_channel_{channelName}";
 
-            IrcManager.IrcReadClient.RfcJoin("#" + channelName);
-            IrcManager.IrcWriteClient.RfcJoin("#" + channelName);
-
+            // bttv channel emotes
             Task.Run(() =>
             {
                 try
                 {
                     JsonParser parser = new JsonParser();
 
-                    if (!File.Exists(bttvChannelEmotesCache) || DateTime.Now - new FileInfo(bttvChannelEmotesCache).LastWriteTime > TimeSpan.FromHours(24))
+                    if (!File.Exists(bttvChannelEmotesCache) || DateTime.Now - new FileInfo(bttvChannelEmotesCache).LastWriteTime > TimeSpan.FromHours(1))
                     {
                         try
                         {
@@ -135,16 +140,121 @@ namespace Chatterino.Common
                             }
                         }
                     }
-
+                    updateEmoteNameList();
                 }
                 catch { }
             });
+
+            Task.Run(() =>
+            {
+                try
+                {
+                    var request = WebRequest.Create($"http://tmi.twitch.tv/group/user/{channelName}/chatters");
+                    using (var response = request.GetResponse())
+                    using (var stream = response.GetResponseStream())
+                    {
+                        JsonParser parser = new JsonParser();
+                        dynamic json = parser.Parse(stream);
+                        dynamic chatters = json["chatters"];
+                        foreach (dynamic group in chatters)
+                        {
+                            foreach (string user in group.Value)
+                            {
+                                Users[user.ToUpper()] = user;
+                            }
+                        }
+                    }
+                }
+                catch { }
+            });
+
+            Emotes.EmotesLoaded += (s, e) =>
+            {
+                updateEmoteNameList();
+            };
+        }
+
+        void updateEmoteNameList()
+        {
+            List<KeyValuePair<string, string>> names = new List<KeyValuePair<string, string>>();
+
+            names.AddRange(Emotes.TwitchEmotes.Select(x => new KeyValuePair<string, string>(x.Key.ToUpper(), x.Key)));
+            names.AddRange(Emotes.BttvGlobalEmotes.Keys.Select(x => new KeyValuePair<string, string>(x.ToUpper(), x)));
+            names.AddRange(Emotes.FfzGlobalEmotes.Keys.Select(x => new KeyValuePair<string, string>(x.ToUpper(), x)));
+            names.AddRange(BttvChannelEmotes.Keys.Select(x => new KeyValuePair<string, string>(x.ToUpper(), x)));
+
+            emoteNames = names;
+        }
+
+        public string GetEmoteCompletion(string name, ref int index, bool forward)
+        {
+            name = name.ToUpper();
+
+            var names = new List<KeyValuePair<string, string>>(emoteNames);
+
+            names.AddRange(Users);
+            names.Sort((x1, x2) => x1.Key.CompareTo(x2.Key));
+
+            KeyValuePair<string, string> firstItem = new KeyValuePair<string, string>();
+            KeyValuePair<string, string> lastItem = new KeyValuePair<string, string>();
+
+            bool first = true;
+
+            index += forward ? 1 : (index == 0 ? 4523453 : -1);
+
+            int currentIndex = 0;
+            for (int i = 0; i < names.Count; i++)
+            {
+                if (names[i].Key.StartsWith(name))
+                {
+                    if (first)
+                    {
+                        first = false;
+                        firstItem = names[i];
+                    }
+                    if (currentIndex == index)
+                    {
+                        return names[i].Value;
+                    }
+                    currentIndex++;
+                    lastItem = names[i];
+                }
+                else if (!first)
+                {
+                    break;
+                }
+            }
+
+            if (!first)
+            {
+                index = currentIndex - 1;
+                return firstItem.Value;
+            }
+
+            return null;
+        }
+
+        //public string GetNameCompletion(string name, ref int index)
+        //{
+        //    name = name.ToUpper();
+
+        //    return null;
+        //}
+
+        public void JoinWrite()
+        {
+            IrcManager.IrcWriteClient?.RfcJoin("#" + Name);
+        }
+
+        public void JoinRead()
+        {
+            IrcManager.IrcReadClient?.RfcJoin("#" + Name);
         }
 
         public void Disconnect()
         {
-            IrcManager.IrcReadClient.RfcPart("#" + Name);
-            IrcManager.IrcWriteClient.RfcPart("#" + Name);
+            IrcManager.IrcReadClient?.RfcPart("#" + Name);
+            IrcManager.IrcWriteClient?.RfcPart("#" + Name);
         }
     }
 }

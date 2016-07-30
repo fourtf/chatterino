@@ -152,119 +152,129 @@ namespace Chatterino
 
         public void DrawMessage(object graphics, Common.Message message, int xOffset2, int yOffset2, Selection selection, int currentLine)
         {
-            message.X = xOffset2;
-            message.Y = yOffset2;
-
-            Graphics g2 = (Graphics)graphics;
-
-            int spaceWidth = TextRenderer.MeasureText(g2, " ", Fonts.Medium, Size.Empty, App.DefaultTextFormatFlags).Width;
-
-            int xOffset = 0, yOffset = 0;
-            Graphics g = null;
-            Bitmap bitmap = null;
-
-            if (enableBitmapDoubleBuffering)
-            {
-                if (message.buffer == null)
-                {
-                    bitmap = new Bitmap(message.Width == 0 ? 10 : message.Width, message.Height == 0 ? 10 : message.Height);
-                    g = Graphics.FromImage(bitmap);
-                }
-            }
-            else
-            {
-                g = g2;
-                xOffset = xOffset2;
-                yOffset = yOffset2;
-            }
-
-            if (!enableBitmapDoubleBuffering || message.buffer == null)
+            try
             {
                 message.X = xOffset2;
-                var textColor = App.ColorScheme.Text;
+                message.Y = yOffset2;
 
-                if (message.Highlighted)
-                    g.FillRectangle(App.ColorScheme.ChatBackgroundHighlighted, 0, 0, message.Width, message.Height);
+                Graphics g2 = (Graphics)graphics;
 
-                for (int i = 0; i < message.Words.Count; i++)
-                {
-                    var word = message.Words[i];
+                int spaceWidth = TextRenderer.MeasureText(g2, " ", Fonts.Medium, Size.Empty, App.DefaultTextFormatFlags).Width;
 
-                    if (word.Type == SpanType.Text)
-                    {
-                        Font font = Fonts.GetFont(word.Font);
-
-                        Color color = word.Color == null ? textColor : Color.FromArgb(word.Color.Value);
-                        if (word.Color != null && color.GetBrightness() < 0.5f)
-                        {
-                            color = ControlPaint.Light(color, 1f);
-                        }
-
-                        if (word.SplitSegments == null)
-                        {
-                            TextRenderer.DrawText(g, (string)word.Value, font, new Point(xOffset + word.X, word.Y + yOffset), color, App.DefaultTextFormatFlags);
-                        }
-                        else
-                        {
-                            var segments = word.SplitSegments;
-                            for (int x = 0; x < segments.Length; x++)
-                            {
-                                TextRenderer.DrawText(g, segments[x].Item1, font, new Point(xOffset + segments[x].Item2.X, yOffset + segments[x].Item2.Y), color, App.DefaultTextFormatFlags);
-                            }
-                        }
-                    }
-                    else if (word.Type == SpanType.Emote)
-                    {
-                        var emote = (TwitchEmote)word.Value;
-                        var img = (Image)emote.Image;
-                        if (img != null)
-                        {
-                            lock (img)
-                            {
-                                g.DrawImage(img, word.X + xOffset, word.Y + yOffset, word.Width, word.Height);
-                            }
-                        }
-                        else
-                        {
-                            g.DrawRectangle(Pens.Red, xOffset + word.X, word.Y + yOffset, word.Width, word.Height);
-                        }
-                    }
-                    else if (word.Type == SpanType.Image)
-                    {
-                        var img = (Image)word.Value;
-                        if (img != null)
-                            g.DrawImage(img, word.X + xOffset, word.Y + yOffset, word.Width, word.Height);
-                    }
-                }
-
-                if (message.Disabled)
-                {
-                    Brush disabledBrush = new SolidBrush(Color.FromArgb(172, (App.ColorScheme.ChatBackground as SolidBrush)?.Color ?? Color.Black));
-                    g.FillRectangle(disabledBrush, xOffset, yOffset, 1000, message.Height);
-                }
+                int xOffset = 0, yOffset = 0;
+                Graphics g = null;
+                Bitmap bitmap = null;
 
                 if (enableBitmapDoubleBuffering)
-                    message.buffer = bitmap;
-            }
-
-            if (enableBitmapDoubleBuffering)
-            {
-                g2.DrawImageUnscaled((Image)message.buffer, xOffset2, yOffset2);
-                DrawGifEmotes(graphics, message, selection, currentLine);
-            }
-
-            if (selection != null && !selection.IsEmpty && selection.First.MessageIndex <= currentLine && selection.Last.MessageIndex >= currentLine)
-            {
-                for (int i = 0; i < message.Words.Count; i++)
                 {
-                    if ((currentLine != selection.First.MessageIndex || i >= selection.First.WordIndex) && (currentLine != selection.Last.MessageIndex || i < selection.Last.WordIndex))
+                    if (message.buffer == null)
+                    {
+                        bitmap = new Bitmap(message.Width == 0 ? 10 : message.Width, message.Height == 0 ? 10 : message.Height);
+                        g = Graphics.FromImage(bitmap);
+                    }
+                }
+                else
+                {
+                    g = g2;
+                    xOffset = xOffset2;
+                    yOffset = yOffset2;
+                }
+
+                if (!enableBitmapDoubleBuffering || message.buffer == null)
+                {
+                    message.X = xOffset2;
+                    var textColor = App.ColorScheme.Text;
+
+                    if (message.Highlighted)
+                        g.FillRectangle(App.ColorScheme.ChatBackgroundHighlighted, 0, 0, message.Width, message.Height);
+
+                    for (int i = 0; i < message.Words.Count; i++)
                     {
                         var word = message.Words[i];
 
-                        if (!(word.Type == SpanType.Emote) || !((TwitchEmote)word.Value).Animated)
-                            g2.FillRectangle(selectionBrush, word.X + xOffset2, word.Y + yOffset2, word.Width + spaceWidth, word.Height);
+                        if (word.Type == SpanType.Text)
+                        {
+                            Font font = Fonts.GetFont(word.Font);
+
+                            Color color = word.Color == null ? textColor : Color.FromArgb(word.Color.Value);
+                            if (word.Color != null && color.GetBrightness() < 0.5f)
+                            {
+                                color = ControlPaint.Light(color, 1f);
+                            }
+
+                            if (word.SplitSegments == null)
+                            {
+                                TextRenderer.DrawText(g, (string)word.Value, font, new Point(xOffset + word.X, word.Y + yOffset), color, App.DefaultTextFormatFlags);
+                            }
+                            else
+                            {
+                                var segments = word.SplitSegments;
+                                for (int x = 0; x < segments.Length; x++)
+                                {
+                                    TextRenderer.DrawText(g, segments[x].Item1, font, new Point(xOffset + segments[x].Item2.X, yOffset + segments[x].Item2.Y), color, App.DefaultTextFormatFlags);
+                                }
+                            }
+                        }
+                        else if (word.Type == SpanType.Emote)
+                        {
+                            var emote = (TwitchEmote)word.Value;
+                            var img = (Image)emote.Image;
+                            if (img != null)
+                            {
+                                lock (img)
+                                {
+                                    g.DrawImage(img, word.X + xOffset, word.Y + yOffset, word.Width, word.Height);
+                                }
+                            }
+                            else
+                            {
+                                g.DrawRectangle(Pens.Red, xOffset + word.X, word.Y + yOffset, word.Width, word.Height);
+                            }
+                        }
+                        else if (word.Type == SpanType.Image)
+                        {
+                            var img = (Image)word.Value;
+                            if (img != null)
+                                g.DrawImage(img, word.X + xOffset, word.Y + yOffset, word.Width, word.Height);
+                        }
+                    }
+
+                    if (message.Disabled)
+                    {
+                        Brush disabledBrush = new SolidBrush(Color.FromArgb(172, (App.ColorScheme.ChatBackground as SolidBrush)?.Color ?? Color.Black));
+                        g.FillRectangle(disabledBrush, xOffset, yOffset, 1000, message.Height);
+                    }
+
+                    if (enableBitmapDoubleBuffering)
+                    {
+                        g.Flush();
+                        message.buffer = bitmap;
                     }
                 }
+
+                if (enableBitmapDoubleBuffering)
+                {
+                    g2.DrawImageUnscaled((Image)message.buffer, xOffset2, yOffset2);
+                    DrawGifEmotes(graphics, message, selection, currentLine);
+                }
+
+                if (selection != null && !selection.IsEmpty && selection.First.MessageIndex <= currentLine && selection.Last.MessageIndex >= currentLine)
+                {
+                    for (int i = 0; i < message.Words.Count; i++)
+                    {
+                        if ((currentLine != selection.First.MessageIndex || i >= selection.First.WordIndex) && (currentLine != selection.Last.MessageIndex || i < selection.Last.WordIndex))
+                        {
+                            var word = message.Words[i];
+
+                            if (!(word.Type == SpanType.Emote) || !((TwitchEmote)word.Value).Animated)
+                                g2.FillRectangle(selectionBrush, word.X + xOffset2, word.Y + yOffset2, word.Width + spaceWidth, word.Height);
+                        }
+                    }
+                }
+            }
+            catch (Exception exc)
+            {
+                exc.Log("graphics");
             }
         }
 
@@ -295,8 +305,11 @@ namespace Chatterino
 
                             var buffer = context.Allocate(g, new Rectangle(word.X + CurrentXOffset, word.Y + CurrentYOffset, word.Width, word.Height));
 
-                            buffer.Graphics.FillRectangle(App.ColorScheme.ChatBackground, word.X + CurrentXOffset, word.Y + CurrentYOffset, word.Width, word.Height);
+                            buffer.Graphics.FillRectangle(message.Highlighted ? App.ColorScheme.ChatBackgroundHighlighted : App.ColorScheme.ChatBackground, word.X + CurrentXOffset, word.Y + CurrentYOffset, word.Width, word.Height);
                             buffer.Graphics.DrawImage((Image)emote.Image, word.X + CurrentXOffset, word.Y + CurrentYOffset, word.Width, word.Height);
+
+                            //if (message.Highlighted)
+                            //    g.FillRectangle(, word.X + CurrentXOffset, word.Y + CurrentYOffset, word.Width, word.Height);
 
                             if (selection != null && !selection.IsEmpty && (currentLine > selection.First.MessageIndex || (currentLine == selection.First.MessageIndex && i >= selection.First.WordIndex)) && (currentLine < selection.Last.MessageIndex || (selection.Last.MessageIndex == currentLine && i < selection.Last.WordIndex)))
                                 buffer.Graphics.FillRectangle(selectionBrush, word.X + CurrentXOffset, word.Y + CurrentYOffset, word.Width, word.Height);
@@ -324,8 +337,8 @@ namespace Chatterino
         {
             if (!Util.IsLinux && App.MainForm != null)
             {
-                
-                    App.MainForm.Invoke(() => Win32.FlashWindow.Flash(App.MainForm, 1));
+
+                App.MainForm.Invoke(() => Win32.FlashWindow.Flash(App.MainForm, 1));
 
                 //App.MainForm.Invoke(() => Win32.FlashWindowEx(App.MainForm));
             }

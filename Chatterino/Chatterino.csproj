@@ -12,6 +12,8 @@
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -45,6 +47,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data" />
     <Reference Include="System.Design" />
     <Reference Include="System.Text.Json, Version=2.0.0.11, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Text.Json.2.0.0.11\lib\net40\System.Text.Json.dll</HintPath>
@@ -58,6 +61,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ColorScheme.cs" />
+    <Compile Include="Controls\LoginForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls\LoginForm.Designer.cs">
+      <DependentUpon>LoginForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ScrollBarHighlight.cs" />
     <Compile Include="Controls\SettingsDialog.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -112,9 +122,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="ValueEventArgs.cs" />
     <Compile Include="Win32.cs" />
     <Compile Include="WinformsGuiEngine.cs" />
+    <EmbeddedResource Include="Controls\LoginForm.resx">
+      <DependentUpon>LoginForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Controls\SettingsDialog.resx">
       <DependentUpon>SettingsDialog.cs</DependentUpon>
     </EmbeddedResource>
@@ -190,6 +202,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\ping2.wav" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\settings.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

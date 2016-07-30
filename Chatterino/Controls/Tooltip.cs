@@ -32,12 +32,15 @@ namespace Chatterino.Controls
         public ToolTip()
         {
             FormBorderStyle = FormBorderStyle.None;
-            Opacity = 0.9;
+            Opacity = 0.8;
 
             Padding = new Padding(8, 4, 8, 4);
             ShowInTaskbar = false;
 
             StartPosition = FormStartPosition.Manual;
+
+            //SetStyle(ControlStyles.SupportsTransparentBackColor, true);
+            //Win32.EnableWindowBlur(Handle);
         }
 
         protected override bool ShowWithoutActivation
@@ -56,44 +59,6 @@ namespace Chatterino.Controls
             }
         }
 
-        public enum GWL
-        {
-            ExStyle = -20
-        }
-
-        public enum WS_EX
-        {
-            Transparent = 0x20,
-            Layered = 0x80000
-        }
-
-        public enum LWA
-        {
-            ColorKey = 0x1,
-            Alpha = 0x2
-        }
-
-        [DllImport("user32.dll", EntryPoint = "GetWindowLong")]
-        public static extern int GetWindowLong(IntPtr hWnd, GWL nIndex);
-
-        [DllImport("user32.dll", EntryPoint = "SetWindowLong")]
-        public static extern int SetWindowLong(IntPtr hWnd, GWL nIndex, int dwNewLong);
-
-        [DllImport("user32.dll", EntryPoint = "SetLayeredWindowAttributes")]
-        public static extern bool SetLayeredWindowAttributes(IntPtr hWnd, int crKey, byte alpha, LWA dwFlags);
-
-        protected override void OnShown(EventArgs e)
-        {
-            base.OnShown(e);
-            if (!Common.Util.IsLinux)
-            {
-                int wl = GetWindowLong(Handle, GWL.ExStyle);
-                wl = wl | 0x80000 | 0x20;
-                SetWindowLong(Handle, GWL.ExStyle, wl);
-                SetLayeredWindowAttributes(Handle, 0, 128, LWA.Alpha);
-            }
-        }
-
         protected override void OnFontChanged(EventArgs e)
         {
             TooltipText = TooltipText;
@@ -106,6 +71,15 @@ namespace Chatterino.Controls
             Alignment = StringAlignment.Center,
             LineAlignment = StringAlignment.Center
         };
+
+        //Color bgcolor = Color.FromArgb(127,64,64,64);
+
+        //protected override void OnPaintBackground(PaintEventArgs e)
+        //{
+        //    e.Graphics.Clear(bgcolor);
+
+        //    //base.OnPaintBackground(e);
+        //}
 
         protected override void OnPaint(PaintEventArgs e)
         {

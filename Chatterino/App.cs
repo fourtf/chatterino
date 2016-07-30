@@ -47,8 +47,9 @@ namespace Chatterino
             ColorScheme.Load("./colors.ini");
 
             // Start irc
-            IrcManager.Initialize();
+            IrcManager.Connect();
             Emotes.LoadGlobalEmotes();
+            Badges.LoadGlobalBadges();
 
             // Show form
             MainForm = new MainForm();
@@ -78,7 +79,6 @@ namespace Chatterino
             ColorSchemeChanged?.Invoke(null, EventArgs.Empty);
         }
 
-
         // WINDOW
         public static MainForm MainForm { get; set; }
 
@@ -102,19 +102,23 @@ namespace Chatterino
         }
 
         public static Controls.ToolTip ToolTip { get; private set; } = null;
+        public static bool EnableTooltips { get; set; } = true;
 
         public static void ShowToolTip(System.Drawing.Point point, string text)
         {
-            if (ToolTip == null)
+            if (EnableTooltips)
             {
-                ToolTip = new Controls.ToolTip() { Enabled = false };
+                if (ToolTip == null)
+                {
+                    ToolTip = new Controls.ToolTip() { Enabled = false };
+                }
+
+                ToolTip.TooltipText = text;
+                ToolTip.Location = point;
+
+                if (!ToolTip.Visible)
+                    ToolTip.Show();
             }
-
-            ToolTip.TooltipText = text;
-            ToolTip.Location = point;
-
-            if (!ToolTip.Visible)
-                ToolTip.Show();
         }
 
         // EMOTES

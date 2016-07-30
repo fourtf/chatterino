@@ -11,18 +11,77 @@ namespace Chatterino.Common
 {
     public static class Emotes
     {
+        public static event EventHandler EmotesLoaded;
+
+        public static ConcurrentDictionary<string, string> TwitchEmotes = new ConcurrentDictionary<string, string>();
         public static ConcurrentDictionary<string, TwitchEmote> BttvGlobalEmotes = new ConcurrentDictionary<string, TwitchEmote>();
         public static ConcurrentDictionary<string, TwitchEmote> FfzGlobalEmotes = new ConcurrentDictionary<string, TwitchEmote>();
         public static ConcurrentDictionary<string, TwitchEmote> BttvChannelEmotesCache = new ConcurrentDictionary<string, TwitchEmote>();
-        public static ConcurrentDictionary<int, TwitchEmote> TwitchEmotes = new ConcurrentDictionary<int, TwitchEmote>();
+        public static ConcurrentDictionary<int, TwitchEmote> TwitchEmotesByIDCache = new ConcurrentDictionary<int, TwitchEmote>();
 
         public const string TwitchEmoteTemplate = "https://static-cdn.jtvnw.net/emoticons/v1/{id}/1.0";
 
+        private const string twitchemotesGlobalCache = "./cache/twitchemotes_global.json";
         private const string bttvEmotesGlobalCache = "./cache/bttv_global.json";
         private const string ffzEmotesGlobalCache = "./cache/ffz_global.json";
 
         public static void LoadGlobalEmotes()
         {
+            // twitchemotes
+            /*
+            Task.Run(() =>
+            {
+                try
+                {
+                    Directory.CreateDirectory("./cache");
+
+                    System.Text.Json.JsonParser parser = new System.Text.Json.JsonParser();
+
+                    // twitchemotes api global emotes
+                    if (!File.Exists(twitchemotesGlobalCache) || DateTime.Now - new FileInfo(twitchemotesGlobalCache).LastWriteTime > TimeSpan.FromHours(24))
+                    {
+                        try
+                        {
+                            if (Util.IsLinux)
+                            {
+                                Util.LinuxDownloadFile("https://twitchemotes.com/api_cache/v2/global.json", twitchemotesGlobalCache);
+                            }
+                            else
+                            {
+                                using (var webClient = new WebClient())
+                                using (var readStream = webClient.OpenRead("https://twitchemotes.com/api_cache/v2/global.json"))
+                                using (var writeStream = File.OpenWrite(twitchemotesGlobalCache))
+                                {
+                                    readStream.CopyTo(writeStream);
+                                }
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            e.Message.Log("emotes");
+                        }
+                    }
+
+                    using (var stream = File.OpenRead(twitchemotesGlobalCache))
+                    {
+                        dynamic json = parser.Parse(stream);
+                        dynamic templates = json["template"];
+                        string template112 = templates["large"];
+
+                        foreach (KeyValuePair<string, object> e in json["emotes"])
+                        {
+                            string code = e.Key;
+
+                            TwitchGlobalEmotes[code.ToUpper()] = code;
+                        }
+                    }
+                    EmotesLoaded?.Invoke(null, EventArgs.Empty);
+                }
+                catch { }
+            });
+            */
+
+            // bttv emotes
             Task.Run(() =>
             {
                 try
@@ -30,8 +89,8 @@ namespace Chatterino.Common
                     Directory.CreateDirectory("./cache");
                     System.Text.Json.JsonParser parser = new System.Text.Json.JsonParser();
 
-                        // better twitch tv emotes
-                        if (!File.Exists(bttvEmotesGlobalCache) || DateTime.Now - new FileInfo(bttvEmotesGlobalCache).LastWriteTime > TimeSpan.FromHours(24))
+                    // better twitch tv emotes
+                    if (!File.Exists(bttvEmotesGlobalCache) || DateTime.Now - new FileInfo(bttvEmotesGlobalCache).LastWriteTime > TimeSpan.FromHours(1))
                     {
                         try
                         {
@@ -60,7 +119,7 @@ namespace Chatterino.Common
                         dynamic json = parser.Parse(stream);
                         var template = "https:" + json["urlTemplate"]; //{{id}} {{image}}
 
-                            foreach (dynamic e in json["emotes"])
+                        foreach (dynamic e in json["emotes"])
                         {
                             string id = e["id"];
                             string code = e["code"];
@@ -70,6 +129,7 @@ namespace Chatterino.Common
                             BttvGlobalEmotes[code] = new TwitchEmote { Name = code, Url = url, Tooltip = code + "\nBetterTTV Global Emote" };
                         }
                     }
+                    EmotesLoaded?.Invoke(null, EventArgs.Empty);
                 }
                 catch (Exception exc)
                 {
@@ -77,6 +137,7 @@ namespace Chatterino.Common
                 }
             });
 
+            // ffz emotes
             Task.Run(() =>
             {
                 try
@@ -84,8 +145,8 @@ namespace Chatterino.Common
                     Directory.CreateDirectory("./cache");
                     System.Text.Json.JsonParser parser = new System.Text.Json.JsonParser();
 
-                        // better twitch tv emotes
-                        if (!File.Exists(ffzEmotesGlobalCache) || DateTime.Now - new FileInfo(ffzEmotesGlobalCache).LastWriteTime > TimeSpan.FromHours(24))
+                    // better twitch tv emotes
+                    if (!File.Exists(ffzEmotesGlobalCache) || DateTime.Now - new FileInfo(ffzEmotesGlobalCache).LastWriteTime > TimeSpan.FromHours(1))
                     {
                         try
                         {
@@ -125,12 +186,18 @@ namespace Chatterino.Common
                             }
                         }
                     }
+                    EmotesLoaded?.Invoke(null, EventArgs.Empty);
                 }
                 catch (Exception exc)
                 {
                     Console.WriteLine("error loading emotes: " + exc.Message);
                 }
             });
+        }
+
+        internal static void TriggerEmotesLoaded()
+        {
+            EmotesLoaded?.Invoke(null, EventArgs.Empty);
         }
     }
 }

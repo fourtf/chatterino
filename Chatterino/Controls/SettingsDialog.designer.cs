@@ -31,6 +31,7 @@
             this.tabs = new Chatterino.Controls.SettingsTabControl();
             this.RightPanel = new System.Windows.Forms.Panel();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.chkFlashTaskbar = new System.Windows.Forms.CheckBox();
             this.chkPings = new System.Windows.Forms.CheckBox();
             this.chkHighlight = new System.Windows.Forms.CheckBox();
             this.chkEmojis = new System.Windows.Forms.CheckBox();
@@ -57,7 +58,6 @@
             this.chkProxyEnabled = new System.Windows.Forms.CheckBox();
             this.spAppearance = new Chatterino.Controls.SettingsTabPage();
             this.spConnection = new Chatterino.Controls.SettingsTabPage();
-            this.chkFlashTaskbar = new System.Windows.Forms.CheckBox();
             this.tabs.SuspendLayout();
             this.RightPanel.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -74,8 +74,8 @@
             this.tabs.Location = new System.Drawing.Point(0, 0);
             this.tabs.Name = "tabs";
             this.tabs.Panel = this.RightPanel;
-            this.tabs.SelectedIndex = 0;
-            this.tabs.SelectedTab = this.spAppearance;
+            this.tabs.SelectedIndex = 1;
+            this.tabs.SelectedTab = this.spConnection;
             this.tabs.Size = new System.Drawing.Size(598, 448);
             this.tabs.TabIndex = 0;
             this.tabs.TabsWidth = 150;
@@ -86,8 +86,8 @@
             this.RightPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.RightPanel.Controls.Add(this.panel1);
             this.RightPanel.Controls.Add(this.panel2);
+            this.RightPanel.Controls.Add(this.panel1);
             this.RightPanel.Location = new System.Drawing.Point(150, 0);
             this.RightPanel.Name = "RightPanel";
             this.RightPanel.Padding = new System.Windows.Forms.Padding(0, 0, 0, 42);
@@ -113,6 +113,17 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(448, 406);
             this.panel1.TabIndex = 0;
+            // 
+            // chkFlashTaskbar
+            // 
+            this.chkFlashTaskbar.AutoSize = true;
+            this.chkFlashTaskbar.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.chkFlashTaskbar.Location = new System.Drawing.Point(21, 147);
+            this.chkFlashTaskbar.Name = "chkFlashTaskbar";
+            this.chkFlashTaskbar.Size = new System.Drawing.Size(235, 17);
+            this.chkFlashTaskbar.TabIndex = 12;
+            this.chkFlashTaskbar.Text = "Flash Taskbar when you Name is mentioned";
+            this.chkFlashTaskbar.UseVisualStyleBackColor = true;
             // 
             // chkPings
             // 
@@ -360,9 +371,9 @@
             this.lblProxy.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.lblProxy.Location = new System.Drawing.Point(18, 7);
             this.lblProxy.Name = "lblProxy";
-            this.lblProxy.Size = new System.Drawing.Size(40, 17);
+            this.lblProxy.Size = new System.Drawing.Size(228, 17);
             this.lblProxy.TabIndex = 4;
-            this.lblProxy.Text = "Proxy";
+            this.lblProxy.Text = "Proxy (doesn\'t work right now Keepo)";
             // 
             // chkProxyEnabled
             // 
@@ -384,6 +395,7 @@
             this.spAppearance.Location = new System.Drawing.Point(0, 0);
             this.spAppearance.Name = "spAppearance";
             this.spAppearance.Panel = this.panel1;
+            this.spAppearance.Selected = false;
             this.spAppearance.Size = new System.Drawing.Size(150, 30);
             this.spAppearance.TabIndex = 1;
             this.spAppearance.Text = "Appearance";
@@ -395,21 +407,9 @@
             this.spConnection.Location = new System.Drawing.Point(0, 30);
             this.spConnection.Name = "spConnection";
             this.spConnection.Panel = this.panel2;
-            this.spConnection.Selected = false;
             this.spConnection.Size = new System.Drawing.Size(150, 30);
             this.spConnection.TabIndex = 2;
             this.spConnection.Text = "Connection";
-            // 
-            // checkBox1
-            // 
-            this.chkFlashTaskbar.AutoSize = true;
-            this.chkFlashTaskbar.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.chkFlashTaskbar.Location = new System.Drawing.Point(21, 147);
-            this.chkFlashTaskbar.Name = "checkBox1";
-            this.chkFlashTaskbar.Size = new System.Drawing.Size(235, 17);
-            this.chkFlashTaskbar.TabIndex = 12;
-            this.chkFlashTaskbar.Text = "Flash Taskbar when you Name is mentioned";
-            this.chkFlashTaskbar.UseVisualStyleBackColor = true;
             // 
             // SettingsDialog
             // 

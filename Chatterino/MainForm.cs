@@ -28,10 +28,33 @@ namespace Chatterino
 
             SetTitle();
 
+            Activated += (s, e) =>
+            {
+                App.EnableTooltips = true;
+            };
+
             Deactivate += (s, e) =>
             {
+                App.EnableTooltips = false;
                 App.ToolTip?.Hide();
             };
+
+            IrcManager.Connected += (s, e) => SetTitle();
+
+            StartPosition = FormStartPosition.Manual;
+            Location = new Point(AppSettings.WindowX, AppSettings.WindowY);
+            Size = new Size(AppSettings.WindowWidth, AppSettings.WindowHeight);
+        }
+
+        protected override bool ProcessCmdKey(ref System.Windows.Forms.Message msg, Keys keyData)
+        {
+            if (keyData == Keys.Tab || keyData == (Keys.Shift | Keys.Tab))
+            {
+                (App.MainForm?.SelectedControl as ChatControl)?.HandleTabCompletion((keyData & Keys.Shift) != Keys.Shift);
+                return true;
+            }
+
+            return base.ProcessCmdKey(ref msg, keyData);
         }
 
         public void SetTitle()
@@ -52,6 +75,11 @@ namespace Chatterino
             }
         }
 
+        public ColumnLayoutControl ColumnLayout
+        {
+            get { return columnLayoutControl1; }
+        }
+
         protected override void OnKeyDown(KeyEventArgs e)
         {
             base.OnKeyDown(e);
@@ -61,15 +89,11 @@ namespace Chatterino
                 switch (e.KeyCode)
                 {
                     case Keys.T:
-                        columnLayoutControl1.AddToGrid(new ChatControl());
+                        AddNewSplit();
                         break;
                     case Keys.W:
-                        {
-                            Control focused = columnLayoutControl1.Columns.SelectMany(x => x).FirstOrDefault(x => x.Focused);
-                            if (focused != null)
-                                columnLayoutControl1.RemoveFromGrid(focused);
-                            break;
-                        }
+                        RemoveSelectedSplit();
+                        break;
                     case Keys.R:
                         {
                             var focused = columnLayoutControl1.Columns.SelectMany(x => x).FirstOrDefault(x => x.Focused) as ChatControl;
@@ -101,6 +125,41 @@ namespace Chatterino
                         }
                         catch { }
                         break;
+                    case Keys.L:
+                        new LoginForm().ShowDialog();
+                        break;
+                }
+            }
+        }
+
+        public void AddNewSplit()
+        {
+            var chat = new ChatControl();
+
+            columnLayoutControl1.AddToGrid(chat);
+            chat.Select();
+
+            RenameSelectedSplit();
+        }
+
+        public void RemoveSelectedSplit()
+        {
+            Control focused = columnLayoutControl1.Columns.SelectMany(x => x).FirstOrDefault(x => x.Focused);
+            if (focused != null)
+                columnLayoutControl1.RemoveFromGrid(focused);
+        }
+
+        public void RenameSelectedSplit()
+        {
+            ChatControl focused = columnLayoutControl1.Columns.SelectMany(x => x).FirstOrDefault(x => x.Focused) as ChatControl;
+            if (focused != null)
+            {
+                using (InputDialogForm dialog = new InputDialogForm("channel name") { Value = focused.ChannelName })
+                {
+                    if (dialog.ShowDialog() == DialogResult.OK)
+                    {
+                        focused.ChannelName = dialog.Value;
+                    }
                 }
             }
         }
@@ -108,6 +167,11 @@ namespace Chatterino
         protected override void OnClosing(CancelEventArgs e)
         {
             SaveLayout("./layout.xml");
+
+            AppSettings.WindowX = Location.X;
+            AppSettings.WindowY = Location.Y;
+            AppSettings.WindowWidth = Width;
+            AppSettings.WindowHeight = Height;
 
             //timeEndPeriod(timerAccuracy);
 

@@ -29,7 +29,12 @@ namespace Chatterino.Common
         public static string ProxyHost { get; set; } = "";
         public static string ProxyUsername { get; set; } = "";
         public static string ProxyPassword { get; set; } = "";
-        public static int ProxyPort { get; set; } = 6667;
+        public static int ProxyPort { get; set; } = 80;
+
+        public static int WindowX { get; set; } = 200;
+        public static int WindowY { get; set; } = 200;
+        public static int WindowWidth { get; set; } = 600;
+        public static int WindowHeight { get; set; } = 400;
 
 
         // static stuff

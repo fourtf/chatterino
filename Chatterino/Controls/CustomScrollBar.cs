@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -63,6 +64,18 @@ namespace Chatterino.Controls
             }
         }
 
+        private ScrollBarHighlight[] highlights;
+
+        public ScrollBarHighlight[] Highlights
+        {
+            get { return highlights; }
+            set
+            {
+                highlights = value;
+                Invalidate();
+            }
+        }
+
 
         // ctor
         public CustomScrollBar()
@@ -90,9 +103,9 @@ namespace Chatterino.Controls
 
         void updateScroll()
         {
-            trackHeight = Height - buttonSize - buttonSize - minThumbHeight;
+            trackHeight = Height - buttonSize - buttonSize - minThumbHeight - 1;
             thumbHeight = (int)(large / max * trackHeight) + minThumbHeight;
-            thumbOffset = (int)(value / max * trackHeight);
+            thumbOffset = (int)(value / max * trackHeight) + 1;
         }
 
 
@@ -231,6 +244,9 @@ namespace Chatterino.Controls
             e.Graphics.FillRectangle(App.ColorScheme.ChatBackground, e.ClipRectangle);
         }
 
+        ConcurrentDictionary<Color, SolidBrush> colors = new ConcurrentDictionary<Color, SolidBrush>();
+
+
         // drawing
         protected override void OnPaint(PaintEventArgs e)
         {
@@ -241,7 +257,7 @@ namespace Chatterino.Controls
                 // top button
                 g.FillRectangle(mOverIndex == 0 ? App.ColorScheme.ScrollbarThumbSelected : App.ColorScheme.ScrollbarThumb
                     , 0, 0, buttonSize, buttonSize);
-                
+
                 // top button triangle
                 g.FillPolygon(Brushes.Black,
                     new Point[] {
@@ -249,6 +265,8 @@ namespace Chatterino.Controls
                     new Point(buttonSize / 4,     buttonSize * 5 / 8),
                     new Point(buttonSize / 2,     buttonSize * 3 / 8),
                     });
+
+                g.FillRectangle(App.ColorScheme.ChatBackground, 0, Height - buttonSize - 1, Width, 1);
 
                 // bottom button
                 g.FillRectangle(mOverIndex == 4 ? App.ColorScheme.ScrollbarThumbSelected : App.ColorScheme.ScrollbarThumb
@@ -265,6 +283,17 @@ namespace Chatterino.Controls
                 // draw thumb
                 g.FillRectangle(mOverIndex == 2 ? App.ColorScheme.ScrollbarThumbSelected : App.ColorScheme.ScrollbarThumb
                     , 0, buttonSize + thumbOffset, buttonSize, thumbHeight);
+
+                if (highlights != null && Height != 0 && Maximum != 0)
+                {
+                    var h = (Height - buttonSize - buttonSize);
+                    foreach (var highlight in highlights)
+                    {
+                        SolidBrush brush = colors.GetOrAdd(highlight.Color, (x) => new SolidBrush(Color.FromArgb(48, x)));
+
+                        g.FillRectangle(brush, 0, buttonSize + (int)(h * highlight.Position / Maximum), Width, Math.Max(3, (int)(h * highlight.Height / Maximum)));
+                    }
+                }
             }
         }
     }
