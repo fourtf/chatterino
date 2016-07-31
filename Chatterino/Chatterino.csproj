@@ -109,6 +109,7 @@
     <Compile Include="Controls\InputDialogForm.Designer.cs">
       <DependentUpon>InputDialogForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="HSLColor.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>

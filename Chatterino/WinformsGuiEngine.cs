@@ -197,10 +197,11 @@ namespace Chatterino
                             Font font = Fonts.GetFont(word.Font);
 
                             Color color = word.Color == null ? textColor : Color.FromArgb(word.Color.Value);
-                            if (word.Color != null && color.GetBrightness() < 0.5f)
-                            {
-                                color = ControlPaint.Light(color, 1f);
-                            }
+                            HSLColor hsl = new HSLColor(color);
+                            if (hsl.Luminosity < 170)
+                                hsl.Luminosity = 170;
+
+                            color = hsl;
 
                             if (word.SplitSegments == null)
                             {
