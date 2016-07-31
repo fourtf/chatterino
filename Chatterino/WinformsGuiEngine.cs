@@ -142,7 +142,7 @@ namespace Chatterino
 
 
         // MESSAGES
-        bool enableBitmapDoubleBuffering = true;
+        bool enableBitmapDoubleBuffering = false;
 
         public CommonSize MeasureStringSize(object graphics, FontType font, string text)
         {
@@ -186,7 +186,7 @@ namespace Chatterino
                     var textColor = App.ColorScheme.Text;
 
                     if (message.Highlighted)
-                        g.FillRectangle(App.ColorScheme.ChatBackgroundHighlighted, 0, 0, message.Width, message.Height);
+                        g.FillRectangle(App.ColorScheme.ChatBackgroundHighlighted, 0, yOffset, g.ClipBounds.Width, message.Height);
 
                     for (int i = 0; i < message.Words.Count; i++)
                     {
@@ -255,7 +255,7 @@ namespace Chatterino
                 if (enableBitmapDoubleBuffering)
                 {
                     g2.DrawImageUnscaled((Image)message.buffer, xOffset2, yOffset2);
-                    DrawGifEmotes(graphics, message, selection, currentLine);
+                    DrawGifEmotes(g2, message, selection, currentLine);
                 }
 
                 if (selection != null && !selection.IsEmpty && selection.First.MessageIndex <= currentLine && selection.Last.MessageIndex >= currentLine)
@@ -282,6 +282,7 @@ namespace Chatterino
 
         public void DrawGifEmotes(object graphics, Common.Message message, Selection selection, int currentLine)
         {
+            var w = Stopwatch.StartNew();
             var Words = message.Words;
             Graphics g = (Graphics)graphics;
 
@@ -325,12 +326,17 @@ namespace Chatterino
                     }
                 }
             }
+            w.Stop();
+            Console.WriteLine($"Drew gif emotes in {w.Elapsed.TotalSeconds:0.000000} seconds");
         }
 
         public void DisposeMessageGraphicsBuffer(Common.Message message)
         {
             if (message.buffer != null)
+            {
                 ((IDisposable)message.buffer).Dispose();
+                message.buffer = null;
+            }
         }
 
         public void FlashTaskbar()

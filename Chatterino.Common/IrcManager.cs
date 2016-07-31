@@ -344,10 +344,7 @@ namespace Chatterino.Common
                     if (Channels.TryGetValue((e.Data.Channel ?? "").TrimStart('#'), out c))
                     {
                         Message msg = new Message(e.Data, c);
-                        if (!c.Users.ContainsKey(msg.Username))
-                        {
-                            c.Users[msg.Username.ToUpper()] = msg.DisplayName;
-                        }
+                        c.Users[msg.Username.ToUpper()] = msg.DisplayName;
 
                         MessageReceived?.Invoke(sender, new MessageEventArgs(msg));
                     }

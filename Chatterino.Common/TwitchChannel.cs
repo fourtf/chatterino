@@ -178,10 +178,11 @@ namespace Chatterino.Common
         {
             List<KeyValuePair<string, string>> names = new List<KeyValuePair<string, string>>();
 
-            names.AddRange(Emotes.TwitchEmotes.Select(x => new KeyValuePair<string, string>(x.Key.ToUpper(), x.Key)));
+            names.AddRange(Emotes.TwitchEmotes.Keys.Select(x => new KeyValuePair<string, string>(x.ToUpper(), x)));
             names.AddRange(Emotes.BttvGlobalEmotes.Keys.Select(x => new KeyValuePair<string, string>(x.ToUpper(), x)));
             names.AddRange(Emotes.FfzGlobalEmotes.Keys.Select(x => new KeyValuePair<string, string>(x.ToUpper(), x)));
             names.AddRange(BttvChannelEmotes.Keys.Select(x => new KeyValuePair<string, string>(x.ToUpper(), x)));
+            names.AddRange(Emojis.ShortCodeToEmoji.Keys.Select(x => new KeyValuePair<string, string>(":" + x.ToUpper() + ":", ":" + x + ":")));
 
             emoteNames = names;
         }

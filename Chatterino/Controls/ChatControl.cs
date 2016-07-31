@@ -138,7 +138,7 @@ namespace Chatterino.Controls
                         if (msg.Username == e.User)
                         {
                             msg.Disabled = true;
-                            GuiEngine.Current.DisposeMessageGraphicsBuffer(msg);
+                            this.Invoke(() => GuiEngine.Current.DisposeMessageGraphicsBuffer(msg));
                         }
                     }
                 }

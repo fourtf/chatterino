@@ -146,7 +146,10 @@ namespace Chatterino
         {
             Control focused = columnLayoutControl1.Columns.SelectMany(x => x).FirstOrDefault(x => x.Focused);
             if (focused != null)
+            {
                 columnLayoutControl1.RemoveFromGrid(focused);
+                focused.Dispose();
+            }
         }
 
         public void RenameSelectedSplit()
