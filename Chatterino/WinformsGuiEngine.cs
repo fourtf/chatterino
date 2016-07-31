@@ -327,7 +327,7 @@ namespace Chatterino
                 }
             }
             w.Stop();
-            Console.WriteLine($"Drew gif emotes in {w.Elapsed.TotalSeconds:0.000000} seconds");
+            //Console.WriteLine($"Drew gif emotes in {w.Elapsed.TotalSeconds:0.000000} seconds");
         }
 
         public void DisposeMessageGraphicsBuffer(Common.Message message)

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Chatterino.Common
@@ -17,7 +18,26 @@ namespace Chatterino.Common
         public static bool ChatEnableHighlight { get; set; } = true;
         public static bool ChatEnableHighlightSound { get; set; } = true;
         public static bool ChatEnableHighlightTaskbar { get; set; } = true;
-        //public static bool PingIgnoreBots { get; set; } = false;
+
+        private static string[] chatCustomHighlights = new string[0];
+        public static string[] ChatCustomHighlights
+        {
+            get
+            {
+                return chatCustomHighlights;
+            }
+            set
+            {
+                chatCustomHighlights = value;
+                UpdateCustomHighlightRegex();
+            }
+        }
+
+        public static void UpdateCustomHighlightRegex()
+        {
+            CustomHighlightRegex = new Regex($@"\b({IrcManager.Username}{(IrcManager.Username == null || chatCustomHighlights.Length == 0 ? "" : "|")}{string.Join("|", chatCustomHighlights.Select(x => Regex.Escape(x)))})\b".Log(), RegexOptions.IgnoreCase);
+        }
+        public static Regex CustomHighlightRegex { get; private set; } = null;
 
         public static bool ChatEnableBttvEmotes { get; set; } = true;
         public static bool ChatEnableFfzEmotes { get; set; } = true;
@@ -68,6 +88,25 @@ namespace Chatterino.Common
                     prop.SetValue(null, settings.GetDouble(prop.Name, (double)prop.GetValue(null)));
                 else if (prop.PropertyType == typeof(bool))
                     prop.SetValue(null, settings.GetBool(prop.Name, (bool)prop.GetValue(null)));
+                else if (prop.PropertyType == typeof(string[]))
+                {
+                    string[] vals;
+                    if (settings.TryGetStrings(prop.Name, out vals))
+                        prop.SetValue(null, vals);
+                }
+                else if (prop.PropertyType == typeof(ConcurrentDictionary<string, object>))
+                {
+                    var dict = (ConcurrentDictionary<string, object>)prop.GetValue(null);
+
+                    dict.Clear();
+
+                    string[] vals;
+                    if (settings.TryGetStrings(prop.Name, out vals))
+                    {
+                        foreach (string s in vals)
+                            dict[s] = null;
+                    }
+                }
             }
         }
 
@@ -85,6 +124,10 @@ namespace Chatterino.Common
                     settings.Set(prop.Name, (double)prop.GetValue(null));
                 else if (prop.PropertyType == typeof(bool))
                     settings.Set(prop.Name, (bool)prop.GetValue(null));
+                else if (prop.PropertyType == typeof(string[]))
+                    settings.Set(prop.Name, (string[])prop.GetValue(null));
+                else if (prop.PropertyType == typeof(ConcurrentDictionary<string, object>))
+                    settings.Set(prop.Name, ((ConcurrentDictionary<string, object>)prop.GetValue(null)).Keys);
             }
 
             settings.Save(path);

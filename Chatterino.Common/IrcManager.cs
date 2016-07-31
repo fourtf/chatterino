@@ -136,6 +136,8 @@ namespace Chatterino.Common
             {
                 Username = username;
 
+                AppSettings.UpdateCustomHighlightRegex();
+
                 // fetch availlable twitch emotes
                 Task.Run(() =>
                 {
@@ -328,10 +330,12 @@ namespace Chatterino.Common
 
                     new System.Threading.Timer(x => { recentChatClears.TryRemove(key, out o); }, null, 1000, System.Threading.Timeout.Infinite);
 
-                    var reason = e.Data.Tags["ban-reason"];
-                    var duration = e.Data.Tags["ban-duration"];
+                    string reason;
+                    e.Data.Tags.TryGetValue("ban-reason", out reason);
+                    string duration;
+                    e.Data.Tags.TryGetValue("ban-duration", out duration);
 
-                    ChatCleared?.Invoke(null, new ChatClearedEventArgs(channel, user, duration, reason));
+                    ChatCleared?.Invoke(null, new ChatClearedEventArgs(channel, user, duration ?? "?", reason ?? "?"));
                 }
             }
             else

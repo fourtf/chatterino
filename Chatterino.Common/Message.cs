@@ -76,18 +76,14 @@ namespace Chatterino.Common
 
             if ((AppSettings.ChatEnableHighlight || AppSettings.ChatEnableHighlightSound || AppSettings.ChatEnableHighlightTaskbar) && Username != IrcManager.Username.ToLower())
             {
-                foreach (string s in S)
+                if (AppSettings.CustomHighlightRegex != null && AppSettings.CustomHighlightRegex.IsMatch(text))
                 {
-                    if (s.ToLower().Trim('@', ',', '.', ':') == IrcManager.Username.ToLower())
-                    {
-                        if (AppSettings.ChatEnableHighlightSound)
-                            GuiEngine.Current.PlaySound(NotificationSound.Ping);
-                        if (AppSettings.ChatEnableHighlight)
-                            Highlighted = true;
-                        if (AppSettings.ChatEnableHighlightTaskbar)
-                            GuiEngine.Current.FlashTaskbar();
-                        break;
-                    }
+                    if (AppSettings.ChatEnableHighlight)
+                        Highlighted = true;
+                    if (AppSettings.ChatEnableHighlightSound)
+                        GuiEngine.Current.PlaySound(NotificationSound.Ping);
+                    if (AppSettings.ChatEnableHighlightTaskbar)
+                        GuiEngine.Current.FlashTaskbar();
                 }
             }
 

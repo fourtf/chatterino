@@ -30,10 +30,13 @@
         {
             this.tabs = new Chatterino.Controls.SettingsTabControl();
             this.RightPanel = new System.Windows.Forms.Panel();
-            this.panel1 = new System.Windows.Forms.Panel();
+            this.panel3 = new System.Windows.Forms.Panel();
+            this.rtbHighlights = new System.Windows.Forms.RichTextBox();
+            this.label2 = new System.Windows.Forms.Label();
             this.chkFlashTaskbar = new System.Windows.Forms.CheckBox();
-            this.chkPings = new System.Windows.Forms.CheckBox();
             this.chkHighlight = new System.Windows.Forms.CheckBox();
+            this.chkPings = new System.Windows.Forms.CheckBox();
+            this.panel1 = new System.Windows.Forms.Panel();
             this.chkEmojis = new System.Windows.Forms.CheckBox();
             this.chkAllowSameMessages = new System.Windows.Forms.CheckBox();
             this.chkGifEmotes = new System.Windows.Forms.CheckBox();
@@ -58,8 +61,10 @@
             this.chkProxyEnabled = new System.Windows.Forms.CheckBox();
             this.spAppearance = new Chatterino.Controls.SettingsTabPage();
             this.spConnection = new Chatterino.Controls.SettingsTabPage();
+            this.spHighlighted = new Chatterino.Controls.SettingsTabPage();
             this.tabs.SuspendLayout();
             this.RightPanel.SuspendLayout();
+            this.panel3.SuspendLayout();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.SuspendLayout();
@@ -70,12 +75,13 @@
             this.tabs.Controls.Add(this.RightPanel);
             this.tabs.Controls.Add(this.spAppearance);
             this.tabs.Controls.Add(this.spConnection);
+            this.tabs.Controls.Add(this.spHighlighted);
             this.tabs.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabs.Location = new System.Drawing.Point(0, 0);
             this.tabs.Name = "tabs";
             this.tabs.Panel = this.RightPanel;
-            this.tabs.SelectedIndex = 1;
-            this.tabs.SelectedTab = this.spConnection;
+            this.tabs.SelectedIndex = 2;
+            this.tabs.SelectedTab = this.spHighlighted;
             this.tabs.Size = new System.Drawing.Size(598, 448);
             this.tabs.TabIndex = 0;
             this.tabs.TabsWidth = 150;
@@ -86,19 +92,82 @@
             this.RightPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.RightPanel.Controls.Add(this.panel2);
+            this.RightPanel.Controls.Add(this.panel3);
             this.RightPanel.Controls.Add(this.panel1);
+            this.RightPanel.Controls.Add(this.panel2);
             this.RightPanel.Location = new System.Drawing.Point(150, 0);
             this.RightPanel.Name = "RightPanel";
             this.RightPanel.Padding = new System.Windows.Forms.Padding(0, 0, 0, 42);
             this.RightPanel.Size = new System.Drawing.Size(448, 448);
             this.RightPanel.TabIndex = 0;
             // 
+            // panel3
+            // 
+            this.panel3.Controls.Add(this.rtbHighlights);
+            this.panel3.Controls.Add(this.label2);
+            this.panel3.Controls.Add(this.chkFlashTaskbar);
+            this.panel3.Controls.Add(this.chkHighlight);
+            this.panel3.Controls.Add(this.chkPings);
+            this.panel3.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel3.Location = new System.Drawing.Point(0, 0);
+            this.panel3.Name = "panel3";
+            this.panel3.Size = new System.Drawing.Size(448, 406);
+            this.panel3.TabIndex = 1;
+            // 
+            // richTextBox1
+            // 
+            this.rtbHighlights.Location = new System.Drawing.Point(21, 123);
+            this.rtbHighlights.Name = "richTextBox1";
+            this.rtbHighlights.Size = new System.Drawing.Size(404, 271);
+            this.rtbHighlights.TabIndex = 17;
+            this.rtbHighlights.Text = "";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.label2.Location = new System.Drawing.Point(18, 90);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(218, 17);
+            this.label2.TabIndex = 16;
+            this.label2.Text = "Highlighted Keywords (one per line)";
+            // 
+            // chkFlashTaskbar
+            // 
+            this.chkFlashTaskbar.AutoSize = true;
+            this.chkFlashTaskbar.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.chkFlashTaskbar.Location = new System.Drawing.Point(21, 60);
+            this.chkFlashTaskbar.Name = "chkFlashTaskbar";
+            this.chkFlashTaskbar.Size = new System.Drawing.Size(238, 17);
+            this.chkFlashTaskbar.TabIndex = 15;
+            this.chkFlashTaskbar.Text = "Flash Taskbar when your Name is mentioned";
+            this.chkFlashTaskbar.UseVisualStyleBackColor = true;
+            // 
+            // chkHighlight
+            // 
+            this.chkHighlight.AutoSize = true;
+            this.chkHighlight.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.chkHighlight.Location = new System.Drawing.Point(21, 13);
+            this.chkHighlight.Name = "chkHighlight";
+            this.chkHighlight.Size = new System.Drawing.Size(224, 17);
+            this.chkHighlight.TabIndex = 13;
+            this.chkHighlight.Text = "Highlight Messages containing your Name";
+            this.chkHighlight.UseVisualStyleBackColor = true;
+            // 
+            // chkPings
+            // 
+            this.chkPings.AutoSize = true;
+            this.chkPings.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.chkPings.Location = new System.Drawing.Point(21, 36);
+            this.chkPings.Name = "chkPings";
+            this.chkPings.Size = new System.Drawing.Size(225, 17);
+            this.chkPings.TabIndex = 14;
+            this.chkPings.Text = "Play Sound when your Name is mentioned";
+            this.chkPings.UseVisualStyleBackColor = true;
+            // 
             // panel1
             // 
-            this.panel1.Controls.Add(this.chkFlashTaskbar);
-            this.panel1.Controls.Add(this.chkPings);
-            this.panel1.Controls.Add(this.chkHighlight);
             this.panel1.Controls.Add(this.chkEmojis);
             this.panel1.Controls.Add(this.chkAllowSameMessages);
             this.panel1.Controls.Add(this.chkGifEmotes);
@@ -113,39 +182,6 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(448, 406);
             this.panel1.TabIndex = 0;
-            // 
-            // chkFlashTaskbar
-            // 
-            this.chkFlashTaskbar.AutoSize = true;
-            this.chkFlashTaskbar.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.chkFlashTaskbar.Location = new System.Drawing.Point(21, 147);
-            this.chkFlashTaskbar.Name = "chkFlashTaskbar";
-            this.chkFlashTaskbar.Size = new System.Drawing.Size(235, 17);
-            this.chkFlashTaskbar.TabIndex = 12;
-            this.chkFlashTaskbar.Text = "Flash Taskbar when you Name is mentioned";
-            this.chkFlashTaskbar.UseVisualStyleBackColor = true;
-            // 
-            // chkPings
-            // 
-            this.chkPings.AutoSize = true;
-            this.chkPings.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.chkPings.Location = new System.Drawing.Point(21, 123);
-            this.chkPings.Name = "chkPings";
-            this.chkPings.Size = new System.Drawing.Size(222, 17);
-            this.chkPings.TabIndex = 11;
-            this.chkPings.Text = "Play Sound when you Name is mentioned";
-            this.chkPings.UseVisualStyleBackColor = true;
-            // 
-            // chkHighlight
-            // 
-            this.chkHighlight.AutoSize = true;
-            this.chkHighlight.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.chkHighlight.Location = new System.Drawing.Point(21, 100);
-            this.chkHighlight.Name = "chkHighlight";
-            this.chkHighlight.Size = new System.Drawing.Size(224, 17);
-            this.chkHighlight.TabIndex = 10;
-            this.chkHighlight.Text = "Highlight Messages containing your Name";
-            this.chkHighlight.UseVisualStyleBackColor = true;
             // 
             // chkEmojis
             // 
@@ -407,9 +443,21 @@
             this.spConnection.Location = new System.Drawing.Point(0, 30);
             this.spConnection.Name = "spConnection";
             this.spConnection.Panel = this.panel2;
+            this.spConnection.Selected = false;
             this.spConnection.Size = new System.Drawing.Size(150, 30);
             this.spConnection.TabIndex = 2;
             this.spConnection.Text = "Connection";
+            // 
+            // spHighlighted
+            // 
+            this.spHighlighted.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.spHighlighted.Image = null;
+            this.spHighlighted.Location = new System.Drawing.Point(0, 60);
+            this.spHighlighted.Name = "spHighlighted";
+            this.spHighlighted.Panel = this.panel3;
+            this.spHighlighted.Size = new System.Drawing.Size(150, 30);
+            this.spHighlighted.TabIndex = 3;
+            this.spHighlighted.Text = "Highlighting";
             // 
             // SettingsDialog
             // 
@@ -428,6 +476,8 @@
             this.Text = "Preferences";
             this.tabs.ResumeLayout(false);
             this.RightPanel.ResumeLayout(false);
+            this.panel3.ResumeLayout(false);
+            this.panel3.PerformLayout();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.panel2.ResumeLayout(false);
@@ -465,8 +515,12 @@
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.ComboBox comboBox1;
         private System.Windows.Forms.CheckBox chkEmojis;
+        private System.Windows.Forms.Panel panel3;
+        private SettingsTabPage spHighlighted;
+        private System.Windows.Forms.CheckBox chkFlashTaskbar;
         private System.Windows.Forms.CheckBox chkHighlight;
         private System.Windows.Forms.CheckBox chkPings;
-        private System.Windows.Forms.CheckBox chkFlashTaskbar;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.RichTextBox rtbHighlights;
     }
 }

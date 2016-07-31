@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.IO;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -54,6 +55,19 @@ namespace Chatterino.Controls
             BindTextBox(textBox4, "ProxyPort");
             BindTextBox(textBox2, "ProxyUsername");
             BindTextBox(textBox3, "ProxyPassword");
+
+            rtbHighlights.Text = string.Join(Environment.NewLine, AppSettings.ChatCustomHighlights);
+            onSave += (s, e) =>
+            {
+                List<string> list = new List<string>();
+                StringReader reader = new StringReader(rtbHighlights.Text);
+                string line;
+                while ((line = reader.ReadLine()) != null)
+                {
+                    list.Add(line);
+                }
+                AppSettings.ChatCustomHighlights = list.ToArray();
+            };
 
             //Buttons
             int x = 0;

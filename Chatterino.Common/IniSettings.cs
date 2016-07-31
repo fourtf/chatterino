@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
+using System.Text.RegularExpressions;
 using Map = System.Collections.Concurrent.ConcurrentDictionary<string, string>;
 
 namespace Chatterino.Common
@@ -159,7 +161,45 @@ namespace Chatterino.Common
             string v;
             if (map.TryGetValue(key, out v))
             {
-                values = v.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                List<string> vals = new List<string>();
+
+                bool inEscape = false;
+
+                System.Text.StringBuilder b = new System.Text.StringBuilder(64);
+
+                for (int i = 0; i < v.Length; i++)
+                {
+                    var c = v[i];
+
+                    if (c == '\\')
+                    {
+                        inEscape = true;
+                    }
+                    else if (inEscape)
+                    {
+                        if (c == 'n')
+                            b.Append('\n');
+                        else if (c == 'r')
+                            b.Append('\r');
+                        else
+                            b.Append(c);
+                        inEscape = false;
+                    }
+                    else if (c == ',')
+                    {
+                        vals.Add(b.ToString());
+                        b.Clear();
+                    }
+                    else
+                        b.Append(c);
+
+                    if (i == v.Length - 1)
+                    {
+                        vals.Add(b.ToString());
+                    }
+                }
+
+                values = vals.ToArray();
                 return true;
             }
             values = new string[0];
@@ -224,6 +264,17 @@ namespace Chatterino.Common
         public void Set(string key, long value) => map[key] = value.ToString();
         public void Set(string key, ulong value) => map[key] = value.ToString();
         public void Set(string key, DateTime value) => map[key] = value.ToString(DateTimeFormat);
-        public void Set(string key, IEnumerable<string> values) => map[key] = string.Join(",", values);
+        public void Set(string key, IEnumerable<string> values) => map[key] = string.Join(",", values.Select(x => Regex.Replace(x, "[\n\r\\\\]", m =>
+        {
+            var a = m.Value;
+            if (a[0] == '\n')
+                return "\\n";
+            else if (a[0] == '\r')
+                return "\\r";
+            else if (a[0] == ',')
+                return "\\,";
+            else
+                return "\\\\";
+        })));
     }
 }
