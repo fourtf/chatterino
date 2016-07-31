@@ -51,7 +51,7 @@ namespace Chatterino.Common
         Regex linkRegex = new Regex(@"^((?<Protocol>\w+):\/\/)?(?<Domain>[\w%@-][\w.%-:@]+\w)\/?[\w\.?=#%&=\-@/$,]*$");
         static char[] linkIdentifiers = new char[] { '.', ':' };
 
-        public Message(IrcMessageData data, TwitchChannel channel)
+        public Message(IrcMessageData data, TwitchChannel channel, bool enableTimestamp = true, bool enablePingSound = true)
         {
             var w = Stopwatch.StartNew();
 
@@ -80,10 +80,13 @@ namespace Chatterino.Common
                 {
                     if (AppSettings.ChatEnableHighlight)
                         Highlighted = true;
-                    if (AppSettings.ChatEnableHighlightSound)
-                        GuiEngine.Current.PlaySound(NotificationSound.Ping);
-                    if (AppSettings.ChatEnableHighlightTaskbar)
-                        GuiEngine.Current.FlashTaskbar();
+                    if (enablePingSound)
+                    {
+                        if (AppSettings.ChatEnableHighlightSound)
+                            GuiEngine.Current.PlaySound(NotificationSound.Ping);
+                        if (AppSettings.ChatEnableHighlightTaskbar)
+                            GuiEngine.Current.FlashTaskbar();
+                    }
                 }
             }
 
@@ -106,10 +109,10 @@ namespace Chatterino.Common
             }
 
             // Add timestamp
-            var timestamp = DateTime.Now.ToString(AppSettings.ChatShowTimestampSeconds ? "HH:mm:ss" : "HH:mm");
-
-            if (AppSettings.ChatShowTimestamps)
+            if (enableTimestamp && AppSettings.ChatShowTimestamps)
             {
+                var timestamp = DateTime.Now.ToString(AppSettings.ChatShowTimestampSeconds ? "HH:mm:ss" : "HH:mm");
+
                 words.Add(new Word
                 {
                     Type = SpanType.Text,

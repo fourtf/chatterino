@@ -14,7 +14,7 @@ namespace Chatterino.Controls
     public class ChatControl : ColumnLayoutItemBase
     {
         // Properties
-        public int MaxMessages { get; set; } = 500;
+        public int MaxMessages { get; set; } = 250;
 
         public const int TopMenuBarHeight = 32;
 
@@ -31,14 +31,7 @@ namespace Chatterino.Controls
 
         TwitchChannel channel = null;
 
-        Message[] Messages = new Message[0];
-        //{
-        //    get
-        //    {
-        //        return channel?.Messages;
-        //    }
-        //}
-
+        public Message[] Messages { get; private set; } = new Message[0];
 
         Timer gifEmoteTimer = new Timer { Interval = 33 };
 
@@ -57,23 +50,26 @@ namespace Chatterino.Controls
             SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
             SetStyle(ControlStyles.ResizeRedraw, true);
 
-            IrcManager.MessageReceived += onRawMessage;
+            IrcManager.MessageReceived += IrcManager_MessageReceived;
             IrcManager.ChatCleared += IrcManager_IrcChatCleared;
             IrcManager.Connected += IrcManager_Connected;
             IrcManager.Disconnected += IrcManager_Disconnected;
             IrcManager.ConnectionError += IrcManager_ConnectionError;
+            IrcManager.OldMessagesReceived += IrcManager_OldMessagesReceived;
             App.GifEmoteFramesUpdated += onRedrawGifEmotes;
             App.EmoteLoaded += onEmoteLoaded;
 
             Disposed += (s, e) =>
             {
-                IrcManager.MessageReceived -= onRawMessage;
+                IrcManager.MessageReceived -= IrcManager_MessageReceived;
                 IrcManager.ChatCleared -= IrcManager_IrcChatCleared;
                 IrcManager.Connected -= IrcManager_Connected;
                 IrcManager.Disconnected -= IrcManager_Disconnected;
                 IrcManager.ConnectionError -= IrcManager_ConnectionError;
+                IrcManager.OldMessagesReceived -= IrcManager_OldMessagesReceived;
                 App.GifEmoteFramesUpdated -= onRedrawGifEmotes;
                 App.EmoteLoaded -= onEmoteLoaded;
+
                 IrcManager.RemoveChannel(ChannelName);
             };
 
@@ -97,6 +93,76 @@ namespace Chatterino.Controls
                 Invalidate();
                 checkScrollBarPosition();
             };
+        }
+
+        private void IrcManager_MessageReceived(object s, MessageEventArgs e)
+        {
+            if (e.Message.Channel.Name == ChannelName)
+            {
+                var msg = e.Message;
+                Message firstMessage = null;
+
+                lock (Messages)
+                {
+                    if (Messages.Length == MaxMessages)
+                    {
+                        firstMessage = Messages[0];
+                    }
+                    addMessage(msg);
+                }
+
+                bool bottom = scrollAtBottom;
+                updateMessageBounds();
+                updateScrollbarHighlights();
+
+                vscroll.Invoke(() =>
+                {
+                    if (vscroll.Enabled)
+                    {
+                        if (bottom)
+                            vscroll.Value = vscroll.Maximum - vscroll.LargeChange;
+                        else if (firstMessage != null)
+                            vscroll.Value = Math.Max(0, vscroll.Value - firstMessage.Height);
+                    }
+                });
+                this.Invoke(() =>
+                {
+                    Invalidate();
+                });
+            }
+        }
+
+        private void IrcManager_OldMessagesReceived(object sender, ValueEventArgs<Tuple<TwitchChannel, Message[]>> e)
+        {
+            if (e.Value.Item1 == channel)
+            {
+                Message[] M;
+
+                lock (Messages)
+                {
+                    M = new Message[Math.Min(MaxMessages, e.Value.Item2.Length + Messages.Length)];
+
+                    Array.Copy(Messages, 0, M, e.Value.Item2.Length, Messages.Length);
+                    Array.Copy(e.Value.Item2, 0, M, 0, e.Value.Item2.Length);
+                }
+
+                Messages = M;
+
+                bool bottom = scrollAtBottom;
+                updateMessageBounds();
+                updateScrollBar();
+                updateScrollbarHighlights();
+
+                vscroll.Invoke(() =>
+                {
+                    if (vscroll.Enabled)
+                    {
+                        if (bottom)
+                            vscroll.Value = vscroll.Maximum - vscroll.LargeChange;
+                    }
+                    Invalidate();
+                });
+            }
         }
 
         private void IrcManager_ConnectionError(object sender, ValueEventArgs<Exception> e)
@@ -302,43 +368,6 @@ namespace Chatterino.Controls
         {
             updateMessageBounds(true);
             Invalidate();
-        }
-
-        void onRawMessage(object s, MessageEventArgs e)
-        {
-            if (e.Message.Channel.Name == ChannelName)
-            {
-                var msg = e.Message;
-                Message firstMessage = null;
-
-                lock (Messages)
-                {
-                    if (Messages.Length == MaxMessages)
-                    {
-                        firstMessage = Messages[0];
-                    }
-                    addMessage(msg);
-                }
-
-                bool bottom = scrollAtBottom;
-                updateMessageBounds();
-                updateScrollbarHighlights();
-
-                vscroll.Invoke(() =>
-                {
-                    if (vscroll.Enabled)
-                    {
-                        if (bottom)
-                            vscroll.Value = vscroll.Maximum - vscroll.LargeChange;
-                        else if (firstMessage != null)
-                            vscroll.Value = Math.Max(0, vscroll.Value - firstMessage.Height);
-                    }
-                });
-                this.Invoke(() =>
-                {
-                    Invalidate();
-                });
-            }
         }
 
         void updateScrollbarHighlights()
@@ -599,15 +628,17 @@ namespace Chatterino.Controls
                 if (value != ircChannelName)
                 {
                     if (!string.IsNullOrWhiteSpace(ircChannelName))
+                    {
+                        channel = null;
                         IrcManager.RemoveChannel(ChannelName);
+                    }
 
                     ircChannelName = value;
 
-                    //lock (Messages)
-                    Messages = new Message[0];
-
                     if (!string.IsNullOrWhiteSpace(ircChannelName))
-                        IrcManager.AddChannel(ircChannelName);
+                    {
+                        channel = IrcManager.AddChannel(ircChannelName);
+                    }
 
                     _header?.Invalidate();
 

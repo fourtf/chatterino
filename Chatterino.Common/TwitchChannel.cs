@@ -7,6 +7,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Chatterino.Common
@@ -76,7 +77,6 @@ namespace Chatterino.Common
 
         List<KeyValuePair<string, string>> emoteNames = new List<KeyValuePair<string, string>>();
 
-
         // ctor
         public TwitchChannel(string channelName)
         {
@@ -85,6 +85,31 @@ namespace Chatterino.Common
             JoinRead();
 
             string bttvChannelEmotesCache = $"./cache/bttv_channel_{channelName}";
+
+            // recent chat
+            Task.Run(() =>
+            {
+                try
+                {
+                    List<Message> messages = new List<Message>();
+
+                    var request = WebRequest.Create($"http://fourtf.com:5005/lastmessages/{channelName}");
+                    using (var response = request.GetResponse())
+                    using (var stream = response.GetResponseStream())
+                    {
+                        StreamReader reader = new StreamReader(stream);
+                        string line;
+                        while ((line = reader.ReadLine()) != null)
+                        {
+                            var irc = IrcManager.IrcReadClient ?? new Meebey.SmartIrc4net.IrcClient();
+                            messages.Add(new Message(irc.MessageParser(line), this, false, false));
+                        }
+                    }
+
+                    IrcManager.TriggerOldMessagesReceived(this, messages.ToArray());
+                }
+                catch { }
+            });
 
             // bttv channel emotes
             Task.Run(() =>

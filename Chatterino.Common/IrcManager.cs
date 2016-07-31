@@ -306,12 +306,15 @@ namespace Chatterino.Common
         public static event EventHandler Disconnected;
         public static event EventHandler Connected;
         public static event EventHandler<ValueEventArgs<Exception>> ConnectionError;
+        public static event EventHandler<ValueEventArgs<Tuple<TwitchChannel,Message[]>>> OldMessagesReceived;
+
+        public static void TriggerOldMessagesReceived(TwitchChannel channel, Message[] messages) => OldMessagesReceived?.Invoke(null, new ValueEventArgs<Tuple<TwitchChannel, Message[]>>(Tuple.Create(channel, messages)));
 
         static ConcurrentDictionary<Tuple<string, string>, object> recentChatClears = new ConcurrentDictionary<Tuple<string, string>, object>();
 
         static void IrcClient_OnRawMessage(object sender, IrcEventArgs e)
         {
-            if (e.Data.Type == ReceiveType.QueryNotice/* && e.Data.Message == "Login authentication failed"*/)
+            if (e.Data.Type == ReceiveType.QueryNotice)
             {
                 ConnectionError?.Invoke(null, new ValueEventArgs<Exception>(new Exception(e.Data.Message)));
             }
