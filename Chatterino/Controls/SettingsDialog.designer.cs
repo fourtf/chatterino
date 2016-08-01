@@ -62,6 +62,7 @@
             this.spAppearance = new Chatterino.Controls.SettingsTabPage();
             this.spConnection = new Chatterino.Controls.SettingsTabPage();
             this.spHighlighted = new Chatterino.Controls.SettingsTabPage();
+            this.chkCtrlClickLinks = new System.Windows.Forms.CheckBox();
             this.tabs.SuspendLayout();
             this.RightPanel.SuspendLayout();
             this.panel3.SuspendLayout();
@@ -80,8 +81,8 @@
             this.tabs.Location = new System.Drawing.Point(0, 0);
             this.tabs.Name = "tabs";
             this.tabs.Panel = this.RightPanel;
-            this.tabs.SelectedIndex = 2;
-            this.tabs.SelectedTab = this.spHighlighted;
+            this.tabs.SelectedIndex = 0;
+            this.tabs.SelectedTab = this.spAppearance;
             this.tabs.Size = new System.Drawing.Size(598, 448);
             this.tabs.TabIndex = 0;
             this.tabs.TabsWidth = 150;
@@ -92,9 +93,9 @@
             this.RightPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.RightPanel.Controls.Add(this.panel3);
             this.RightPanel.Controls.Add(this.panel1);
             this.RightPanel.Controls.Add(this.panel2);
+            this.RightPanel.Controls.Add(this.panel3);
             this.RightPanel.Location = new System.Drawing.Point(150, 0);
             this.RightPanel.Name = "RightPanel";
             this.RightPanel.Padding = new System.Windows.Forms.Padding(0, 0, 0, 42);
@@ -114,10 +115,10 @@
             this.panel3.Size = new System.Drawing.Size(448, 406);
             this.panel3.TabIndex = 1;
             // 
-            // richTextBox1
+            // rtbHighlights
             // 
             this.rtbHighlights.Location = new System.Drawing.Point(21, 123);
-            this.rtbHighlights.Name = "richTextBox1";
+            this.rtbHighlights.Name = "rtbHighlights";
             this.rtbHighlights.Size = new System.Drawing.Size(404, 271);
             this.rtbHighlights.TabIndex = 17;
             this.rtbHighlights.Text = "";
@@ -168,6 +169,7 @@
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.chkCtrlClickLinks);
             this.panel1.Controls.Add(this.chkEmojis);
             this.panel1.Controls.Add(this.chkAllowSameMessages);
             this.panel1.Controls.Add(this.chkGifEmotes);
@@ -431,7 +433,6 @@
             this.spAppearance.Location = new System.Drawing.Point(0, 0);
             this.spAppearance.Name = "spAppearance";
             this.spAppearance.Panel = this.panel1;
-            this.spAppearance.Selected = false;
             this.spAppearance.Size = new System.Drawing.Size(150, 30);
             this.spAppearance.TabIndex = 1;
             this.spAppearance.Text = "Appearance";
@@ -455,9 +456,21 @@
             this.spHighlighted.Location = new System.Drawing.Point(0, 60);
             this.spHighlighted.Name = "spHighlighted";
             this.spHighlighted.Panel = this.panel3;
+            this.spHighlighted.Selected = false;
             this.spHighlighted.Size = new System.Drawing.Size(150, 30);
             this.spHighlighted.TabIndex = 3;
             this.spHighlighted.Text = "Highlighting";
+            // 
+            // chkCtrlClickLinks
+            // 
+            this.chkCtrlClickLinks.AutoSize = true;
+            this.chkCtrlClickLinks.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.chkCtrlClickLinks.Location = new System.Drawing.Point(21, 100);
+            this.chkCtrlClickLinks.Name = "chkCtrlClickLinks";
+            this.chkCtrlClickLinks.Size = new System.Drawing.Size(199, 17);
+            this.chkCtrlClickLinks.TabIndex = 10;
+            this.chkCtrlClickLinks.Text = "Only open Links when Ctrl is pressed";
+            this.chkCtrlClickLinks.UseVisualStyleBackColor = true;
             // 
             // SettingsDialog
             // 
@@ -522,5 +535,6 @@
         private System.Windows.Forms.CheckBox chkPings;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.RichTextBox rtbHighlights;
+        private System.Windows.Forms.CheckBox chkCtrlClickLinks;
     }
 }

@@ -256,7 +256,7 @@ namespace Chatterino.Controls
 
                 if (word != null)
                 {
-                    if (word.Link != null)
+                    if (word.Link != null && (!AppSettings.ChatLinksCtrlClickOnly || (ModifierKeys & Keys.Control) == Keys.Control))
                     {
                         Cursor = Cursors.Hand;
                     }
@@ -337,7 +337,7 @@ namespace Chatterino.Controls
                     var word = msg.WordAtPoint(new CommonPoint(e.X - TextPadding.Left, e.Y - msg.Y));
                     if (word != null)
                     {
-                        if (mouseDownLink != null && mouseDownWord == word)
+                        if (mouseDownLink != null && mouseDownWord == word && (! AppSettings.ChatLinksCtrlClickOnly || (ModifierKeys & Keys.Control) == Keys.Control))
                         {
                             GuiEngine.Current.HandleLink(mouseDownLink);
                         }
@@ -724,6 +724,7 @@ namespace Chatterino.Controls
                 contextMenu.MenuItems.Add(new MenuItem("Add new Split", (s, e) => { App.MainForm?.AddNewSplit(); }, Shortcut.CtrlT));
                 contextMenu.MenuItems.Add(new MenuItem("Close Split", (s, e) => { App.MainForm?.RemoveSelectedSplit(); }, Shortcut.CtrlW));
                 contextMenu.MenuItems.Add(new MenuItem("Change Channel", (s, e) => { App.MainForm?.RenameSelectedSplit(); }, Shortcut.CtrlR));
+                contextMenu.MenuItems.Add("-");
                 contextMenu.MenuItems.Add(new MenuItem("Login", (s, e) => new LoginForm().ShowDialog(), Shortcut.CtrlL));
                 contextMenu.MenuItems.Add(new MenuItem("Preferences", (s, e) => App.ShowSettings(), Shortcut.CtrlP));
             }

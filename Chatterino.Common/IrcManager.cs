@@ -331,7 +331,7 @@ namespace Chatterino.Common
 
                     object o;
 
-                    new System.Threading.Timer(x => { recentChatClears.TryRemove(key, out o); }, null, 1000, System.Threading.Timeout.Infinite);
+                    new System.Threading.Timer(x => { recentChatClears.TryRemove(key, out o); }, null, 3000, System.Threading.Timeout.Infinite);
 
                     string reason;
                     e.Data.Tags.TryGetValue("ban-reason", out reason);
