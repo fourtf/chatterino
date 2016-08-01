@@ -141,7 +141,7 @@ namespace Chatterino.Common
                 // fetch availlable twitch emotes
                 Task.Run(() =>
                 {
-                    //try
+                    try
                     {
                         var request = WebRequest.Create($"https://api.twitch.tv/kraken/users/{username}/emotes?oauth_token={oauth}");
                         using (var response = request.GetResponse())
@@ -162,7 +162,7 @@ namespace Chatterino.Common
                             }
                         }
                     }
-                    //catch { }
+                    catch { }
                 });
 
                 // connect read

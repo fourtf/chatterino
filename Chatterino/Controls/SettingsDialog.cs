@@ -15,8 +15,8 @@ namespace Chatterino.Controls
     public partial class SettingsDialog : Form
     {
         public String OriginalSettings = "";
-        private Button btnOK;
         private Button btnCancel;
+        private Button BtnOK;
         private Button btnResetCurrent;
         private Button btnResetAll;
 
@@ -72,27 +72,27 @@ namespace Chatterino.Controls
             //Buttons
             int x = 0;
 
-            ///OK
-            btnOK = new Button();
-            btnOK.AutoSize = true;
-            btnOK.Text = "Apply";
-            btnOK.Location = new Point(tabs.Panel.Width - 12 - btnOK.Width - x, tabs.Panel.Height - 12 - btnOK.Height);
-            btnOK.Anchor = (AnchorStyles.Right | AnchorStyles.Bottom);
-            btnOK.BackColor = Color.FromArgb(0);
-            btnOK.Click += new EventHandler(btnOK_Click);
-            tabs.Panel.Controls.Add(btnOK);
-            x += 12 + btnOK.Width;
-
             ///Cancel
             btnCancel = new Button();
             btnCancel.AutoSize = true;
             btnCancel.Text = "Cancel";
-            btnCancel.Location = new Point(tabs.Panel.Width - 12 - btnCancel.Width - x, tabs.Panel.Height - 12 - btnOK.Height);
+            btnCancel.Location = new Point(tabs.Panel.Width - 12 - btnCancel.Width - x, tabs.Panel.Height - 12 - btnCancel.Height);
             btnCancel.Anchor = (AnchorStyles.Right | AnchorStyles.Bottom);
             btnCancel.BackColor = Color.FromArgb(0);
             btnCancel.Click += new EventHandler(btnCancel_Click);
             tabs.Panel.Controls.Add(btnCancel);
             x += 12 + btnCancel.Width;
+
+            ///OK
+            BtnOK = new Button();
+            BtnOK.AutoSize = true;
+            BtnOK.Text = "Apply";
+            BtnOK.Location = new Point(tabs.Panel.Width - 12 - BtnOK.Width - x, tabs.Panel.Height - 12 - btnCancel.Height);
+            BtnOK.Anchor = (AnchorStyles.Right | AnchorStyles.Bottom);
+            BtnOK.BackColor = Color.FromArgb(0);
+            BtnOK.Click += new EventHandler(btnOK_Click);
+            tabs.Panel.Controls.Add(BtnOK);
+            x += 12 + BtnOK.Width;
 
             /////ResetCurrent
             //btnResetCurrent = new Button();

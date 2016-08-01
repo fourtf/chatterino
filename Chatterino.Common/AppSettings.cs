@@ -13,7 +13,7 @@ namespace Chatterino.Common
     {
         public static bool ChatShowTimestamps { get; set; } = true;
         public static bool ChatShowTimestampSeconds { get; set; } = false;
-        public static bool ChatAllowSameMessage { get; set; } = false;
+        public static bool ChatAllowSameMessage { get; set; } = true;
 
         public static bool ChatEnableHighlight { get; set; } = true;
         public static bool ChatEnableHighlightSound { get; set; } = true;
