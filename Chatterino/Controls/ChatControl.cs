@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using Message = Chatterino.Common.Message;
 
@@ -14,8 +15,6 @@ namespace Chatterino.Controls
     public class ChatControl : ColumnLayoutItemBase
     {
         // Properties
-        public int MaxMessages { get; set; } = 250;
-
         public const int TopMenuBarHeight = 32;
 
         public Padding TextPadding { get; private set; } = new Padding(12, 12 + TopMenuBarHeight, 16 + SystemInformation.VerticalScrollBarWidth, 4);
@@ -130,11 +129,14 @@ namespace Chatterino.Controls
                         selection = new Selection(selection.Start.WithMessageIndex(selection.Start.MessageIndex - 1), selection.Start.WithMessageIndex(selection.End.MessageIndex - 1));
                 }
 
+                vscroll.Value--;
+
                 vscroll.UpdateHighlights(h => h.Position--);
                 vscroll.RemoveHighlightsWhere(h => h.Position < 0);
-                if (e.Message.Highlighted)
-                    vscroll.AddHighlight(channel?.MessageCount ?? 0, Color.FromArgb(64, Color.Red));
             }
+
+            if (e.Message.Highlighted)
+                vscroll.AddHighlight((channel?.MessageCount ?? 1) - 1, Color.Red);
 
             updateMessageBounds();
             Invalidate();
@@ -193,8 +195,8 @@ namespace Chatterino.Controls
             {
                 var word = msg.WordAtPoint(new CommonPoint(e.X - TextPadding.Left, e.Y - msg.Y));
 
-                var pos = msg.MessagePositionAtPoint(graphics, new CommonPoint(e.X, e.Y - msg.Y), index);
-                //Console.WriteLine($"pos: {pos.MessageIndex} : {pos.WordIndex} : {pos.CharIndex}");
+                var pos = msg.MessagePositionAtPoint(graphics, new CommonPoint(e.X - TextPadding.Left, e.Y - msg.Y), index);
+                Console.WriteLine($"pos: {pos.MessageIndex} : {pos.WordIndex} : {pos.CharIndex}");
 
                 if (selection != null && mouseDown)
                 {
@@ -248,7 +250,7 @@ namespace Chatterino.Controls
                 if (msg != null)
                 {
                     var graphics = CreateGraphics();
-                    var position = msg.MessagePositionAtPoint(graphics, new CommonPoint(e.X, e.Y - msg.Y), index);
+                    var position = msg.MessagePositionAtPoint(graphics, new CommonPoint(e.X - TextPadding.Left, e.Y - msg.Y), index);
                     selection = new Selection(position, position);
 
                     var word = msg.WordAtPoint(new CommonPoint(e.X - TextPadding.Left, e.Y - msg.Y));
@@ -664,6 +666,8 @@ namespace Chatterino.Controls
 
         public void PasteText(string text)
         {
+            text = Regex.Replace(text, @"\r?\n", " ");
+
             if (SendMessage == null)
                 SendMessage = new Message(text);
             else

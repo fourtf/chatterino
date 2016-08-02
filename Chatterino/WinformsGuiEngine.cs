@@ -68,39 +68,42 @@ namespace Chatterino
 
                 if (animated)
                 {
-                    emote.Animated = true;
-
-                    var dimension = new FrameDimension(img.FrameDimensionsList[0]);
-                    var frameCount = img.GetFrameCount(dimension);
-                    int[] frameDuration = new int[frameCount];
-                    int currentFrame = 0;
-                    int currentFrameOffset = 0;
-
-                    byte[] times = img.GetPropertyItem(0x5100).Value;
-                    int frame = 0;
-                    for (int i = 0; i < frameCount; i++)
+                    try
                     {
-                        frameDuration[i] = BitConverter.ToInt32(times, 4 * frame);
-                    }
+                        var dimension = new FrameDimension(img.FrameDimensionsList[0]);
+                        var frameCount = img.GetFrameCount(dimension);
+                        int[] frameDuration = new int[frameCount];
+                        int currentFrame = 0;
+                        int currentFrameOffset = 0;
 
-                    App.GifEmoteFramesUpdating += (s, e) =>
-                    {
-                        currentFrameOffset += 3;
-
-                        while (true)
+                        byte[] times = img.GetPropertyItem(0x5100).Value;
+                        int frame = 0;
+                        for (int i = 0; i < frameCount; i++)
                         {
-                            if (currentFrameOffset > frameDuration[currentFrame])
-                            {
-                                currentFrameOffset -= frameDuration[currentFrame];
-                                currentFrame = (currentFrame + 1) % frameCount;
-                            }
-                            else
-                                break;
+                            frameDuration[i] = BitConverter.ToInt32(times, 4 * frame);
                         }
+                        emote.Animated = true;
 
-                        lock (img)
-                            img.SelectActiveFrame(dimension, currentFrame);
-                    };
+                        App.GifEmoteFramesUpdating += (s, e) =>
+                        {
+                            currentFrameOffset += 3;
+
+                            while (true)
+                            {
+                                if (currentFrameOffset > frameDuration[currentFrame])
+                                {
+                                    currentFrameOffset -= frameDuration[currentFrame];
+                                    currentFrame = (currentFrame + 1) % frameCount;
+                                }
+                                else
+                                    break;
+                            }
+
+                            lock (img)
+                                img.SelectActiveFrame(dimension, currentFrame);
+                        };
+                    }
+                    catch { }
                 }
                 App.TriggerEmoteLoaded();
             }

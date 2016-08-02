@@ -68,6 +68,9 @@
       <DependentUpon>LoginForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\ScrollBarHighlight.cs" />
+    <Compile Include="Controls\SendTextBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\SettingsDialog.cs">
       <SubType>Form</SubType>
     </Compile>

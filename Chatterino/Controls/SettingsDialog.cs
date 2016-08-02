@@ -49,7 +49,7 @@ namespace Chatterino.Controls
             BindCheckBox(chkBttvEmotes, "ChatEnableBttvEmotes");
             BindCheckBox(chkFFzEmotes, "ChatEnableFfzEmotes");
             BindCheckBox(chkEmojis, "ChatEnableEmojis");
-            BindCheckBox(chkGifEmotes, "ChatEnableGifEmotes");
+            BindCheckBox(chkGifEmotes, "ChatEnableGifAnimations");
 
             BindCheckBox(chkProxyEnabled, "ProxyEnable");
             BindTextBox(textBox1, "ProxyHost");

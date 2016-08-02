@@ -43,7 +43,7 @@ namespace Chatterino.Common
         public static bool ChatEnableBttvEmotes { get; set; } = true;
         public static bool ChatEnableFfzEmotes { get; set; } = true;
         public static bool ChatEnableEmojis { get; set; } = true;
-        public static bool ChatEnableGifEmotes { get; set; } = true;
+        public static bool ChatEnableGifAnimations { get; set; } = true;
 
         public static bool ProxyEnable { get; set; } = false;
         public static string ProxyType { get; set; } = "http";

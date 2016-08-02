@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -111,9 +112,22 @@ namespace Chatterino.Common
             }
 
             // Add timestamp
+            string timestampTag;
+            string timestamp = null;
+
+            if (data.Tags.TryGetValue("timestamp-utc", out timestampTag))
+            {
+                DateTime time;
+                if (DateTime.TryParseExact(timestampTag, "yyyyMMdd-HHmmss", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out time))
+                {
+                    timestamp = DateTime.Now.ToString(AppSettings.ChatShowTimestampSeconds ? "HH:mm:ss" : "HH:mm");
+                    enableTimestamp = true;
+                }
+            }
+
             if (enableTimestamp && AppSettings.ChatShowTimestamps)
             {
-                var timestamp = DateTime.Now.ToString(AppSettings.ChatShowTimestampSeconds ? "HH:mm:ss" : "HH:mm");
+                timestamp = timestamp ?? DateTime.Now.ToString(AppSettings.ChatShowTimestampSeconds ? "HH:mm:ss" : "HH:mm");
 
                 words.Add(new Word
                 {
@@ -489,14 +503,14 @@ namespace Chatterino.Common
                                 items.Add(Tuple.Create(s, new CommonRectangle(0, y, size.Width, size.Height)));
                                 startIndex = j;
                                 y += word.Height;
-                                j++;
+                                size = new CommonSize(0, 0);
                             }
                         }
 
                         s = text.Substring(startIndex);
                         items.Add(Tuple.Create(s, new CommonRectangle(0, y, size.Width, size.Height)));
 
-                        x = size.Width + spaceWidth;
+                        x = GuiEngine.Current.MeasureStringSize(graphics, word.Font, s).Width + spaceWidth;
 
                         if (items.Count > 1)
                             word.SplitSegments = items.ToArray();
@@ -576,7 +590,9 @@ namespace Chatterino.Common
                     if (word.X + word.Width < point.X)
                         currentWord = i + 1;
                     else
+                    {
                         currentWord = i;
+                    }
                 }
                 else
                 {

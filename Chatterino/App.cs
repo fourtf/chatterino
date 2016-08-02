@@ -38,8 +38,11 @@ namespace Chatterino
             // Update gif emotes
             new Timer { Interval = 20, Enabled = true }.Tick += (s, e) =>
             {
-                GifEmoteFramesUpdating?.Invoke(null, EventArgs.Empty);
-                GifEmoteFramesUpdated?.Invoke(null, EventArgs.Empty);
+                if (AppSettings.ChatEnableGifAnimations)
+                {
+                    GifEmoteFramesUpdating?.Invoke(null, EventArgs.Empty);
+                    GifEmoteFramesUpdated?.Invoke(null, EventArgs.Empty);
+                }
             };
 
             // Settings/Colors
