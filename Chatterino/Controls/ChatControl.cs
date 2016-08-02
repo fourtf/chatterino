@@ -18,7 +18,7 @@ namespace Chatterino.Controls
 
         public const int TopMenuBarHeight = 32;
 
-        public Padding TextPadding { get; set; } = new Padding(12, 12 + TopMenuBarHeight, 16 + SystemInformation.VerticalScrollBarWidth, 4);
+        public Padding TextPadding { get; private set; } = new Padding(12, 12 + TopMenuBarHeight, 16 + SystemInformation.VerticalScrollBarWidth, 4);
 
         public Message SendMessage { get; set; } = null;
 
@@ -27,18 +27,14 @@ namespace Chatterino.Controls
         // vars
         private bool scrollAtBottom = true;
 
-        public int totalMessageHeight = 0;
-
         TwitchChannel channel = null;
-
-        public Message[] Messages { get; private set; } = new Message[0];
 
         Timer gifEmoteTimer = new Timer { Interval = 33 };
 
         CustomScrollBar vscroll = new CustomScrollBar
         {
             Enabled = false,
-            SmallChange = 32,
+            SmallChange = 4,
         };
 
         string lastTabComplete = null;
@@ -50,27 +46,27 @@ namespace Chatterino.Controls
             SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
             SetStyle(ControlStyles.ResizeRedraw, true);
 
-            IrcManager.MessageReceived += IrcManager_MessageReceived;
-            IrcManager.ChatCleared += IrcManager_IrcChatCleared;
-            IrcManager.Connected += IrcManager_Connected;
-            IrcManager.Disconnected += IrcManager_Disconnected;
-            IrcManager.ConnectionError += IrcManager_ConnectionError;
-            IrcManager.OldMessagesReceived += IrcManager_OldMessagesReceived;
-            App.GifEmoteFramesUpdated += onRedrawGifEmotes;
-            App.EmoteLoaded += onEmoteLoaded;
+            //IrcManager.MessageReceived += IrcManager_MessageReceived;
+            //IrcManager.ChatCleared += IrcManager_IrcChatCleared;
+            //IrcManager.Connected += IrcManager_Connected;
+            //IrcManager.Disconnected += IrcManager_Disconnected;
+            //IrcManager.ConnectionError += IrcManager_ConnectionError;
+            //IrcManager.OldMessagesReceived += IrcManager_OldMessagesReceived;
+            App.GifEmoteFramesUpdated += App_GifEmoteFramesUpdated;
+            App.EmoteLoaded += App_EmoteLoaded;
 
             Disposed += (s, e) =>
             {
-                IrcManager.MessageReceived -= IrcManager_MessageReceived;
-                IrcManager.ChatCleared -= IrcManager_IrcChatCleared;
-                IrcManager.Connected -= IrcManager_Connected;
-                IrcManager.Disconnected -= IrcManager_Disconnected;
-                IrcManager.ConnectionError -= IrcManager_ConnectionError;
-                IrcManager.OldMessagesReceived -= IrcManager_OldMessagesReceived;
-                App.GifEmoteFramesUpdated -= onRedrawGifEmotes;
-                App.EmoteLoaded -= onEmoteLoaded;
+                //IrcManager.MessageReceived -= IrcManager_MessageReceived;
+                //IrcManager.ChatCleared -= IrcManager_IrcChatCleared;
+                //IrcManager.Connected -= IrcManager_Connected;
+                //IrcManager.Disconnected -= IrcManager_Disconnected;
+                //IrcManager.ConnectionError -= IrcManager_ConnectionError;
+                //IrcManager.OldMessagesReceived -= IrcManager_OldMessagesReceived;
+                App.GifEmoteFramesUpdated -= App_GifEmoteFramesUpdated;
+                App.EmoteLoaded -= App_EmoteLoaded;
 
-                IrcManager.RemoveChannel(ChannelName);
+                TwitchChannel.RemoveChannel(ChannelName);
             };
 
             Font = Fonts.Medium;
@@ -90,138 +86,94 @@ namespace Chatterino.Controls
 
             vscroll.Scroll += (s, e) =>
             {
-                Invalidate();
                 checkScrollBarPosition();
+                updateMessageBounds();
+                Invalidate();
             };
         }
 
-        private void IrcManager_MessageReceived(object s, MessageEventArgs e)
+        private void App_GifEmoteFramesUpdated(object s, EventArgs e)
         {
-            if (e.Message.Channel.Name == ChannelName)
+            channel.Process(c =>
             {
-                var msg = e.Message;
-                Message firstMessage = null;
+                var g = CreateGraphics();
 
-                lock (Messages)
+                lock (c.MessageLock)
                 {
-                    if (Messages.Length == MaxMessages)
+                    for (int i = 0; i < c.Messages.Length; i++)
                     {
-                        firstMessage = Messages[0];
-                    }
-                    addMessage(msg);
-                }
-
-                bool bottom = scrollAtBottom;
-                updateMessageBounds();
-                updateScrollbarHighlights();
-
-                vscroll.Invoke(() =>
-                {
-                    if (vscroll.Enabled)
-                    {
-                        if (bottom)
-                            vscroll.Value = vscroll.Maximum - vscroll.LargeChange;
-                        else if (firstMessage != null)
-                            vscroll.Value = Math.Max(0, vscroll.Value - firstMessage.Height);
-                    }
-                });
-                this.Invoke(() =>
-                {
-                    Invalidate();
-                });
-            }
-        }
-
-        private void IrcManager_OldMessagesReceived(object sender, ValueEventArgs<Tuple<TwitchChannel, Message[]>> e)
-        {
-            if (e.Value.Item1 == channel)
-            {
-                Message[] M;
-
-                lock (Messages)
-                {
-                    M = new Message[Math.Min(MaxMessages, e.Value.Item2.Length + Messages.Length)];
-
-                    Array.Copy(Messages, 0, M, e.Value.Item2.Length, Messages.Length);
-                    Array.Copy(e.Value.Item2, 0, M, 0, e.Value.Item2.Length);
-                }
-
-                Messages = M;
-
-                bool bottom = scrollAtBottom;
-                updateMessageBounds();
-                updateScrollBar();
-                updateScrollbarHighlights();
-
-                vscroll.Invoke(() =>
-                {
-                    if (vscroll.Enabled)
-                    {
-                        if (bottom)
-                            vscroll.Value = vscroll.Maximum - vscroll.LargeChange;
-                    }
-                    Invalidate();
-                });
-            }
-        }
-
-        private void IrcManager_ConnectionError(object sender, ValueEventArgs<Exception> e)
-        {
-            addMessage(new Message(e.Value.Message, null, true));
-            updateMessageBounds();
-            updateScrollBar();
-            Invalidate();
-        }
-
-        private void IrcManager_Disconnected(object sender, EventArgs e)
-        {
-            addMessage(new Message("disconnected from chat", null, true));
-            updateMessageBounds();
-            updateScrollBar();
-            Invalidate();
-        }
-
-        private void IrcManager_Connected(object sender, EventArgs e)
-        {
-            addMessage(new Message("connected to chat", null, true));
-            updateMessageBounds();
-            updateScrollBar();
-            Invalidate();
-        }
-
-        private void IrcManager_IrcChatCleared(object sender, ChatClearedEventArgs e)
-        {
-            if (e.Channel == ChannelName)
-            {
-                lock (Messages)
-                {
-                    addMessage(new Message(e.Message, null, true));
-                }
-                lock (Messages)
-                {
-                    foreach (var msg in Messages)
-                    {
-                        if (msg.Username == e.User)
+                        var msg = c.Messages[i];
+                        if (msg.IsVisible)
                         {
-                            msg.Disabled = true;
-                            this.Invoke(() => GuiEngine.Current.DisposeMessageGraphicsBuffer(msg));
+                            msg.UpdateGifEmotes(g, selection, i);
                         }
                     }
                 }
-                updateMessageBounds();
-                updateScrollbarHighlights();
-                this.Invoke(() =>
-                {
-                    Invalidate();
-                });
-            }
+            });
         }
+
+        private void App_EmoteLoaded(object s, EventArgs e)
+        {
+            updateMessageBounds(true);
+            Invalidate();
+        }
+
+        private void Channel_MessageAdded(object sender, MessageAddedEventArgs e)
+        {
+            if (e.RemovedMessage != null)
+            {
+                if (selection != null)
+                {
+                    if (selection.Start.MessageIndex == 0)
+                        selection = null;
+                    else
+                        selection = new Selection(selection.Start.WithMessageIndex(selection.Start.MessageIndex - 1), selection.Start.WithMessageIndex(selection.End.MessageIndex - 1));
+                }
+
+                vscroll.UpdateHighlights(h => h.Position--);
+                vscroll.RemoveHighlightsWhere(h => h.Position < 0);
+                if (e.Message.Highlighted)
+                    vscroll.AddHighlight(channel?.MessageCount ?? 0, Color.FromArgb(64, Color.Red));
+            }
+
+            updateMessageBounds();
+            Invalidate();
+        }
+
+        private void Channel_MessagesAddedAtStart(object sender, ValueEventArgs<Message[]> e)
+        {
+            vscroll.UpdateHighlights(h => h.Position += e.Value.Length);
+
+            for (int i = 0; i < e.Value.Length; i++)
+            {
+                if (e.Value[i].Highlighted)
+                    vscroll.AddHighlight(i, Color.Red);
+            }
+
+            updateMessageBounds();
+            Invalidate();
+        }
+
+        private void Channel_ChatCleared(object sender, ChatClearedEventArgs e)
+        {
+            this.Invoke(() => Invalidate());
+        }
+
+        string mouseDownLink = null;
+        Word mouseDownWord = null;
+        Selection selection = null;
+        bool mouseDown = false;
 
         protected override void OnMouseWheel(MouseEventArgs e)
         {
-            vscroll.Value -= e.Delta;
+            vscroll.Value -= ((double)e.Delta / 10);
 
-            checkScrollBarPosition();
+            if (e.Delta > 0)
+                scrollAtBottom = false;
+            else
+                checkScrollBarPosition();
+
+            updateMessageBounds();
 
             Invalidate();
 
@@ -242,7 +194,7 @@ namespace Chatterino.Controls
                 var word = msg.WordAtPoint(new CommonPoint(e.X - TextPadding.Left, e.Y - msg.Y));
 
                 var pos = msg.MessagePositionAtPoint(graphics, new CommonPoint(e.X, e.Y - msg.Y), index);
-                Console.WriteLine($"pos: {pos.MessageIndex} : {pos.WordIndex} : {pos.CharIndex}");
+                //Console.WriteLine($"pos: {pos.MessageIndex} : {pos.WordIndex} : {pos.CharIndex}");
 
                 if (selection != null && mouseDown)
                 {
@@ -281,11 +233,6 @@ namespace Chatterino.Controls
                 }
             }
         }
-
-        string mouseDownLink = null;
-        Word mouseDownWord = null;
-        Selection selection = null;
-        bool mouseDown = false;
 
         protected override void OnMouseDown(MouseEventArgs e)
         {
@@ -337,7 +284,7 @@ namespace Chatterino.Controls
                     var word = msg.WordAtPoint(new CommonPoint(e.X - TextPadding.Left, e.Y - msg.Y));
                     if (word != null)
                     {
-                        if (mouseDownLink != null && mouseDownWord == word && (! AppSettings.ChatLinksCtrlClickOnly || (ModifierKeys & Keys.Control) == Keys.Control))
+                        if (mouseDownLink != null && mouseDownWord == word && (!AppSettings.ChatLinksCtrlClickOnly || (ModifierKeys & Keys.Control) == Keys.Control))
                         {
                             GuiEngine.Current.HandleLink(mouseDownLink);
                         }
@@ -346,44 +293,6 @@ namespace Chatterino.Controls
 
                 mouseDownLink = null;
             }
-        }
-
-
-        // event handlers
-        void onRedrawGifEmotes(object s, EventArgs e)
-        {
-            var g = CreateGraphics();
-            lock (Messages)
-                for (int i = 0; i < Messages.Length; i++)
-                {
-                    var msg = Messages[i];
-                    if (msg.IsVisible)
-                    {
-                        msg.UpdateGifEmotes(g, selection, i);
-                    }
-                }
-        }
-
-        void onEmoteLoaded(object s, EventArgs e)
-        {
-            updateMessageBounds(true);
-            Invalidate();
-        }
-
-        void updateScrollbarHighlights()
-        {
-            List<ScrollBarHighlight> highlights = new List<ScrollBarHighlight>();
-
-            lock (Messages)
-                foreach (var m in Messages)
-                {
-                    if (m.Highlighted)
-                    {
-                        highlights.Add(new ScrollBarHighlight(m.TotalY, m.Height, Color.Red));
-                    }
-                }
-
-            vscroll.Invoke(() => vscroll.Highlights = highlights.ToArray());
         }
 
         protected override void OnKeyPress(KeyPressEventArgs e)
@@ -413,7 +322,7 @@ namespace Chatterino.Controls
                 {
                     if (SendMessage != null)
                     {
-                        IrcManager.SendMessage(ircChannelName, SendMessage.RawMessage);
+                        IrcManager.SendMessage(channelName, SendMessage.RawMessage);
                         SendMessage = null;
                     }
                     lastTabComplete = null;
@@ -438,6 +347,96 @@ namespace Chatterino.Controls
             }
         }
 
+        protected override void OnResize(EventArgs e)
+        {
+            base.OnResize(e);
+
+            updateMessageBounds();
+        }
+
+        protected override void OnPaint(PaintEventArgs e)
+        {
+            base.OnPaint(e);
+
+            var borderPen = Focused ? App.ColorScheme.ChatBorderFocused : App.ColorScheme.ChatBorder;
+
+            e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
+            e.Graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
+
+            //int y = (int)(-vscroll.Value + TextPadding.Top);
+
+            // DRAW MESSAGES
+            Message[] M = channel?.CloneMessages();
+
+            if (M != null && M.Length > 0)
+            {
+                int startIndex = Math.Max(0, (int)vscroll.Value);
+
+                int y = TextPadding.Top - (int)(M[startIndex].Height * (vscroll.Value % 1));
+                int h = Height - TextPadding.Top - TextPadding.Bottom;
+
+                for (int i = 0; i < startIndex; i++)
+                {
+                    M[i].IsVisible = false;
+                }
+
+                for (int i = startIndex; i < M.Length; i++)
+                {
+                    var msg = M[i];
+                    msg.IsVisible = true;
+
+                    if (y - msg.Height > h)
+                    {
+                        for (i++; i < M.Length; i++)
+                        {
+                            msg.IsVisible = false;
+                        }
+
+                        break;
+                    }
+
+                    msg.Draw(e.Graphics, TextPadding.Left, y, selection, i);
+
+                    y += msg.Height;
+                }
+
+                //for (int i = 0; i < M.Length; i++)
+                //{
+                //    var msg = M[i];
+                //    if (y + msg.Height > 0)
+                //    {
+                //        if (y > Height)
+                //        {
+                //            for (; i < M.Length; i++)
+                //            {
+                //                M[i].IsVisible = false;
+                //                msg.Y = y;
+                //                y += msg.Height;
+                //            }
+                //            break;
+                //        }
+                //        msg.Draw(e.Graphics, TextPadding.Left, y, selection, i);
+                //        msg.IsVisible = true;
+                //    }
+                //    else
+                //    {
+                //        msg.IsVisible = false;
+                //    }
+                //    msg.Y = y;
+                //    y += msg.Height;
+                //}
+            }
+
+            e.Graphics.DrawRectangle(borderPen, 0, 0, Width - 1/* - SystemInformation.VerticalScrollBarWidth*/, Height - 1);
+
+            if (SendMessage != null)
+            {
+                e.Graphics.FillRectangle(App.ColorScheme.ChatBackground, 1, Height - SendMessage.Height - 4, Width - 3 - SystemInformation.VerticalScrollBarWidth, SendMessage.Height + TextPadding.Bottom - 1);
+                e.Graphics.DrawLine(borderPen, 1, Height - SendMessage.Height - 4, Width - 2 - SystemInformation.VerticalScrollBarWidth, Height - SendMessage.Height - 4);
+                SendMessage.Draw(e.Graphics, TextPadding.Left, Height - SendMessage.Height, null, -1);
+            }
+        }
+
         public void HandleTabCompletion(bool forward)
         {
             if (SendMessage != null)
@@ -445,8 +444,8 @@ namespace Chatterino.Controls
                 string text = SendMessage.RawMessage;
                 int index;
                 text = (index = text.LastIndexOf(' ')) == -1 ? text : text.Substring(index + 1);
-                TwitchChannel channel;
-                if (IrcManager.Channels.TryGetValue(ChannelName.ToLower(), out channel))
+
+                if (channel != null)
                 {
                     if (lastTabComplete == null)
                         currentTabIndex = forward ? -1 : 1;
@@ -464,201 +463,162 @@ namespace Chatterino.Controls
             }
         }
 
-        protected override void OnResize(EventArgs e)
-        {
-            base.OnResize(e);
-
-            updateMessageBounds();
-            updateScrollbarHighlights();
-        }
-
-        protected override void OnPaint(PaintEventArgs e)
-        {
-            base.OnPaint(e);
-
-            var borderPen = Focused ? App.ColorScheme.ChatBorderFocused : App.ColorScheme.ChatBorder;
-
-            e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-            e.Graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
-
-            int y = (int)(-vscroll.Value + TextPadding.Top);
-
-            // DRAW MESSAGES
-
-            Message[] M;
-
-            lock (Messages)
-            {
-                M = new Message[Messages.Length];
-                Array.Copy(Messages, M, Messages.Length);
-            }
-
-            for (int i = 0; i < M.Length; i++)
-            {
-                var msg = M[i];
-                if (y + msg.Height > 0)
-                {
-                    if (y > Height)
-                    {
-                        for (; i < M.Length; i++)
-                        {
-                            M[i].IsVisible = false;
-                            msg.Y = y;
-                            y += msg.Height;
-                        }
-                        break;
-                    }
-                    msg.Draw(e.Graphics, TextPadding.Left, y, selection, i);
-                    msg.IsVisible = true;
-                }
-                else
-                {
-                    msg.IsVisible = false;
-                }
-                msg.Y = y;
-                y += msg.Height;
-            }
-
-            e.Graphics.DrawRectangle(borderPen, 0, 0, Width - 1/* - SystemInformation.VerticalScrollBarWidth*/, Height - 1);
-
-            if (SendMessage != null)
-            {
-                e.Graphics.FillRectangle(App.ColorScheme.ChatBackground, 1, Height - SendMessage.Height - 4, Width - 3 - SystemInformation.VerticalScrollBarWidth, SendMessage.Height + TextPadding.Bottom - 1);
-                e.Graphics.DrawLine(borderPen, 1, Height - SendMessage.Height - 4, Width - 2 - SystemInformation.VerticalScrollBarWidth, Height - SendMessage.Height - 4);
-                SendMessage.Draw(e.Graphics, TextPadding.Left, Height - SendMessage.Height, null, -1);
-            }
-        }
-
-        void addMessage(Message msg)
-        {
-            if (Messages.Length == MaxMessages)
-            {
-                if (selection != null)
-                {
-                    if (selection.Start.MessageIndex == 0)
-                        selection = null;
-                    else
-                        selection = new Selection(new MessagePosition(selection.Start.MessageIndex, selection.Start.WordIndex, selection.Start.CharIndex),
-                            new MessagePosition(selection.End.MessageIndex, selection.End.WordIndex, selection.End.CharIndex));
-                }
-
-                Message[] M = new Message[Messages.Length];
-                Array.Copy(Messages, 1, M, 0, Messages.Length - 1);
-                M[M.Length - 1] = msg;
-                Messages = M;
-            }
-            else
-            {
-                Message[] M = new Message[Messages.Length + 1];
-                Messages.CopyTo(M, 0);
-                M[M.Length - 1] = msg;
-                Messages = M;
-            }
-        }
-
-
-        // controls
         void updateMessageBounds(bool emoteChanged = false)
         {
-            int totalHeight = 0;
-            using (var g = CreateGraphics())
+            var g = CreateGraphics();
+
+            // calculate the send messages bounds
+            if (SendMessage != null)
             {
-                lock (Messages)
-                {
-                    foreach (var msg in Messages)
-                    {
-                        msg.TotalY = totalHeight;
-                        msg.CalculateBounds(g, Width - TextPadding.Left - TextPadding.Right, emoteChanged);
-                        totalHeight += msg.Height;
-                    }
-                }
-
-                if (SendMessage != null)
-                {
-                    SendMessage.CalculateBounds(g, Width - TextPadding.Left - TextPadding.Right);
-                    TextPadding = new Padding(TextPadding.Left, TextPadding.Top, TextPadding.Right, 4 + SendMessage.Height);
-                }
-                else
-                    TextPadding = new Padding(TextPadding.Left, TextPadding.Top, TextPadding.Right, 4);
-
-                totalMessageHeight = totalHeight;
-
-                updateScrollBar();
+                SendMessage.CalculateBounds(g, Width - TextPadding.Left - TextPadding.Right);
+                TextPadding = new Padding(TextPadding.Left, TextPadding.Top, TextPadding.Right, 4 + SendMessage.Height);
             }
-        }
+            else
+                TextPadding = new Padding(TextPadding.Left, TextPadding.Top, TextPadding.Right, 4);
 
-        void updateScrollBar()
-        {
-            if (Height > 8)
+            // determine if
+            double scrollbarThumbHeight = 0;
+            int totalHeight = Height - TextPadding.Top - TextPadding.Bottom;
+            int currentHeight = 0;
+            int tmpHeight = Height - TextPadding.Top - TextPadding.Bottom;
+            bool enableScrollbar = false;
+            int messageCount = 0;
+
+            var c = channel;
+
+            if (c != null)
             {
-                vscroll.Invoke(() =>
+                lock (channel.MessageLock)
                 {
-                    if (totalMessageHeight > Height - TextPadding.Top - TextPadding.Bottom)
-                    {
-                        vscroll.Enabled = true;
-                        vscroll.LargeChange = Height - TextPadding.Top - TextPadding.Bottom;
-                        vscroll.Maximum = totalMessageHeight - Height + TextPadding.Top + TextPadding.Bottom + vscroll.LargeChange;
+                    var messages = channel.Messages;
+                    messageCount = messages.Length;
 
-                        if (scrollAtBottom)
+                    int visibleStart = Math.Max(0, (int)vscroll.Value);
+
+                    // set EmotesChanged for messages
+                    if (emoteChanged)
+                    {
+                        for (int i = 0; i < messages.Length; i++)
                         {
-                            vscroll.Value = vscroll.Maximum;
+                            messages[i].EmoteBoundsChanged = true;
                         }
                     }
-                    else
+
+                    // calculate bounds for visible messages
+                    for (int i = visibleStart; i < messages.Length; i++)
                     {
-                        vscroll.Enabled = false;
+                        var msg = messages[i];
+
+                        msg.CalculateBounds(g, Width - TextPadding.Left - TextPadding.Right);
+                        currentHeight += msg.Height;
+
+                        if (currentHeight > totalHeight)
+                        {
+                            break;
+                        }
                     }
-                });
+
+                    // calculate bounds for messages at the bottom to determine the size of the scrollbar thumb
+                    for (int i = messages.Length - 1; i >= 0; i--)
+                    {
+                        var msg = messages[i];
+                        msg.CalculateBounds(g, Width - TextPadding.Left - TextPadding.Right);
+                        scrollbarThumbHeight++;
+
+                        tmpHeight -= msg.Height;
+                        if (tmpHeight < 0)
+                        {
+                            enableScrollbar = true;
+                            scrollbarThumbHeight -= 1 - (double)tmpHeight / msg.Height;
+                            break;
+                        }
+                    }
+                }
             }
+            g.Dispose();
+
+            this.Invoke(() =>
+            {
+                if (enableScrollbar)
+                {
+                    vscroll.Enabled = true;
+                    vscroll.LargeChange = scrollbarThumbHeight;
+                    vscroll.Maximum = messageCount - 1;
+
+                    if (scrollAtBottom)
+                        vscroll.Value = messageCount - scrollbarThumbHeight;
+                }
+                else
+                {
+                    vscroll.Enabled = false;
+                    vscroll.Value = 0;
+                }
+            });
         }
 
         void checkScrollBarPosition()
         {
-            scrollAtBottom = !vscroll.Enabled || vscroll.Maximum < vscroll.Value + vscroll.LargeChange + 30;
+            scrollAtBottom = !vscroll.Enabled || vscroll.Maximum < vscroll.Value + vscroll.LargeChange + 0.0001;
         }
 
-        private string ircChannelName;
+        private string channelName;
 
         public string ChannelName
         {
-            get { return ircChannelName; }
+            get { return channelName; }
             set
             {
                 value = value.Trim();
-                if (value != ircChannelName)
+                if (value != channelName)
                 {
-                    if (!string.IsNullOrWhiteSpace(ircChannelName))
+                    if (channel != null)
                     {
+                        channel.MessageAdded -= Channel_MessageAdded;
+                        channel.MessagesAddedAtStart -= Channel_MessagesAddedAtStart;
+                        channel.ChatCleared -= Channel_ChatCleared;
                         channel = null;
-                        IrcManager.RemoveChannel(ChannelName);
+                        TwitchChannel.RemoveChannel(ChannelName);
                     }
 
-                    ircChannelName = value;
+                    channelName = value;
 
-                    if (!string.IsNullOrWhiteSpace(ircChannelName))
+                    if (!string.IsNullOrWhiteSpace(channelName))
                     {
-                        channel = IrcManager.AddChannel(ircChannelName);
+                        channel = TwitchChannel.AddChannel(channelName);
+                        channel.MessageAdded += Channel_MessageAdded;
+                        channel.MessagesAddedAtStart += Channel_MessagesAddedAtStart;
+                        channel.ChatCleared += Channel_ChatCleared;
                     }
 
-                    _header?.Invalidate();
+                    this.Invoke(() =>
+                    {
+                        _header?.Invalidate();
 
-                    Invalidate();
+                        Invalidate();
+                    });
                 }
             }
         }
 
         public Message MessageAtPoint(Point p, out int index)
         {
-            lock (Messages)
-                for (int i = 0; i < Messages.Length; i++)
+            var c = channel;
+
+            if (c != null)
+            {
+                lock (c.MessageLock)
                 {
-                    var m = Messages[i];
-                    if (m.Y > p.Y - m.Height)
+                    for (int i = Math.Max(0, (int)vscroll.Value); i < c.Messages.Length; i++)
                     {
-                        index = i;
-                        return m;
+                        var m = c.Messages[i];
+                        if (m.Y > p.Y - m.Height)
+                        {
+                            index = i;
+                            return m;
+                        }
                     }
                 }
+            }
             index = -1;
             return null;
         }
@@ -678,21 +638,28 @@ namespace Chatterino.Controls
 
             StringBuilder b = new StringBuilder();
 
-            lock (Messages)
-                for (int i = selection.First.MessageIndex; i <= selection.Last.MessageIndex; i++)
-                {
-                    if (i != selection.First.MessageIndex)
-                        b.AppendLine();
+            var c = channel;
 
-                    for (int j = (i == selection.First.MessageIndex ? selection.First.WordIndex : 0); j < (i == selection.Last.MessageIndex ? selection.Last.WordIndex : Messages[i].Words.Count); j++)
+            if (c != null)
+            {
+                lock (c.MessageLock)
+                {
+                    for (int i = selection.First.MessageIndex; i <= selection.Last.MessageIndex; i++)
                     {
-                        if (Messages[i].Words[j].CopyText != null)
+                        if (i != selection.First.MessageIndex)
+                            b.AppendLine();
+
+                        for (int j = (i == selection.First.MessageIndex ? selection.First.WordIndex : 0); j < (i == selection.Last.MessageIndex ? selection.Last.WordIndex : c.Messages[i].Words.Count); j++)
                         {
-                            b.Append(Messages[i].Words[j].CopyText);
-                            b.Append(' ');
+                            if (c.Messages[i].Words[j].CopyText != null)
+                            {
+                                b.Append(c.Messages[i].Words[j].CopyText);
+                                b.Append(' ');
+                            }
                         }
                     }
                 }
+            }
 
             return b.ToString();
         }

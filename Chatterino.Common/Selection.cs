@@ -64,5 +64,10 @@ namespace Chatterino.Common
             WordIndex = wordIndex;
             CharIndex = charIndex;
         }
+
+        public MessagePosition WithMessageIndex(int v)
+        {
+            return new MessagePosition(v, WordIndex, CharIndex);
+        }
     }
 }

@@ -11,17 +11,16 @@ namespace Chatterino.Common
         public string Channel { get; private set; }
         public string User { get; private set; }
         public string Message { get; private set; }
-        public string Duration { get; private set; }
+        public int Duration { get; private set; }
         public string Reason { get; private set; }
 
-        public ChatClearedEventArgs(string channel, string user, string duration, string reason)
+        public ChatClearedEventArgs(string user, string reason, int duration)
         {
-            Channel = channel;
             User = user;
             Duration = duration;
             Reason = reason;
 
-            Message = $"{user} was timed out for {duration} second{(duration == "1" ? "" : "s")}{(string.IsNullOrEmpty(reason) ? "." : ": " + reason)}";
+            Message = $"{user} was timed out for {duration} second{(duration == 1 ? "" : "s")}{(string.IsNullOrEmpty(reason) ? "." : ": " + reason)}";
         }
     }
 }

@@ -7,17 +7,17 @@ using System.Threading.Tasks;
 
 namespace Chatterino.Controls
 {
-    public struct ScrollBarHighlight
+    public class ScrollBarHighlight
     {
-        public double Position { get; private set; }
+        public double Position { get; set; }
+        public Color Color { get; set; }
         public double Height { get; set; }
-        public Color Color { get; private set; }
 
-        public ScrollBarHighlight(double position, double height, Color color)
+        public ScrollBarHighlight(double position, Color color, double height = 1)
         {
             Position = position;
-            Height = height;
             Color = color;
+            Height = height;
         }
     }
 }

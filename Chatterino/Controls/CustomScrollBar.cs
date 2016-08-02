@@ -20,35 +20,39 @@ namespace Chatterino.Controls
 
         // properties
         private double max;
+        object maxLock = new object();
 
         public double Maximum
         {
-            get { return max; }
-            set { max = value; Value = Value; updateScroll(); Invalidate(); }
+            get { lock (maxLock) return max; }
+            set { lock (maxLock) max = value; Value = Value; updateScroll(); Invalidate(); }
         }
 
         private double min;
+        object minLock = new object();
 
         public double Minimum
         {
-            get { return min; }
-            set { min = value; updateScroll(); Invalidate(); }
+            get { lock (minLock) return min; }
+            set { lock (minLock) min = value; updateScroll(); Invalidate(); }
         }
 
         private double large;
+        object largeLock = new object();
 
         public double LargeChange
         {
-            get { return large; }
-            set { large = value; Value = Value; updateScroll(); Invalidate(); }
+            get { lock (largeLock) return large; }
+            set { lock (largeLock) large = value; Value = Value; updateScroll(); Invalidate(); }
         }
 
         private double small;
+        object smallLock = new object();
 
         public double SmallChange
         {
-            get { return small; }
-            set { small = value; updateScroll(); Invalidate(); }
+            get { lock (smallLock) return small; }
+            set { lock (smallLock) small = value; updateScroll(); Invalidate(); }
         }
 
         private double value;
@@ -60,22 +64,40 @@ namespace Chatterino.Controls
             {
                 this.value = value < 0 ? 0 : (value > max - large ? max - large : value);
                 updateScroll();
-                Invalidate();
+                Update();
             }
         }
 
-        private ScrollBarHighlight[] highlights;
+        object highlightLock = new object();
 
-        public ScrollBarHighlight[] Highlights
+        List<ScrollBarHighlight> highlights = new List<ScrollBarHighlight>();
+
+        public void RemoveHighlightsWhere(Func<ScrollBarHighlight, bool> match)
         {
-            get { return highlights; }
-            set
+            lock (highlightLock)
             {
-                highlights = value;
-                Invalidate();
+                highlights.RemoveAll(new Predicate<ScrollBarHighlight>(match));
             }
         }
 
+        public void UpdateHighlights(Action<ScrollBarHighlight> func)
+        {
+            lock (highlightLock)
+            {
+                foreach (ScrollBarHighlight highlight in highlights)
+                {
+                    func(highlight);
+                }
+            }
+        }
+
+        public void AddHighlight(double position, Color color, double height = 1)
+        {
+            lock (highlightLock)
+            {
+                highlights.Add(new ScrollBarHighlight(position, color, height));
+            }
+        }
 
         // ctor
         public CustomScrollBar()
@@ -284,14 +306,18 @@ namespace Chatterino.Controls
                 g.FillRectangle(mOverIndex == 2 ? App.ColorScheme.ScrollbarThumbSelected : App.ColorScheme.ScrollbarThumb
                     , 0, buttonSize + thumbOffset, buttonSize, thumbHeight);
 
-                if (highlights != null && Height != 0 && Maximum != 0)
+                if (Height != 0 && Maximum != 0)
                 {
                     var h = (Height - buttonSize - buttonSize);
-                    foreach (var highlight in highlights)
-                    {
-                        SolidBrush brush = colors.GetOrAdd(highlight.Color, (x) => new SolidBrush(Color.FromArgb(48, x)));
 
-                        g.FillRectangle(brush, 0, buttonSize + (int)(h * highlight.Position / Maximum), Width, Math.Max(3, (int)(h * highlight.Height / Maximum)));
+                    lock (highlights)
+                    {
+                        foreach (var highlight in highlights)
+                        {
+                            SolidBrush brush = colors.GetOrAdd(highlight.Color, (x) => new SolidBrush(Color.FromArgb(48, x)));
+
+                            g.FillRectangle(brush, 0, buttonSize + (int)(h * highlight.Position / Maximum), Width, Math.Max(3, (int)(h * highlight.Height / Maximum)));
+                        }
                     }
                 }
             }

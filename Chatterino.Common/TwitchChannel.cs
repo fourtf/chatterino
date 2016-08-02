@@ -14,26 +14,20 @@ namespace Chatterino.Common
 {
     public class TwitchChannel
     {
-        // properties
-        private string name;
+        const int maxMessages = 1000;
 
-        public string Name
-        {
-            get { return name; }
-            set
-            {
-                name = value;
-                SubLink = "https://www.twitch.tv/" + value + "/subscribe?ref=in_chat_subscriber_link";
-            }
-        }
+        // properties
+        public string Name { get; private set; }
 
         public string SubLink { get; private set; }
 
-        public int Uses { get; set; } = 0;
+        protected int Uses { get; set; } = 0;
 
+        // Channel Emotes
         public ConcurrentDictionary<string, TwitchEmote> BttvChannelEmotes { get; private set; }
             = new ConcurrentDictionary<string, TwitchEmote>();
 
+        // Sub Badge
         private TwitchEmote subBadge;
 
         public TwitchEmote SubscriberBadge
@@ -73,14 +67,12 @@ namespace Chatterino.Common
             }
         }
 
-        public ConcurrentDictionary<string, string> Users = new ConcurrentDictionary<string, string>();
-
-        List<KeyValuePair<string, string>> emoteNames = new List<KeyValuePair<string, string>>();
-
         // ctor
-        public TwitchChannel(string channelName)
+        protected TwitchChannel(string channelName)
         {
             Name = channelName.Trim('#');
+            SubLink = "https://www.twitch.tv/" + Name + "/subscribe?ref=in_chat_subscriber_link";
+
             JoinWrite();
             JoinRead();
 
@@ -106,7 +98,7 @@ namespace Chatterino.Common
                         }
                     }
 
-                    IrcManager.TriggerOldMessagesReceived(this, messages.ToArray());
+                    AddMessagesAtStart(messages.ToArray());
                 }
                 catch { }
             });
@@ -193,11 +185,66 @@ namespace Chatterino.Common
                 catch { }
             });
 
-            Emotes.EmotesLoaded += (s, e) =>
-            {
-                updateEmoteNameList();
-            };
+            Emotes.EmotesLoaded += Emotes_EmotesLoaded;
+            IrcManager.Connected += IrcManager_Connected;
+            IrcManager.Disconnected += IrcManager_Disconnected;
         }
+
+        private static ConcurrentDictionary<string, TwitchChannel> channels = new ConcurrentDictionary<string, TwitchChannel>();
+        public static IEnumerable<TwitchChannel> Channels { get { return channels.Values; } }
+
+        public static TwitchChannel AddChannel(string channelName)
+        {
+            return channels.AddOrUpdate((channelName ?? "").ToLower(), cname => new TwitchChannel(cname), (cname, c) => { c.Uses++; return c; });
+        }
+
+        public static void RemoveChannel(string channelName)
+        {
+            channelName = channelName.ToLower();
+
+            TwitchChannel data;
+            if (channels.TryGetValue(channelName ?? "", out data))
+            {
+                data.Uses--;
+                if (data.Uses <= 0)
+                {
+                    data.Disconnect();
+                    data.Dispose();
+                    channels.TryRemove(channelName ?? "", out data);
+                }
+            }
+        }
+
+        public static TwitchChannel GetChannel(string channelName)
+        {
+            channelName = channelName.ToLower();
+
+            TwitchChannel data;
+            if (channels.TryGetValue(channelName ?? "", out data))
+                return data;
+
+            return null;
+        }
+
+        private void IrcManager_Connected(object sender, EventArgs e)
+        {
+            AddMessage(new Message("connected to chat"));
+        }
+
+        private void IrcManager_Disconnected(object sender, EventArgs e)
+        {
+            AddMessage(new Message("disconnected from chat"));
+        }
+
+        private void Emotes_EmotesLoaded(object sender, EventArgs e)
+        {
+            updateEmoteNameList();
+        }
+
+        // Emote + Name Autocompletion
+        public ConcurrentDictionary<string, string> Users = new ConcurrentDictionary<string, string>();
+
+        List<KeyValuePair<string, string>> emoteNames = new List<KeyValuePair<string, string>>();
 
         void updateEmoteNameList()
         {
@@ -260,13 +307,7 @@ namespace Chatterino.Common
             return null;
         }
 
-        //public string GetNameCompletion(string name, ref int index)
-        //{
-        //    name = name.ToUpper();
-
-        //    return null;
-        //}
-
+        // Connection
         public void JoinWrite()
         {
             IrcManager.IrcWriteClient?.RfcJoin("#" + Name);
@@ -281,6 +322,122 @@ namespace Chatterino.Common
         {
             IrcManager.IrcReadClient?.RfcPart("#" + Name);
             IrcManager.IrcWriteClient?.RfcPart("#" + Name);
+        }
+
+        // Messages
+        public event EventHandler<ChatClearedEventArgs> ChatCleared;
+        public event EventHandler<MessageAddedEventArgs> MessageAdded;
+        public event EventHandler<ValueEventArgs<Message[]>> MessagesAddedAtStart;
+
+        public int MessageCount { get; private set; } = 0;
+
+        private Message[] _messages = new Message[0];
+
+        public Message[] Messages
+        {
+            get { return _messages; }
+            set { _messages = value; }
+        }
+
+        public Message[] CloneMessages()
+        {
+            Message[] M;
+            lock (MessageLock)
+            {
+                M = new Message[_messages.Length];
+                Array.Copy(_messages, M, M.Length);
+            }
+            return M;
+        }
+
+        public object MessageLock { get; private set; } = new object();
+
+        public void ClearChat(string user, string reason, int duration)
+        {
+            lock (MessageLock)
+            {
+                foreach (Message msg in Messages)
+                {
+                    if (msg.Username == user)
+                    {
+                        msg.Disabled = true;
+                    }
+                }
+            }
+
+            AddMessage(new Message($"{user} was timed out for {duration} second{(duration == 1 ? "s" : "")}: \"{reason}\""));
+
+            ChatCleared?.Invoke(this, new ChatClearedEventArgs(user, reason, duration));
+        }
+
+        public void AddMessage(Message message)
+        {
+            Message[] M;
+            Message removedMessage = null;
+
+            lock (MessageLock)
+            {
+                if (Messages.Length == maxMessages)
+                {
+                    removedMessage = Messages[0];
+                    M = new Message[maxMessages];
+                    Array.Copy(Messages, 1, M, 0, Messages.Length - 1);
+                }
+                else
+                {
+                    M = new Message[Messages.Length + 1];
+                    Array.Copy(Messages, M, Messages.Length);
+                }
+
+                M[M.Length - 1] = message;
+                Messages = M;
+                MessageCount = M.Length;
+            }
+
+            MessageAdded?.Invoke(this, new MessageAddedEventArgs(message, removedMessage));
+        }
+
+        public void AddMessagesAtStart(Message[] messages)
+        {
+            Message[] M;
+
+            lock (MessageLock)
+            {
+                if (Messages.Length == maxMessages)
+                    return;
+
+                if (messages.Length + Messages.Length <= maxMessages)
+                {
+                    M = new Message[messages.Length + Messages.Length];
+
+                    Array.Copy(Messages, 0, M, messages.Length, Messages.Length);
+                    Array.Copy(messages, 0, M, 0, messages.Length);
+                }
+                else
+                {
+                    M = new Message[maxMessages];
+
+                    Array.Copy(Messages, 0, M, maxMessages - Messages.Length, Messages.Length);
+
+                    Message[] _messages = new Message[maxMessages - Messages.Length];
+
+                    Array.Copy(messages, messages.Length - maxMessages + Messages.Length, M, 0, maxMessages - Messages.Length);
+                    Array.Copy(messages, messages.Length - maxMessages + Messages.Length, _messages, 0, maxMessages - Messages.Length);
+
+                    messages = _messages;
+                }
+                Messages = M;
+                MessageCount = M.Length;
+            }
+
+            MessagesAddedAtStart?.Invoke(this, new ValueEventArgs<Message[]>(messages));
+        }
+
+        public void Dispose()
+        {
+            Emotes.EmotesLoaded -= Emotes_EmotesLoaded;
+            IrcManager.Connected -= IrcManager_Connected;
+            IrcManager.Disconnected -= IrcManager_Disconnected;
         }
     }
 }

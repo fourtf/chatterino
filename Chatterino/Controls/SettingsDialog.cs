@@ -14,11 +14,11 @@ namespace Chatterino.Controls
 {
     public partial class SettingsDialog : Form
     {
-        public String OriginalSettings = "";
+        public string OriginalSettings = "";
         private Button btnCancel;
         private Button BtnOK;
-        private Button btnResetCurrent;
-        private Button btnResetAll;
+        //private Button btnResetCurrent;
+        //private Button btnResetAll;
 
         //CTOR
         public SettingsDialog()

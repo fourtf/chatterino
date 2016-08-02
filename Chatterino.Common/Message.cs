@@ -17,7 +17,9 @@ namespace Chatterino.Common
         public int Width { get; set; } = 0;
 
         public bool Disabled { get; set; } = false;
+#warning dispose buffer here
         public bool Highlighted { get; set; } = false;
+        public bool EmoteBoundsChanged { get; set; } = true;
 
         public string Username { get; set; }
         public string DisplayName { get; set; }
@@ -352,8 +354,9 @@ namespace Chatterino.Common
         bool measureImages = true;
 
         // return true if control needs to be redrawn
-        public bool CalculateBounds(object graphics, int width, bool emotesChanged = false)
+        public bool CalculateBounds(object graphics, int width)
         {
+            var emotesChanged = EmoteBoundsChanged;
             bool redraw = false;
 
             if (Width != width)

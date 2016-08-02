@@ -201,7 +201,7 @@ namespace Chatterino.Common
                                     readPongReceived = true;
                             };
 
-                            foreach (var channel in Channels.Values)
+                            foreach (var channel in TwitchChannel.Channels)
                             {
                                 channel.JoinRead();
                             }
@@ -252,7 +252,7 @@ namespace Chatterino.Common
 
                             IrcWriteClient = write;
 
-                            foreach (var channel in Channels.Values)
+                            foreach (var channel in TwitchChannel.Channels)
                             {
                                 channel.JoinWrite();
                             }
@@ -301,14 +301,14 @@ namespace Chatterino.Common
         }
 
         // Messages
-        public static event EventHandler<MessageEventArgs> MessageReceived;
-        public static event EventHandler<ChatClearedEventArgs> ChatCleared;
+        //public static event EventHandler<MessageEventArgs> MessageReceived;
+        //public static event EventHandler<ChatClearedEventArgs> ChatCleared;
         public static event EventHandler Disconnected;
         public static event EventHandler Connected;
         public static event EventHandler<ValueEventArgs<Exception>> ConnectionError;
-        public static event EventHandler<ValueEventArgs<Tuple<TwitchChannel,Message[]>>> OldMessagesReceived;
+        //public static event EventHandler<ValueEventArgs<Tuple<TwitchChannel,Message[]>>> OldMessagesReceived;
 
-        public static void TriggerOldMessagesReceived(TwitchChannel channel, Message[] messages) => OldMessagesReceived?.Invoke(null, new ValueEventArgs<Tuple<TwitchChannel, Message[]>>(Tuple.Create(channel, messages)));
+        //public static void TriggerOldMessagesReceived(TwitchChannel channel, Message[] messages) => OldMessagesReceived?.Invoke(null, new ValueEventArgs<Tuple<TwitchChannel, Message[]>>(Tuple.Create(channel, messages)));
 
         static ConcurrentDictionary<Tuple<string, string>, object> recentChatClears = new ConcurrentDictionary<Tuple<string, string>, object>();
 
@@ -335,10 +335,15 @@ namespace Chatterino.Common
 
                     string reason;
                     e.Data.Tags.TryGetValue("ban-reason", out reason);
-                    string duration;
-                    e.Data.Tags.TryGetValue("ban-duration", out duration);
+                    string _duration;
+                    int duration = 0;
+                    if (e.Data.Tags.TryGetValue("ban-duration", out _duration))
+                    {
+                        int.TryParse(_duration, out duration);
+                    }
 
-                    ChatCleared?.Invoke(null, new ChatClearedEventArgs(channel, user, duration ?? "?", reason ?? "?"));
+                    if (e.Data.RawMessageArray.Length > 3)
+                        TwitchChannel.GetChannel(e.Data.RawMessageArray[3].TrimStart('#')).Process(c => c.ClearChat(user, reason, duration));
                 }
             }
             else
@@ -346,39 +351,17 @@ namespace Chatterino.Common
                 if ((e.Data.Channel?.Length ?? 0) > 1 && e.Data.Channel?.Substring(1) != null
                     && e.Data.RawMessageArray.Length > 4 && e.Data.RawMessageArray[2] == "PRIVMSG")
                 {
-                    TwitchChannel c;
-
-                    if (Channels.TryGetValue((e.Data.Channel ?? "").TrimStart('#'), out c))
+                    TwitchChannel.GetChannel((e.Data.Channel ?? "").TrimStart('#')).Process(c =>
                     {
                         Message msg = new Message(e.Data, c);
                         c.Users[msg.Username.ToUpper()] = msg.DisplayName;
 
-                        MessageReceived?.Invoke(sender, new MessageEventArgs(msg));
-                    }
+                        c.AddMessage(msg);
+                    });
                 }
             }
 
             e.Data.RawMessage.Log();
-        }
-
-        // Channels
-        public static ConcurrentDictionary<string, TwitchChannel> Channels { get; private set; } = new ConcurrentDictionary<string, TwitchChannel>();
-
-        public static TwitchChannel AddChannel(string channel) => Channels.AddOrUpdate((channel ?? "").ToLower(), cname => new TwitchChannel(cname), (cname, c) => { c.Uses++; return c; });
-        public static void RemoveChannel(string channel)
-        {
-            channel = channel.ToLower();
-
-            TwitchChannel data;
-            if (Channels.TryGetValue(channel ?? "", out data))
-            {
-                data.Uses--;
-                if (data.Uses <= 0)
-                {
-                    data.Disconnect();
-                    Channels.TryRemove(channel ?? "", out data);
-                }
-            }
         }
     }
 }
