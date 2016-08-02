@@ -27,20 +27,22 @@ namespace Chatterino.Common
 
         public static ConcurrentDictionary<string, Func<string, string>> ChatCommands = new ConcurrentDictionary<string, Func<string, string>>();
 
-        public static void SendMessage(string channel, string message)
+        public static void SendMessage(string channel, string _message)
         {
             if (channel != null)
             {
-                if (message.Length > 1 && message[0] == '/')
+                var message = _message;
+
+                if (_message.Length > 1 && _message[0] == '/')
                 {
-                    int index = message.IndexOf(' ');
-                    string _command = index == -1 ? message.Substring(1) : message.Substring(1, index - 1);
-                    message = index == -1 ? "" : message.Substring(index + 1);
+                    int index = _message.IndexOf(' ');
+                    string _command = index == -1 ? _message.Substring(1) : _message.Substring(1, index - 1);
+                    _message = index == -1 ? "" : _message.Substring(index + 1);
 
                     Func<string, string> command;
                     if (ChatCommands.TryGetValue(_command, out command))
                     {
-                        message = command(message) ?? message;
+                        message = command(_message) ?? message;
                     }
                 }
 
@@ -49,7 +51,7 @@ namespace Chatterino.Common
                     message = message + " ";
                 }
 
-                IrcWriteClient?.SendMessage(SendType.Message, "#" + channel.TrimStart('#'), Common.Emojis.ReplaceShortCodes(message));
+                IrcWriteClient?.SendMessage(SendType.Message, "#" + channel.TrimStart('#'), Emojis.ReplaceShortCodes(message));
             }
         }
 
@@ -301,14 +303,9 @@ namespace Chatterino.Common
         }
 
         // Messages
-        //public static event EventHandler<MessageEventArgs> MessageReceived;
-        //public static event EventHandler<ChatClearedEventArgs> ChatCleared;
         public static event EventHandler Disconnected;
         public static event EventHandler Connected;
         public static event EventHandler<ValueEventArgs<Exception>> ConnectionError;
-        //public static event EventHandler<ValueEventArgs<Tuple<TwitchChannel,Message[]>>> OldMessagesReceived;
-
-        //public static void TriggerOldMessagesReceived(TwitchChannel channel, Message[] messages) => OldMessagesReceived?.Invoke(null, new ValueEventArgs<Tuple<TwitchChannel, Message[]>>(Tuple.Create(channel, messages)));
 
         static ConcurrentDictionary<Tuple<string, string>, object> recentChatClears = new ConcurrentDictionary<Tuple<string, string>, object>();
 

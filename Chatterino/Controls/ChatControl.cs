@@ -363,8 +363,6 @@ namespace Chatterino.Controls
             e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
             e.Graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
 
-            //int y = (int)(-vscroll.Value + TextPadding.Top);
-
             // DRAW MESSAGES
             Message[] M = channel?.CloneMessages();
 
@@ -385,17 +383,17 @@ namespace Chatterino.Controls
                     var msg = M[i];
                     msg.IsVisible = true;
 
+                    msg.Draw(e.Graphics, TextPadding.Left, y, selection, i);
+
                     if (y - msg.Height > h)
                     {
-                        for (i++; i < M.Length; i++)
+                        for (; i < M.Length; i++)
                         {
-                            msg.IsVisible = false;
+                            M[i].IsVisible = false;
                         }
 
                         break;
                     }
-
-                    msg.Draw(e.Graphics, TextPadding.Left, y, selection, i);
 
                     y += msg.Height;
                 }
