@@ -120,7 +120,7 @@ namespace Chatterino.Common
                 DateTime time;
                 if (DateTime.TryParseExact(timestampTag, "yyyyMMdd-HHmmss", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out time))
                 {
-                    timestamp = DateTime.Now.ToString(AppSettings.ChatShowTimestampSeconds ? "HH:mm:ss" : "HH:mm");
+                    timestamp = time.ToString(AppSettings.ChatShowTimestampSeconds ? "HH:mm:ss" : "HH:mm");
                     enableTimestamp = true;
                 }
             }
