@@ -438,7 +438,7 @@ namespace Chatterino.Common
             if (redraw)
             {
                 int x = 0;
-                int y = 0;
+                int y = 4;
                 int lineStartIndex = 0;
 
                 int spaceWidth = GuiEngine.Current.MeasureStringSize(graphics, FontType.Medium, " ").Width;
@@ -538,7 +538,7 @@ namespace Chatterino.Common
                 }
 
                 y += fixCurrentLineHeight();
-                Height = y + 8;
+                Height = y + 4;
             }
 
             if (redraw)

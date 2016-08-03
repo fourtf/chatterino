@@ -14,7 +14,7 @@ namespace Chatterino.Common
 {
     public class TwitchChannel
     {
-        const int maxMessages = 1000;
+        const int maxMessages = 10000;
 
         // properties
         public string Name { get; private set; }
@@ -66,6 +66,34 @@ namespace Chatterino.Common
                 });
             }
         }
+
+
+        // Roomstate
+        public event EventHandler RoomStateChanged;
+
+        private RoomState roomState;
+
+        public RoomState RoomState
+        {
+            get { return roomState; }
+            set
+            {
+                if (roomState != value)
+                {
+                    roomState = value;
+                    RoomStateChanged?.Invoke(this, EventArgs.Empty);
+                }
+            }
+        }
+
+        private int slowModeTime;
+
+        public int SlowModeTime
+        {
+            get { return slowModeTime; }
+            set { slowModeTime = value; }
+        }
+
 
         // ctor
         protected TwitchChannel(string channelName)
@@ -188,6 +216,12 @@ namespace Chatterino.Common
             Emotes.EmotesLoaded += Emotes_EmotesLoaded;
             IrcManager.Connected += IrcManager_Connected;
             IrcManager.Disconnected += IrcManager_Disconnected;
+            IrcManager.NoticeAdded += IrcManager_NoticeAdded;
+        }
+
+        private void IrcManager_NoticeAdded(object sender, ValueEventArgs<string> e)
+        {
+            AddMessage(new Message(e.Value));
         }
 
         private static ConcurrentDictionary<string, TwitchChannel> channels = new ConcurrentDictionary<string, TwitchChannel>();
@@ -195,7 +229,7 @@ namespace Chatterino.Common
 
         public static TwitchChannel AddChannel(string channelName)
         {
-            return channels.AddOrUpdate((channelName ?? "").ToLower(), cname => new TwitchChannel(cname), (cname, c) => { c.Uses++; return c; });
+            return channels.AddOrUpdate((channelName ?? "").ToLower(), cname => new TwitchChannel(cname) { Uses = 1 }, (cname, c) =>{ c.Uses++; return c; });
         }
 
         public static void RemoveChannel(string channelName)
@@ -324,6 +358,11 @@ namespace Chatterino.Common
             IrcManager.IrcWriteClient?.RfcPart("#" + Name);
         }
 
+        public void SendMessage(string text)
+        {
+            IrcManager.SendMessage(Name, text);
+        }
+
         // Messages
         public event EventHandler<ChatClearedEventArgs> ChatCleared;
         public event EventHandler<MessageAddedEventArgs> MessageAdded;
@@ -365,7 +404,7 @@ namespace Chatterino.Common
                 }
             }
 
-            AddMessage(new Message($"{user} was timed out for {duration} second{(duration == 1 ? "s" : "")}: \"{reason}\""));
+            AddMessage(new Message($"{user} was timed out for {duration} second{(duration != 1 ? "s" : "")}: \"{reason}\""));
 
             ChatCleared?.Invoke(this, new ChatClearedEventArgs(user, reason, duration));
         }
@@ -438,6 +477,7 @@ namespace Chatterino.Common
             Emotes.EmotesLoaded -= Emotes_EmotesLoaded;
             IrcManager.Connected -= IrcManager_Connected;
             IrcManager.Disconnected -= IrcManager_Disconnected;
+            IrcManager.NoticeAdded -= IrcManager_NoticeAdded;
         }
     }
 }

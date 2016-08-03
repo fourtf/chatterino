@@ -17,7 +17,7 @@ namespace Chatterino.Controls
         // Properties
         public const int TopMenuBarHeight = 32;
 
-        public Padding TextPadding { get; private set; } = new Padding(12, 12 + TopMenuBarHeight, 16 + SystemInformation.VerticalScrollBarWidth, 4);
+        public Padding TextPadding { get; private set; } = new Padding(12, 8 + TopMenuBarHeight, 16 + SystemInformation.VerticalScrollBarWidth, 8);
 
         public Message SendMessage { get; set; } = null;
 
@@ -28,7 +28,51 @@ namespace Chatterino.Controls
 
         TwitchChannel channel = null;
 
-        Timer gifEmoteTimer = new Timer { Interval = 33 };
+        public TwitchChannel Channel
+        {
+            get { return channel; }
+        }
+
+        private string channelName;
+
+        public string ChannelName
+        {
+            get { return channelName; }
+            set
+            {
+                value = value.Trim();
+                if (value != channelName)
+                {
+                    if (channel != null)
+                    {
+                        channel.MessageAdded -= Channel_MessageAdded;
+                        channel.MessagesAddedAtStart -= Channel_MessagesAddedAtStart;
+                        channel.ChatCleared -= Channel_ChatCleared;
+                        channel.RoomStateChanged -= Channel_RoomStateChanged;
+                        channel = null;
+                        TwitchChannel.RemoveChannel(ChannelName);
+                    }
+
+                    channelName = value;
+
+                    if (!string.IsNullOrWhiteSpace(channelName))
+                    {
+                        channel = TwitchChannel.AddChannel(channelName);
+                        channel.MessageAdded += Channel_MessageAdded;
+                        channel.MessagesAddedAtStart += Channel_MessagesAddedAtStart;
+                        channel.ChatCleared += Channel_ChatCleared;
+                        channel.RoomStateChanged += Channel_RoomStateChanged;
+                    }
+
+                    this.Invoke(() =>
+                    {
+                        _header?.Invalidate();
+
+                        Invalidate();
+                    });
+                }
+            }
+        }
 
         CustomScrollBar vscroll = new CustomScrollBar
         {
@@ -161,6 +205,48 @@ namespace Chatterino.Controls
             this.Invoke(() => Invalidate());
         }
 
+        private void Channel_RoomStateChanged(object sender, EventArgs e)
+        {
+            _header.Invoke(() =>
+            {
+                var c = channel;
+                if (c != null)
+                {
+                    string text = "";
+
+                    RoomState state = c.RoomState;
+                    int count = 0;
+                    if (state.HasFlag(RoomState.SlowMode))
+                    {
+                        text += "slow(" + c.SlowModeTime + "), ";
+                        count++;
+                    }
+                    if (state.HasFlag(RoomState.SubOnly))
+                    {
+                        text += "sub, ";
+                        count++;
+                    }
+                    if (count == 2)
+                        text += "\n";
+                    if (state.HasFlag(RoomState.R9k))
+                    {
+                        text += "r9k, ";
+                        count++;
+                    }
+                    if (count == 2)
+                        text += "\n";
+                    if (state.HasFlag(RoomState.EmoteOnly))
+                    {
+                        text += "emote, ";
+                        count++;
+                    }
+
+                    _header.RoomstateButton.Text = text == "" ? "-" : text.TrimEnd(' ', ',', '\n');
+                    _header.Invalidate();
+                }
+            });
+        }
+
         string mouseDownLink = null;
         Word mouseDownWord = null;
         Selection selection = null;
@@ -210,7 +296,7 @@ namespace Chatterino.Controls
 
                 if (word != null)
                 {
-                    if (word.Link != null && (!AppSettings.ChatLinksCtrlClickOnly || (ModifierKeys & Keys.Control) == Keys.Control))
+                    if (word.Link != null)
                     {
                         Cursor = Cursors.Hand;
                     }
@@ -286,7 +372,7 @@ namespace Chatterino.Controls
                     var word = msg.WordAtPoint(new CommonPoint(e.X - TextPadding.Left, e.Y - msg.Y));
                     if (word != null)
                     {
-                        if (mouseDownLink != null && mouseDownWord == word && (!AppSettings.ChatLinksCtrlClickOnly || (ModifierKeys & Keys.Control) == Keys.Control))
+                        if (mouseDownLink != null && mouseDownWord == word && !AppSettings.ChatLinksDoubleClickOnly)
                         {
                             GuiEngine.Current.HandleLink(mouseDownLink);
                         }
@@ -346,6 +432,17 @@ namespace Chatterino.Controls
 
                 updateMessageBounds();
                 Invalidate();
+            }
+        }
+
+        protected override void OnDoubleClick(EventArgs e)
+        {
+            base.OnDoubleClick(e);
+
+            if (AppSettings.ChatLinksDoubleClickOnly)
+            {
+                if (mouseDownLink != null)
+                    GuiEngine.Current.HandleLink(mouseDownLink);
             }
         }
 
@@ -471,10 +568,10 @@ namespace Chatterino.Controls
             if (SendMessage != null)
             {
                 SendMessage.CalculateBounds(g, Width - TextPadding.Left - TextPadding.Right);
-                TextPadding = new Padding(TextPadding.Left, TextPadding.Top, TextPadding.Right, 4 + SendMessage.Height);
+                TextPadding = new Padding(TextPadding.Left, TextPadding.Top, TextPadding.Right, 8 + SendMessage.Height);
             }
             else
-                TextPadding = new Padding(TextPadding.Left, TextPadding.Top, TextPadding.Right, 4);
+                TextPadding = new Padding(TextPadding.Left, TextPadding.Top, TextPadding.Right, 8);
 
             // determine if
             double scrollbarThumbHeight = 0;
@@ -561,45 +658,6 @@ namespace Chatterino.Controls
             scrollAtBottom = !vscroll.Enabled || vscroll.Maximum < vscroll.Value + vscroll.LargeChange + 0.0001;
         }
 
-        private string channelName;
-
-        public string ChannelName
-        {
-            get { return channelName; }
-            set
-            {
-                value = value.Trim();
-                if (value != channelName)
-                {
-                    if (channel != null)
-                    {
-                        channel.MessageAdded -= Channel_MessageAdded;
-                        channel.MessagesAddedAtStart -= Channel_MessagesAddedAtStart;
-                        channel.ChatCleared -= Channel_ChatCleared;
-                        channel = null;
-                        TwitchChannel.RemoveChannel(ChannelName);
-                    }
-
-                    channelName = value;
-
-                    if (!string.IsNullOrWhiteSpace(channelName))
-                    {
-                        channel = TwitchChannel.AddChannel(channelName);
-                        channel.MessageAdded += Channel_MessageAdded;
-                        channel.MessagesAddedAtStart += Channel_MessagesAddedAtStart;
-                        channel.ChatCleared += Channel_ChatCleared;
-                    }
-
-                    this.Invoke(() =>
-                    {
-                        _header?.Invalidate();
-
-                        Invalidate();
-                    });
-                }
-            }
-        }
-
         public Message MessageAtPoint(Point p, out int index)
         {
             var c = channel;
@@ -680,24 +738,87 @@ namespace Chatterino.Controls
         // header
         class ChatControlHeader : Control
         {
-            private ChatControl chatControl;
-
-            // Menu Dropdown
+            // static Menu Dropdown
             static ContextMenu contextMenu;
+            static ContextMenu roomstateContextMenu;
             static ChatControl selected = null;
+            static MenuItem messageCountItem;
+
+            static MenuItem roomstateSlow;
+            static MenuItem roomstateSub;
+            static MenuItem roomstateEmoteonly;
+            static MenuItem roomstateR9K;
 
             static ChatControlHeader()
             {
                 contextMenu = new ContextMenu();
-                //contextMenu.MenuItems.Add(new MenuItem("Close", (s, e) => { App.MainForm.Add }));
                 contextMenu.MenuItems.Add(new MenuItem("Add new Split", (s, e) => { App.MainForm?.AddNewSplit(); }, Shortcut.CtrlT));
                 contextMenu.MenuItems.Add(new MenuItem("Close Split", (s, e) => { App.MainForm?.RemoveSelectedSplit(); }, Shortcut.CtrlW));
                 contextMenu.MenuItems.Add(new MenuItem("Change Channel", (s, e) => { App.MainForm?.RenameSelectedSplit(); }, Shortcut.CtrlR));
                 contextMenu.MenuItems.Add("-");
                 contextMenu.MenuItems.Add(new MenuItem("Login", (s, e) => new LoginForm().ShowDialog(), Shortcut.CtrlL));
                 contextMenu.MenuItems.Add(new MenuItem("Preferences", (s, e) => App.ShowSettings(), Shortcut.CtrlP));
+                contextMenu.MenuItems.Add("-");
+                contextMenu.MenuItems.Add(messageCountItem = new MenuItem("MessageCount: 0", (s, e) => { }) { Enabled = false });
+
+                roomstateContextMenu = new ContextMenu();
+                roomstateContextMenu.Popup += (s, e) =>
+                {
+                    roomstateR9K.Checked = (selected.Channel?.RoomState ?? RoomState.None).HasFlag(RoomState.R9k);
+                    roomstateSlow.Checked = (selected.Channel?.RoomState ?? RoomState.None).HasFlag(RoomState.SlowMode);
+                    roomstateSub.Checked = (selected.Channel?.RoomState ?? RoomState.None).HasFlag(RoomState.SubOnly);
+                    roomstateEmoteonly.Checked = (selected.Channel?.RoomState ?? RoomState.None).HasFlag(RoomState.EmoteOnly);
+                };
+
+                roomstateContextMenu.MenuItems.Add(roomstateSlow = new MenuItem("Slowmode", (s, e) =>
+                {
+                    if (selected.Channel != null)
+                    {
+                        if (selected.Channel.RoomState.HasFlag(RoomState.SlowMode))
+                            selected.Channel.SendMessage("/Slowoff");
+                        else
+                            selected.Channel.SendMessage("/Slow");
+                    }
+                }));
+                roomstateContextMenu.MenuItems.Add(roomstateSub = new MenuItem("Subscribers Only", (s, e) =>
+                {
+                    if (selected.Channel != null)
+                    {
+                        if (selected.Channel.RoomState.HasFlag(RoomState.SubOnly))
+                            selected.Channel.SendMessage("/Subscribersoff");
+                        else
+                            selected.Channel.SendMessage("/Subscribers");
+                    }
+                }));
+                roomstateContextMenu.MenuItems.Add(roomstateR9K = new MenuItem("R9K", (s, e) =>
+                {
+                    if (selected.Channel != null)
+                    {
+                        if (selected.Channel.RoomState.HasFlag(RoomState.R9k))
+                            selected.Channel.SendMessage("/R9KBetaOff");
+                        else
+                            selected.Channel.SendMessage("/R9KBeta");
+                    }
+                }));
+                roomstateContextMenu.MenuItems.Add(roomstateEmoteonly = new MenuItem("Emote Only", (s, e) =>
+                {
+                    if (selected.Channel != null)
+                    {
+                        if (selected.Channel.RoomState.HasFlag(RoomState.EmoteOnly))
+                            selected.Channel.SendMessage("/Emoteonlyoff");
+                        else
+                            selected.Channel.SendMessage("/emoteonly ");
+                    }
+                }));
             }
 
+            // local controls
+            private ChatControl chatControl;
+
+            public ChatControlHeaderButton RoomstateButton { get; private set; }
+            public ChatControlHeaderButton DropDownButton { get; private set; }
+
+            // Constructor
             public ChatControlHeader(ChatControl chatControl)
             {
                 this.chatControl = chatControl;
@@ -748,7 +869,7 @@ namespace Chatterino.Controls
                 };
 
                 // Buttons
-                ChatControlHeaderButton button = new ChatControlHeaderButton
+                ChatControlHeaderButton button = DropDownButton = new ChatControlHeaderButton
                 {
                     Height = Height - 2,
                     Width = Height - 2,
@@ -763,8 +884,31 @@ namespace Chatterino.Controls
                 };
                 button.Click += (s, e) =>
                 {
-                    contextMenu.Show(this, new Point(Location.X, Location.Y + Height));
+                    messageCountItem.Text = "MessageCount: " + chatControl.Channel.MessageCount;
                     selected = chatControl;
+                    contextMenu.Show(this, new Point(Location.X, Location.Y + Height));
+                };
+
+                Controls.Add(button);
+
+                RoomstateButton = button = new ChatControlHeaderButton
+                {
+                    Height = Height - 2,
+                    Width = Height - 2,
+                    Location = new Point(Width - Height, 1),
+                    Anchor = AnchorStyles.Top | AnchorStyles.Right
+                };
+                button.Font = new Font(button.Font.FontFamily, 8f);
+                button.Text = "-";
+                button.MouseDown += (s, e) =>
+                {
+                    if (e.Button == MouseButtons.Left)
+                        chatControl.Select();
+                };
+                button.Click += (s, e) =>
+                {
+                    selected = chatControl;
+                    roomstateContextMenu.Show(this, new Point(Location.X + Width, Location.Y + Height), LeftRightAlignment.Left);
                 };
 
                 Controls.Add(button);
@@ -793,8 +937,9 @@ namespace Chatterino.Controls
 
                 string title = string.IsNullOrWhiteSpace(chatControl.ChannelName) ? "<no channel>" : chatControl.ChannelName;
 
-                var size = TextRenderer.MeasureText(e.Graphics, title, chatControl.Font, Size.Empty, App.DefaultTextFormatFlags);
-                TextRenderer.DrawText(e.Graphics, title, chatControl.Font, new Point((Width / 2) - (size.Width / 2), ChatControl.TopMenuBarHeight / 2 - (size.Height / 2)), chatControl.Focused ? App.ColorScheme.TextFocused : App.ColorScheme.Text, App.DefaultTextFormatFlags);
+                //var size = TextRenderer.MeasureText(e.Graphics, title, chatControl.Font, Size.Empty, App.DefaultTextFormatFlags);
+                //TextRenderer.DrawText(e.Graphics, title, chatControl.Font, new Point((Width / 2) - (size.Width / 2), TopMenuBarHeight / 2 - (size.Height / 2)), chatControl.Focused ? App.ColorScheme.TextFocused : App.ColorScheme.Text, App.DefaultTextFormatFlags);
+                TextRenderer.DrawText(e.Graphics, title, chatControl.Font, new Rectangle(DropDownButton.Width, 0, Width - DropDownButton.Width - RoomstateButton.Width, Height), chatControl.Focused ? App.ColorScheme.TextFocused : App.ColorScheme.Text, App.DefaultTextFormatFlags | TextFormatFlags.VerticalCenter | TextFormatFlags.HorizontalCenter);
             }
         }
 
@@ -815,7 +960,10 @@ namespace Chatterino.Controls
             {
                 if (Text != "")
                 {
+                    int width = Width;
                     Width = 16 + TextRenderer.MeasureText(Text, Font).Width;
+                    if ((Anchor & AnchorStyles.Right) == AnchorStyles.Right)
+                        Location = new Point(Location.X - (Width - width), Location.Y);
                     Invalidate();
                 }
             }
@@ -880,7 +1028,7 @@ namespace Chatterino.Controls
 
                 if (Text != null)
                 {
-                    TextRenderer.DrawText(g, Text, Font, Bounds, App.ColorScheme.Text, TextFormatFlags.HorizontalCenter);
+                    TextRenderer.DrawText(g, Text, Font, ClientRectangle, App.ColorScheme.Text, TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);
                 }
             }
         }

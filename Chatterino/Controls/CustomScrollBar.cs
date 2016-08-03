@@ -308,7 +308,7 @@ namespace Chatterino.Controls
 
                 if (Height != 0 && Maximum != 0)
                 {
-                    var h = (Height - buttonSize - buttonSize);
+                    var h = (Height - buttonSize - buttonSize - minThumbHeight);
 
                     lock (highlights)
                     {

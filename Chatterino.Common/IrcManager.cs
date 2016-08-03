@@ -27,33 +27,7 @@ namespace Chatterino.Common
 
         public static ConcurrentDictionary<string, Func<string, string>> ChatCommands = new ConcurrentDictionary<string, Func<string, string>>();
 
-        public static void SendMessage(string channel, string _message)
-        {
-            if (channel != null)
-            {
-                var message = _message;
-
-                if (_message.Length > 1 && _message[0] == '/')
-                {
-                    int index = _message.IndexOf(' ');
-                    string _command = index == -1 ? _message.Substring(1) : _message.Substring(1, index - 1);
-                    _message = index == -1 ? "" : _message.Substring(index + 1);
-
-                    Func<string, string> command;
-                    if (ChatCommands.TryGetValue(_command, out command))
-                    {
-                        message = command(_message) ?? message;
-                    }
-                }
-
-                if (AppSettings.ChatAllowSameMessage)
-                {
-                    message = message + " ";
-                }
-
-                IrcWriteClient?.SendMessage(SendType.Message, "#" + channel.TrimStart('#'), Emojis.ReplaceShortCodes(message));
-            }
-        }
+        static ConcurrentDictionary<string, object> twitchBlockedUsers = new ConcurrentDictionary<string, object>();
 
         static System.Threading.Timer pingTimer;
 
@@ -97,32 +71,37 @@ namespace Chatterino.Common
                     Connect();
                 }
             }, null, 15000, 15000);
-        }
-
-        static void setProxy(IrcClient client)
-        {
-            if (AppSettings.ProxyEnable)
-            {
-                ProxyType type;
-                Enum.TryParse(AppSettings.ProxyType, out type);
-                if (type != ProxyType.None)
-                {
-                    IrcWriteClient.ProxyType = type;
-                    IrcWriteClient.ProxyPort = AppSettings.ProxyPort;
-                    IrcWriteClient.ProxyHost = AppSettings.ProxyHost;
-                    IrcWriteClient.ProxyUsername = AppSettings.ProxyUsername;
-                    IrcWriteClient.ProxyPassword = AppSettings.ProxyPassword;
-                }
-            }
-        }
-
-        public static void Connect(TextReader loginReader = null)
-        {
-            Disconnect();
 
             // Chat Commands
             ChatCommands.TryAdd("shrug", s => ". " + s + " ¯\\_(ツ)_/¯");
             ChatCommands.TryAdd("brainpower", s => ". " + s + " O-oooooooooo AAAAE-A-A-I-A-U- JO-oooooooooooo AAE-O-A-A-U-U-A- E-eee-ee-eee AAAAE-A-E-I-E-A- JO-ooo-oo-oo-oo EEEEO-A-AAA-AAAA " + s);
+
+            ChatCommands.TryAdd("ignore", s =>
+            {
+                var S = s.SplitWords();
+                if (S.Length > 0)
+                {
+                    AddIgnoredUser(S[0]);
+                }
+                return null;
+            });
+            ChatCommands.TryAdd("unignore", s =>
+            {
+                var S = s.SplitWords();
+                if (S.Length > 0)
+                {
+                    RemoveIgnoredUser(S[0]);
+                }
+                return null;
+            });
+        }
+
+        static string oauth = null;
+
+        // Connection
+        public static void Connect(TextReader loginReader = null)
+        {
+            Disconnect();
 
             // Login
             string username, oauth;
@@ -138,7 +117,39 @@ namespace Chatterino.Common
             {
                 Username = username;
 
+                IrcManager.oauth = oauth;
+
                 AppSettings.UpdateCustomHighlightRegex();
+
+                // fetch ignored users
+                Task.Run(() =>
+                {
+                    try
+                    {
+                        int limit = 100;
+                        int count = 0;
+                        string nextLink = $"https://api.twitch.tv/kraken/users/{username}/blocks?limit={limit}";
+
+                        var request = WebRequest.Create(nextLink + $"&oauth_token={oauth}");
+                        using (var response = request.GetResponse())
+                        using (var stream = response.GetResponseStream())
+                        {
+                            dynamic json = new JsonParser().Parse(stream);
+                            dynamic _links = json["_links"];
+                            nextLink = _links["next"];
+                            dynamic blocks = json["blocks"];
+                            count = blocks.Count;
+                            foreach (dynamic block in blocks)
+                            {
+                                dynamic user = block["user"];
+                                string name = user["name"];
+                                string display_name = user["display_name"];
+                            }
+                        }
+                    }
+                    catch { }
+                });
+
 
                 // fetch availlable twitch emotes
                 Task.Run(() =>
@@ -278,12 +289,31 @@ namespace Chatterino.Common
             }
         }
 
+        static void setProxy(IrcClient client)
+        {
+            if (AppSettings.ProxyEnable)
+            {
+                ProxyType type;
+                Enum.TryParse(AppSettings.ProxyType, out type);
+                if (type != ProxyType.None)
+                {
+                    IrcWriteClient.ProxyType = type;
+                    IrcWriteClient.ProxyPort = AppSettings.ProxyPort;
+                    IrcWriteClient.ProxyHost = AppSettings.ProxyHost;
+                    IrcWriteClient.ProxyUsername = AppSettings.ProxyUsername;
+                    IrcWriteClient.ProxyPassword = AppSettings.ProxyPassword;
+                }
+            }
+        }
+
         public static void Disconnect()
         {
             bool disconnected = false;
 
             try
             {
+                oauth = null;
+                twitchBlockedUsers.Clear();
                 if (IrcReadClient != null)
                 {
                     disconnected = true;
@@ -302,10 +332,119 @@ namespace Chatterino.Common
                 Disconnected?.Invoke(null, EventArgs.Empty);
         }
 
+        // Send Messages
+        public static void SendMessage(string channel, string _message)
+        {
+            if (channel != null)
+            {
+                var message = _message;
+
+                if (_message.Length > 1 && _message[0] == '/')
+                {
+                    int index = _message.IndexOf(' ');
+                    string _command = index == -1 ? _message.Substring(1) : _message.Substring(1, index - 1);
+                    _message = index == -1 ? "" : _message.Substring(index + 1);
+
+                    Func<string, string> command;
+                    if (ChatCommands.TryGetValue(_command, out command))
+                    {
+                        message = command(_message) ?? message;
+                    }
+                }
+
+                if (message != null)
+                {
+                    if (AppSettings.ChatAllowSameMessage)
+                    {
+                        message = message + " ";
+                    }
+
+                    IrcWriteClient?.SendMessage(SendType.Message, "#" + channel.TrimStart('#'), Emojis.ReplaceShortCodes(message));
+                }
+            }
+        }
+
+        public static bool IsIgnoredUser(string username)
+        {
+            return twitchBlockedUsers.ContainsKey(username.ToLower());
+        }
+
+        public static void AddIgnoredUser(string username)
+        {
+            object value;
+            var _username = username.ToLower();
+
+            bool success = false;
+            HttpStatusCode statusCode;
+
+            try
+            {
+                WebRequest request = WebRequest.Create($"https://api.twitch.tv/kraken/users/{Username}/blocks/{_username}?oauth_token={oauth}");
+                request.Method = "PUT";
+                using (var response = (HttpWebResponse)request.GetResponse())
+                using (var stream = response.GetResponseStream())
+                {
+                    statusCode = response.StatusCode;
+                    success = true;
+                }
+            }
+            catch (WebException exc)
+            {
+                statusCode = ((HttpWebResponse)exc.Response).StatusCode;
+            }
+            catch (Exception) { statusCode = HttpStatusCode.BadRequest; }
+
+            if (success)
+            {
+                NoticeAdded?.Invoke(null, new ValueEventArgs<string>($"Successfully ignored user \"{username}\"."));
+                twitchBlockedUsers[_username] = null;
+            }
+            else
+                NoticeAdded?.Invoke(null, new ValueEventArgs<string>($"Error \"{(int)statusCode}\" while trying to ignore user \"{username}\"."));
+        }
+
+        public static void RemoveIgnoredUser(string username)
+        {
+            object value;
+            username = username.ToLower();
+
+            bool success = false;
+            HttpStatusCode statusCode;
+
+            try
+            {
+                WebRequest request = WebRequest.Create($"https://api.twitch.tv/kraken/users/{Username}/blocks/{username}?oauth_token={oauth}");
+                request.Method = "DELETE";
+                using (var response = (HttpWebResponse)request.GetResponse())
+                using (var stream = response.GetResponseStream())
+                {
+                    statusCode = response.StatusCode;
+                    success = statusCode == HttpStatusCode.NoContent;
+                }
+            }
+            catch (WebException exc)
+            {
+                statusCode = ((HttpWebResponse)exc.Response).StatusCode;
+                success = statusCode == HttpStatusCode.NoContent;
+            }
+            catch (Exception) { statusCode = HttpStatusCode.BadRequest; }
+
+            if (success)
+            {
+                twitchBlockedUsers.TryRemove(username.ToLower(), out value);
+
+                NoticeAdded?.Invoke(null, new ValueEventArgs<string>($"Successfully unignored user \"{username}\"."));
+            }
+            else
+                NoticeAdded?.Invoke(null, new ValueEventArgs<string>($"Error \"{(int)statusCode}\" while trying to unignore user \"{username}\"."));
+        }
+
         // Messages
         public static event EventHandler Disconnected;
         public static event EventHandler Connected;
         public static event EventHandler<ValueEventArgs<Exception>> ConnectionError;
+
+        public static event EventHandler<ValueEventArgs<string>> NoticeAdded;
 
         static ConcurrentDictionary<Tuple<string, string>, object> recentChatClears = new ConcurrentDictionary<Tuple<string, string>, object>();
 
@@ -343,6 +482,66 @@ namespace Chatterino.Common
                         TwitchChannel.GetChannel(e.Data.RawMessageArray[3].TrimStart('#')).Process(c => c.ClearChat(user, reason, duration));
                 }
             }
+            else if (e.Data.RawMessageArray.Length > 2 && e.Data.RawMessageArray[2] == "NOTICE")
+            {
+                TwitchChannel.GetChannel((e.Data.Channel ?? "").TrimStart('#')).Process(c =>
+                {
+                    Message msg = new Message(e.Data.Message, null, true);
+
+                    c.AddMessage(msg);
+                });
+            }
+            else if (e.Data.RawMessageArray.Length > 3 && e.Data.RawMessageArray[2] == "ROOMSTATE")
+            {
+                TwitchChannel.GetChannel(e.Data.RawMessageArray[3].TrimStart('#')).Process(c =>
+                {
+                    // @broadcaster-lang=;emote-only=0;r9k=0;slow=0;subs-only=0 :tmi.twitch.tv ROOMSTATE #fourtf
+
+                    RoomState state = c.RoomState;
+
+                    string value;
+                    if (e.Data.Tags.TryGetValue("emote-only", out value))
+                    {
+                        if (value == "1")
+                            state |= RoomState.EmoteOnly;
+                        else
+                            state &= ~RoomState.EmoteOnly;
+                    }
+                    if (e.Data.Tags.TryGetValue("subs-only", out value))
+                    {
+                        if (value == "1")
+                            state |= RoomState.SubOnly;
+                        else
+                            state &= ~RoomState.SubOnly;
+                    }
+                    if (e.Data.Tags.TryGetValue("slow", out value))
+                    {
+                        if (value == "0")
+                            state &= ~RoomState.SlowMode;
+                        else
+                        {
+                            int time;
+                            if (!int.TryParse(value, out time))
+                                time = -1;
+                            c.SlowModeTime = time;
+                            state |= RoomState.SlowMode;
+                        }
+                    }
+                    if (e.Data.Tags.TryGetValue("r9k", out value))
+                    {
+                        if (value == "1")
+                            state |= RoomState.R9k;
+                        else
+                            state &= ~RoomState.R9k;
+                    }
+                    //if (e.Data.Tags.TryGetValue("broadcaster-lang", out value))
+                    //{
+
+                    //}
+
+                    c.RoomState = state;
+                });
+            }
             else
             {
                 if ((e.Data.Channel?.Length ?? 0) > 1 && e.Data.Channel?.Substring(1) != null
@@ -351,9 +550,13 @@ namespace Chatterino.Common
                     TwitchChannel.GetChannel((e.Data.Channel ?? "").TrimStart('#')).Process(c =>
                     {
                         Message msg = new Message(e.Data, c);
-                        c.Users[msg.Username.ToUpper()] = msg.DisplayName;
 
-                        c.AddMessage(msg);
+                        if (!AppSettings.IgnoreTwitchBlocks || !IsIgnoredUser(msg.Username))
+                        {
+                            c.Users[msg.Username.ToUpper()] = msg.DisplayName;
+
+                            c.AddMessage(msg);
+                        }
                     });
                 }
             }

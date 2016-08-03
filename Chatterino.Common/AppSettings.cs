@@ -14,7 +14,7 @@ namespace Chatterino.Common
         public static bool ChatShowTimestamps { get; set; } = true;
         public static bool ChatShowTimestampSeconds { get; set; } = false;
         public static bool ChatAllowSameMessage { get; set; } = true;
-        public static bool ChatLinksCtrlClickOnly { get; set; } = false;
+        public static bool ChatLinksDoubleClickOnly { get; set; } = false;
 
         public static bool ChatEnableHighlight { get; set; } = true;
         public static bool ChatEnableHighlightSound { get; set; } = true;
@@ -39,6 +39,8 @@ namespace Chatterino.Common
             CustomHighlightRegex = new Regex($@"\b({IrcManager.Username}{(IrcManager.Username == null || chatCustomHighlights.Length == 0 ? "" : "|")}{string.Join("|", chatCustomHighlights.Select(x => Regex.Escape(x)))})\b".Log(), RegexOptions.IgnoreCase);
         }
         public static Regex CustomHighlightRegex { get; private set; } = null;
+
+        public static bool IgnoreTwitchBlocks { get; private set; } = true;
 
         public static bool ChatEnableBttvEmotes { get; set; } = true;
         public static bool ChatEnableFfzEmotes { get; set; } = true;

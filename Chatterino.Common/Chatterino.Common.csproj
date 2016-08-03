@@ -67,6 +67,7 @@
     <Compile Include="MessageReceivedEventArgs.cs" />
     <Compile Include="NotificationSound.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RoomState.cs" />
     <Compile Include="Selection.cs" />
     <Compile Include="ValueEventArgs.cs" />
     <Compile Include="Word.cs" />

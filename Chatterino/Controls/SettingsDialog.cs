@@ -40,7 +40,7 @@ namespace Chatterino.Controls
             BindCheckBox(chkTimestamps, "ChatShowTimestamps");
             BindCheckBox(chkTimestampSeconds, "ChatShowTimestampSeconds");
             BindCheckBox(chkAllowSameMessages, "ChatAllowSameMessage");
-            BindCheckBox(chkCtrlClickLinks, "ChatLinksCtrlClickOnly");
+            BindCheckBox(chkDoubleClickLinks, "ChatLinksDoubleClickOnly");
 
             BindCheckBox(chkHighlight, "ChatEnableHighlight");
             BindCheckBox(chkPings, "ChatEnableHighlightSound");

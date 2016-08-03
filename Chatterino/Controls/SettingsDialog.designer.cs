@@ -31,7 +31,7 @@
             this.tabs = new Chatterino.Controls.SettingsTabControl();
             this.RightPanel = new System.Windows.Forms.Panel();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.chkCtrlClickLinks = new System.Windows.Forms.CheckBox();
+            this.chkDoubleClickLinks = new System.Windows.Forms.CheckBox();
             this.chkEmojis = new System.Windows.Forms.CheckBox();
             this.chkAllowSameMessages = new System.Windows.Forms.CheckBox();
             this.chkGifEmotes = new System.Windows.Forms.CheckBox();
@@ -104,7 +104,7 @@
             // 
             // panel1
             // 
-            this.panel1.Controls.Add(this.chkCtrlClickLinks);
+            this.panel1.Controls.Add(this.chkDoubleClickLinks);
             this.panel1.Controls.Add(this.chkEmojis);
             this.panel1.Controls.Add(this.chkAllowSameMessages);
             this.panel1.Controls.Add(this.chkGifEmotes);
@@ -120,16 +120,16 @@
             this.panel1.Size = new System.Drawing.Size(448, 406);
             this.panel1.TabIndex = 0;
             // 
-            // chkCtrlClickLinks
+            // chkDoubleClickLinks
             // 
-            this.chkCtrlClickLinks.AutoSize = true;
-            this.chkCtrlClickLinks.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.chkCtrlClickLinks.Location = new System.Drawing.Point(21, 100);
-            this.chkCtrlClickLinks.Name = "chkCtrlClickLinks";
-            this.chkCtrlClickLinks.Size = new System.Drawing.Size(199, 17);
-            this.chkCtrlClickLinks.TabIndex = 10;
-            this.chkCtrlClickLinks.Text = "Only open Links when Ctrl is pressed";
-            this.chkCtrlClickLinks.UseVisualStyleBackColor = true;
+            this.chkDoubleClickLinks.AutoSize = true;
+            this.chkDoubleClickLinks.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.chkDoubleClickLinks.Location = new System.Drawing.Point(21, 100);
+            this.chkDoubleClickLinks.Name = "chkDoubleClickLinks";
+            this.chkDoubleClickLinks.Size = new System.Drawing.Size(180, 17);
+            this.chkDoubleClickLinks.TabIndex = 10;
+            this.chkDoubleClickLinks.Text = "Only open Links on Double Click";
+            this.chkDoubleClickLinks.UseVisualStyleBackColor = true;
             // 
             // chkEmojis
             // 
@@ -150,9 +150,9 @@
             this.chkAllowSameMessages.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.chkAllowSameMessages.Location = new System.Drawing.Point(21, 77);
             this.chkAllowSameMessages.Name = "chkAllowSameMessages";
-            this.chkAllowSameMessages.Size = new System.Drawing.Size(315, 17);
+            this.chkAllowSameMessages.Size = new System.Drawing.Size(309, 17);
             this.chkAllowSameMessages.TabIndex = 8;
-            this.chkAllowSameMessages.Text = "Allow sending Douplicate Messages (add a space at the end)";
+            this.chkAllowSameMessages.Text = "Allow sending Duplicate Messages (add a space at the end)";
             this.chkAllowSameMessages.UseVisualStyleBackColor = true;
             // 
             // chkGifEmotes
@@ -535,6 +535,6 @@
         private System.Windows.Forms.CheckBox chkPings;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.RichTextBox rtbHighlights;
-        private System.Windows.Forms.CheckBox chkCtrlClickLinks;
+        private System.Windows.Forms.CheckBox chkDoubleClickLinks;
     }
 }

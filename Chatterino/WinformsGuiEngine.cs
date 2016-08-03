@@ -137,9 +137,15 @@ namespace Chatterino
             }
             else
             {
-                Image img = (Image)image;
-                lock (img)
-                    return new CommonSize(img.Width, img.Height);
+                try
+                {
+                    Image img = (Image)image;
+                    lock (img)
+                        return new CommonSize(img.Width, img.Height);
+                }
+                catch { }
+
+                return new CommonSize(16, 16);
             }
         }
 
@@ -183,6 +189,8 @@ namespace Chatterino
                     yOffset = yOffset2;
                 }
 
+                g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
+
                 if (!enableBitmapDoubleBuffering || message.buffer == null)
                 {
                     message.X = xOffset2;
@@ -208,7 +216,7 @@ namespace Chatterino
 
                             if (word.SplitSegments == null)
                             {
-                                TextRenderer.DrawText(g, (string)word.Value, font, new Point(xOffset + word.X, word.Y + yOffset), color, App.DefaultTextFormatFlags);
+                                TextRenderer.DrawText(g, (string)word.Value, font, new Point(xOffset + word.X, yOffset + word.Y), color, App.DefaultTextFormatFlags);
                             }
                             else
                             {
