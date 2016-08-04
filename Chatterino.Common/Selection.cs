@@ -16,7 +16,9 @@ namespace Chatterino.Common
         public Selection(MessagePosition start, MessagePosition end)
         {
             if (end.MessageIndex < start.MessageIndex || (end.MessageIndex == start.MessageIndex &&
-                (end.WordIndex < start.WordIndex || (end.WordIndex == start.WordIndex && end.CharIndex < start.CharIndex))))
+                (end.WordIndex < start.WordIndex || (end.WordIndex == start.WordIndex &&
+                (end.SplitIndex < start.SplitIndex || (end.SplitIndex == start.SplitIndex &&
+                end.CharIndex < start.CharIndex))))))
             {
                 First = end;
                 Last = start;
@@ -35,9 +37,11 @@ namespace Chatterino.Common
         {
             return other.Start.MessageIndex == Start.MessageIndex
                 && other.Start.WordIndex == Start.WordIndex
+                && other.Start.SplitIndex == Start.SplitIndex
                 && other.Start.CharIndex == Start.CharIndex
                 && other.End.MessageIndex == End.MessageIndex
                 && other.End.WordIndex == End.WordIndex
+                && other.End.SplitIndex == End.SplitIndex
                 && other.End.CharIndex == End.CharIndex;
         }
 
@@ -56,18 +60,20 @@ namespace Chatterino.Common
     {
         public int MessageIndex { get; set; }
         public int WordIndex { get; set; }
+        public int SplitIndex { get; set; }
         public int CharIndex { get; set; }
 
-        public MessagePosition(int messageIndex, int wordIndex, int charIndex)
+        public MessagePosition(int messageIndex, int wordIndex, int splitIndex, int charIndex)
         {
             MessageIndex = messageIndex;
             WordIndex = wordIndex;
+            SplitIndex = splitIndex;
             CharIndex = charIndex;
         }
 
         public MessagePosition WithMessageIndex(int v)
         {
-            return new MessagePosition(v, WordIndex, CharIndex);
+            return new MessagePosition(v, WordIndex, SplitIndex, CharIndex);
         }
     }
 }

@@ -580,27 +580,97 @@ namespace Chatterino.Common
         {
             int currentWord = 0;
             int currentChar = 0;
+            int currentSplit = 0;
 
             for (int i = 0; i < Words.Count; i++)
             {
                 var word = Words[i];
 
-                if (word.Y <= point.Y && word.X < point.X)
+                if (word.Type == SpanType.Text && word.SplitSegments != null)
                 {
-                    if (word.X + word.Width < point.X)
-                        currentWord = i + 1;
-                    else
+                    var splits = word.SplitSegments;
+
+                    for (int j = 0; j < splits.Length; j++)
                     {
-                        currentWord = i;
+                        var split = splits[j];
+                        if (point.Y > split.Item2.Y)
+                        {
+                            if (point.X > split.Item2.X)
+                            {
+                                currentSplit = j;
+                                currentWord = i;
+                            }
+                        }
                     }
                 }
                 else
                 {
-                    break;
+                    if (point.Y > word.Y)
+                    {
+                        if (point.X > word.X)
+                            currentWord = i;
+                    }
                 }
             }
 
-            return new MessagePosition(messageIndex, currentWord, currentChar);
+            var w = Words[currentWord];
+            int _currentSplit = 0;
+
+            if (w.Type == SpanType.Image)
+            {
+                var imageSize = GuiEngine.Current.GetImageSize(w.Value);
+
+                if (point.X - w.X > imageSize.Width)
+                    currentChar = 1;
+            }
+            else if (w.Type == SpanType.Emote)
+            {
+                var emote = (TwitchEmote)w.Value;
+
+                var imageSize = emote.Image == null ? new CommonSize(16, 16) : GuiEngine.Current.GetImageSize(emote.Image);
+
+                if (point.X - w.X > imageSize.Width)
+                    currentChar = 1;
+            }
+            else if (w.Type == SpanType.Text)
+            {
+                string text;
+                CommonRectangle bounds;
+
+                if (w.SplitSegments == null)
+                {
+                    text = (string)w.Value;
+                    bounds = new CommonRectangle(w.X, w.Y, w.Width, w.Height);
+                }
+                else
+                {
+                    text = w.SplitSegments[currentSplit].Item1;
+                    _currentSplit = currentSplit;
+                    bounds = w.SplitSegments[currentSplit].Item2;
+                }
+
+                if (point.X > bounds.X + bounds.Width)
+                {
+                    currentChar = text.Length;
+                }
+                else
+                {
+                    for (int i = text.Length - 1; i >= 1; i--)
+                    {
+                        string s = text.Remove(i);
+
+                        var size = GuiEngine.Current.MeasureStringSize(graphics, w.Font, s);
+
+                        if (point.X - bounds.X > size.Width)
+                        {
+                            currentChar = s.Length;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            return new MessagePosition(messageIndex, currentWord, _currentSplit, currentChar);
         }
     }
 }

@@ -282,7 +282,7 @@ namespace Chatterino.Controls
                 var word = msg.WordAtPoint(new CommonPoint(e.X - TextPadding.Left, e.Y - msg.Y));
 
                 var pos = msg.MessagePositionAtPoint(graphics, new CommonPoint(e.X - TextPadding.Left, e.Y - msg.Y), index);
-                Console.WriteLine($"pos: {pos.MessageIndex} : {pos.WordIndex} : {pos.CharIndex}");
+                Console.WriteLine($"pos: {pos.MessageIndex} : {pos.WordIndex} : {pos.SplitIndex} : {pos.CharIndex}");
 
                 if (selection != null && mouseDown)
                 {
@@ -299,6 +299,10 @@ namespace Chatterino.Controls
                     if (word.Link != null)
                     {
                         Cursor = Cursors.Hand;
+                    }
+                    else if (word.Type == SpanType.Text)
+                    {
+                        Cursor = Cursors.IBeam;
                     }
                     else
                     {
@@ -702,20 +706,110 @@ namespace Chatterino.Controls
             {
                 lock (c.MessageLock)
                 {
-                    for (int i = selection.First.MessageIndex; i <= selection.Last.MessageIndex; i++)
-                    {
-                        if (i != selection.First.MessageIndex)
-                            b.AppendLine();
+                    bool isFirstLine = true;
 
-                        for (int j = (i == selection.First.MessageIndex ? selection.First.WordIndex : 0); j < (i == selection.Last.MessageIndex ? selection.Last.WordIndex : c.Messages[i].Words.Count); j++)
+                    for (int currentLine = selection.First.MessageIndex; currentLine <= selection.Last.MessageIndex; currentLine++)
+                    {
+                        if (isFirstLine)
                         {
-                            if (c.Messages[i].Words[j].CopyText != null)
+                            isFirstLine = false;
+                        }
+                        else
+                        {
+                            b.Append('\n');
+                        }
+
+                        var message = c.Messages[currentLine];
+
+                        var first = selection.First;
+                        var last = selection.Last;
+
+                        bool appendNewline = false;
+
+                        for (int i = 0; i < message.Words.Count; i++)
+                        {
+                            if ((currentLine != first.MessageIndex || i >= first.WordIndex) && (currentLine != last.MessageIndex || i <= last.WordIndex))
                             {
-                                b.Append(c.Messages[i].Words[j].CopyText);
-                                b.Append(' ');
+                                var word = message.Words[i];
+
+                                if (appendNewline)
+                                {
+                                    appendNewline = false;
+                                        b.Append(' ');
+                                }
+
+                                if (word.Type == SpanType.Text)
+                                {
+                                    for (int j = 0; j < (word.SplitSegments?.Length ?? 1); j++)
+                                    {
+                                        if ((first.MessageIndex == currentLine && first.WordIndex == i && first.SplitIndex > j) || (last.MessageIndex == currentLine && last.WordIndex == i && last.SplitIndex < j))
+                                            continue;
+
+                                        var split = word.SplitSegments?[j];
+                                        string text = split?.Item1 ?? (string)word.Value;
+                                        CommonRectangle rect = split?.Item2 ?? new CommonRectangle(word.X, word.Y, word.Width, word.Height);
+
+                                        int textLength = text.Length;
+
+                                        int offset = (first.MessageIndex == currentLine && first.SplitIndex == j && first.WordIndex == i) ? first.CharIndex : 0;
+                                        int length = ((last.MessageIndex == currentLine && last.SplitIndex == j && last.WordIndex == i) ? last.CharIndex : textLength) - offset;
+
+                                        b.Append(text.Substring(offset, length));
+
+                                        if (j + 1 == (word.SplitSegments?.Length ?? 1) && ((last.MessageIndex > currentLine) || last.WordIndex > i))
+                                            appendNewline = true;
+                                            //b.Append(' ');
+                                    }
+                                }
+                                else if (word.Type == SpanType.Image)
+                                {
+                                    int textLength = word.Type == SpanType.Text ? ((string)word.Value).Length : 2;
+
+                                    int offset = (first.MessageIndex == currentLine && first.WordIndex == i) ? first.CharIndex : 0;
+                                    int length = ((last.MessageIndex == currentLine && last.WordIndex == i) ? last.CharIndex : textLength) - offset;
+
+                                    if (word.CopyText != null)
+                                    {
+                                        if (offset == 0)
+                                            b.Append(word.CopyText);
+                                        if (offset + length == 2)
+                                            appendNewline = true;
+                                            //b.Append(' ');
+                                    }
+                                }
+                                else if (word.Type == SpanType.Emote)
+                                {
+                                    int textLength = word.Type == SpanType.Text ? ((string)word.Value).Length : 2;
+
+                                    int offset = (first.MessageIndex == currentLine && first.WordIndex == i) ? first.CharIndex : 0;
+                                    int length = ((last.MessageIndex == currentLine && last.WordIndex == i) ? last.CharIndex : textLength) - offset;
+
+                                    if (word.CopyText != null)
+                                    {
+                                        if (offset == 0)
+                                            b.Append(word.CopyText);
+                                        if (offset + length == 2)
+                                            appendNewline = true;
+                                            //b.Append(' ');
+                                    }
+                                }
                             }
                         }
                     }
+                    //for (int i = selection.First.MessageIndex; i <= selection.Last.MessageIndex; i++)
+                    //{
+                    //    if (i != selection.First.MessageIndex)
+                    //        b.AppendLine();
+
+                    //    for (int j = (i == selection.First.MessageIndex ? selection.First.WordIndex : 0); j < (i == selection.Last.MessageIndex ? selection.Last.WordIndex : c.Messages[i].Words.Count); j++)
+                    //    {
+                    //        if (c.Messages[i].Words[j].CopyText != null)
+                    //        {
+                    //            b.Append(c.Messages[i].Words[j].CopyText);
+                    //            b.Append(' ');
+                    //        }
+                    //    }
+                    //}
                 }
             }
 

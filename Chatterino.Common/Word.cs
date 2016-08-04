@@ -14,7 +14,7 @@ namespace Chatterino.Common
         public int? Color { get; set; }
         public string Link { get; set; }
         public string Tooltip { get; set; }
-        public string CopyText { get; set; } = "";
+        public string CopyText { get; set; } = null;
 
         public FontType Font { get; set; }
         public int Height { get; set; } = 16;

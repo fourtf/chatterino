@@ -190,6 +190,7 @@ namespace Chatterino
                 }
 
                 g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
+                g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.None;
 
                 if (!enableBitmapDoubleBuffering || message.buffer == null)
                 {
@@ -198,6 +199,8 @@ namespace Chatterino
 
                     if (message.Highlighted)
                         g.FillRectangle(App.ColorScheme.ChatBackgroundHighlighted, 0, yOffset, g.ClipBounds.Width, message.Height);
+
+                    g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.Default;
 
                     for (int i = 0; i < message.Words.Count; i++)
                     {
@@ -253,6 +256,8 @@ namespace Chatterino
 
                     if (message.Disabled)
                     {
+                        g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.None;
+
                         Brush disabledBrush = new SolidBrush(Color.FromArgb(172, (App.ColorScheme.ChatBackground as SolidBrush)?.Color ?? Color.Black));
                         g.FillRectangle(disabledBrush, xOffset, yOffset, 1000, message.Height);
                     }
@@ -272,14 +277,67 @@ namespace Chatterino
 
                 if (selection != null && !selection.IsEmpty && selection.First.MessageIndex <= currentLine && selection.Last.MessageIndex >= currentLine)
                 {
+                    g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.None;
+
+                    var first = selection.First;
+                    var last = selection.Last;
+
                     for (int i = 0; i < message.Words.Count; i++)
                     {
-                        if ((currentLine != selection.First.MessageIndex || i >= selection.First.WordIndex) && (currentLine != selection.Last.MessageIndex || i < selection.Last.WordIndex))
+                        if ((currentLine != first.MessageIndex || i >= first.WordIndex) && (currentLine != last.MessageIndex || i <= last.WordIndex))
                         {
                             var word = message.Words[i];
 
-                            if (!(word.Type == SpanType.Emote) || !((TwitchEmote)word.Value).Animated)
-                                g2.FillRectangle(selectionBrush, word.X + xOffset2, word.Y + yOffset2, word.Width + spaceWidth, word.Height);
+                            if (word.Type == SpanType.Text)
+                            {
+                                for (int j = 0; j < (word.SplitSegments?.Length ?? 1); j++)
+                                {
+                                    if ((first.MessageIndex == currentLine && first.WordIndex == i && first.SplitIndex > j) || (last.MessageIndex == currentLine && last.WordIndex == i && last.SplitIndex < j))
+                                        continue;
+
+                                    var split = word.SplitSegments?[j];
+                                    string text = split?.Item1 ?? (string)word.Value;
+                                    CommonRectangle rect = split?.Item2 ?? new CommonRectangle(word.X, word.Y, word.Width, word.Height);
+
+                                    int textLength = text.Length;
+
+                                    int offset = (first.MessageIndex == currentLine && first.SplitIndex == j && first.WordIndex == i) ? first.CharIndex : 0;
+                                    int length = ((last.MessageIndex == currentLine && last.SplitIndex == j && last.WordIndex == i) ? last.CharIndex : textLength) - offset;
+
+                                    if (text == "ababab" && selection.Last.MessageIndex == currentLine + 1)
+                                        ;
+
+                                    if (offset == 0 && length == text.Length)
+                                        g2.FillRectangle(selectionBrush, rect.X + xOffset2, rect.Y + yOffset2, TextRenderer.MeasureText(g2, text, Fonts.GetFont(word.Font), Size.Empty, App.DefaultTextFormatFlags).Width + spaceWidth, rect.Height);
+                                    else if (offset == text.Length)
+                                        g2.FillRectangle(selectionBrush, rect.X + xOffset2 + rect.Width, rect.Y + yOffset2, spaceWidth, rect.Height);
+                                    else
+                                        g2.FillRectangle(selectionBrush,
+                                            rect.X + xOffset2 + (offset == 0 ? 0 : TextRenderer.MeasureText(g2, text.Remove(offset), Fonts.GetFont(word.Font), Size.Empty, App.DefaultTextFormatFlags).Width),
+                                            rect.Y + yOffset2,
+                                            TextRenderer.MeasureText(g2, text.Substring(offset, length),
+                                            Fonts.GetFont(word.Font), Size.Empty, App.DefaultTextFormatFlags).Width + ((last.MessageIndex > currentLine || last.SplitIndex > j || last.WordIndex > i) ? spaceWidth : 0), rect.Height);
+                                }
+                            }
+                            else if (word.Type == SpanType.Image)
+                            {
+                                int textLength = 2;
+
+                                int offset = (first.MessageIndex == currentLine && first.WordIndex == i) ? first.CharIndex : 0;
+                                int length = ((last.MessageIndex == currentLine && last.WordIndex == i) ? last.CharIndex : textLength) - offset;
+
+                                g2.FillRectangle(selectionBrush, word.X + xOffset2 + (offset == 0 ? 0 : word.Width), word.Y + yOffset2, (offset == 0 ? word.Width : 0) + (offset + length == 2 ? spaceWidth : 0), word.Height);
+                            }
+                            else if (word.Type == SpanType.Emote)
+                            {
+                                int textLength = 2;
+
+                                int offset = (first.MessageIndex == currentLine && first.WordIndex == i) ? first.CharIndex : 0;
+                                int length = ((last.MessageIndex == currentLine && last.WordIndex == i) ? last.CharIndex : textLength) - offset;
+
+                                if (!((TwitchEmote)word.Value).Animated)
+                                    g2.FillRectangle(selectionBrush, word.X + xOffset2, word.Y + yOffset2, word.Width + spaceWidth, word.Height);
+                            }
                         }
                     }
                 }

@@ -11,7 +11,7 @@ namespace Chatterino.Controls
     public class CustomScrollBar : Control
     {
         const int buttonSize = 16;
-        const int minThumbHeight = 12;
+        const int minThumbHeight = 10;
 
 
         // events
@@ -316,7 +316,23 @@ namespace Chatterino.Controls
                         {
                             SolidBrush brush = colors.GetOrAdd(highlight.Color, (x) => new SolidBrush(Color.FromArgb(48, x)));
 
-                            g.FillRectangle(brush, 0, buttonSize + (int)(h * highlight.Position / Maximum), Width, Math.Max(3, (int)(h * highlight.Height / Maximum)));
+                            var y = (int)(h * highlight.Position / Maximum);
+
+                            if (y > thumbOffset)
+                            {
+                                if (y > thumbOffset + thumbHeight - minThumbHeight)
+                                {
+                                    y += minThumbHeight;
+                                }
+                                else
+                                {
+                                    y = (int)((y - thumbOffset) * (thumbHeight  / ((double)thumbHeight - minThumbHeight))) + thumbOffset;
+                                }
+                            }
+
+                            y += buttonSize;
+
+                            g.FillRectangle(brush, 0, y, Width, Math.Max(3, (int)(h * highlight.Height / Maximum)));
                         }
                     }
                 }
