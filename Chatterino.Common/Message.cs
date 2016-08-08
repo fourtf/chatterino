@@ -63,6 +63,7 @@ namespace Chatterino.Common
             List<Word> words = new List<Word>();
 
             string text = data.Message;
+
             Username = data.Nick;
 
             bool slashMe = false;
@@ -75,8 +76,7 @@ namespace Chatterino.Common
             }
 
             // Split the message
-            var S = text.Split(' ');
-
+            //var S = text.Split(' ');
             if ((AppSettings.ChatEnableHighlight || AppSettings.ChatEnableHighlightSound || AppSettings.ChatEnableHighlightTaskbar) && Username != IrcManager.Username.ToLower())
             {
                 if (AppSettings.CustomHighlightRegex != null && AppSettings.CustomHighlightRegex.IsMatch(text))
@@ -256,7 +256,7 @@ namespace Chatterino.Common
             int currentTwitchEmoteIndex = 0;
             Tuple<int, TwitchEmote> currentTwitchEmote = twitchEmotes.FirstOrDefault();
 
-            foreach (var s in S)
+            foreach (var split in text.Split(' '))
             {
                 if (currentTwitchEmote != null)
                 {
@@ -270,61 +270,85 @@ namespace Chatterino.Common
                             Tooltip = currentTwitchEmote.Item2.Tooltip,
                             CopyText = currentTwitchEmote.Item2.Name
                         });
-                        i += s.Length + 1;
+                        i += split.Length + 1;
                         currentTwitchEmoteIndex++;
                         currentTwitchEmote = currentTwitchEmoteIndex == twitchEmotes.Count ? null : twitchEmotes[currentTwitchEmoteIndex];
                         continue;
                     }
                 }
 
-                TwitchEmote bttvEmote;
-                if (AppSettings.ChatEnableBttvEmotes && (Emotes.BttvGlobalEmotes.TryGetValue(s, out bttvEmote) || channel.BttvChannelEmotes.TryGetValue(s, out bttvEmote))
-                    || (AppSettings.ChatEnableFfzEmotes && Emotes.FfzGlobalEmotes.TryGetValue(s, out bttvEmote)))
+                foreach (object o in Emojis.ParseEmojis(split))
                 {
-                    words.Add(new Word
-                    {
-                        Type = SpanType.Emote,
-                        Value = bttvEmote,
-                        Color = slashMe ? UsernameColor : new int?(),
-                        Tooltip = bttvEmote.Tooltip,
-                        Link = bttvEmote.Url,
-                        CopyText = bttvEmote.Name
-                    });
-                }
-                else
-                {
-                    string link = null;
+                    string s = o as string;
 
-                    if (s.IndexOfAny(linkIdentifiers) != -1)
+                    if (s != null)
                     {
-                        Match m = linkRegex.Match(s);
-
-                        if (m.Success)
+                        TwitchEmote bttvEmote;
+                        if (AppSettings.ChatEnableBttvEmotes && (Emotes.BttvGlobalEmotes.TryGetValue(s, out bttvEmote) || channel.BttvChannelEmotes.TryGetValue(s, out bttvEmote))
+                            || (AppSettings.ChatEnableFfzEmotes && Emotes.FfzGlobalEmotes.TryGetValue(s, out bttvEmote)))
                         {
-                            link = m.Value;
-
-                            if (!m.Groups["Protocol"].Success)
-                                link = "http://" + link;
-
-                            if (!m.Groups["Protocol"].Success || m.Groups["Protocol"].Value.ToUpper() == "HTTP" || m.Groups["Protocol"].Value.ToUpper() == "HTTPS")
+                            words.Add(new Word
                             {
-                                if (m.Groups["Domain"].Value.IndexOf('.') == -1)
-                                    link = null;
+                                Type = SpanType.Emote,
+                                Value = bttvEmote,
+                                Color = slashMe ? UsernameColor : new int?(),
+                                Tooltip = bttvEmote.Tooltip,
+                                Link = bttvEmote.Url,
+                                CopyText = bttvEmote.Name
+                            });
+                        }
+                        else
+                        {
+                            string link = null;
+
+                            if (split.IndexOfAny(linkIdentifiers) != -1)
+                            {
+                                Match m = linkRegex.Match(split);
+
+                                if (m.Success)
+                                {
+                                    link = m.Value;
+
+                                    if (!m.Groups["Protocol"].Success)
+                                        link = "http://" + link;
+
+                                    if (!m.Groups["Protocol"].Success || m.Groups["Protocol"].Value.ToUpper() == "HTTP" || m.Groups["Protocol"].Value.ToUpper() == "HTTPS")
+                                    {
+                                        if (m.Groups["Domain"].Value.IndexOf('.') == -1)
+                                            link = null;
+                                    }
+                                }
                             }
+
+                            words.Add(new Word
+                            {
+                                Type = SpanType.Text,
+                                Value = s,
+                                Color = slashMe ? UsernameColor : (link == null ? new int?() : -8355712),
+                                Link = link,
+                                CopyText = s
+                            });
                         }
                     }
-
-                    words.Add(new Word
+                    else
                     {
-                        Type = SpanType.Text,
-                        Value = s,
-                        Color = slashMe ? UsernameColor : (link == null ? new int?() : -8355712),
-                        Link = link,
-                        CopyText = s
-                    });
+                        TwitchEmote e = o as TwitchEmote;
+
+                        if (e != null)
+                        {
+                            words.Add(new Word
+                            {
+                                Type = SpanType.Emote,
+                                Value = e,
+                                Link = e.Url,
+                                Tooltip = e.Tooltip,
+                                CopyText = e.Name
+                            });
+                        }
+                    }
                 }
 
-                i += s.Length + 1;
+                i += split.Length + 1;
             }
 
             Words = words;

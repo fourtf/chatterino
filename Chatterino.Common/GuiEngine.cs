@@ -29,6 +29,7 @@ namespace Chatterino.Common
         void FlashTaskbar();
 
         object ReadImageFromStream(Stream stream);
+        object ScaleImage(object image, double scale);
 
         CommonSize MeasureStringSize(object graphics, FontType font, string text);
         void DrawMessage(object graphics, Message message, int xOffset, int yOffset, Selection selection, int currentLineIndex);

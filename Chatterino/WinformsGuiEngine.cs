@@ -163,7 +163,7 @@ namespace Chatterino
             {
                 return Tuple.Create(new ConcurrentDictionary<string, CommonSize>(), new ConcurrentStack<string>());
             });
-            
+
             return sizeCache.Item1.GetOrAdd(text, s =>
             {
                 if (sizeCache.Item2.Count >= sizeCacheStackLimit)
@@ -442,6 +442,22 @@ namespace Chatterino
 
                 //App.MainForm.Invoke(() => Win32.FlashWindowEx(App.MainForm));
             }
+        }
+
+        public object ScaleImage(object image, double scale)
+        {
+            Image img = (Image)image;
+
+            int w = (int)(img.Width * scale), h = (int)(img.Height * scale);
+
+            var newImage = new Bitmap(w, h);
+
+            using (var graphics = Graphics.FromImage(newImage))
+            {
+                graphics.DrawImage(img, 0, 0, w, h);
+            }
+
+            return newImage;
         }
     }
 }

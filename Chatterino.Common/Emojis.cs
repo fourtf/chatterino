@@ -2,6 +2,7 @@
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -12,16 +13,112 @@ namespace Chatterino.Common
     {
         static Regex findShortCodes = new Regex(":([-+\\w]+):", RegexOptions.Compiled);
         public static ConcurrentDictionary<string, string> ShortCodeToEmoji = new ConcurrentDictionary<string, string>();
+        public static ConcurrentDictionary<string, string> EmojiToShortCode = new ConcurrentDictionary<string, string>();
+
+        public static ConcurrentDictionary<char, ConcurrentDictionary<string, TwitchEmote>> FirstEmojiChars = new ConcurrentDictionary<char, ConcurrentDictionary<string, TwitchEmote>>();
 
         public static string ReplaceShortCodes(string s)
         {
             return findShortCodes.Replace(s, m =>
             {
                 string emoji;
+
                 if (ShortCodeToEmoji.TryGetValue(m.Groups[1].Value, out emoji))
                     return emoji;
+
                 return m.Value;
             });
+        }
+
+        public static int[] ToCodePoints(string str)
+        {
+            if (str == null)
+                throw new ArgumentNullException("str");
+
+            var codePoints = new List<int>(str.Length);
+            for (int i = 0; i < str.Length; i++)
+            {
+                codePoints.Add(char.ConvertToUtf32(str, i));
+                if (char.IsHighSurrogate(str[i]))
+                    i += 1;
+            }
+
+            return codePoints.ToArray();
+        }
+
+        public static object[] ParseEmojis(string text)
+        {
+            List<object> objects = new List<object>();
+
+            int lastSlice = 0;
+
+            for (int i = 0; i < text.Length; i++)
+            {
+                ConcurrentDictionary<string, TwitchEmote> _emojis;
+                if (FirstEmojiChars.TryGetValue(text[i], out _emojis))
+                {
+                    TwitchEmote emote;
+                    for (int j = Math.Min(8, text.Length - i); j > 0; j--)
+                    {
+                        string emoji = text.Substring(i, j);
+                        if (_emojis.TryGetValue(emoji, out emote))
+                        {
+                            if (emote == null)
+                            {
+                                string codepoints = string.Join("-", ToCodePoints(emoji).Select(n => n.ToString("X").ToLower()));
+
+                                var url = $"https://cdnjs.cloudflare.com/ajax/libs/emojione/2.2.6/assets/png/{codepoints}.png";
+
+                                _emojis[emoji] = emote = new TwitchEmote
+                                {
+                                    Url = url,
+                                    Tooltip = $":{EmojiToShortCode[emoji]}:\nemoji",
+                                    Name = emoji,
+                                    LoadAction = () =>
+                                    {
+                                        object img;
+                                        try
+                                        {
+                                            WebRequest request = WebRequest.Create(url);
+                                            using (var response = request.GetResponse())
+                                            using (var stream = response.GetResponseStream())
+                                            {
+                                                img = GuiEngine.Current.ReadImageFromStream(stream);
+                                                return GuiEngine.Current.ScaleImage(img, 0.33);
+                                            }
+                                        }
+                                        catch
+                                        {
+                                            img = null;
+                                        }
+
+                                        return img;
+                                    }
+                                };
+                            }
+
+                            if (i - lastSlice != 0)
+                                objects.Add(text.Substring(lastSlice, i - lastSlice));
+
+                            objects.Add(emote);
+
+                            i += j - 1;
+
+                            lastSlice = i + 1;
+                        }
+                    }
+                }
+            }
+
+            if (lastSlice == 0 && objects.Count == 0)
+            {
+                return new object[] { text };
+            }
+
+            if (lastSlice < text.Length)
+                objects.Add(text.Substring(lastSlice));
+
+            return objects.ToArray();
         }
 
         static Emojis()
@@ -1846,6 +1943,16 @@ namespace Chatterino.Common
             ShortCodeToEmoji["regional_indicator_c"] = "\U0001f1e8";
             ShortCodeToEmoji["regional_indicator_b"] = "\U0001f1e7";
             ShortCodeToEmoji["regional_indicator_a"] = "\U0001f1e6";
+
+            foreach (var emoji in ShortCodeToEmoji)
+            {
+                EmojiToShortCode[emoji.Value] = emoji.Key;
+            }
+
+                foreach (var emoji in ShortCodeToEmoji.Values)
+            {
+                FirstEmojiChars.GetOrAdd(emoji[0], c => new ConcurrentDictionary<string, TwitchEmote>())[emoji] = null;
+            }
         }
     }
 }
