@@ -105,6 +105,7 @@ namespace Chatterino.Common
                             i += j - 1;
 
                             lastSlice = i + 1;
+                            break;
                         }
                     }
                 }
