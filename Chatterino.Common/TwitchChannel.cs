@@ -20,12 +20,15 @@ namespace Chatterino.Common
         public string Name { get; private set; }
 
         public string SubLink { get; private set; }
+        public string ChannelLink { get; private set; }
+        public string PopoutPlayerLink { get; private set; }
 
         protected int Uses { get; set; } = 0;
 
         // Channel Emotes
         public ConcurrentDictionary<string, TwitchEmote> BttvChannelEmotes { get; private set; }
             = new ConcurrentDictionary<string, TwitchEmote>();
+
 
         // Sub Badge
         private TwitchEmote subBadge;
@@ -99,7 +102,9 @@ namespace Chatterino.Common
         protected TwitchChannel(string channelName)
         {
             Name = channelName.Trim('#');
-            SubLink = "https://www.twitch.tv/" + Name + "/subscribe?ref=in_chat_subscriber_link";
+            SubLink = $"https://www.twitch.tv/{Name}/subscribe?ref=in_chat_subscriber_link";
+            ChannelLink = $"https://twitch.tv/{Name}";
+            PopoutPlayerLink = $"https://player.twitch.tv/?channel={Name}";
 
             JoinWrite();
             JoinRead();
@@ -217,19 +222,59 @@ namespace Chatterino.Common
             IrcManager.Connected += IrcManager_Connected;
             IrcManager.Disconnected += IrcManager_Disconnected;
             IrcManager.NoticeAdded += IrcManager_NoticeAdded;
+            AppSettings.MessageLimitChanged += AppSettings_MessageLimitChanged;
         }
 
+        private void IrcManager_Connected(object sender, EventArgs e)
+        {
+            AddMessage(new Message("connected to chat"));
+        }
+
+        private void IrcManager_Disconnected(object sender, EventArgs e)
+        {
+            AddMessage(new Message("disconnected from chat"));
+        }
+        
         private void IrcManager_NoticeAdded(object sender, ValueEventArgs<string> e)
         {
             AddMessage(new Message(e.Value));
         }
 
+        private void AppSettings_MessageLimitChanged(object sender, EventArgs e)
+        {
+            Message[] _messages = null;
+
+            lock (MessageLock)
+            {
+                if (Messages.Length > AppSettings.ChatMessageLimit)
+                {
+                    _messages = new Message[Messages.Length - AppSettings.ChatMessageLimit];
+                    Array.Copy(Messages, _messages, _messages.Length);
+
+                    Message[] M = new Message[AppSettings.ChatMessageLimit];
+                    Array.Copy(Messages, Messages.Length - AppSettings.ChatMessageLimit, M, 0, AppSettings.ChatMessageLimit);
+
+                    Messages = M;
+                }
+            }
+
+            if (_messages != null)
+                MessagesRemovedAtStart?.Invoke(this, new ValueEventArgs<Message[]>(_messages));
+        }
+
+        private void Emotes_EmotesLoaded(object sender, EventArgs e)
+        {
+            updateEmoteNameList();
+        }
+
+
+        // Channels
         private static ConcurrentDictionary<string, TwitchChannel> channels = new ConcurrentDictionary<string, TwitchChannel>();
         public static IEnumerable<TwitchChannel> Channels { get { return channels.Values; } }
 
         public static TwitchChannel AddChannel(string channelName)
         {
-            return channels.AddOrUpdate((channelName ?? "").ToLower(), cname => new TwitchChannel(cname) { Uses = 1 }, (cname, c) =>{ c.Uses++; return c; });
+            return channels.AddOrUpdate((channelName ?? "").ToLower(), cname => new TwitchChannel(cname) { Uses = 1 }, (cname, c) => { c.Uses++; return c; });
         }
 
         public static void RemoveChannel(string channelName)
@@ -260,20 +305,6 @@ namespace Chatterino.Common
             return null;
         }
 
-        private void IrcManager_Connected(object sender, EventArgs e)
-        {
-            AddMessage(new Message("connected to chat"));
-        }
-
-        private void IrcManager_Disconnected(object sender, EventArgs e)
-        {
-            AddMessage(new Message("disconnected from chat"));
-        }
-
-        private void Emotes_EmotesLoaded(object sender, EventArgs e)
-        {
-            updateEmoteNameList();
-        }
 
         // Emote + Name Autocompletion
         public ConcurrentDictionary<string, string> Users = new ConcurrentDictionary<string, string>();
@@ -341,6 +372,7 @@ namespace Chatterino.Common
             return null;
         }
 
+
         // Connection
         public void JoinWrite()
         {
@@ -363,10 +395,12 @@ namespace Chatterino.Common
             IrcManager.SendMessage(Name, text);
         }
 
+
         // Messages
         public event EventHandler<ChatClearedEventArgs> ChatCleared;
         public event EventHandler<MessageAddedEventArgs> MessageAdded;
         public event EventHandler<ValueEventArgs<Message[]>> MessagesAddedAtStart;
+        public event EventHandler<ValueEventArgs<Message[]>> MessagesRemovedAtStart;
 
         public int MessageCount { get; private set; } = 0;
 
@@ -478,6 +512,7 @@ namespace Chatterino.Common
             IrcManager.Connected -= IrcManager_Connected;
             IrcManager.Disconnected -= IrcManager_Disconnected;
             IrcManager.NoticeAdded -= IrcManager_NoticeAdded;
+            AppSettings.MessageLimitChanged -= AppSettings_MessageLimitChanged;
         }
     }
 }

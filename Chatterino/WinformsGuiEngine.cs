@@ -153,10 +153,29 @@ namespace Chatterino
         // MESSAGES
         bool enableBitmapDoubleBuffering = false;
 
+        static int sizeCacheStackLimit = 2048;
+        ConcurrentDictionary<string, CommonSize> sizeCache = new ConcurrentDictionary<string, CommonSize>(2, sizeCacheStackLimit);
+        ConcurrentStack<string> sizeCacheStack = new ConcurrentStack<string>();
+
         public CommonSize MeasureStringSize(object graphics, FontType font, string text)
         {
-            Size size = TextRenderer.MeasureText((IDeviceContext)graphics, text, Fonts.GetFont(font), Size.Empty, App.DefaultTextFormatFlags);
-            return new CommonSize(size.Width, size.Height);
+            return sizeCache.GetOrAdd(text, s =>
+            {
+                if (sizeCacheStack.Count >= sizeCacheStackLimit)
+                {
+                    string value;
+                    if (sizeCacheStack.TryPop(out value))
+                    {
+                        CommonSize _s;
+                        sizeCache.TryRemove(value, out _s);
+                    }
+                }
+
+                sizeCacheStack.Push(s);
+
+                Size size = TextRenderer.MeasureText((IDeviceContext)graphics, text, Fonts.GetFont(font), Size.Empty, App.DefaultTextFormatFlags);
+                return new CommonSize(size.Width, size.Height);
+            });
         }
 
         public void DrawMessage(object graphics, Common.Message message, int xOffset2, int yOffset2, Selection selection, int currentLine)

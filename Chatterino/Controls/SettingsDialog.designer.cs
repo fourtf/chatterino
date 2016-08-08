@@ -31,6 +31,8 @@
             this.tabs = new Chatterino.Controls.SettingsTabControl();
             this.RightPanel = new System.Windows.Forms.Panel();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.txtMsgLimit = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
             this.chkDoubleClickLinks = new System.Windows.Forms.CheckBox();
             this.chkEmojis = new System.Windows.Forms.CheckBox();
             this.chkAllowSameMessages = new System.Windows.Forms.CheckBox();
@@ -104,6 +106,8 @@
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.txtMsgLimit);
+            this.panel1.Controls.Add(this.label3);
             this.panel1.Controls.Add(this.chkDoubleClickLinks);
             this.panel1.Controls.Add(this.chkEmojis);
             this.panel1.Controls.Add(this.chkAllowSameMessages);
@@ -119,6 +123,24 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(448, 406);
             this.panel1.TabIndex = 0;
+            // 
+            // txtMsgLimit
+            // 
+            this.txtMsgLimit.Location = new System.Drawing.Point(101, 119);
+            this.txtMsgLimit.Name = "txtMsgLimit";
+            this.txtMsgLimit.Size = new System.Drawing.Size(167, 20);
+            this.txtMsgLimit.TabIndex = 10;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.label3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.label3.Location = new System.Drawing.Point(18, 123);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(77, 13);
+            this.label3.TabIndex = 11;
+            this.label3.Text = "Message Limit:";
             // 
             // chkDoubleClickLinks
             // 
@@ -536,5 +558,7 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.RichTextBox rtbHighlights;
         private System.Windows.Forms.CheckBox chkDoubleClickLinks;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.TextBox txtMsgLimit;
     }
 }

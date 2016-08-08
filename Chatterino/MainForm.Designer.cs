@@ -52,7 +52,6 @@
             this.ClientSize = new System.Drawing.Size(809, 501);
             this.Controls.Add(this.columnLayoutControl1);
             this.Name = "MainForm";
-            this.ShowIcon = false;
             this.Text = "Chatterino";
             this.ResumeLayout(false);
 

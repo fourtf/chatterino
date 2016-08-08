@@ -19,9 +19,10 @@ namespace Chatterino.Controls
 
         public Padding TextPadding { get; private set; } = new Padding(12, 8 + TopMenuBarHeight, 16 + SystemInformation.VerticalScrollBarWidth, 8);
 
-        public Message SendMessage { get; set; } = null;
+        //public Message SendMessage { get; set; } = null;
 
         ChatControlHeader _header = null;
+        public ChatInputControl Input { get; private set; }
 
         // vars
         private bool scrollAtBottom = true;
@@ -47,6 +48,7 @@ namespace Chatterino.Controls
                     {
                         channel.MessageAdded -= Channel_MessageAdded;
                         channel.MessagesAddedAtStart -= Channel_MessagesAddedAtStart;
+                        channel.MessagesRemovedAtStart -= Channel_MessagesRemovedAtStart;
                         channel.ChatCleared -= Channel_ChatCleared;
                         channel.RoomStateChanged -= Channel_RoomStateChanged;
                         channel = null;
@@ -60,6 +62,7 @@ namespace Chatterino.Controls
                         channel = TwitchChannel.AddChannel(channelName);
                         channel.MessageAdded += Channel_MessageAdded;
                         channel.MessagesAddedAtStart += Channel_MessagesAddedAtStart;
+                        channel.MessagesRemovedAtStart += Channel_MessagesRemovedAtStart;
                         channel.ChatCleared += Channel_ChatCleared;
                         channel.RoomStateChanged += Channel_RoomStateChanged;
                     }
@@ -74,7 +77,7 @@ namespace Chatterino.Controls
             }
         }
 
-        CustomScrollBar vscroll = new CustomScrollBar
+        CustomScrollBar _scroll = new CustomScrollBar
         {
             Enabled = false,
             SmallChange = 4,
@@ -89,23 +92,27 @@ namespace Chatterino.Controls
             SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
             SetStyle(ControlStyles.ResizeRedraw, true);
 
-            //IrcManager.MessageReceived += IrcManager_MessageReceived;
-            //IrcManager.ChatCleared += IrcManager_IrcChatCleared;
-            //IrcManager.Connected += IrcManager_Connected;
-            //IrcManager.Disconnected += IrcManager_Disconnected;
-            //IrcManager.ConnectionError += IrcManager_ConnectionError;
-            //IrcManager.OldMessagesReceived += IrcManager_OldMessagesReceived;
+            Input = new ChatInputControl(this);
+            Input.Width = 600 - 2 - SystemInformation.VerticalScrollBarWidth;
+            Input.Location = new Point(1, Height - 33);
+
+            Input.SizeChanged += (s, e) =>
+            {
+                Input.Location = new Point(1, Height - Input.Height - 1);
+            };
+
+            Width = 600;
+            Height = 500;
+
+            Input.Anchor = AnchorStyles.Right | AnchorStyles.Bottom | AnchorStyles.Left;
+
+            Controls.Add(Input);
+
             App.GifEmoteFramesUpdated += App_GifEmoteFramesUpdated;
             App.EmoteLoaded += App_EmoteLoaded;
 
             Disposed += (s, e) =>
             {
-                //IrcManager.MessageReceived -= IrcManager_MessageReceived;
-                //IrcManager.ChatCleared -= IrcManager_IrcChatCleared;
-                //IrcManager.Connected -= IrcManager_Connected;
-                //IrcManager.Disconnected -= IrcManager_Disconnected;
-                //IrcManager.ConnectionError -= IrcManager_ConnectionError;
-                //IrcManager.OldMessagesReceived -= IrcManager_OldMessagesReceived;
                 App.GifEmoteFramesUpdated -= App_GifEmoteFramesUpdated;
                 App.EmoteLoaded -= App_EmoteLoaded;
 
@@ -117,22 +124,21 @@ namespace Chatterino.Controls
             ChatControlHeader header = _header = new ChatControlHeader(this);
             Controls.Add(header);
 
-            GotFocus += (s, e) => { header.Invalidate(); };
+            GotFocus += (s, e) => { Input.Logic.ClearSelection(); header.Invalidate(); };
             LostFocus += (s, e) => { header.Invalidate(); };
 
-            Controls.Add(vscroll);
+            _scroll.Location = new Point(Width - SystemInformation.VerticalScrollBarWidth - 1, TopMenuBarHeight);
+            _scroll.Size = new Size(SystemInformation.VerticalScrollBarWidth, Height - TopMenuBarHeight - 1);
+            _scroll.Anchor = AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Bottom;
 
-            vscroll.Height = Height - TopMenuBarHeight;
-            vscroll.Location = new Point(Width - SystemInformation.VerticalScrollBarWidth - 1, TopMenuBarHeight);
-            vscroll.Size = new Size(SystemInformation.VerticalScrollBarWidth, Height - TopMenuBarHeight - 1);
-            vscroll.Anchor = AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Bottom;
-
-            vscroll.Scroll += (s, e) =>
+            _scroll.Scroll += (s, e) =>
             {
                 checkScrollBarPosition();
                 updateMessageBounds();
                 Invalidate();
             };
+
+            Controls.Add(_scroll);
         }
 
         private void App_GifEmoteFramesUpdated(object s, EventArgs e)
@@ -173,14 +179,14 @@ namespace Chatterino.Controls
                         selection = new Selection(selection.Start.WithMessageIndex(selection.Start.MessageIndex - 1), selection.Start.WithMessageIndex(selection.End.MessageIndex - 1));
                 }
 
-                vscroll.Value--;
+                _scroll.Value--;
 
-                vscroll.UpdateHighlights(h => h.Position--);
-                vscroll.RemoveHighlightsWhere(h => h.Position < 0);
+                _scroll.UpdateHighlights(h => h.Position--);
+                _scroll.RemoveHighlightsWhere(h => h.Position < 0);
             }
 
             if (e.Message.Highlighted)
-                vscroll.AddHighlight((channel?.MessageCount ?? 1) - 1, Color.Red);
+                _scroll.AddHighlight((channel?.MessageCount ?? 1) - 1, Color.Red);
 
             updateMessageBounds();
             Invalidate();
@@ -188,16 +194,32 @@ namespace Chatterino.Controls
 
         private void Channel_MessagesAddedAtStart(object sender, ValueEventArgs<Message[]> e)
         {
-            vscroll.UpdateHighlights(h => h.Position += e.Value.Length);
+            _scroll.UpdateHighlights(h => h.Position += e.Value.Length);
 
             for (int i = 0; i < e.Value.Length; i++)
             {
                 if (e.Value[i].Highlighted)
-                    vscroll.AddHighlight(i, Color.Red);
+                    _scroll.AddHighlight(i, Color.Red);
             }
 
             updateMessageBounds();
             Invalidate();
+        }
+
+        private void Channel_MessagesRemovedAtStart(object sender, ValueEventArgs<Message[]> e)
+        {
+            if (selection != null)
+            {
+                if (selection.Start.MessageIndex < e.Value.Length)
+                    selection = null;
+                else
+                    selection = new Selection(selection.Start.WithMessageIndex(selection.Start.MessageIndex - e.Value.Length), selection.Start.WithMessageIndex(selection.End.MessageIndex - e.Value.Length));
+            }
+
+            _scroll.Value -= e.Value.Length;
+
+            _scroll.UpdateHighlights(h => h.Position -= e.Value.Length);
+            _scroll.RemoveHighlightsWhere(h => h.Position < 0);
         }
 
         private void Channel_ChatCleared(object sender, ChatClearedEventArgs e)
@@ -254,7 +276,7 @@ namespace Chatterino.Controls
 
         protected override void OnMouseWheel(MouseEventArgs e)
         {
-            vscroll.Value -= ((double)e.Delta / 10);
+            _scroll.Value -= ((double)e.Delta / 20);
 
             if (e.Delta > 0)
                 scrollAtBottom = false;
@@ -282,7 +304,7 @@ namespace Chatterino.Controls
                 var word = msg.WordAtPoint(new CommonPoint(e.X - TextPadding.Left, e.Y - msg.Y));
 
                 var pos = msg.MessagePositionAtPoint(graphics, new CommonPoint(e.X - TextPadding.Left, e.Y - msg.Y), index);
-                Console.WriteLine($"pos: {pos.MessageIndex} : {pos.WordIndex} : {pos.SplitIndex} : {pos.CharIndex}");
+                //Console.WriteLine($"pos: {pos.MessageIndex} : {pos.WordIndex} : {pos.SplitIndex} : {pos.CharIndex}");
 
                 if (selection != null && mouseDown)
                 {
@@ -290,6 +312,7 @@ namespace Chatterino.Controls
                     if (!newSelection.Equals(selection))
                     {
                         selection = newSelection;
+                        Input.Logic.ClearSelection();
                         Invalidate();
                     }
                 }
@@ -393,43 +416,31 @@ namespace Chatterino.Controls
 
             //if ((ModifierKeys & ~Keys.Shift) == Keys.None)
             {
+                if (e.KeyChar == '\u007f')
+                    return;
+
                 if (e.KeyChar == '\b')
                 {
-                    if (SendMessage != null)
-                    {
-                        var message = SendMessage.RawMessage;
-                        if (message.Length > 1)
-                        {
-                            SendMessage = new Message(message.Remove(message.Length - 1));
-                        }
-                        else
-                        {
-                            SendMessage = null;
-                        }
-                    }
                     lastTabComplete = null;
                     currentTabIndex = 0;
                 }
                 else if (e.KeyChar == '\r')
                 {
-                    if (SendMessage != null)
+                    var text = Input.Logic.Text;
+
+                    if (!string.IsNullOrWhiteSpace(text))
                     {
-                        IrcManager.SendMessage(channelName, SendMessage.RawMessage);
-                        SendMessage = null;
+                        channel.SendMessage(text);
+                        Input.Logic.Clear();
                     }
+
                     lastTabComplete = null;
                     currentTabIndex = 0;
                 }
                 else if (e.KeyChar >= ' ')
                 {
-                    if (SendMessage == null)
-                    {
-                        SendMessage = new Message(e.KeyChar.ToString());
-                    }
-                    else
-                    {
-                        SendMessage = new Message(SendMessage.RawMessage + e.KeyChar.ToString());
-                    }
+                    Input.Logic.InsertText(e.KeyChar.ToString());
+
                     lastTabComplete = null;
                     currentTabIndex = 0;
                 }
@@ -471,9 +482,9 @@ namespace Chatterino.Controls
 
             if (M != null && M.Length > 0)
             {
-                int startIndex = Math.Max(0, (int)vscroll.Value);
+                int startIndex = Math.Max(0, (int)_scroll.Value);
 
-                int y = TextPadding.Top - (int)(M[startIndex].Height * (vscroll.Value % 1));
+                int y = TextPadding.Top - (int)(M[startIndex].Height * (_scroll.Value % 1));
                 int h = Height - TextPadding.Top - TextPadding.Bottom;
 
                 for (int i = 0; i < startIndex; i++)
@@ -500,49 +511,24 @@ namespace Chatterino.Controls
 
                     y += msg.Height;
                 }
-
-                //for (int i = 0; i < M.Length; i++)
-                //{
-                //    var msg = M[i];
-                //    if (y + msg.Height > 0)
-                //    {
-                //        if (y > Height)
-                //        {
-                //            for (; i < M.Length; i++)
-                //            {
-                //                M[i].IsVisible = false;
-                //                msg.Y = y;
-                //                y += msg.Height;
-                //            }
-                //            break;
-                //        }
-                //        msg.Draw(e.Graphics, TextPadding.Left, y, selection, i);
-                //        msg.IsVisible = true;
-                //    }
-                //    else
-                //    {
-                //        msg.IsVisible = false;
-                //    }
-                //    msg.Y = y;
-                //    y += msg.Height;
-                //}
             }
 
             e.Graphics.DrawRectangle(borderPen, 0, 0, Width - 1/* - SystemInformation.VerticalScrollBarWidth*/, Height - 1);
 
-            if (SendMessage != null)
-            {
-                e.Graphics.FillRectangle(App.ColorScheme.ChatBackground, 1, Height - SendMessage.Height - 4, Width - 3 - SystemInformation.VerticalScrollBarWidth, SendMessage.Height + TextPadding.Bottom - 1);
-                e.Graphics.DrawLine(borderPen, 1, Height - SendMessage.Height - 4, Width - 2 - SystemInformation.VerticalScrollBarWidth, Height - SendMessage.Height - 4);
-                SendMessage.Draw(e.Graphics, TextPadding.Left, Height - SendMessage.Height, null, -1);
-            }
+            //if (SendMessage != null)
+            //{
+            //    e.Graphics.FillRectangle(App.ColorScheme.ChatBackground, 1, Height - SendMessage.Height - 4, Width - 3 - SystemInformation.VerticalScrollBarWidth, SendMessage.Height + TextPadding.Bottom - 1);
+            //    e.Graphics.DrawLine(borderPen, 1, Height - SendMessage.Height - 4, Width - 2 - SystemInformation.VerticalScrollBarWidth, Height - SendMessage.Height - 4);
+            //    SendMessage.Draw(e.Graphics, TextPadding.Left, Height - SendMessage.Height, null, -1);
+            //}
         }
 
         public void HandleTabCompletion(bool forward)
         {
-            if (SendMessage != null)
+            //if (_input./*SendMessage*/ != null)
             {
-                string text = SendMessage.RawMessage;
+                //string text = _input.SendMessage.RawMessage;
+                string text = Input.Logic.Text;
                 int index;
                 text = (index = text.LastIndexOf(' ')) == -1 ? text : text.Substring(index + 1);
 
@@ -556,11 +542,51 @@ namespace Chatterino.Controls
                     {
                         lastTabComplete = lastTabComplete ?? text;
 
-                        SendMessage = new Message((index == -1 ? "" : SendMessage.RawMessage.Remove(index + 1)) + completion);
+                        Input.Logic.Text = Input.Logic.Text.Remove(index + 1) + completion;
                         updateMessageBounds();
-                        this.Invoke(() => Invalidate());
+                        this.Invoke(() => Input.Invalidate());
                     }
                 }
+            }
+        }
+
+        public void HandleArrowKey(Keys keyData)
+        {
+            switch (keyData)
+            {
+                // left
+                case Keys.Left:
+                    Input.Logic.MoveCursorLeft(false, false);
+                    break;
+                case Keys.Left | Keys.Control:
+                    Input.Logic.MoveCursorLeft(true, false);
+                    break;
+                case Keys.Left | Keys.Shift:
+                    Input.Logic.MoveCursorLeft(false, true);
+                    break;
+                case Keys.Left | Keys.Shift | Keys.Control:
+                    Input.Logic.MoveCursorLeft(true, true);
+                    break;
+
+                // right
+                case Keys.Right:
+                    Input.Logic.MoveCursorRight(false, false);
+                    break;
+                case Keys.Right | Keys.Control:
+                    Input.Logic.MoveCursorRight(true, false);
+                    break;
+                case Keys.Right | Keys.Shift:
+                    Input.Logic.MoveCursorRight(false, true);
+                    break;
+                case Keys.Right | Keys.Shift | Keys.Control:
+                    Input.Logic.MoveCursorRight(true, true);
+                    break;
+
+                // up + down
+                case Keys.Up:
+                    break;
+                case Keys.Down:
+                    break;
             }
         }
 
@@ -568,14 +594,7 @@ namespace Chatterino.Controls
         {
             var g = CreateGraphics();
 
-            // calculate the send messages bounds
-            if (SendMessage != null)
-            {
-                SendMessage.CalculateBounds(g, Width - TextPadding.Left - TextPadding.Right);
-                TextPadding = new Padding(TextPadding.Left, TextPadding.Top, TextPadding.Right, 8 + SendMessage.Height);
-            }
-            else
-                TextPadding = new Padding(TextPadding.Left, TextPadding.Top, TextPadding.Right, 8);
+            TextPadding = new Padding(TextPadding.Left, TextPadding.Top, TextPadding.Right, 8 + Input.Height);
 
             // determine if
             double scrollbarThumbHeight = 0;
@@ -594,7 +613,7 @@ namespace Chatterino.Controls
                     var messages = channel.Messages;
                     messageCount = messages.Length;
 
-                    int visibleStart = Math.Max(0, (int)vscroll.Value);
+                    int visibleStart = Math.Max(0, (int)_scroll.Value);
 
                     // set EmotesChanged for messages
                     if (emoteChanged)
@@ -642,24 +661,24 @@ namespace Chatterino.Controls
             {
                 if (enableScrollbar)
                 {
-                    vscroll.Enabled = true;
-                    vscroll.LargeChange = scrollbarThumbHeight;
-                    vscroll.Maximum = messageCount - 1;
+                    _scroll.Enabled = true;
+                    _scroll.LargeChange = scrollbarThumbHeight;
+                    _scroll.Maximum = messageCount - 1;
 
                     if (scrollAtBottom)
-                        vscroll.Value = messageCount - scrollbarThumbHeight;
+                        _scroll.Value = messageCount - scrollbarThumbHeight;
                 }
                 else
                 {
-                    vscroll.Enabled = false;
-                    vscroll.Value = 0;
+                    _scroll.Enabled = false;
+                    _scroll.Value = 0;
                 }
             });
         }
 
         void checkScrollBarPosition()
         {
-            scrollAtBottom = !vscroll.Enabled || vscroll.Maximum < vscroll.Value + vscroll.LargeChange + 0.0001;
+            scrollAtBottom = !_scroll.Enabled || _scroll.Maximum < _scroll.Value + _scroll.LargeChange + 0.0001;
         }
 
         public Message MessageAtPoint(Point p, out int index)
@@ -670,7 +689,7 @@ namespace Chatterino.Controls
             {
                 lock (c.MessageLock)
                 {
-                    for (int i = Math.Max(0, (int)vscroll.Value); i < c.Messages.Length; i++)
+                    for (int i = Math.Max(0, (int)_scroll.Value); i < c.Messages.Length; i++)
                     {
                         var m = c.Messages[i];
                         if (m.Y > p.Y - m.Height)
@@ -687,9 +706,18 @@ namespace Chatterino.Controls
 
         public void CopySelection()
         {
-            var text = GetSelectedText();
+            string text = null;
 
-            if (text != null)
+            if (selection?.IsEmpty ?? true)
+            {
+                text = Input.Logic.SelectedText;
+            }
+            else
+            {
+                text = GetSelectedText();
+            }
+
+            if (!string.IsNullOrEmpty(text))
                 Clipboard.SetText(text);
         }
 
@@ -735,7 +763,7 @@ namespace Chatterino.Controls
                                 if (appendNewline)
                                 {
                                     appendNewline = false;
-                                        b.Append(' ');
+                                    b.Append(' ');
                                 }
 
                                 if (word.Type == SpanType.Text)
@@ -758,7 +786,7 @@ namespace Chatterino.Controls
 
                                         if (j + 1 == (word.SplitSegments?.Length ?? 1) && ((last.MessageIndex > currentLine) || last.WordIndex > i))
                                             appendNewline = true;
-                                            //b.Append(' ');
+                                        //b.Append(' ');
                                     }
                                 }
                                 else if (word.Type == SpanType.Image)
@@ -774,7 +802,7 @@ namespace Chatterino.Controls
                                             b.Append(word.CopyText);
                                         if (offset + length == 2)
                                             appendNewline = true;
-                                            //b.Append(' ');
+                                        //b.Append(' ');
                                     }
                                 }
                                 else if (word.Type == SpanType.Emote)
@@ -790,7 +818,7 @@ namespace Chatterino.Controls
                                             b.Append(word.CopyText);
                                         if (offset + length == 2)
                                             appendNewline = true;
-                                            //b.Append(' ');
+                                        //b.Append(' ');
                                     }
                                 }
                             }
@@ -816,14 +844,21 @@ namespace Chatterino.Controls
             return b.ToString();
         }
 
+        public void ClearSelection()
+        {
+            if (!(selection?.IsEmpty ?? true))
+            {
+                selection = null;
+
+                Invalidate();
+            }
+        }
+
         public void PasteText(string text)
         {
             text = Regex.Replace(text, @"\r?\n", " ");
 
-            if (SendMessage == null)
-                SendMessage = new Message(text);
-            else
-                SendMessage = new Message(SendMessage.RawMessage + text);
+            Input.Logic.InsertText(text);
 
             Invalidate();
         }
@@ -850,10 +885,13 @@ namespace Chatterino.Controls
                 contextMenu.MenuItems.Add(new MenuItem("Close Split", (s, e) => { App.MainForm?.RemoveSelectedSplit(); }, Shortcut.CtrlW));
                 contextMenu.MenuItems.Add(new MenuItem("Change Channel", (s, e) => { App.MainForm?.RenameSelectedSplit(); }, Shortcut.CtrlR));
                 contextMenu.MenuItems.Add("-");
+                contextMenu.MenuItems.Add(new MenuItem("Open Channel", (s, e) => { GuiEngine.Current.HandleLink(selected.Channel.ChannelLink); }));
+                contextMenu.MenuItems.Add(new MenuItem("Open Pop-out Player", (s, e) => { GuiEngine.Current.HandleLink(selected.Channel.PopoutPlayerLink); }));
+                contextMenu.MenuItems.Add("-");
                 contextMenu.MenuItems.Add(new MenuItem("Login", (s, e) => new LoginForm().ShowDialog(), Shortcut.CtrlL));
                 contextMenu.MenuItems.Add(new MenuItem("Preferences", (s, e) => App.ShowSettings(), Shortcut.CtrlP));
-                contextMenu.MenuItems.Add("-");
-                contextMenu.MenuItems.Add(messageCountItem = new MenuItem("MessageCount: 0", (s, e) => { }) { Enabled = false });
+                //contextMenu.MenuItems.Add("-");
+                //contextMenu.MenuItems.Add(messageCountItem = new MenuItem("MessageCount: 0", (s, e) => { }) { Enabled = false });
 
                 roomstateContextMenu = new ContextMenu();
                 roomstateContextMenu.Popup += (s, e) =>
@@ -978,7 +1016,7 @@ namespace Chatterino.Controls
                 };
                 button.Click += (s, e) =>
                 {
-                    messageCountItem.Text = "MessageCount: " + chatControl.Channel.MessageCount;
+                    //messageCountItem.Text = "MessageCount: " + chatControl.Channel.MessageCount;
                     selected = chatControl;
                     contextMenu.Show(this, new Point(Location.X, Location.Y + Height));
                 };

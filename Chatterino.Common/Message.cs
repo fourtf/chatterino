@@ -672,5 +672,79 @@ namespace Chatterino.Common
 
             return new MessagePosition(messageIndex, currentWord, _currentSplit, currentChar);
         }
+
+        public MessagePosition PositionFromIndex(int index)
+        {
+            if (index == 0)
+                return new MessagePosition(0, 0, 0, 0);
+
+            bool isFirstWord = true;
+
+            int _index = 0;
+
+            int i = 0;
+            int j = 0;
+            int k = 0;
+
+            for (; i < Words.Count; i++)
+            {
+                var word = Words[i];
+
+                j = 0;
+                for (; j < (word.SplitSegments?.Length ?? 1); j++)
+                {
+                    var text = word.SplitSegments?[j].Item1 ?? (string)word.Value;
+
+                    if (j == 0)
+                        if (isFirstWord)
+                            isFirstWord = false;
+                        else
+                            _index++;
+
+                    k = 0;
+                    for (; k < text.Length; k++)
+                    {
+                        if (_index == index)
+                            return new MessagePosition(0, i, j, k);
+                        _index++;
+                    }
+                }
+
+                if (_index == index)
+                    return new MessagePosition(0, i, j, k);
+            }
+
+            return new MessagePosition(0, i, j, k);
+        }
+
+        public int IndexFromPosition(MessagePosition pos)
+        {
+            bool isFirstWord = true;
+
+            int index = 0;
+
+            for (int i = 0; i < pos.WordIndex; i++)
+            {
+                var word = Words[i];
+
+                for (int j = 0; j < (word.SplitSegments?.Length ?? 1); j++)
+                {
+                    var text = word.SplitSegments?[j].Item1 ?? (string)word.Value;
+
+                    if (j == 0)
+                        if (isFirstWord)
+                            isFirstWord = false;
+                        else
+                            index++;
+
+                    for (int k = 0; k < text.Length; k++)
+                    {
+                        if (pos.WordIndex == i && pos.SplitIndex == j && pos.CharIndex == k)
+                            return index;
+                    }
+                }
+            }
+            return 0;
+        }
     }
 }

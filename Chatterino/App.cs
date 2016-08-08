@@ -4,9 +4,11 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -24,6 +26,8 @@ namespace Chatterino
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+
+            Icon = Icon.ExtractAssociatedIcon(Assembly.GetExecutingAssembly().Location);
 
             // Exceptions
             Application.ThreadException += (s, e) =>
@@ -84,6 +88,8 @@ namespace Chatterino
 
         // WINDOW
         public static MainForm MainForm { get; set; }
+
+        public static Icon Icon { get; private set; }
 
         public static Controls.SettingsDialog SettingsDialog { get; set; }
 

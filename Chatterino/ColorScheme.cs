@@ -16,6 +16,7 @@ namespace Chatterino
         public Pen ChatBorder { get; set; } = Pens.LightGray;
         public Pen ChatBorderFocused { get; set; } = Pens.Black;
         public Color Text { get; set; } = Color.Black;
+        public Brush TextCaret { get; set; } = Brushes.Black;
         public Color TextLink { get; set; } = Color.Blue;
         public Color TextFocused { get; set; } = Color.Red;
         public Brush Menu { get; set; } = Brushes.Black;

@@ -25,6 +25,8 @@ namespace Chatterino.Controls
         {
             InitializeComponent();
 
+            Icon = App.Icon;
+
             try
             {
                 //this.Icon = Program.AppIcon;
@@ -41,6 +43,8 @@ namespace Chatterino.Controls
             BindCheckBox(chkTimestampSeconds, "ChatShowTimestampSeconds");
             BindCheckBox(chkAllowSameMessages, "ChatAllowSameMessage");
             BindCheckBox(chkDoubleClickLinks, "ChatLinksDoubleClickOnly");
+
+            BindTextBox(txtMsgLimit, "ChatMessageLimit");
 
             BindCheckBox(chkHighlight, "ChatEnableHighlight");
             BindCheckBox(chkPings, "ChatEnableHighlightSound");
@@ -65,7 +69,7 @@ namespace Chatterino.Controls
                 string line;
                 while ((line = reader.ReadLine()) != null)
                 {
-                    list.Add(line);
+                    list.Add(line.Trim());
                 }
                 AppSettings.ChatCustomHighlights = list.ToArray();
             };

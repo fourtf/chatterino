@@ -20,6 +20,8 @@ namespace Chatterino
         {
             InitializeComponent();
 
+            Icon = App.Icon;
+
             LoadLayout("./layout.xml");
 
             BackColor = Color.Black;
@@ -48,10 +50,29 @@ namespace Chatterino
 
         protected override bool ProcessCmdKey(ref System.Windows.Forms.Message msg, Keys keyData)
         {
+            var chatControl = (App.MainForm?.SelectedControl as ChatControl);
+
             if (keyData == Keys.Tab || keyData == (Keys.Shift | Keys.Tab))
             {
-                (App.MainForm?.SelectedControl as ChatControl)?.HandleTabCompletion((keyData & Keys.Shift) != Keys.Shift);
+                chatControl?.HandleTabCompletion((keyData & Keys.Shift) != Keys.Shift);
                 return true;
+            }
+            else if (((keyData & ~(Keys.Control | Keys.Shift)) == Keys.Left) || ((keyData & ~(Keys.Control | Keys.Shift)) == Keys.Right)
+                || keyData == Keys.Up || keyData == Keys.Down)
+            {
+                chatControl?.HandleArrowKey(keyData);
+
+                return true;
+            }
+            else if (keyData == (Keys.Control | Keys.A))
+            {
+                chatControl?.Input.Logic.SelectAll();
+
+                return true;
+            }
+            else if (keyData == Keys.Back || keyData == (Keys.Back | Keys.Control) || keyData == Keys.Delete || keyData == (Keys.Delete | Keys.Control))
+            {
+                chatControl?.Input.Logic.Delete((keyData & Keys.Control) == Keys.Control, (keyData & ~Keys.Control) == Keys.Delete);
             }
 
             return base.ProcessCmdKey(ref msg, keyData);
@@ -61,11 +82,6 @@ namespace Chatterino
         {
             Text = $"{IrcManager.Username ?? "<not logged in>"} - Chatterino for Twitch";
         }
-
-        //protected override void OnPreviewKeyDown(PreviewKeyDownEventArgs e)
-        //{
-        //    base.OnPreviewKeyDown(e);
-        //}
 
         public Control SelectedControl
         {
@@ -175,8 +191,6 @@ namespace Chatterino
             AppSettings.WindowY = Location.Y;
             AppSettings.WindowWidth = Width;
             AppSettings.WindowHeight = Height;
-
-            //timeEndPeriod(timerAccuracy);
 
             base.OnClosing(e);
         }

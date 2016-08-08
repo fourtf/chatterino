@@ -301,11 +301,11 @@ namespace Chatterino.Controls
                     new Point(buttonSize * 3 / 4, Height - buttonSize * 5 / 8),
                     new Point(buttonSize / 2,     Height - buttonSize * 3 / 8),
                     });
-
+                
                 // draw thumb
                 g.FillRectangle(mOverIndex == 2 ? App.ColorScheme.ScrollbarThumbSelected : App.ColorScheme.ScrollbarThumb
                     , 0, buttonSize + thumbOffset, buttonSize, thumbHeight);
-
+                
                 if (Height != 0 && Maximum != 0)
                 {
                     var h = (Height - buttonSize - buttonSize - minThumbHeight);
@@ -322,11 +322,11 @@ namespace Chatterino.Controls
                             {
                                 if (y > thumbOffset + thumbHeight - minThumbHeight)
                                 {
-                                    y += minThumbHeight;
+                                    y += minThumbHeight - 3;
                                 }
                                 else
                                 {
-                                    y = (int)((y - thumbOffset) * (thumbHeight  / ((double)thumbHeight - minThumbHeight))) + thumbOffset;
+                                    y = (int)((y - thumbOffset) * (thumbHeight  / ((double)thumbHeight - (minThumbHeight - 3)))) + thumbOffset;
                                 }
                             }
 

@@ -16,6 +16,22 @@ namespace Chatterino.Common
         public static bool ChatAllowSameMessage { get; set; } = true;
         public static bool ChatLinksDoubleClickOnly { get; set; } = false;
 
+        public static event EventHandler MessageLimitChanged;
+
+        private static int chatMessageLimit = 1000;
+        public static int ChatMessageLimit
+        {
+            get { return chatMessageLimit; }
+            set
+            {
+                if (chatMessageLimit != value)
+                {
+                    chatMessageLimit = value;
+                    MessageLimitChanged?.Invoke(null, EventArgs.Empty);
+                }
+            }
+        }
+
         public static bool ChatEnableHighlight { get; set; } = true;
         public static bool ChatEnableHighlightSound { get; set; } = true;
         public static bool ChatEnableHighlightTaskbar { get; set; } = true;

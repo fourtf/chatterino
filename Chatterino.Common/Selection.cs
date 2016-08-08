@@ -51,6 +51,7 @@ namespace Chatterino.Common
             {
                 return !(Start.MessageIndex != End.MessageIndex ||
                     Start.WordIndex != End.WordIndex ||
+                    Start.SplitIndex != End.SplitIndex ||
                     Start.CharIndex != End.CharIndex);
             }
         }

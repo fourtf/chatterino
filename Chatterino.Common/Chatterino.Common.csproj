@@ -64,6 +64,7 @@
     <Compile Include="IrcManager2.cs" />
     <Compile Include="Message.cs" />
     <Compile Include="MessageBadges.cs" />
+    <Compile Include="MessageInputLogic.cs" />
     <Compile Include="MessageReceivedEventArgs.cs" />
     <Compile Include="NotificationSound.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
