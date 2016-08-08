@@ -19,8 +19,6 @@ namespace Chatterino.Controls
 
         public Padding TextPadding { get; private set; } = new Padding(12, 8 + TopMenuBarHeight, 16 + SystemInformation.VerticalScrollBarWidth, 8);
 
-        //public Message SendMessage { get; set; } = null;
-
         ChatControlHeader _header = null;
         public ChatInputControl Input { get; private set; }
 
@@ -83,7 +81,8 @@ namespace Chatterino.Controls
             SmallChange = 4,
         };
 
-        string lastTabComplete = null;
+        string lastTabCompletionStart = null;
+        string lastTabCompletion = null;
         int currentTabIndex = 0;
 
         // ctor
@@ -96,9 +95,15 @@ namespace Chatterino.Controls
             Input.Width = 600 - 2 - SystemInformation.VerticalScrollBarWidth;
             Input.Location = new Point(1, Height - 33);
 
+            Input.VisibleChanged += (s, e) =>
+            {
+                updateMessageBounds();
+            };
+
             Input.SizeChanged += (s, e) =>
             {
                 Input.Location = new Point(1, Height - Input.Height - 1);
+                updateMessageBounds();
             };
 
             Width = 600;
@@ -141,6 +146,7 @@ namespace Chatterino.Controls
             Controls.Add(_scroll);
         }
 
+        // public functions
         private void App_GifEmoteFramesUpdated(object s, EventArgs e)
         {
             channel.Process(c =>
@@ -349,6 +355,13 @@ namespace Chatterino.Controls
             }
         }
 
+        protected override void OnMouseLeave(EventArgs e)
+        {
+            Cursor = Cursors.Default;
+
+            base.OnMouseLeave(e);
+        }
+
         protected override void OnMouseDown(MouseEventArgs e)
         {
             base.OnMouseDown(e);
@@ -421,8 +434,7 @@ namespace Chatterino.Controls
 
                 if (e.KeyChar == '\b')
                 {
-                    lastTabComplete = null;
-                    currentTabIndex = 0;
+                    resetCompletion();
                 }
                 else if (e.KeyChar == '\r')
                 {
@@ -434,15 +446,13 @@ namespace Chatterino.Controls
                         Input.Logic.Clear();
                     }
 
-                    lastTabComplete = null;
-                    currentTabIndex = 0;
+                    resetCompletion();
                 }
                 else if (e.KeyChar >= ' ')
                 {
                     Input.Logic.InsertText(e.KeyChar.ToString());
 
-                    lastTabComplete = null;
-                    currentTabIndex = 0;
+                    resetCompletion();
                 }
 
                 updateMessageBounds();
@@ -525,24 +535,26 @@ namespace Chatterino.Controls
 
         public void HandleTabCompletion(bool forward)
         {
-            //if (_input./*SendMessage*/ != null)
+            if (Input.Logic.CaretPosition == Input.Logic.Text.Length)
             {
-                //string text = _input.SendMessage.RawMessage;
                 string text = Input.Logic.Text;
                 int index;
                 text = (index = text.LastIndexOf(' ')) == -1 ? text : text.Substring(index + 1);
 
                 if (channel != null)
                 {
-                    if (lastTabComplete == null)
+                    if (lastTabCompletionStart == null)
                         currentTabIndex = forward ? -1 : 1;
 
-                    var completion = channel.GetEmoteCompletion(lastTabComplete ?? text, ref currentTabIndex, forward);
+                    var completion = channel.GetEmoteCompletion(lastTabCompletionStart ?? text, ref currentTabIndex, forward);
                     if (completion != null)
                     {
-                        lastTabComplete = lastTabComplete ?? text;
+                        lastTabCompletionStart = lastTabCompletionStart ?? text;
 
-                        Input.Logic.Text = Input.Logic.Text.Remove(index + 1) + completion;
+                        Input.Logic.SelectionStart = Input.Logic.CaretPosition - (lastTabCompletion ?? text).Length;
+                        Input.Logic.SelectionLength = (lastTabCompletion ?? text).Length;
+                        Input.Logic.InsertText(completion);
+
                         updateMessageBounds();
                         this.Invoke(() => Input.Invalidate());
                     }
@@ -594,7 +606,7 @@ namespace Chatterino.Controls
         {
             var g = CreateGraphics();
 
-            TextPadding = new Padding(TextPadding.Left, TextPadding.Top, TextPadding.Right, 8 + Input.Height);
+            TextPadding = new Padding(TextPadding.Left, TextPadding.Top, TextPadding.Right, 8 + (Input.Visible ? Input.Height : 0));
 
             // determine if
             double scrollbarThumbHeight = 0;
@@ -679,6 +691,13 @@ namespace Chatterino.Controls
         void checkScrollBarPosition()
         {
             scrollAtBottom = !_scroll.Enabled || _scroll.Maximum < _scroll.Value + _scroll.LargeChange + 0.0001;
+        }
+
+        private void resetCompletion()
+        {
+            lastTabCompletionStart = null;
+            lastTabCompletion = null;
+            currentTabIndex = 0;
         }
 
         public Message MessageAtPoint(Point p, out int index)

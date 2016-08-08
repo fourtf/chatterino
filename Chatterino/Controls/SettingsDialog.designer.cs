@@ -65,6 +65,7 @@
             this.spAppearance = new Chatterino.Controls.SettingsTabPage();
             this.spConnection = new Chatterino.Controls.SettingsTabPage();
             this.spHighlighted = new Chatterino.Controls.SettingsTabPage();
+            this.chkHideInput = new System.Windows.Forms.CheckBox();
             this.tabs.SuspendLayout();
             this.RightPanel.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -106,6 +107,7 @@
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.chkHideInput);
             this.panel1.Controls.Add(this.txtMsgLimit);
             this.panel1.Controls.Add(this.label3);
             this.panel1.Controls.Add(this.chkDoubleClickLinks);
@@ -126,7 +128,7 @@
             // 
             // txtMsgLimit
             // 
-            this.txtMsgLimit.Location = new System.Drawing.Point(101, 119);
+            this.txtMsgLimit.Location = new System.Drawing.Point(101, 147);
             this.txtMsgLimit.Name = "txtMsgLimit";
             this.txtMsgLimit.Size = new System.Drawing.Size(167, 20);
             this.txtMsgLimit.TabIndex = 10;
@@ -136,7 +138,7 @@
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
             this.label3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.label3.Location = new System.Drawing.Point(18, 123);
+            this.label3.Location = new System.Drawing.Point(18, 151);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(77, 13);
             this.label3.TabIndex = 11;
@@ -494,6 +496,17 @@
             this.spHighlighted.TabIndex = 3;
             this.spHighlighted.Text = "Highlighting";
             // 
+            // chkHideInput
+            // 
+            this.chkHideInput.AutoSize = true;
+            this.chkHideInput.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.chkHideInput.Location = new System.Drawing.Point(21, 123);
+            this.chkHideInput.Name = "chkHideInput";
+            this.chkHideInput.Size = new System.Drawing.Size(134, 17);
+            this.chkHideInput.TabIndex = 12;
+            this.chkHideInput.Text = "Hide input box if Empty";
+            this.chkHideInput.UseVisualStyleBackColor = true;
+            // 
             // SettingsDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -560,5 +573,6 @@
         private System.Windows.Forms.CheckBox chkDoubleClickLinks;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox txtMsgLimit;
+        private System.Windows.Forms.CheckBox chkHideInput;
     }
 }

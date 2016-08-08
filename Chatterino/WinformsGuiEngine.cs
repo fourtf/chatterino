@@ -154,24 +154,29 @@ namespace Chatterino
         bool enableBitmapDoubleBuffering = false;
 
         static int sizeCacheStackLimit = 2048;
-        ConcurrentDictionary<string, CommonSize> sizeCache = new ConcurrentDictionary<string, CommonSize>(2, sizeCacheStackLimit);
-        ConcurrentStack<string> sizeCacheStack = new ConcurrentStack<string>();
+
+        ConcurrentDictionary<FontType, Tuple<ConcurrentDictionary<string, CommonSize>, ConcurrentStack<string>>> sizeCaches = new ConcurrentDictionary<FontType, Tuple<ConcurrentDictionary<string, CommonSize>, ConcurrentStack<string>>>();
 
         public CommonSize MeasureStringSize(object graphics, FontType font, string text)
         {
-            return sizeCache.GetOrAdd(text, s =>
+            var sizeCache = sizeCaches.GetOrAdd(font, f =>
             {
-                if (sizeCacheStack.Count >= sizeCacheStackLimit)
+                return Tuple.Create(new ConcurrentDictionary<string, CommonSize>(), new ConcurrentStack<string>());
+            });
+            
+            return sizeCache.Item1.GetOrAdd(text, s =>
+            {
+                if (sizeCache.Item2.Count >= sizeCacheStackLimit)
                 {
                     string value;
-                    if (sizeCacheStack.TryPop(out value))
+                    if (sizeCache.Item2.TryPop(out value))
                     {
                         CommonSize _s;
-                        sizeCache.TryRemove(value, out _s);
+                        sizeCache.Item1.TryRemove(value, out _s);
                     }
                 }
 
-                sizeCacheStack.Push(s);
+                sizeCache.Item2.Push(s);
 
                 Size size = TextRenderer.MeasureText((IDeviceContext)graphics, text, Fonts.GetFont(font), Size.Empty, App.DefaultTextFormatFlags);
                 return new CommonSize(size.Width, size.Height);

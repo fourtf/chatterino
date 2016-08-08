@@ -27,8 +27,16 @@ namespace Chatterino.Controls
 
             Height = minHeight = TextRenderer.MeasureText("X", Fonts.Medium).Height + 8;
 
+            if (AppSettings.ChatHideInputIfEmpty && Logic.Text.Length == 0)
+                Visible = false;
+
             Logic.Changed += (s, e) =>
             {
+                if (AppSettings.ChatHideInputIfEmpty && Logic.Text.Length == 0)
+                    Visible = false;
+                else
+                    Visible = true;
+
                 if (Logic.SelectionLength != 0)
                     chatControl.ClearSelection();
 

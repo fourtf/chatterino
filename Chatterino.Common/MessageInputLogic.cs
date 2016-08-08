@@ -25,12 +25,12 @@ namespace Chatterino.Common
         public string Text
         {
             get { return text; }
-            set { text = value; Message = new Message(value); }
+            set { text = value; Message = new Message(value); invokeChanged(); }
         }
 
         public int CaretPosition { get; private set; } = 0;
-        public int SelectionStart { get; private set; } = 0;
-        public int SelectionLength { get; private set; } = 0;
+        public int SelectionStart { get; set; } = 0;
+        public int SelectionLength { get; set; } = 0;
 
         // public functions
         public void InsertText(string text)
@@ -44,6 +44,12 @@ namespace Chatterino.Common
             SelectionStart = CaretPosition;
 
             invokeChanged();
+        }
+
+        public void SetCaretPosition(int position)
+        {
+            CaretPosition = SelectionStart = position;
+            SelectionLength = 0;
         }
 
         public void ClearSelection()
@@ -176,6 +182,7 @@ namespace Chatterino.Common
                         if (CaretPosition != 0)
                         {
                             CaretPosition--;
+                            SelectionStart--;
                             Text = (CaretPosition < Text.Length ? Text.Remove(CaretPosition) : Text) + (CaretPosition + 1 < Text.Length ? Text.Substring(CaretPosition + 1) : "");
                         }
                     }

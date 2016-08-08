@@ -15,6 +15,7 @@ namespace Chatterino.Common
         public static bool ChatShowTimestampSeconds { get; set; } = false;
         public static bool ChatAllowSameMessage { get; set; } = true;
         public static bool ChatLinksDoubleClickOnly { get; set; } = false;
+        public static bool ChatHideInputIfEmpty { get; set; } = false;
 
         public static event EventHandler MessageLimitChanged;
 
