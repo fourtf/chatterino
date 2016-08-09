@@ -363,7 +363,16 @@ namespace Chatterino.Common
                     }
                 }
 
-                i += split.Length + 1;
+                int splitLength = 0;
+                for (int j = 0; j < split.Length; j++)
+                {
+                    splitLength++;
+
+                    if (char.IsHighSurrogate(split[j]))
+                        j += 1;
+                }
+
+                i += splitLength + 1;
             }
 
             Words = words;
