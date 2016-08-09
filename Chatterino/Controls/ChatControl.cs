@@ -308,7 +308,7 @@ namespace Chatterino.Controls
 
             if (!scrollAtBottom && e.Y > Height - (Input.Visible ? TextPadding.Bottom : 0) - ScrollToBottomBarHeight)
             {
-                App.ShowToolTip(PointToScreen(new Point(e.Location.X, e.Location.Y + 16)), "jump to bottom");
+                App.ShowToolTip(PointToScreen(new Point(e.Location.X + 16, e.Location.Y)), "jump to bottom");
                 Cursor = Cursors.Hand;
             }
             else
