@@ -328,9 +328,6 @@ namespace Chatterino
                                     int offset = (first.MessageIndex == currentLine && first.SplitIndex == j && first.WordIndex == i) ? first.CharIndex : 0;
                                     int length = ((last.MessageIndex == currentLine && last.SplitIndex == j && last.WordIndex == i) ? last.CharIndex : textLength) - offset;
 
-                                    if (text == "ababab" && selection.Last.MessageIndex == currentLine + 1)
-                                        ;
-
                                     if (offset == 0 && length == text.Length)
                                         g2.FillRectangle(selectionBrush, rect.X + xOffset2, rect.Y + yOffset2, TextRenderer.MeasureText(g2, text, Fonts.GetFont(word.Font), Size.Empty, App.DefaultTextFormatFlags).Width + spaceWidth, rect.Height);
                                     else if (offset == text.Length)
@@ -454,6 +451,7 @@ namespace Chatterino
 
             using (var graphics = Graphics.FromImage(newImage))
             {
+                graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.High;
                 graphics.DrawImage(img, 0, 0, w, h);
             }
 

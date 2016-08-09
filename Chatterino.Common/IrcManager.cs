@@ -119,6 +119,8 @@ namespace Chatterino.Common
 
                 IrcManager.oauth = oauth;
 
+                LoggedIn?.Invoke(null, EventArgs.Empty);
+
                 AppSettings.UpdateCustomHighlightRegex();
 
                 // fetch ignored users
@@ -371,7 +373,6 @@ namespace Chatterino.Common
 
         public static void AddIgnoredUser(string username)
         {
-            object value;
             var _username = username.ToLower();
 
             bool success = false;
@@ -440,6 +441,7 @@ namespace Chatterino.Common
         }
 
         // Messages
+        public static event EventHandler LoggedIn;
         public static event EventHandler Disconnected;
         public static event EventHandler Connected;
         public static event EventHandler<ValueEventArgs<Exception>> ConnectionError;

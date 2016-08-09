@@ -32,12 +32,12 @@ namespace Chatterino
 
             Activated += (s, e) =>
             {
-                App.EnableTooltips = true;
+                App.WindowFocused = true;
             };
 
             Deactivate += (s, e) =>
             {
-                App.EnableTooltips = false;
+                App.WindowFocused = false;
                 App.ToolTip?.Hide();
             };
 

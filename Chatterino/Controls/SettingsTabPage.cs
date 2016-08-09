@@ -99,10 +99,10 @@ namespace Chatterino.Controls
             }
             else
             {
-                using (var gradientBrush = new LinearGradientBrush(new Point(Width-16, 0), new Point(Width, 0)
-                , Color.Transparent, Color.FromArgb(31,0,0,0)))
+                using (var gradientBrush = new LinearGradientBrush(new Point(Width - 16, 0), new Point(Width, 0)
+                , Color.Transparent, Color.FromArgb(31, 0, 0, 0)))
                 {
-                    e.Graphics.FillRectangle(gradientBrush, Width-16, 0, 16, Height);
+                    e.Graphics.FillRectangle(gradientBrush, Width - 16, 0, 16, Height);
                 }
             }
 
@@ -120,11 +120,13 @@ namespace Chatterino.Controls
             //e.Graphics.FillRectangle(Brushes.Gray, Width-1, Height - 1, 1, 1);
             //e.Graphics.FillRectangle(Brushes.Gray, 0,       Height - 1, 1, 1);
             if (Image != null)
-                e.Graphics.DrawImage(image, (Height - (Math.Min(image.Width, Height-4))) / 2, (Height - (Math.Min(image.Height, Height-4))) / 2, Math.Min(image.Width, Height-4), Math.Min(image.Height, Height-4));
+                e.Graphics.DrawImage(image, (Height - (Math.Min(image.Width, Height - 4))) / 2, (Height - (Math.Min(image.Height, Height - 4))) / 2, Math.Min(image.Width, Height - 4), Math.Min(image.Height, Height - 4));
             e.Graphics.DrawString(Text, Font, Brushes.White, Height, Height / 2 - 7);
         }
 
+#pragma warning disable CS0414
         bool mOver = false;
+#pragma warning restore CS0414
 
         protected override void OnMouseEnter(EventArgs e)
         {

@@ -234,7 +234,7 @@ namespace Chatterino.Common
         {
             AddMessage(new Message("disconnected from chat"));
         }
-        
+
         private void IrcManager_NoticeAdded(object sender, ValueEventArgs<string> e)
         {
             AddMessage(new Message(e.Value));
@@ -324,53 +324,63 @@ namespace Chatterino.Common
             emoteNames = names;
         }
 
-        public string GetEmoteCompletion(string name, ref int index, bool forward)
+        public IEnumerable<KeyValuePair<string, string>> GetCompletionItems()
         {
-            name = name.ToUpper();
-
             var names = new List<KeyValuePair<string, string>>(emoteNames);
 
             names.AddRange(Users);
             names.Sort((x1, x2) => x1.Key.CompareTo(x2.Key));
 
-            KeyValuePair<string, string> firstItem = new KeyValuePair<string, string>();
-            KeyValuePair<string, string> lastItem = new KeyValuePair<string, string>();
-
-            bool first = true;
-
-            index += forward ? 1 : (index == 0 ? 4523453 : -1);
-
-            int currentIndex = 0;
-            for (int i = 0; i < names.Count; i++)
-            {
-                if (names[i].Key.StartsWith(name))
-                {
-                    if (first)
-                    {
-                        first = false;
-                        firstItem = names[i];
-                    }
-                    if (currentIndex == index)
-                    {
-                        return names[i].Value;
-                    }
-                    currentIndex++;
-                    lastItem = names[i];
-                }
-                else if (!first)
-                {
-                    break;
-                }
-            }
-
-            if (!first)
-            {
-                index = currentIndex - 1;
-                return firstItem.Value;
-            }
-
-            return null;
+            return names;
         }
+
+        //public string GetEmoteCompletion(string name, ref int index, bool forward)
+        //{
+        //    name = name.ToUpper();
+
+        //    var names = new List<KeyValuePair<string, string>>(emoteNames);
+
+        //    names.AddRange(Users);
+        //    names.Sort((x1, x2) => x1.Key.CompareTo(x2.Key));
+
+        //    KeyValuePair<string, string> firstItem = new KeyValuePair<string, string>();
+        //    KeyValuePair<string, string> lastItem = new KeyValuePair<string, string>();
+
+        //    bool first = true;
+
+        //    index += forward ? 1 : (index == 0 ? 4523453 : -1);
+
+        //    int currentIndex = 0;
+        //    for (int i = 0; i < names.Count; i++)
+        //    {
+        //        if (names[i].Key.StartsWith(name))
+        //        {
+        //            if (first)
+        //            {
+        //                first = false;
+        //                firstItem = names[i];
+        //            }
+        //            if (currentIndex == index)
+        //            {
+        //                return names[i].Value;
+        //            }
+        //            currentIndex++;
+        //            lastItem = names[i];
+        //        }
+        //        else if (!first)
+        //        {
+        //            break;
+        //        }
+        //    }
+
+        //    if (!first)
+        //    {
+        //        index = currentIndex - 1;
+        //        return firstItem.Value;
+        //    }
+
+        //    return null;
+        //}
 
 
         // Connection
@@ -424,6 +434,18 @@ namespace Chatterino.Common
         }
 
         public object MessageLock { get; private set; } = new object();
+
+        public void ClearChat()
+        {
+            Message[] _messages = Messages;
+
+            lock (MessageLock)
+            {
+                Messages = new Message[0];
+            }
+
+            MessagesRemovedAtStart?.Invoke(this, new ValueEventArgs<Message[]>(_messages));
+        }
 
         public void ClearChat(string user, string reason, int duration)
         {

@@ -11,6 +11,8 @@ namespace Chatterino.Common
 {
     public class Message
     {
+        public static bool EnablePings { get; set; } = true;
+
         public int X { get; set; } = 0;
         public int Y { get; set; } = 0;
         public int TotalY { get; set; }
@@ -18,7 +20,6 @@ namespace Chatterino.Common
         public int Width { get; set; } = 0;
 
         public bool Disabled { get; set; } = false;
-#warning dispose buffer here
         public bool Highlighted { get; set; } = false;
         public bool EmoteBoundsChanged { get; set; } = true;
 
@@ -51,7 +52,7 @@ namespace Chatterino.Common
         public List<Word> Words { get; set; }
         public TwitchChannel Channel { get; set; }
 
-        Regex linkRegex = new Regex(@"^((?<Protocol>\w+):\/\/)?(?<Domain>[\w%@-][\w.%-:@]+\w)\/?[\w\.?=#%&=\-@/$,]*$");
+        Regex linkRegex = new Regex(@"^((?<Protocol>\w+):\/\/)?(?<Domain>[\w%@-][\w.%-:@]+\w)\/?[\w\.?=#%&=\+\-@/$,]*$");
         static char[] linkIdentifiers = new char[] { '.', ':' };
 
         public Message(IrcMessageData data, TwitchChannel channel, bool enableTimestamp = true, bool enablePingSound = true)
@@ -76,14 +77,13 @@ namespace Chatterino.Common
             }
 
             // Split the message
-            //var S = text.Split(' ');
             if ((AppSettings.ChatEnableHighlight || AppSettings.ChatEnableHighlightSound || AppSettings.ChatEnableHighlightTaskbar) && Username != IrcManager.Username.ToLower())
             {
                 if (AppSettings.CustomHighlightRegex != null && AppSettings.CustomHighlightRegex.IsMatch(text))
                 {
                     if (AppSettings.ChatEnableHighlight)
                         Highlighted = true;
-                    if (enablePingSound)
+                    if (EnablePings && enablePingSound)
                     {
                         if (AppSettings.ChatEnableHighlightSound)
                             GuiEngine.Current.PlaySound(NotificationSound.Ping);
@@ -138,9 +138,6 @@ namespace Chatterino.Common
                     CopyText = timestamp
                 });
             }
-
-            //if (Username.ToUpper() == "FOURTF")
-            //    words.Add(new Word { Type = SpanType.Image, Value = GuiEngine.Current.GetImage(ImageType.BadgeDev), Tooltip = "Chatterino Developer" });
 
             TwitchEmote fourtfBadge;
             if (Common.Badges.FourtfGlobalBadges.TryGetValue(Username, out fourtfBadge))
@@ -283,6 +280,24 @@ namespace Chatterino.Common
 
                     if (s != null)
                     {
+                        //foreach (var match in Regex.Matches(@"\b\w+\b", s))
+                        //{
+                        //    TwitchEmote bttvEmote;
+                        //    if (AppSettings.ChatEnableBttvEmotes && (Emotes.BttvGlobalEmotes.TryGetValue(s, out bttvEmote) || channel.BttvChannelEmotes.TryGetValue(s, out bttvEmote))
+                        //        || (AppSettings.ChatEnableFfzEmotes && Emotes.FfzGlobalEmotes.TryGetValue(s, out bttvEmote)))
+                        //    {
+                        //        words.Add(new Word
+                        //        {
+                        //            Type = SpanType.Emote,
+                        //            Value = bttvEmote,
+                        //            Color = slashMe ? UsernameColor : new int?(),
+                        //            Tooltip = bttvEmote.Tooltip,
+                        //            Link = bttvEmote.Url,
+                        //            CopyText = bttvEmote.Name
+                        //        });
+                        //    }
+                        //}
+
                         TwitchEmote bttvEmote;
                         if (AppSettings.ChatEnableBttvEmotes && (Emotes.BttvGlobalEmotes.TryGetValue(s, out bttvEmote) || channel.BttvChannelEmotes.TryGetValue(s, out bttvEmote))
                             || (AppSettings.ChatEnableFfzEmotes && Emotes.FfzGlobalEmotes.TryGetValue(s, out bttvEmote)))

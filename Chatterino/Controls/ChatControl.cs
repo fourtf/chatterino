@@ -16,6 +16,7 @@ namespace Chatterino.Controls
     {
         // Properties
         public const int TopMenuBarHeight = 32;
+        public const int ScrollToBottomBarHeight = 24;
 
         public Padding TextPadding { get; private set; } = new Padding(12, 8 + TopMenuBarHeight, 16 + SystemInformation.VerticalScrollBarWidth, 8);
 
@@ -81,10 +82,6 @@ namespace Chatterino.Controls
             SmallChange = 4,
         };
 
-        string lastTabCompletionStart = null;
-        string lastTabCompletion = null;
-        int currentTabIndex = 0;
-
         // ctor
         public ChatControl()
         {
@@ -98,12 +95,15 @@ namespace Chatterino.Controls
             Input.VisibleChanged += (s, e) =>
             {
                 updateMessageBounds();
+                Invalidate();
             };
 
             Input.SizeChanged += (s, e) =>
             {
                 Input.Location = new Point(1, Height - Input.Height - 1);
+
                 updateMessageBounds();
+                Invalidate();
             };
 
             Width = 600;
@@ -226,6 +226,9 @@ namespace Chatterino.Controls
 
             _scroll.UpdateHighlights(h => h.Position -= e.Value.Length);
             _scroll.RemoveHighlightsWhere(h => h.Position < 0);
+
+            updateMessageBounds();
+            Invalidate();
         }
 
         private void Channel_ChatCleared(object sender, ChatClearedEventArgs e)
@@ -282,16 +285,19 @@ namespace Chatterino.Controls
 
         protected override void OnMouseWheel(MouseEventArgs e)
         {
-            _scroll.Value -= ((double)e.Delta / 20);
+            if (_scroll.Enabled)
+            {
+                _scroll.Value -= ((double)e.Delta / 20);
 
-            if (e.Delta > 0)
-                scrollAtBottom = false;
-            else
-                checkScrollBarPosition();
+                if (e.Delta > 0)
+                    scrollAtBottom = false;
+                else
+                    checkScrollBarPosition();
 
-            updateMessageBounds();
+                updateMessageBounds();
 
-            Invalidate();
+                Invalidate();
+            }
 
             base.OnMouseWheel(e);
         }
@@ -300,57 +306,65 @@ namespace Chatterino.Controls
         {
             base.OnMouseMove(e);
 
-            int index;
-
-            var graphics = CreateGraphics();
-
-            var msg = MessageAtPoint(e.Location, out index);
-            if (msg != null)
+            if (!scrollAtBottom && e.Y > Height - (Input.Visible ? TextPadding.Bottom : 0) - ScrollToBottomBarHeight)
             {
-                var word = msg.WordAtPoint(new CommonPoint(e.X - TextPadding.Left, e.Y - msg.Y));
+                App.ShowToolTip(PointToScreen(new Point(e.Location.X, e.Location.Y + 16)), "jump to bottom");
+                Cursor = Cursors.Hand;
+            }
+            else
+            {
+                int index;
 
-                var pos = msg.MessagePositionAtPoint(graphics, new CommonPoint(e.X - TextPadding.Left, e.Y - msg.Y), index);
-                //Console.WriteLine($"pos: {pos.MessageIndex} : {pos.WordIndex} : {pos.SplitIndex} : {pos.CharIndex}");
+                var graphics = CreateGraphics();
 
-                if (selection != null && mouseDown)
+                var msg = MessageAtPoint(e.Location, out index);
+                if (msg != null)
                 {
-                    var newSelection = new Selection(selection.Start, pos);
-                    if (!newSelection.Equals(selection))
-                    {
-                        selection = newSelection;
-                        Input.Logic.ClearSelection();
-                        Invalidate();
-                    }
-                }
+                    var word = msg.WordAtPoint(new CommonPoint(e.X - TextPadding.Left, e.Y - msg.Y));
 
-                if (word != null)
-                {
-                    if (word.Link != null)
+                    var pos = msg.MessagePositionAtPoint(graphics, new CommonPoint(e.X - TextPadding.Left, e.Y - msg.Y), index);
+                    //Console.WriteLine($"pos: {pos.MessageIndex} : {pos.WordIndex} : {pos.SplitIndex} : {pos.CharIndex}");
+
+                    if (selection != null && mouseDown)
                     {
-                        Cursor = Cursors.Hand;
+                        var newSelection = new Selection(selection.Start, pos);
+                        if (!newSelection.Equals(selection))
+                        {
+                            selection = newSelection;
+                            Input.Logic.ClearSelection();
+                            Invalidate();
+                        }
                     }
-                    else if (word.Type == SpanType.Text)
+
+                    if (word != null)
                     {
-                        Cursor = Cursors.IBeam;
+                        if (word.Link != null)
+                        {
+                            Cursor = Cursors.Hand;
+                        }
+                        else if (word.Type == SpanType.Text)
+                        {
+                            Cursor = Cursors.IBeam;
+                        }
+                        else
+                        {
+                            Cursor = Cursors.Default;
+                        }
+
+                        if (word.Tooltip != null)
+                        {
+                            App.ShowToolTip(PointToScreen(new Point(e.Location.X + 16, e.Location.Y + 16)), word.Tooltip);
+                        }
+                        else
+                        {
+                            App.ToolTip?.Hide();
+                        }
                     }
                     else
                     {
                         Cursor = Cursors.Default;
-                    }
-
-                    if (word.Tooltip != null)
-                    {
-                        App.ShowToolTip(PointToScreen(new Point(e.Location.X + 16, e.Location.Y + 16)), word.Tooltip);
-                    }
-                    else
-                    {
                         App.ToolTip?.Hide();
                     }
-                }
-                else
-                {
-                    Cursor = Cursors.Default;
-                    App.ToolTip?.Hide();
                 }
             }
         }
@@ -402,24 +416,38 @@ namespace Chatterino.Controls
 
             if (e.Button == MouseButtons.Left)
             {
-                mouseDown = false;
-
-                int index;
-
-                var msg = MessageAtPoint(e.Location, out index);
-                if (msg != null)
+                if (!scrollAtBottom && e.Y > Height - (Input.Visible ? TextPadding.Bottom : 0) - ScrollToBottomBarHeight)
                 {
-                    var word = msg.WordAtPoint(new CommonPoint(e.X - TextPadding.Left, e.Y - msg.Y));
-                    if (word != null)
+                    App.ShowToolTip(PointToScreen(new Point(e.Location.X, e.Location.Y + 16)), "jump to bottom");
+
+                    mouseDown = false;
+                    mouseDownLink = null;
+
+                    scrollAtBottom = true;
+                    updateMessageBounds();
+                    Invalidate();
+                }
+                else
+                {
+                    mouseDown = false;
+
+                    int index;
+
+                    var msg = MessageAtPoint(e.Location, out index);
+                    if (msg != null)
                     {
-                        if (mouseDownLink != null && mouseDownWord == word && !AppSettings.ChatLinksDoubleClickOnly)
+                        var word = msg.WordAtPoint(new CommonPoint(e.X - TextPadding.Left, e.Y - msg.Y));
+                        if (word != null)
                         {
-                            GuiEngine.Current.HandleLink(mouseDownLink);
+                            if (mouseDownLink != null && mouseDownWord == word && !AppSettings.ChatLinksDoubleClickOnly)
+                            {
+                                GuiEngine.Current.HandleLink(mouseDownLink);
+                            }
                         }
                     }
-                }
 
-                mouseDownLink = null;
+                    mouseDownLink = null;
+                }
             }
         }
 
@@ -525,41 +553,70 @@ namespace Chatterino.Controls
 
             e.Graphics.DrawRectangle(borderPen, 0, 0, Width - 1/* - SystemInformation.VerticalScrollBarWidth*/, Height - 1);
 
-            //if (SendMessage != null)
-            //{
-            //    e.Graphics.FillRectangle(App.ColorScheme.ChatBackground, 1, Height - SendMessage.Height - 4, Width - 3 - SystemInformation.VerticalScrollBarWidth, SendMessage.Height + TextPadding.Bottom - 1);
-            //    e.Graphics.DrawLine(borderPen, 1, Height - SendMessage.Height - 4, Width - 2 - SystemInformation.VerticalScrollBarWidth, Height - SendMessage.Height - 4);
-            //    SendMessage.Draw(e.Graphics, TextPadding.Left, Height - SendMessage.Height, null, -1);
-            //}
+            if (!scrollAtBottom)
+            {
+                int start = Height - (Input.Visible ? TextPadding.Bottom : 0) - 1 - ScrollToBottomBarHeight;
+
+                Brush scrollToBottomBg = new LinearGradientBrush(new Point(0, start), new Point(0, start + ScrollToBottomBarHeight), Color.Transparent, Color.FromArgb(127, 0, 0, 0));
+
+                e.Graphics.FillRectangle(scrollToBottomBg, 1, start, Width - 2, ScrollToBottomBarHeight);
+            }
         }
+
+        string[] tabCompleteItems = null;
+        int currentTabIndex = -1;
 
         public void HandleTabCompletion(bool forward)
         {
-            if (Input.Logic.CaretPosition == Input.Logic.Text.Length)
+            string[] items = tabCompleteItems;
+            string word = null;
+
+            string text = Input.Logic.Text;
+            int caretPositon = Input.Logic.CaretPosition;
+
+            int wordStart = caretPositon - 1;
+            int wordEnd = caretPositon;
+
+            for (; wordStart >= 0; wordStart--)
             {
-                string text = Input.Logic.Text;
-                int index;
-                text = (index = text.LastIndexOf(' ')) == -1 ? text : text.Substring(index + 1);
-
-                if (channel != null)
+                if (text[wordStart] == ' ')
                 {
-                    if (lastTabCompletionStart == null)
-                        currentTabIndex = forward ? -1 : 1;
-
-                    var completion = channel.GetEmoteCompletion(lastTabCompletionStart ?? text, ref currentTabIndex, forward);
-                    if (completion != null)
-                    {
-                        lastTabCompletionStart = lastTabCompletionStart ?? text;
-
-                        Input.Logic.SelectionStart = Input.Logic.CaretPosition - (lastTabCompletion ?? text).Length;
-                        Input.Logic.SelectionLength = (lastTabCompletion ?? text).Length;
-                        Input.Logic.InsertText(completion);
-
-                        updateMessageBounds();
-                        this.Invoke(() => Input.Invalidate());
-                    }
+                    wordStart++;
+                    break;
                 }
             }
+            wordStart = wordStart == -1 ? 0 : wordStart;
+
+            for (; wordEnd < text.Length; wordEnd++)
+            {
+                if (text[wordEnd] == ' ')
+                    break;
+            }
+
+            if (wordStart == wordEnd || wordStart == caretPositon)
+                return;
+
+            word = text.Substring(wordStart, wordEnd - wordStart).ToUpperInvariant();
+
+            if (items == null)
+            {
+                items = tabCompleteItems = channel.GetCompletionItems().Where(s => s.Key.StartsWith(word)).Select(x => x.Value).ToArray();
+            }
+
+            currentTabIndex += forward ? 1 : -1;
+
+            currentTabIndex = currentTabIndex < 0 ? 0 : (currentTabIndex >= items.Length ? items.Length - 1 : currentTabIndex);
+
+            Input.Logic.SelectionStart = wordStart;
+            Input.Logic.SelectionLength = word.Length;
+
+            Input.Logic.InsertText(items[currentTabIndex]);
+        }
+
+        private void resetCompletion()
+        {
+            tabCompleteItems = null;
+            currentTabIndex = -1;
         }
 
         public void HandleArrowKey(Keys keyData)
@@ -691,13 +748,6 @@ namespace Chatterino.Controls
         void checkScrollBarPosition()
         {
             scrollAtBottom = !_scroll.Enabled || _scroll.Maximum < _scroll.Value + _scroll.LargeChange + 0.0001;
-        }
-
-        private void resetCompletion()
-        {
-            lastTabCompletionStart = null;
-            lastTabCompletion = null;
-            currentTabIndex = 0;
         }
 
         public Message MessageAtPoint(Point p, out int index)
@@ -882,7 +932,6 @@ namespace Chatterino.Controls
             Invalidate();
         }
 
-
         // header
         class ChatControlHeader : Control
         {
@@ -890,12 +939,13 @@ namespace Chatterino.Controls
             static ContextMenu contextMenu;
             static ContextMenu roomstateContextMenu;
             static ChatControl selected = null;
-            static MenuItem messageCountItem;
 
             static MenuItem roomstateSlow;
             static MenuItem roomstateSub;
             static MenuItem roomstateEmoteonly;
             static MenuItem roomstateR9K;
+
+            public static MenuItem LoginMenuItem { get; set; }
 
             static ChatControlHeader()
             {
@@ -903,11 +953,12 @@ namespace Chatterino.Controls
                 contextMenu.MenuItems.Add(new MenuItem("Add new Split", (s, e) => { App.MainForm?.AddNewSplit(); }, Shortcut.CtrlT));
                 contextMenu.MenuItems.Add(new MenuItem("Close Split", (s, e) => { App.MainForm?.RemoveSelectedSplit(); }, Shortcut.CtrlW));
                 contextMenu.MenuItems.Add(new MenuItem("Change Channel", (s, e) => { App.MainForm?.RenameSelectedSplit(); }, Shortcut.CtrlR));
+                contextMenu.MenuItems.Add(new MenuItem("Clear Chat", (s, e) => { selected.Channel.ClearChat(); }));
                 contextMenu.MenuItems.Add("-");
                 contextMenu.MenuItems.Add(new MenuItem("Open Channel", (s, e) => { GuiEngine.Current.HandleLink(selected.Channel.ChannelLink); }));
                 contextMenu.MenuItems.Add(new MenuItem("Open Pop-out Player", (s, e) => { GuiEngine.Current.HandleLink(selected.Channel.PopoutPlayerLink); }));
                 contextMenu.MenuItems.Add("-");
-                contextMenu.MenuItems.Add(new MenuItem("Login", (s, e) => new LoginForm().ShowDialog(), Shortcut.CtrlL));
+                contextMenu.MenuItems.Add(LoginMenuItem = new MenuItem("Login", (s, e) => new LoginForm().ShowDialog(), Shortcut.CtrlL));
                 contextMenu.MenuItems.Add(new MenuItem("Preferences", (s, e) => App.ShowSettings(), Shortcut.CtrlP));
                 //contextMenu.MenuItems.Add("-");
                 //contextMenu.MenuItems.Add(messageCountItem = new MenuItem("MessageCount: 0", (s, e) => { }) { Enabled = false });
@@ -961,6 +1012,11 @@ namespace Chatterino.Controls
                             selected.Channel.SendMessage("/emoteonly ");
                     }
                 }));
+
+                if (IrcManager.Username != null)
+                    LoginMenuItem.Text = "Change User";
+                else
+                    IrcManager.LoggedIn += (s, e) => LoginMenuItem.Text = "Change User";
             }
 
             // local controls
@@ -1035,7 +1091,6 @@ namespace Chatterino.Controls
                 };
                 button.Click += (s, e) =>
                 {
-                    //messageCountItem.Text = "MessageCount: " + chatControl.Channel.MessageCount;
                     selected = chatControl;
                     contextMenu.Show(this, new Point(Location.X, Location.Y + Height));
                 };
@@ -1087,9 +1142,6 @@ namespace Chatterino.Controls
                 //e.Graphics.DrawLine(Focused ? App.ColorScheme.ChatBorderFocused : App.ColorScheme.ChatBorder, 0, 0, Width, 0);
 
                 string title = string.IsNullOrWhiteSpace(chatControl.ChannelName) ? "<no channel>" : chatControl.ChannelName;
-
-                //var size = TextRenderer.MeasureText(e.Graphics, title, chatControl.Font, Size.Empty, App.DefaultTextFormatFlags);
-                //TextRenderer.DrawText(e.Graphics, title, chatControl.Font, new Point((Width / 2) - (size.Width / 2), TopMenuBarHeight / 2 - (size.Height / 2)), chatControl.Focused ? App.ColorScheme.TextFocused : App.ColorScheme.Text, App.DefaultTextFormatFlags);
                 TextRenderer.DrawText(e.Graphics, title, chatControl.Font, new Rectangle(DropDownButton.Width, 0, Width - DropDownButton.Width - RoomstateButton.Width, Height), chatControl.Focused ? App.ColorScheme.TextFocused : App.ColorScheme.Text, App.DefaultTextFormatFlags | TextFormatFlags.VerticalCenter | TextFormatFlags.HorizontalCenter);
             }
         }

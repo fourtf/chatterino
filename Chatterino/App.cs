@@ -111,11 +111,17 @@ namespace Chatterino
         }
 
         public static Controls.ToolTip ToolTip { get; private set; } = null;
-        public static bool EnableTooltips { get; set; } = true;
 
-        public static void ShowToolTip(System.Drawing.Point point, string text)
+        private static bool windowFocused = true;
+        public static bool WindowFocused
         {
-            if (EnableTooltips)
+            get { return windowFocused; }
+            set { windowFocused = value; Common.Message.EnablePings = !value; }
+        }
+
+        public static void ShowToolTip(Point point, string text)
+        {
+            if (WindowFocused)
             {
                 if (ToolTip == null)
                 {
