@@ -10,12 +10,26 @@ namespace Chatterino
 {
     public static class Fonts
     {
+        public static event EventHandler FontsChanged;
+
         public static Font Small = new Font("Helvetica Neue", 6.5f);
         public static Font Medium = new Font("Helvetica Neue", 9.5f);
         public static Font MediumBold = new Font("Helvetica Neue", 9.5f, FontStyle.Bold);
         public static Font MediumItalic = new Font("Helvetica Neue", 9.5f, FontStyle.Italic);
         public static Font Large = new Font("Helvetica Neue", 11.5f);
         public static Font VeryLarge = new Font("Helvetica Neue", 13.5f);
+
+        public static void SetFont(string family, float size)
+        {
+            Small = new Font(family, size * 0.7f);
+            Medium = new Font(family, size);
+            MediumBold = new Font(Medium, FontStyle.Bold);
+            MediumItalic = new Font(Medium, FontStyle.Italic);
+            Large = new Font(family, size * 1.3f);
+            VeryLarge = new Font(family, size * 1.6f);
+
+            FontsChanged?.Invoke(null, EventArgs.Empty);
+        }
 
         public static Font GetFont(FontType type)
         {

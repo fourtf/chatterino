@@ -56,6 +56,8 @@ namespace Chatterino.Controls
                 value = value.Trim();
                 if (value != channelName)
                 {
+                    _scroll.RemoveHighlightsWhere(x => true);
+
                     if (channel != null)
                     {
                         channel.MessageAdded -= Channel_MessageAdded;
@@ -145,16 +147,33 @@ namespace Chatterino.Controls
         {
             channel.Process(c =>
             {
-                var g = CreateGraphics();
-
-                lock (c.MessageLock)
+                lock (bufferLock)
                 {
-                    for (int i = 0; i < c.Messages.Length; i++)
+                    if (buffer != null)
                     {
-                        var msg = c.Messages[i];
-                        if (msg.IsVisible)
+                        bool hasUpdated = false;
+
+                        lock (c.MessageLock)
                         {
-                            msg.UpdateGifEmotes(g, selection, i);
+                            for (int i = 0; i < c.Messages.Length; i++)
+                            {
+                                var msg = c.Messages[i];
+                                if (msg.IsVisible)
+                                {
+                                    hasUpdated = true;
+                                    msg.UpdateGifEmotes(buffer.Graphics, selection, i);
+                                }
+                            }
+                        }
+
+                        if (hasUpdated)
+                        {
+                            var borderPen = Focused ? App.ColorScheme.ChatBorderFocused : App.ColorScheme.ChatBorder;
+                            buffer.Graphics.DrawRectangle(borderPen, 0, Height - 1, Width - 1, 1);
+
+                            var g = CreateGraphics();
+
+                            buffer.Render(g);
                         }
                     }
                 }
@@ -344,17 +363,15 @@ namespace Chatterino.Controls
             }
         }
 
-        protected override void OnPaint(PaintEventArgs e)
+        protected override void OnPaintOnBuffer(Graphics g)
         {
-            base.OnPaint(e);
-
             if (!scrollAtBottom)
             {
                 int start = Height - (Input.Visible ? Input.Height : 0) - ScrollToBottomBarHeight;
 
                 Brush scrollToBottomBg = new LinearGradientBrush(new Point(0, start), new Point(0, start + ScrollToBottomBarHeight), Color.Transparent, Color.FromArgb(92, 0, 0, 0));
 
-                e.Graphics.FillRectangle(scrollToBottomBg, 1, start, Width - 2, ScrollToBottomBarHeight);
+                g.FillRectangle(scrollToBottomBg, 1, start, Width - 2, ScrollToBottomBarHeight);
             }
         }
 

@@ -388,7 +388,6 @@ namespace Chatterino
 
         public void DrawGifEmotes(object graphics, Common.Message message, Selection selection, int currentLine)
         {
-            var w = Stopwatch.StartNew();
             var Words = message.Words;
             Graphics g = (Graphics)graphics;
 
@@ -405,35 +404,27 @@ namespace Chatterino
                     {
                         lock (emote.Image)
                         {
-                            BufferedGraphicsContext context = BufferedGraphicsManager.Current;
-
                             var CurrentXOffset = message.X;
                             var CurrentYOffset = message.Y;
 
-                            var buffer = context.Allocate(g, new Rectangle(word.X + CurrentXOffset, word.Y + CurrentYOffset, word.Width, word.Height));
-
-                            buffer.Graphics.FillRectangle(message.Highlighted ? App.ColorScheme.ChatBackgroundHighlighted : App.ColorScheme.ChatBackground, word.X + CurrentXOffset, word.Y + CurrentYOffset, word.Width, word.Height);
-                            buffer.Graphics.DrawImage((Image)emote.Image, word.X + CurrentXOffset, word.Y + CurrentYOffset, word.Width, word.Height);
+                            g.FillRectangle(message.Highlighted ? App.ColorScheme.ChatBackgroundHighlighted : App.ColorScheme.ChatBackground, word.X + CurrentXOffset, word.Y + CurrentYOffset, word.Width, word.Height);
+                            g.DrawImage((Image)emote.Image, word.X + CurrentXOffset, word.Y + CurrentYOffset, word.Width, word.Height);
 
                             //if (message.Highlighted)
                             //    g.FillRectangle(, word.X + CurrentXOffset, word.Y + CurrentYOffset, word.Width, word.Height);
 
                             if (selection != null && !selection.IsEmpty && (currentLine > selection.First.MessageIndex || (currentLine == selection.First.MessageIndex && i >= selection.First.WordIndex)) && (currentLine < selection.Last.MessageIndex || (selection.Last.MessageIndex == currentLine && i < selection.Last.WordIndex)))
-                                buffer.Graphics.FillRectangle(selectionBrush, word.X + CurrentXOffset, word.Y + CurrentYOffset, word.Width, word.Height);
+                                g.FillRectangle(selectionBrush, word.X + CurrentXOffset, word.Y + CurrentYOffset, word.Width, word.Height);
 
                             if (message.Disabled)
                             {
-                                buffer.Graphics.FillRectangle(new SolidBrush(Color.FromArgb(172, (App.ColorScheme.ChatBackground as SolidBrush)?.Color ?? Color.Black)),
+                                g.FillRectangle(new SolidBrush(Color.FromArgb(172, (App.ColorScheme.ChatBackground as SolidBrush)?.Color ?? Color.Black)),
                                     word.X + CurrentXOffset, word.Y + CurrentYOffset, word.Width + spaceWidth, word.Height);
                             }
-
-                            buffer.Render(g);
                         }
                     }
                 }
             }
-            w.Stop();
-            //Console.WriteLine($"Drew gif emotes in {w.Elapsed.TotalSeconds:0.000000} seconds");
         }
 
         public void DisposeMessageGraphicsBuffer(Common.Message message)

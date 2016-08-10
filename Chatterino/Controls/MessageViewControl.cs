@@ -54,6 +54,12 @@ namespace Chatterino.Controls
         protected Selection selection = null;
         protected bool mouseDown = false;
 
+        // buffer
+        protected BufferedGraphicsContext context = BufferedGraphicsManager.Current;
+        protected BufferedGraphics buffer = null;
+
+        protected object bufferLock = new object();
+
         // Constructor
         public MessageContainerControl()
         {
@@ -159,6 +165,8 @@ namespace Chatterino.Controls
         {
             Cursor = Cursors.Default;
 
+            App.ToolTip?.Hide();
+
             base.OnMouseLeave(e);
         }
 
@@ -235,55 +243,83 @@ namespace Chatterino.Controls
         {
             base.OnResize(e);
 
+            lock (bufferLock)
+            {
+                if (buffer != null)
+                {
+                    buffer.Dispose();
+                    buffer = null;
+                }
+            }
+
             updateMessageBounds();
         }
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            base.OnPaint(e);
-
-            var borderPen = Focused ? App.ColorScheme.ChatBorderFocused : App.ColorScheme.ChatBorder;
-
-            e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-            e.Graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
-
-            // DRAW MESSAGES
-            Message[] M = GetMessagesClone();
-
-            if (M != null && M.Length > 0)
+            lock (bufferLock)
             {
-                int startIndex = Math.Max(0, (int)_scroll.Value);
-
-                int y = MessagePadding.Top - (int)(M[startIndex].Height * (_scroll.Value % 1));
-                int h = Height - MessagePadding.Top - MessagePadding.Bottom;
-
-                for (int i = 0; i < startIndex; i++)
+                if (buffer == null)
                 {
-                    M[i].IsVisible = false;
+                    buffer = context.Allocate(e.Graphics, ClientRectangle);
                 }
 
-                for (int i = startIndex; i < M.Length; i++)
+                Graphics g = buffer.Graphics;
+
+                g.Clear((App.ColorScheme.ChatBackground as SolidBrush).Color);
+
+                var borderPen = Focused ? App.ColorScheme.ChatBorderFocused : App.ColorScheme.ChatBorder;
+
+                g.SmoothingMode = SmoothingMode.AntiAlias;
+                g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
+
+                // DRAW MESSAGES
+                Message[] M = GetMessagesClone();
+
+                if (M != null && M.Length > 0)
                 {
-                    var msg = M[i];
-                    msg.IsVisible = true;
+                    int startIndex = Math.Max(0, (int)_scroll.Value);
 
-                    msg.Draw(e.Graphics, MessagePadding.Left, y, selection, i);
+                    int y = MessagePadding.Top - (int)(M[startIndex].Height * (_scroll.Value % 1));
+                    int h = Height - MessagePadding.Top - MessagePadding.Bottom;
 
-                    if (y - msg.Height > h)
+                    for (int i = 0; i < startIndex; i++)
                     {
-                        for (; i < M.Length; i++)
-                        {
-                            M[i].IsVisible = false;
-                        }
-
-                        break;
+                        M[i].IsVisible = false;
                     }
 
-                    y += msg.Height;
-                }
-            }
+                    for (int i = startIndex; i < M.Length; i++)
+                    {
+                        var msg = M[i];
+                        msg.IsVisible = true;
 
-            e.Graphics.DrawRectangle(borderPen, 0, 0, Width - 1/* - SystemInformation.VerticalScrollBarWidth*/, Height - 1);
+                        msg.Draw(g, MessagePadding.Left, y, selection, i);
+
+                        if (y - msg.Height > h)
+                        {
+                            for (; i < M.Length; i++)
+                            {
+                                M[i].IsVisible = false;
+                            }
+
+                            break;
+                        }
+
+                        y += msg.Height;
+                    }
+                }
+
+                g.DrawRectangle(borderPen, 0, 0, Width - 1, Height - 1);
+
+                OnPaintOnBuffer(g);
+
+                buffer.Render(e.Graphics);
+            }
+        }
+
+        protected virtual void OnPaintOnBuffer(Graphics g)
+        {
+
         }
 
         // Public Functions
