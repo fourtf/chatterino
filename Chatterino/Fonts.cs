@@ -14,6 +14,8 @@ namespace Chatterino
         public static Font Medium = new Font("Helvetica Neue", 9.5f);
         public static Font MediumBold = new Font("Helvetica Neue", 9.5f, FontStyle.Bold);
         public static Font MediumItalic = new Font("Helvetica Neue", 9.5f, FontStyle.Italic);
+        public static Font Large = new Font("Helvetica Neue", 11.5f);
+        public static Font VeryLarge = new Font("Helvetica Neue", 13.5f);
 
         public static Font GetFont(FontType type)
         {
@@ -25,6 +27,10 @@ namespace Chatterino
                 return MediumBold;
             else if (type == FontType.MediumItalic)
                 return MediumItalic;
+            else if (type == FontType.Large)
+                return Large;
+            else if (type == FontType.VeryLarge)
+                return VeryLarge;
 
             throw new ArgumentException($"Font {type} doesn't exists.");
         }

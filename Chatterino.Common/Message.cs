@@ -418,21 +418,50 @@ namespace Chatterino.Common
             Words.AddRange(text.Split(' ').Select(x => new Word { Type = SpanType.Text, Value = x, Color = color, CopyText = x }));
         }
 
-        public static Message FromMD(string md)
+        public static Message[] ParseMD(string md)
         {
-            Message msg = new Message();
-
-            string line;
+            List<Message> list = new List<Message>();
 
             using (StringReader reader = new StringReader(md))
             {
+                string line;
+
                 while ((line = reader.ReadLine()) != null)
                 {
-                    
+                    Message msg = new Message();
+
+                    FontType font = FontType.Medium;
+
+                    // Heading
+                    var headerMatch = Regex.Match(line, "^(#{1,6}) ");
+                    if (headerMatch.Success)
+                    {
+                        if (headerMatch.Length == 2)
+                            font = FontType.VeryLarge;
+                        else
+                            font = FontType.Large;
+
+                        line = line.Substring(headerMatch.Length);
+                    }
+
+                    // Lists
+                    if (line.Length > 2 && line[0] == '-' && line[1] == ' ')
+                    {
+                        line = " • " + line.Substring(2);
+                    }
+
+                    // Add words
+                    msg.Words = line.Split(' ').Select(x => new Word { Type = SpanType.Text, Font = font, Value = x, CopyText = x }).ToList();
+
+                    list.Add(msg);
                 }
             }
 
-            return msg;
+            Message closeMessage = new Message();
+            closeMessage.Words = new List<Word> { new Word() { Value = "Close Changelog", Color = -8355712, Link = "@closeCurrentSplit" } };
+            list.Add(closeMessage);
+
+            return list.ToArray();
         }
 
         bool measureText = true;

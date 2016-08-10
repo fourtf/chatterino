@@ -19,13 +19,28 @@ namespace Chatterino
         // LINKS
         public void HandleLink(string link)
         {
-            try
+            if (link != null && link.Length > 1)
             {
-                if (link.StartsWith("http://") || link.StartsWith("https://")
-                    || MessageBox.Show($"The link \"{link}\" will be opened in an external application.", "open link", MessageBoxButtons.OKCancel) == DialogResult.OK)
-                    Process.Start(link);
+                if (link[0] == '@')
+                {
+                    switch (link.Substring(1))
+                    {
+                        case "closeCurrentSplit":
+                            App.MainForm.RemoveSelectedSplit();
+                            break;
+                    }
+                }
+                else
+                {
+                    try
+                    {
+                        if (link.StartsWith("http://") || link.StartsWith("https://")
+                            || MessageBox.Show($"The link \"{link}\" will be opened in an external application.", "open link", MessageBoxButtons.OKCancel) == DialogResult.OK)
+                            Process.Start(link);
+                    }
+                    catch { }
+                }
             }
-            catch { }
         }
 
 
@@ -267,7 +282,7 @@ namespace Chatterino
                             }
                             else
                             {
-                                g.DrawRectangle(Pens.Red, xOffset + word.X, word.Y + yOffset, word.Width, word.Height);
+                                //g.DrawRectangle(Pens.Red, xOffset + word.X, word.Y + yOffset, word.Width, word.Height);
                             }
                         }
                         else if (word.Type == SpanType.Image)

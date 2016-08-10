@@ -11,6 +11,8 @@ namespace Chatterino.Common
         Medium,
         MediumBold,
         MediumItalic,
-        Small
+        Small,
+        Large,
+        VeryLarge
     }
 }

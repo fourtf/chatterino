@@ -64,6 +64,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ColorScheme.cs" />
+    <Compile Include="Controls\ChangelogControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\ChatInputControl.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -72,6 +75,9 @@
     </Compile>
     <Compile Include="Controls\LoginForm.Designer.cs">
       <DependentUpon>LoginForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\MessageViewControl.cs">
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\ScrollBarHighlight.cs" />
     <Compile Include="Controls\SendTextBox.cs">
@@ -160,6 +166,9 @@
       <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="Changelog.md">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="Colors.ini">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

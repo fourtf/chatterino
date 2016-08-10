@@ -13,6 +13,10 @@ namespace Chatterino
 
         public Brush ChatBackground { get; set; } = Brushes.White;
         public Brush ChatBackgroundHighlighted { get; set; } = Brushes.LightBlue;
+        public Brush ChatInputOuter { get; set; } = Brushes.White;
+        public Brush ChatInputInner { get; set; } = Brushes.White;
+        public Pen ChatInputBorder { get; set; } = Pens.White;
+        
         public Pen ChatBorder { get; set; } = Pens.LightGray;
         public Pen ChatBorderFocused { get; set; } = Pens.Black;
         public Color Text { get; set; } = Color.Black;

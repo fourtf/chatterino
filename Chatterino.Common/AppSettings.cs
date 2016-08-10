@@ -11,6 +11,8 @@ namespace Chatterino.Common
 {
     public static class AppSettings
     {
+        public static string CurrentVersion { get; set; } = "0.0";
+
         public static bool ChatShowTimestamps { get; set; } = true;
         public static bool ChatShowTimestampSeconds { get; set; } = false;
         public static bool ChatAllowSameMessage { get; set; } = true;

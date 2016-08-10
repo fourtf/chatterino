@@ -18,7 +18,7 @@ namespace Chatterino
     public static class App
     {
         // Updates
-        public static VersionNumber CurrentVersion = VersionNumber.Parse("0.1");
+        public static VersionNumber CurrentVersion { get; private set; }
         private static bool installUpdatesOnExit = false;
         private static bool restartAfterUpdates = false;
 
@@ -55,6 +55,8 @@ namespace Chatterino
         [STAThread]
         static void Main()
         {
+            CurrentVersion = VersionNumber.Parse(AssemblyName.GetAssemblyName(Assembly.GetExecutingAssembly().Location).Version.ToString());
+            
             Directory.SetCurrentDirectory(new FileInfo(Assembly.GetEntryAssembly().Location).Directory.FullName);
 
             GuiEngine.Initialize(new WinformsGuiEngine());

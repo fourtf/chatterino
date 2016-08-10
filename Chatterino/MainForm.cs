@@ -24,6 +24,15 @@ namespace Chatterino
 
             LoadLayout("./layout.xml");
 
+#if !DEBUG
+            if (AppSettings.CurrentVersion != App.CurrentVersion.ToString())
+            {
+                AppSettings.CurrentVersion = App.CurrentVersion.ToString();
+
+                AddChangelog();
+            }
+#endif
+
             BackColor = Color.Black;
 
             KeyPreview = true;
@@ -80,7 +89,12 @@ namespace Chatterino
 
         public void SetTitle()
         {
-            this.Invoke(() => Text = $"{IrcManager.Username ?? "<not logged in>"} - Chatterino for Twitch");
+            this.Invoke(() => Text = $"{IrcManager.Username ?? "<not logged in>"} - Chatterino for Twitch (v" + App.CurrentVersion.ToString()
+#if DEBUG
+            + " dev"
+#endif
+            + ")"
+            );
         }
 
         public Control SelectedControl
@@ -270,6 +284,15 @@ namespace Chatterino
         public void AddChannel(string name, int column = -1, int row = -1)
         {
             columnLayoutControl1.AddToGrid(new ChatControl { ChannelName = name }, column, row);
+        }
+
+        public void AddChangelog()
+        {
+            try
+            {
+                ColumnLayout.AddToGrid(new ChangelogControl(File.ReadAllText("Changelog.md")));
+            }
+            catch { }
         }
     }
 }

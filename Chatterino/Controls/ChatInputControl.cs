@@ -16,7 +16,7 @@ namespace Chatterino.Controls
 
         private ChatControl chatControl;
 
-        Padding textPadding = new Padding(8, 0, 8, 0);
+        Padding messagePadding = new Padding(12, 4, 12, 4);
         int minHeight;
 
         public ChatInputControl(ChatControl chatControl)
@@ -25,7 +25,7 @@ namespace Chatterino.Controls
 
             this.chatControl = chatControl;
 
-            Height = minHeight = TextRenderer.MeasureText("X", Fonts.Medium).Height + 8;
+            Height = minHeight = TextRenderer.MeasureText("X", Fonts.Medium).Height + 8 + messagePadding.Top + messagePadding.Bottom;
 
             if (AppSettings.ChatHideInputIfEmpty && Logic.Text.Length == 0)
                 Visible = false;
@@ -59,9 +59,9 @@ namespace Chatterino.Controls
             if (msg != null)
             {
                 using (var g = CreateGraphics())
-                    msg.CalculateBounds(g, Width - textPadding.Left - textPadding.Right);
+                    msg.CalculateBounds(g, Width - messagePadding.Left - messagePadding.Right);
 
-                Height = Math.Max(msg.Height, minHeight);
+                Height = Math.Max(msg.Height + messagePadding.Top + messagePadding.Bottom, minHeight);
             }
         }
 
@@ -74,7 +74,8 @@ namespace Chatterino.Controls
         {
             var g = e.Graphics;
 
-            g.DrawRectangle(Pens.Black, 0, 0, Width - 1, Height - 1);
+            g.FillRectangle(App.ColorScheme.ChatInputOuter, 0, 0, Width - 1, Height - 1);
+            g.DrawRectangle(App.ColorScheme.ChatInputBorder, 0, 0, Width - 1, Height - 1);
 
             var sendMessage = Logic.Message;
 
@@ -82,7 +83,7 @@ namespace Chatterino.Controls
             {
                 Selection selection = Logic.Selection;
 
-                sendMessage.Draw(e.Graphics, textPadding.Left, 0, selection, 0);
+                sendMessage.Draw(e.Graphics, messagePadding.Left, messagePadding.Top, selection, 0);
 
                 int spaceWidth = GuiEngine.Current.MeasureStringSize(g, FontType.Medium, " ").Width;
 
@@ -98,7 +99,7 @@ namespace Chatterino.Controls
 
                         if (x == Logic.CaretPosition)
                         {
-                            caretRect = new Rectangle(textPadding.Left + word.X - spaceWidth, word.Y, 1, word.Height);
+                            caretRect = new Rectangle(messagePadding.Left + word.X - spaceWidth, word.Y + messagePadding.Top, 1, word.Height);
                             goto end;
                         }
 
@@ -113,7 +114,10 @@ namespace Chatterino.Controls
                             if (x == Logic.CaretPosition)
                             {
                                 var size = TextRenderer.MeasureText(g, text.Remove(i), Fonts.GetFont(word.Font), Size.Empty, App.DefaultTextFormatFlags);
-                                caretRect = new Rectangle(textPadding.Left + (word.SplitSegments?[j].Item2.X ?? word.X) + size.Width, word.SplitSegments?[j].Item2.Y ?? word.Y, 1, word.Height);
+                                caretRect = new Rectangle(messagePadding.Left + (word.SplitSegments?[j].Item2.X ?? word.X) + size.Width,
+                                    (word.SplitSegments?[j].Item2.Y ?? word.Y) + messagePadding.Top,
+                                    1,
+                                    word.Height);
                                 goto end;
                             }
                             x++;
@@ -124,7 +128,7 @@ namespace Chatterino.Controls
                 var _word = sendMessage.Words[sendMessage.Words.Count - 1];
                 var _lastSegmentText = _word.SplitSegments?[_word.SplitSegments.Length - 1].Item1;
                 var _lastSegment = _word.SplitSegments?[_word.SplitSegments.Length - 1].Item2;
-                caretRect = _word.SplitSegments == null ? new Rectangle(textPadding.Left + _word.X + _word.Width, _word.Y, 1, _word.Height) : new Rectangle(textPadding.Left + _lastSegment.Value.X + GuiEngine.Current.MeasureStringSize(g, _word.Font, _lastSegmentText).Width, _lastSegment.Value.Y, 1, _lastSegment.Value.Height);
+                caretRect = _word.SplitSegments == null ? new Rectangle(messagePadding.Left + _word.X + _word.Width, _word.Y + messagePadding.Top, 1, _word.Height) : new Rectangle(messagePadding.Left + _lastSegment.Value.X + GuiEngine.Current.MeasureStringSize(g, _word.Font, _lastSegmentText).Width, _lastSegment.Value.Y + messagePadding.Top, 1, _lastSegment.Value.Height);
 
                 end:
 

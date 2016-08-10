@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -12,20 +13,32 @@ using Message = Chatterino.Common.Message;
 
 namespace Chatterino.Controls
 {
-    public class ChatControl : ColumnLayoutItemBase
+    public class ChatControl : MessageContainerControl
     {
         // Properties
         public const int TopMenuBarHeight = 32;
         public const int ScrollToBottomBarHeight = 24;
 
-        public Padding TextPadding { get; private set; } = new Padding(12, 8 + TopMenuBarHeight, 16 + SystemInformation.VerticalScrollBarWidth, 8);
-
         ChatControlHeader _header = null;
         public ChatInputControl Input { get; private set; }
 
-        // vars
-        private bool scrollAtBottom = true;
+        protected override object MessageLock
+        {
+            get
+            {
+                return channel?.MessageLock;
+            }
+        }
 
+        protected override Message[] Messages
+        {
+            get
+            {
+                return channel?.Messages;
+            }
+        }
+
+        // channel
         TwitchChannel channel = null;
 
         public TwitchChannel Channel
@@ -76,20 +89,17 @@ namespace Chatterino.Controls
             }
         }
 
-        CustomScrollBar _scroll = new CustomScrollBar
-        {
-            Enabled = false,
-            SmallChange = 4,
-        };
-
         // ctor
         public ChatControl()
         {
-            SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
-            SetStyle(ControlStyles.ResizeRedraw, true);
+            MessagePadding = new Padding(12, 8 + TopMenuBarHeight, 16 + SystemInformation.VerticalScrollBarWidth, 8);
+
+            _scroll.Location = new Point(Width - SystemInformation.VerticalScrollBarWidth, TopMenuBarHeight);
+            _scroll.Size = new Size(SystemInformation.VerticalScrollBarWidth, Height - TopMenuBarHeight - 2);
+            _scroll.Anchor = AnchorStyles.None; // AnchorStyles.Right | AnchorStyles.Bottom | AnchorStyles.Top;
 
             Input = new ChatInputControl(this);
-            Input.Width = 600 - 2 - SystemInformation.VerticalScrollBarWidth;
+            Input.Width = 600 - 2;
             Input.Location = new Point(1, Height - 33);
 
             Input.VisibleChanged += (s, e) =>
@@ -100,14 +110,11 @@ namespace Chatterino.Controls
 
             Input.SizeChanged += (s, e) =>
             {
-                Input.Location = new Point(1, Height - Input.Height);
+                Input.Location = new Point(1, Height - Input.Height - 1);
 
                 updateMessageBounds();
                 Invalidate();
             };
-
-            Width = 600;
-            Height = 500;
 
             Input.Anchor = AnchorStyles.Right | AnchorStyles.Bottom | AnchorStyles.Left;
 
@@ -131,19 +138,6 @@ namespace Chatterino.Controls
 
             GotFocus += (s, e) => { Input.Logic.ClearSelection(); header.Invalidate(); };
             LostFocus += (s, e) => { header.Invalidate(); };
-
-            _scroll.Location = new Point(Width - SystemInformation.VerticalScrollBarWidth - 1, TopMenuBarHeight);
-            _scroll.Size = new Size(SystemInformation.VerticalScrollBarWidth, Height - TopMenuBarHeight - 1);
-            _scroll.Anchor = AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Bottom;
-
-            _scroll.Scroll += (s, e) =>
-            {
-                checkScrollBarPosition();
-                updateMessageBounds();
-                Invalidate();
-            };
-
-            Controls.Add(_scroll);
         }
 
         // public functions
@@ -278,34 +272,8 @@ namespace Chatterino.Controls
             });
         }
 
-        string mouseDownLink = null;
-        Word mouseDownWord = null;
-        Selection selection = null;
-        bool mouseDown = false;
-
-        protected override void OnMouseWheel(MouseEventArgs e)
-        {
-            if (_scroll.Enabled)
-            {
-                _scroll.Value -= ((double)e.Delta / 20);
-
-                if (e.Delta > 0)
-                    scrollAtBottom = false;
-                else
-                    checkScrollBarPosition();
-
-                updateMessageBounds();
-
-                Invalidate();
-            }
-
-            base.OnMouseWheel(e);
-        }
-
         protected override void OnMouseMove(MouseEventArgs e)
         {
-            base.OnMouseMove(e);
-
             if (!scrollAtBottom && e.Y > Height - (Input.Visible ? Input.Height : 0) - ScrollToBottomBarHeight)
             {
                 App.ShowToolTip(PointToScreen(new Point(e.Location.X + 16, e.Location.Y)), "jump to bottom");
@@ -313,107 +281,12 @@ namespace Chatterino.Controls
             }
             else
             {
-                int index;
-
-                var graphics = CreateGraphics();
-
-                var msg = MessageAtPoint(e.Location, out index);
-                if (msg != null)
-                {
-                    var word = msg.WordAtPoint(new CommonPoint(e.X - TextPadding.Left, e.Y - msg.Y));
-
-                    var pos = msg.MessagePositionAtPoint(graphics, new CommonPoint(e.X - TextPadding.Left, e.Y - msg.Y), index);
-                    //Console.WriteLine($"pos: {pos.MessageIndex} : {pos.WordIndex} : {pos.SplitIndex} : {pos.CharIndex}");
-
-                    if (selection != null && mouseDown)
-                    {
-                        var newSelection = new Selection(selection.Start, pos);
-                        if (!newSelection.Equals(selection))
-                        {
-                            selection = newSelection;
-                            Input.Logic.ClearSelection();
-                            Invalidate();
-                        }
-                    }
-
-                    if (word != null)
-                    {
-                        if (word.Link != null)
-                        {
-                            Cursor = Cursors.Hand;
-                        }
-                        else if (word.Type == SpanType.Text)
-                        {
-                            Cursor = Cursors.IBeam;
-                        }
-                        else
-                        {
-                            Cursor = Cursors.Default;
-                        }
-
-                        if (word.Tooltip != null)
-                        {
-                            App.ShowToolTip(PointToScreen(new Point(e.Location.X + 16, e.Location.Y + 16)), word.Tooltip);
-                        }
-                        else
-                        {
-                            App.ToolTip?.Hide();
-                        }
-                    }
-                    else
-                    {
-                        Cursor = Cursors.Default;
-                        App.ToolTip?.Hide();
-                    }
-                }
+                base.OnMouseMove(e);
             }
-        }
-
-        protected override void OnMouseLeave(EventArgs e)
-        {
-            Cursor = Cursors.Default;
-
-            base.OnMouseLeave(e);
-        }
-
-        protected override void OnMouseDown(MouseEventArgs e)
-        {
-            base.OnMouseDown(e);
-
-            if (e.Button == MouseButtons.Left)
-            {
-                mouseDown = true;
-
-                int index;
-
-                var msg = MessageAtPoint(e.Location, out index);
-                if (msg != null)
-                {
-                    var graphics = CreateGraphics();
-                    var position = msg.MessagePositionAtPoint(graphics, new CommonPoint(e.X - TextPadding.Left, e.Y - msg.Y), index);
-                    selection = new Selection(position, position);
-
-                    var word = msg.WordAtPoint(new CommonPoint(e.X - TextPadding.Left, e.Y - msg.Y));
-                    if (word != null)
-                    {
-                        if (word.Link != null)
-                        {
-                            mouseDownLink = word.Link;
-                            mouseDownWord = word;
-                        }
-                    }
-                }
-                else
-                    selection = null;
-            }
-
-            Invalidate();
         }
 
         protected override void OnMouseUp(MouseEventArgs e)
         {
-            base.OnMouseUp(e);
-
             if (e.Button == MouseButtons.Left)
             {
                 if (!scrollAtBottom && e.Y > Height - (Input.Visible ? Input.Height : 0) - ScrollToBottomBarHeight)
@@ -429,24 +302,7 @@ namespace Chatterino.Controls
                 }
                 else
                 {
-                    mouseDown = false;
-
-                    int index;
-
-                    var msg = MessageAtPoint(e.Location, out index);
-                    if (msg != null)
-                    {
-                        var word = msg.WordAtPoint(new CommonPoint(e.X - TextPadding.Left, e.Y - msg.Y));
-                        if (word != null)
-                        {
-                            if (mouseDownLink != null && mouseDownWord == word && !AppSettings.ChatLinksDoubleClickOnly)
-                            {
-                                GuiEngine.Current.HandleLink(mouseDownLink);
-                            }
-                        }
-                    }
-
-                    mouseDownLink = null;
+                    base.OnMouseUp(e);
                 }
             }
         }
@@ -488,76 +344,15 @@ namespace Chatterino.Controls
             }
         }
 
-        protected override void OnDoubleClick(EventArgs e)
-        {
-            base.OnDoubleClick(e);
-
-            if (AppSettings.ChatLinksDoubleClickOnly)
-            {
-                if (mouseDownLink != null)
-                    GuiEngine.Current.HandleLink(mouseDownLink);
-            }
-        }
-
-        protected override void OnResize(EventArgs e)
-        {
-            base.OnResize(e);
-
-            updateMessageBounds();
-        }
-
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
-
-            var borderPen = Focused ? App.ColorScheme.ChatBorderFocused : App.ColorScheme.ChatBorder;
-
-            e.Graphics.SmoothingMode = SmoothingMode.AntiAlias;
-            e.Graphics.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
-
-            // DRAW MESSAGES
-            Message[] M = channel?.CloneMessages();
-
-            if (M != null && M.Length > 0)
-            {
-                int startIndex = Math.Max(0, (int)_scroll.Value);
-
-                int y = TextPadding.Top - (int)(M[startIndex].Height * (_scroll.Value % 1));
-                int h = Height - TextPadding.Top - TextPadding.Bottom;
-
-                for (int i = 0; i < startIndex; i++)
-                {
-                    M[i].IsVisible = false;
-                }
-
-                for (int i = startIndex; i < M.Length; i++)
-                {
-                    var msg = M[i];
-                    msg.IsVisible = true;
-
-                    msg.Draw(e.Graphics, TextPadding.Left, y, selection, i);
-
-                    if (y - msg.Height > h)
-                    {
-                        for (; i < M.Length; i++)
-                        {
-                            M[i].IsVisible = false;
-                        }
-
-                        break;
-                    }
-
-                    y += msg.Height;
-                }
-            }
-
-            e.Graphics.DrawRectangle(borderPen, 0, 0, Width - 1/* - SystemInformation.VerticalScrollBarWidth*/, Height - 1);
 
             if (!scrollAtBottom)
             {
                 int start = Height - (Input.Visible ? Input.Height : 0) - ScrollToBottomBarHeight;
 
-                Brush scrollToBottomBg = new LinearGradientBrush(new Point(0, start), new Point(0, start + ScrollToBottomBarHeight), Color.Transparent, Color.FromArgb(127, 0, 0, 0));
+                Brush scrollToBottomBg = new LinearGradientBrush(new Point(0, start), new Point(0, start + ScrollToBottomBarHeight), Color.Transparent, Color.FromArgb(92, 0, 0, 0));
 
                 e.Graphics.FillRectangle(scrollToBottomBg, 1, start, Width - 2, ScrollToBottomBarHeight);
             }
@@ -619,6 +414,28 @@ namespace Chatterino.Controls
             currentTabIndex = -1;
         }
 
+        protected override void clearOtherSelections()
+        {
+            base.clearOtherSelections();
+
+            Input.Logic.ClearSelection();
+        }
+
+        protected override void updateMessageBounds(bool emoteChanged = false)
+        {
+            if (Input != null)
+            {
+                this.Invoke(() =>
+                {
+                    MessagePadding = new Padding(MessagePadding.Left, MessagePadding.Top, MessagePadding.Right, 10 + (Input.Visible ? Input.Height : 0));
+                    _scroll.Location = new Point(Width - SystemInformation.VerticalScrollBarWidth, TopMenuBarHeight);
+                    _scroll.Size = new Size(SystemInformation.VerticalScrollBarWidth, Height - TopMenuBarHeight - (Input.Visible ? Input.Height : 0) - 1);
+                });
+            }
+
+            base.updateMessageBounds(emoteChanged);
+        }
+
         public void HandleArrowKey(Keys keyData)
         {
             switch (keyData)
@@ -659,270 +476,6 @@ namespace Chatterino.Controls
             }
         }
 
-        void updateMessageBounds(bool emoteChanged = false)
-        {
-            var g = CreateGraphics();
-
-            TextPadding = new Padding(TextPadding.Left, TextPadding.Top, TextPadding.Right, 8 + (Input.Visible ? Input.Height : 0));
-
-            // determine if
-            double scrollbarThumbHeight = 0;
-            int totalHeight = Height - TextPadding.Top - TextPadding.Bottom;
-            int currentHeight = 0;
-            int tmpHeight = Height - TextPadding.Top - TextPadding.Bottom;
-            bool enableScrollbar = false;
-            int messageCount = 0;
-
-            var c = channel;
-
-            if (c != null)
-            {
-                lock (channel.MessageLock)
-                {
-                    var messages = channel.Messages;
-                    messageCount = messages.Length;
-
-                    int visibleStart = Math.Max(0, (int)_scroll.Value);
-
-                    // set EmotesChanged for messages
-                    if (emoteChanged)
-                    {
-                        for (int i = 0; i < messages.Length; i++)
-                        {
-                            messages[i].EmoteBoundsChanged = true;
-                        }
-                    }
-
-                    // calculate bounds for visible messages
-                    for (int i = visibleStart; i < messages.Length; i++)
-                    {
-                        var msg = messages[i];
-
-                        msg.CalculateBounds(g, Width - TextPadding.Left - TextPadding.Right);
-                        currentHeight += msg.Height;
-
-                        if (currentHeight > totalHeight)
-                        {
-                            break;
-                        }
-                    }
-
-                    // calculate bounds for messages at the bottom to determine the size of the scrollbar thumb
-                    for (int i = messages.Length - 1; i >= 0; i--)
-                    {
-                        var msg = messages[i];
-                        msg.CalculateBounds(g, Width - TextPadding.Left - TextPadding.Right);
-                        scrollbarThumbHeight++;
-
-                        tmpHeight -= msg.Height;
-                        if (tmpHeight < 0)
-                        {
-                            enableScrollbar = true;
-                            scrollbarThumbHeight -= 1 - (double)tmpHeight / msg.Height;
-                            break;
-                        }
-                    }
-                }
-            }
-            g.Dispose();
-
-            this.Invoke(() =>
-            {
-                if (enableScrollbar)
-                {
-                    _scroll.Enabled = true;
-                    _scroll.LargeChange = scrollbarThumbHeight;
-                    _scroll.Maximum = messageCount - 1;
-
-                    if (scrollAtBottom)
-                        _scroll.Value = messageCount - scrollbarThumbHeight;
-                }
-                else
-                {
-                    _scroll.Enabled = false;
-                    _scroll.Value = 0;
-                }
-            });
-        }
-
-        void checkScrollBarPosition()
-        {
-            scrollAtBottom = !_scroll.Enabled || _scroll.Maximum < _scroll.Value + _scroll.LargeChange + 0.0001;
-        }
-
-        public Message MessageAtPoint(Point p, out int index)
-        {
-            var c = channel;
-
-            if (c != null)
-            {
-                lock (c.MessageLock)
-                {
-                    for (int i = Math.Max(0, (int)_scroll.Value); i < c.Messages.Length; i++)
-                    {
-                        var m = c.Messages[i];
-                        if (m.Y > p.Y - m.Height)
-                        {
-                            index = i;
-                            return m;
-                        }
-                    }
-                }
-            }
-            index = -1;
-            return null;
-        }
-
-        public void CopySelection()
-        {
-            string text = null;
-
-            if (selection?.IsEmpty ?? true)
-            {
-                text = Input.Logic.SelectedText;
-            }
-            else
-            {
-                text = GetSelectedText();
-            }
-
-            if (!string.IsNullOrEmpty(text))
-                Clipboard.SetText(text);
-        }
-
-        public string GetSelectedText()
-        {
-            if (selection == null || selection.IsEmpty)
-                return null;
-
-            StringBuilder b = new StringBuilder();
-
-            var c = channel;
-
-            if (c != null)
-            {
-                lock (c.MessageLock)
-                {
-                    bool isFirstLine = true;
-
-                    for (int currentLine = selection.First.MessageIndex; currentLine <= selection.Last.MessageIndex; currentLine++)
-                    {
-                        if (isFirstLine)
-                        {
-                            isFirstLine = false;
-                        }
-                        else
-                        {
-                            b.Append('\n');
-                        }
-
-                        var message = c.Messages[currentLine];
-
-                        var first = selection.First;
-                        var last = selection.Last;
-
-                        bool appendNewline = false;
-
-                        for (int i = 0; i < message.Words.Count; i++)
-                        {
-                            if ((currentLine != first.MessageIndex || i >= first.WordIndex) && (currentLine != last.MessageIndex || i <= last.WordIndex))
-                            {
-                                var word = message.Words[i];
-
-                                if (appendNewline)
-                                {
-                                    appendNewline = false;
-                                    b.Append(' ');
-                                }
-
-                                if (word.Type == SpanType.Text)
-                                {
-                                    for (int j = 0; j < (word.SplitSegments?.Length ?? 1); j++)
-                                    {
-                                        if ((first.MessageIndex == currentLine && first.WordIndex == i && first.SplitIndex > j) || (last.MessageIndex == currentLine && last.WordIndex == i && last.SplitIndex < j))
-                                            continue;
-
-                                        var split = word.SplitSegments?[j];
-                                        string text = split?.Item1 ?? (string)word.Value;
-                                        CommonRectangle rect = split?.Item2 ?? new CommonRectangle(word.X, word.Y, word.Width, word.Height);
-
-                                        int textLength = text.Length;
-
-                                        int offset = (first.MessageIndex == currentLine && first.SplitIndex == j && first.WordIndex == i) ? first.CharIndex : 0;
-                                        int length = ((last.MessageIndex == currentLine && last.SplitIndex == j && last.WordIndex == i) ? last.CharIndex : textLength) - offset;
-
-                                        b.Append(text.Substring(offset, length));
-
-                                        if (j + 1 == (word.SplitSegments?.Length ?? 1) && ((last.MessageIndex > currentLine) || last.WordIndex > i))
-                                            appendNewline = true;
-                                        //b.Append(' ');
-                                    }
-                                }
-                                else if (word.Type == SpanType.Image)
-                                {
-                                    int textLength = word.Type == SpanType.Text ? ((string)word.Value).Length : 2;
-
-                                    int offset = (first.MessageIndex == currentLine && first.WordIndex == i) ? first.CharIndex : 0;
-                                    int length = ((last.MessageIndex == currentLine && last.WordIndex == i) ? last.CharIndex : textLength) - offset;
-
-                                    if (word.CopyText != null)
-                                    {
-                                        if (offset == 0)
-                                            b.Append(word.CopyText);
-                                        if (offset + length == 2)
-                                            appendNewline = true;
-                                        //b.Append(' ');
-                                    }
-                                }
-                                else if (word.Type == SpanType.Emote)
-                                {
-                                    int textLength = word.Type == SpanType.Text ? ((string)word.Value).Length : 2;
-
-                                    int offset = (first.MessageIndex == currentLine && first.WordIndex == i) ? first.CharIndex : 0;
-                                    int length = ((last.MessageIndex == currentLine && last.WordIndex == i) ? last.CharIndex : textLength) - offset;
-
-                                    if (word.CopyText != null)
-                                    {
-                                        if (offset == 0)
-                                            b.Append(word.CopyText);
-                                        if (offset + length == 2)
-                                            appendNewline = true;
-                                        //b.Append(' ');
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    //for (int i = selection.First.MessageIndex; i <= selection.Last.MessageIndex; i++)
-                    //{
-                    //    if (i != selection.First.MessageIndex)
-                    //        b.AppendLine();
-
-                    //    for (int j = (i == selection.First.MessageIndex ? selection.First.WordIndex : 0); j < (i == selection.Last.MessageIndex ? selection.Last.WordIndex : c.Messages[i].Words.Count); j++)
-                    //    {
-                    //        if (c.Messages[i].Words[j].CopyText != null)
-                    //        {
-                    //            b.Append(c.Messages[i].Words[j].CopyText);
-                    //            b.Append(' ');
-                    //        }
-                    //    }
-                    //}
-                }
-            }
-
-            return b.ToString();
-        }
-
-        public void ClearSelection()
-        {
-            if (!(selection?.IsEmpty ?? true))
-            {
-                selection = null;
-
-                Invalidate();
-            }
-        }
-
         public void PasteText(string text)
         {
             text = Regex.Replace(text, @"\r?\n", " ");
@@ -930,6 +483,23 @@ namespace Chatterino.Controls
             Input.Logic.InsertText(text);
 
             Invalidate();
+        }
+
+        public override string GetSelectedText()
+        {
+            if (selection?.IsEmpty ?? true)
+            {
+                return Input.Logic.SelectedText;
+            }
+            else
+            {
+                return base.GetSelectedText();
+            }
+        }
+
+        protected override Message[] GetMessagesClone()
+        {
+            return channel?.CloneMessages();
         }
 
         // header
@@ -958,10 +528,15 @@ namespace Chatterino.Controls
                 contextMenu.MenuItems.Add(new MenuItem("Open Channel", (s, e) => { GuiEngine.Current.HandleLink(selected.Channel.ChannelLink); }));
                 contextMenu.MenuItems.Add(new MenuItem("Open Pop-out Player", (s, e) => { GuiEngine.Current.HandleLink(selected.Channel.PopoutPlayerLink); }));
                 contextMenu.MenuItems.Add("-");
+                contextMenu.MenuItems.Add(new MenuItem("Show Changelog", (s, e) =>
+                {
+                    App.MainForm.AddChangelog();
+                }));
                 contextMenu.MenuItems.Add(LoginMenuItem = new MenuItem("Login", (s, e) => new LoginForm().ShowDialog(), Shortcut.CtrlL));
                 contextMenu.MenuItems.Add(new MenuItem("Preferences", (s, e) => App.ShowSettings(), Shortcut.CtrlP));
-                //contextMenu.MenuItems.Add("-");
-                //contextMenu.MenuItems.Add(messageCountItem = new MenuItem("MessageCount: 0", (s, e) => { }) { Enabled = false });
+#if DEBUG
+                contextMenu.MenuItems.Add(new MenuItem("Copy Version Number", (s, e) => { Clipboard.SetText(App.CurrentVersion.ToString()); }));
+#endif
 
                 roomstateContextMenu = new ContextMenu();
                 roomstateContextMenu.Popup += (s, e) =>

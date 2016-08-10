@@ -13,12 +13,13 @@ namespace Chatterino.Common
         public int Major { get; private set; } = 0;
         public int Minor { get; private set; } = 0;
         public int Build { get; private set; } = 0;
+        public int Revision { get; private set; } = 0;
 
         private VersionNumber() { }
 
         public static VersionNumber Parse(string version)
         {
-            Match match = Regex.Match(version, @"(?<major>\d+)(?<minor>\.\d+)?(?<build>\.\d+)?");
+            Match match = Regex.Match(version, @"(?<major>\d+)(?<minor>\.\d+)?(?<build>\.\d+)?(?<revision>\.\d+)?");
 
             if (match.Success)
             {
@@ -39,6 +40,12 @@ namespace Chatterino.Common
                     v.Build = int.Parse(build.Value.Substring(1), CultureInfo.InvariantCulture);
                 }
 
+                var revision = match.Groups["revision"];
+                if (build.Success)
+                {
+                    v.Revision = int.Parse(revision.Value.Substring(1), CultureInfo.InvariantCulture);
+                }
+                
                 return v;
             }
 
@@ -49,8 +56,26 @@ namespace Chatterino.Common
         {
             return Major > other.Major ||
                 Minor > other.Minor ||
-                Build > other.Build;
+                Build > other.Build ||
+                Revision > other.Revision;
+        }
+
+        public override string ToString()
+        {
+            string v = "";
+
+            if (Revision != 0)
+            {
+                v = "." + Build + "." + Revision;
+            }
+            else if (Build != 0)
+            {
+                v = "." + Build;
+            }
+
+            v = Major + "." + Minor + v;
+
+            return v;
         }
     }
-
 }

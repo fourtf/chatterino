@@ -334,56 +334,6 @@ namespace Chatterino.Common
             return names;
         }
 
-        //public string GetEmoteCompletion(string name, ref int index, bool forward)
-        //{
-        //    name = name.ToUpper();
-
-        //    var names = new List<KeyValuePair<string, string>>(emoteNames);
-
-        //    names.AddRange(Users);
-        //    names.Sort((x1, x2) => x1.Key.CompareTo(x2.Key));
-
-        //    KeyValuePair<string, string> firstItem = new KeyValuePair<string, string>();
-        //    KeyValuePair<string, string> lastItem = new KeyValuePair<string, string>();
-
-        //    bool first = true;
-
-        //    index += forward ? 1 : (index == 0 ? 4523453 : -1);
-
-        //    int currentIndex = 0;
-        //    for (int i = 0; i < names.Count; i++)
-        //    {
-        //        if (names[i].Key.StartsWith(name))
-        //        {
-        //            if (first)
-        //            {
-        //                first = false;
-        //                firstItem = names[i];
-        //            }
-        //            if (currentIndex == index)
-        //            {
-        //                return names[i].Value;
-        //            }
-        //            currentIndex++;
-        //            lastItem = names[i];
-        //        }
-        //        else if (!first)
-        //        {
-        //            break;
-        //        }
-        //    }
-
-        //    if (!first)
-        //    {
-        //        index = currentIndex - 1;
-        //        return firstItem.Value;
-        //    }
-
-        //    return null;
-        //}
-
-
-        // Connection
         public void JoinWrite()
         {
             IrcManager.IrcWriteClient?.RfcJoin("#" + Name);
