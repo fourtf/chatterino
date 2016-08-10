@@ -280,32 +280,35 @@ namespace Chatterino.Controls
                 {
                     int startIndex = Math.Max(0, (int)_scroll.Value);
 
-                    int y = MessagePadding.Top - (int)(M[startIndex].Height * (_scroll.Value % 1));
-                    int h = Height - MessagePadding.Top - MessagePadding.Bottom;
-
-                    for (int i = 0; i < startIndex; i++)
+                    if (startIndex < M.Length)
                     {
-                        M[i].IsVisible = false;
-                    }
+                        int y = MessagePadding.Top - (int)(M[startIndex].Height * (_scroll.Value % 1));
+                        int h = Height - MessagePadding.Top - MessagePadding.Bottom;
 
-                    for (int i = startIndex; i < M.Length; i++)
-                    {
-                        var msg = M[i];
-                        msg.IsVisible = true;
-
-                        msg.Draw(g, MessagePadding.Left, y, selection, i);
-
-                        if (y - msg.Height > h)
+                        for (int i = 0; i < startIndex; i++)
                         {
-                            for (; i < M.Length; i++)
-                            {
-                                M[i].IsVisible = false;
-                            }
-
-                            break;
+                            M[i].IsVisible = false;
                         }
 
-                        y += msg.Height;
+                        for (int i = startIndex; i < M.Length; i++)
+                        {
+                            var msg = M[i];
+                            msg.IsVisible = true;
+
+                            msg.Draw(g, MessagePadding.Left, y, selection, i);
+
+                            if (y - msg.Height > h)
+                            {
+                                for (; i < M.Length; i++)
+                                {
+                                    M[i].IsVisible = false;
+                                }
+
+                                break;
+                            }
+
+                            y += msg.Height;
+                        }
                     }
                 }
 

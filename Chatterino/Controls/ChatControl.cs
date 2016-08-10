@@ -519,6 +519,14 @@ namespace Chatterino.Controls
             return channel?.CloneMessages();
         }
 
+        protected override void OnSplitDragStart()
+        {
+            base.OnSplitDragStart();
+
+            mouseDown = false;
+            mouseDownLink = null;
+        }
+
         // header
         class ChatControlHeader : Control
         {

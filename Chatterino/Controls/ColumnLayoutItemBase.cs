@@ -50,6 +50,7 @@ namespace Chatterino.Controls
                         if (layout != null)
                         {
                             var position = layout.RemoveFromGrid(this);
+                            OnSplitDragStart();
                             if (DoDragDrop(new ColumnLayoutDragDropContainer { Control = this }, DragDropEffects.Move) == DragDropEffects.None)
                             {
                                 layout.AddToGrid(this, position.Item1, position.Item2);
@@ -60,6 +61,11 @@ namespace Chatterino.Controls
             };
 
             //BackColor = Color.FromArgb(-16777216 | (0x404040 | 0x808080 | random.Next(0xFFFFFF)));
+        }
+
+        protected virtual void OnSplitDragStart()
+        {
+
         }
 
         protected override void OnPaintBackground(PaintEventArgs e)
