@@ -75,6 +75,7 @@ namespace Chatterino.Controls
             var g = e.Graphics;
 
             g.FillRectangle(App.ColorScheme.ChatInputOuter, 0, 0, Width - 1, Height - 1);
+            //g.FillRectangle(App.ColorScheme.ChatInputInner, 8, 4, Width - 17, Height - 9);
             g.DrawRectangle(App.ColorScheme.ChatInputBorder, 0, 0, Width - 1, Height - 1);
 
             var sendMessage = Logic.Message;
@@ -88,6 +89,7 @@ namespace Chatterino.Controls
                 int spaceWidth = GuiEngine.Current.MeasureStringSize(g, FontType.Medium, " ").Width;
 
                 Rectangle? caretRect = new Rectangle?();
+
                 int x = 0;
                 bool isFirst = true;
 
@@ -97,17 +99,18 @@ namespace Chatterino.Controls
                     {
                         string text = word.SplitSegments?[j].Item1 ?? (string)word.Value;
 
-                        if (x == Logic.CaretPosition)
-                        {
-                            caretRect = new Rectangle(messagePadding.Left + word.X - spaceWidth, word.Y + messagePadding.Top, 1, word.Height);
-                            goto end;
-                        }
-
                         if (j == 0)
                             if (isFirst)
                                 isFirst = false;
                             else
+                            {
+                                if (x == Logic.CaretPosition)
+                                {
+                                    caretRect = new Rectangle(messagePadding.Left + word.X - spaceWidth, word.Y + messagePadding.Top, 1, word.Height);
+                                    goto end;
+                                }
                                 x++;
+                            }
 
                         for (int i = 0; i < text.Length; i++)
                         {

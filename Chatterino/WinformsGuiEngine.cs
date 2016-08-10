@@ -16,6 +16,14 @@ namespace Chatterino
 {
     public class WinformsGuiEngine : IGuiEngine
     {
+        public WinformsGuiEngine()
+        {
+            Fonts.FontsChanged += (s, e) =>
+            {
+                sizeCaches.Clear();
+            };
+        }
+
         // LINKS
         public void HandleLink(string link)
         {
@@ -170,13 +178,13 @@ namespace Chatterino
 
         static int sizeCacheStackLimit = 2048;
 
-        ConcurrentDictionary<FontType, Tuple<ConcurrentDictionary<string, CommonSize>, ConcurrentStack<string>>> sizeCaches = new ConcurrentDictionary<FontType, Tuple<ConcurrentDictionary<string, CommonSize>, ConcurrentStack<string>>>();
+        ConcurrentDictionary<FontType, Tuple<ConcurrentDictionary<string, CommonSize>, ConcurrentStack<string>, int>> sizeCaches = new ConcurrentDictionary<FontType, Tuple<ConcurrentDictionary<string, CommonSize>, ConcurrentStack<string>, int>>();
 
         public CommonSize MeasureStringSize(object graphics, FontType font, string text)
         {
             var sizeCache = sizeCaches.GetOrAdd(font, f =>
             {
-                return Tuple.Create(new ConcurrentDictionary<string, CommonSize>(), new ConcurrentStack<string>());
+                return Tuple.Create(new ConcurrentDictionary<string, CommonSize>(), new ConcurrentStack<string>(), TextRenderer.MeasureText((Graphics)graphics, "X", Fonts.GetFont(font), Size.Empty, App.DefaultTextFormatFlags).Height);
             });
 
             return sizeCache.Item1.GetOrAdd(text, s =>
@@ -194,7 +202,7 @@ namespace Chatterino
                 sizeCache.Item2.Push(s);
 
                 Size size = TextRenderer.MeasureText((IDeviceContext)graphics, text, Fonts.GetFont(font), Size.Empty, App.DefaultTextFormatFlags);
-                return new CommonSize(size.Width, size.Height);
+                return new CommonSize(size.Width, sizeCache.Item3);
             });
         }
 
