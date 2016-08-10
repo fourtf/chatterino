@@ -41,7 +41,7 @@ namespace Chatterino
                 App.ToolTip?.Hide();
             };
 
-            IrcManager.Connected += (s, e) => SetTitle();
+            IrcManager.LoggedIn += (s, e) => SetTitle();
 
             StartPosition = FormStartPosition.Manual;
             Location = new Point(AppSettings.WindowX, AppSettings.WindowY);
@@ -80,7 +80,7 @@ namespace Chatterino
 
         public void SetTitle()
         {
-            Text = $"{IrcManager.Username ?? "<not logged in>"} - Chatterino for Twitch";
+            this.Invoke(() => Text = $"{IrcManager.Username ?? "<not logged in>"} - Chatterino for Twitch");
         }
 
         public Control SelectedControl

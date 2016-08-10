@@ -100,7 +100,7 @@ namespace Chatterino.Controls
 
             Input.SizeChanged += (s, e) =>
             {
-                Input.Location = new Point(1, Height - Input.Height - 1);
+                Input.Location = new Point(1, Height - Input.Height);
 
                 updateMessageBounds();
                 Invalidate();
@@ -306,7 +306,7 @@ namespace Chatterino.Controls
         {
             base.OnMouseMove(e);
 
-            if (!scrollAtBottom && e.Y > Height - (Input.Visible ? TextPadding.Bottom : 0) - ScrollToBottomBarHeight)
+            if (!scrollAtBottom && e.Y > Height - (Input.Visible ? Input.Height : 0) - ScrollToBottomBarHeight)
             {
                 App.ShowToolTip(PointToScreen(new Point(e.Location.X + 16, e.Location.Y)), "jump to bottom");
                 Cursor = Cursors.Hand;
@@ -416,7 +416,7 @@ namespace Chatterino.Controls
 
             if (e.Button == MouseButtons.Left)
             {
-                if (!scrollAtBottom && e.Y > Height - (Input.Visible ? TextPadding.Bottom : 0) - ScrollToBottomBarHeight)
+                if (!scrollAtBottom && e.Y > Height - (Input.Visible ? Input.Height : 0) - ScrollToBottomBarHeight)
                 {
                     App.ShowToolTip(PointToScreen(new Point(e.Location.X, e.Location.Y + 16)), "jump to bottom");
 
@@ -555,7 +555,7 @@ namespace Chatterino.Controls
 
             if (!scrollAtBottom)
             {
-                int start = Height - (Input.Visible ? TextPadding.Bottom : 0) - 1 - ScrollToBottomBarHeight;
+                int start = Height - (Input.Visible ? Input.Height : 0) - ScrollToBottomBarHeight;
 
                 Brush scrollToBottomBg = new LinearGradientBrush(new Point(0, start), new Point(0, start + ScrollToBottomBarHeight), Color.Transparent, Color.FromArgb(127, 0, 0, 0));
 

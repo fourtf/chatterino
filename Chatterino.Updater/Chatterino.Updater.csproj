@@ -4,16 +4,16 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{D6032F9B-B3AD-4D1A-942A-ACD06EA16A4A}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <ProjectGuid>{4DD2B816-022E-4B0E-9DA6-34A731EA77FF}</ProjectGuid>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Chatterino.Common</RootNamespace>
-    <AssemblyName>Chatterino.Common</AssemblyName>
+    <RootNamespace>Chatterino.Updater</RootNamespace>
+    <AssemblyName>Chatterino.Updater</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -21,65 +21,40 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Meebey.SmartIrc4net">
-      <HintPath>lib\Meebey.SmartIrc4net.dll</HintPath>
+    <Reference Include="CommandLine, Version=1.9.71.2, Culture=neutral, PublicKeyToken=de6f01bd326f8c32, processorArchitecture=MSIL">
+      <HintPath>..\packages\CommandLineParser.1.9.71\lib\net45\CommandLine.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="StarkSoftProxy">
-      <HintPath>lib\StarkSoftProxy.dll</HintPath>
+    <Reference Include="ICSharpCode.SharpZipLib">
+      <HintPath>lib\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Text.Json, Version=2.0.0.11, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Text.Json.2.0.0.11\lib\net40\System.Text.Json.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Xml.Linq" />
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Xml" />
+    <Reference Include="System.Net.Http" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AppSettings.cs" />
-    <Compile Include="Badges.cs" />
-    <Compile Include="ChatClearedEventArgs.cs" />
-    <Compile Include="CommonPoint.cs" />
-    <Compile Include="Emojis.cs" />
-    <Compile Include="Emotes.cs" />
-    <Compile Include="FontType.cs" />
-    <Compile Include="GuiEngine.cs" />
-    <Compile Include="ImageType.cs" />
-    <Compile Include="IniSettings.cs" />
-    <Compile Include="IrcManager.cs" />
-    <Compile Include="IrcManager2.cs" />
-    <Compile Include="Message.cs" />
-    <Compile Include="MessageBadges.cs" />
-    <Compile Include="MessageInputLogic.cs" />
-    <Compile Include="MessageReceivedEventArgs.cs" />
-    <Compile Include="NotificationSound.cs" />
+    <Compile Include="Options.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RoomState.cs" />
-    <Compile Include="Selection.cs" />
-    <Compile Include="Updates.cs" />
-    <Compile Include="ValueEventArgs.cs" />
-    <Compile Include="VersionNumber.cs" />
-    <Compile Include="Word.cs" />
-    <Compile Include="TwitchChannel.cs" />
-    <Compile Include="TwitchEmote.cs" />
-    <Compile Include="Util.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="App.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="lib\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

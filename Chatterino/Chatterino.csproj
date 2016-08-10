@@ -93,6 +93,12 @@
     <Compile Include="Controls\Tooltip.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Controls\UpdateDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls\UpdateDialog.Designer.cs">
+      <DependentUpon>UpdateDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="Extensions.cs" />
     <Compile Include="Controls\ChatControl.cs">
       <SubType>Component</SubType>
@@ -143,6 +149,9 @@
     <EmbeddedResource Include="Controls\InputDialogForm.resx">
       <DependentUpon>InputDialogForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Controls\UpdateDialog.resx">
+      <DependentUpon>UpdateDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -151,7 +160,7 @@
       <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <None Include="colors.ini">
+    <None Include="Colors.ini">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="packages.config" />

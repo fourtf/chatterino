@@ -54,58 +54,61 @@ namespace Chatterino.Common
 
             for (int i = 0; i < text.Length; i++)
             {
-                ConcurrentDictionary<string, TwitchEmote> _emojis;
-                if (FirstEmojiChars.TryGetValue(text[i], out _emojis))
+                if (!char.IsLowSurrogate(text, i))
                 {
-                    TwitchEmote emote;
-                    for (int j = Math.Min(8, text.Length - i); j > 0; j--)
+                    ConcurrentDictionary<string, TwitchEmote> _emojis;
+                    if (FirstEmojiChars.TryGetValue(text[i], out _emojis))
                     {
-                        string emoji = text.Substring(i, j);
-                        if (_emojis.TryGetValue(emoji, out emote))
+                        TwitchEmote emote;
+                        for (int j = Math.Min(8, text.Length - i); j > 0; j--)
                         {
-                            if (emote == null)
+                            string emoji = text.Substring(i, j);
+                            if (_emojis.TryGetValue(emoji, out emote))
                             {
-                                string codepoints = string.Join("-", ToCodePoints(emoji).Select(n => n.ToString("X").ToLower()));
-
-                                var url = $"https://cdnjs.cloudflare.com/ajax/libs/emojione/2.2.6/assets/png/{codepoints}.png";
-
-                                _emojis[emoji] = emote = new TwitchEmote
+                                if (emote == null)
                                 {
-                                    Url = url,
-                                    Tooltip = $":{EmojiToShortCode[emoji]}:\nemoji",
-                                    Name = emoji,
-                                    LoadAction = () =>
+                                    string codepoints = string.Join("-", ToCodePoints(emoji).Select(n => n.ToString("X").ToLower()));
+
+                                    var url = $"https://cdnjs.cloudflare.com/ajax/libs/emojione/2.2.6/assets/png/{codepoints}.png";
+
+                                    _emojis[emoji] = emote = new TwitchEmote
                                     {
-                                        object img;
-                                        try
+                                        Url = url,
+                                        Tooltip = $":{EmojiToShortCode[emoji]}:\nemoji",
+                                        Name = emoji,
+                                        LoadAction = () =>
                                         {
-                                            WebRequest request = WebRequest.Create(url);
-                                            using (var response = request.GetResponse())
-                                            using (var stream = response.GetResponseStream())
+                                            object img;
+                                            try
                                             {
-                                                img = GuiEngine.Current.ReadImageFromStream(stream);
-                                                return GuiEngine.Current.ScaleImage(img, 0.33);
+                                                WebRequest request = WebRequest.Create(url);
+                                                using (var response = request.GetResponse())
+                                                using (var stream = response.GetResponseStream())
+                                                {
+                                                    img = GuiEngine.Current.ReadImageFromStream(stream);
+                                                    return GuiEngine.Current.ScaleImage(img, 0.33);
+                                                }
                                             }
-                                        }
-                                        catch
-                                        {
-                                            img = null;
-                                        }
+                                            catch
+                                            {
+                                                img = null;
+                                            }
 
-                                        return img;
-                                    }
-                                };
+                                            return img;
+                                        }
+                                    };
+                                }
+
+                                if (i - lastSlice != 0)
+                                    objects.Add(text.Substring(lastSlice, i - lastSlice));
+
+                                objects.Add(emote);
+
+                                i += j - 1;
+
+                                lastSlice = i + 1;
+                                break;
                             }
-
-                            if (i - lastSlice != 0)
-                                objects.Add(text.Substring(lastSlice, i - lastSlice));
-
-                            objects.Add(emote);
-
-                            i += j - 1;
-
-                            lastSlice = i + 1;
-                            break;
                         }
                     }
                 }

@@ -152,7 +152,6 @@ namespace Chatterino.Common
                     catch { }
                 });
 
-
                 // fetch availlable twitch emotes
                 Task.Run(() =>
                 {

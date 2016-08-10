@@ -17,9 +17,46 @@ namespace Chatterino
 {
     public static class App
     {
+        // Updates
+        public static VersionNumber CurrentVersion = VersionNumber.Parse("0.1");
+        private static bool installUpdatesOnExit = false;
+        private static bool restartAfterUpdates = false;
+
+        // Drawing
+        public const TextFormatFlags DefaultTextFormatFlags = TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix;
+
+        public static event EventHandler GifEmoteFramesUpdating;
+        public static event EventHandler GifEmoteFramesUpdated;
+
+        // Color Scheme
+        public static ColorScheme ColorScheme { get; set; } = new ColorScheme();
+        public static event EventHandler ColorSchemeChanged;
+
+        // Window
+        public static MainForm MainForm { get; set; }
+
+        public static Icon Icon { get; private set; }
+
+        public static Controls.SettingsDialog SettingsDialog { get; set; }
+
+        public static Controls.ToolTip ToolTip { get; private set; } = null;
+
+        private static bool windowFocused = true;
+        public static bool WindowFocused
+        {
+            get { return windowFocused; }
+            set { windowFocused = value; Common.Message.EnablePings = !value; }
+        }
+
+        // Emotes
+        public static event EventHandler EmoteLoaded;
+
+        // Main Entry Point
         [STAThread]
         static void Main()
         {
+            Directory.SetCurrentDirectory(new FileInfo(Assembly.GetEntryAssembly().Location).Directory.FullName);
+
             GuiEngine.Initialize(new WinformsGuiEngine());
 
             ServicePointManager.ServerCertificateValidationCallback = (a, b, c, d) => true;
@@ -50,8 +87,65 @@ namespace Chatterino
             };
 
             // Settings/Colors
-            AppSettings.Load("./settings.ini");
-            ColorScheme.Load("./colors.ini");
+            AppSettings.Load("./Settings.ini");
+            ColorScheme.Load("./Colors.ini");
+
+            // Check for updates
+            try
+            {
+                if (Directory.Exists("Updater.new"))
+                {
+                    if (Directory.Exists("Updater"))
+                        Directory.Delete("Updater", true);
+
+                    Directory.Move("Updater.new", "Updater");
+
+                }
+            }
+            catch { }
+
+            Updates.UpdateFound += (s, e) =>
+            {
+                try
+                {
+                    using (Controls.UpdateDialog dialog = new Controls.UpdateDialog())
+                    {
+                        if (File.Exists("./Updater/Chatterino.Updater.exe"))
+                        {
+                            var result = dialog.ShowDialog();
+
+                            // OK -> install now
+                            // Yes -> install on exit
+                            if (result == DialogResult.OK || result == DialogResult.Yes)
+                            {
+                                using (WebClient client = new WebClient())
+                                {
+                                    client.DownloadFile(e.Url, "./Updater/update.zip");
+                                }
+
+                                installUpdatesOnExit = true;
+
+                                if (result == DialogResult.OK)
+                                {
+                                    restartAfterUpdates = true;
+                                    MainForm?.Close();
+                                }
+                            }
+                        }
+                        else
+                        {
+                            MessageBox.Show("An update is available but the update executable could not be found. If you want to update chatterino you will have to reinstall it.");
+                        }
+                    }
+                }
+                catch { }
+            };
+
+#if DEBUG
+            Updates.CheckForUpdate("win-dev", CurrentVersion);
+#else
+            Updates.CheckForUpdate("win-release", CurrentVersion);
+#endif
 
             // Start irc
             IrcManager.Connect();
@@ -64,34 +158,21 @@ namespace Chatterino
             Application.Run(MainForm);
 
             // Save settings
-            AppSettings.Save("./settings.ini");
+            AppSettings.Save("./Settings.ini");
+
+            // Install updates
+            if (installUpdatesOnExit)
+            {
+                Process.Start(Path.Combine(new FileInfo(Assembly.GetEntryAssembly().Location).Directory.FullName, "Updater", "Chatterino.Updater.exe"), restartAfterUpdates ? "--restart" : "");
+                System.Threading.Thread.Sleep(1000);
+            }
         }
 
-        public const TextFormatFlags DefaultTextFormatFlags = TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix;
-
-        public static event EventHandler GifEmoteFramesUpdating;
-        public static event EventHandler GifEmoteFramesUpdated;
-
-        //public static void TriggerGifEmoteFramesUpdated()
-        //{
-        //    GifEmoteFramesUpdated?.Invoke(null, EventArgs.Empty);
-        //}
-
-
-        // COLOR SCHEME
-        public static ColorScheme ColorScheme { get; set; } = new ColorScheme();
-        public static event EventHandler ColorSchemeChanged;
-        public static void TriggerColorSchemeChanged()
+        // Public Functions
+        public static void TriggerEmoteLoaded()
         {
-            ColorSchemeChanged?.Invoke(null, EventArgs.Empty);
+            EmoteLoaded?.Invoke(null, EventArgs.Empty);
         }
-
-        // WINDOW
-        public static MainForm MainForm { get; set; }
-
-        public static Icon Icon { get; private set; }
-
-        public static Controls.SettingsDialog SettingsDialog { get; set; }
 
         public static void ShowSettings()
         {
@@ -108,15 +189,6 @@ namespace Chatterino
             {
                 SettingsDialog.Focus();
             }
-        }
-
-        public static Controls.ToolTip ToolTip { get; private set; } = null;
-
-        private static bool windowFocused = true;
-        public static bool WindowFocused
-        {
-            get { return windowFocused; }
-            set { windowFocused = value; Common.Message.EnablePings = !value; }
         }
 
         public static void ShowToolTip(Point point, string text)
@@ -136,12 +208,9 @@ namespace Chatterino
             }
         }
 
-        // EMOTES
-        public static event EventHandler EmoteLoaded;
-
-        public static void TriggerEmoteLoaded()
+        public static void TriggerColorSchemeChanged()
         {
-            EmoteLoaded?.Invoke(null, EventArgs.Empty);
+            ColorSchemeChanged?.Invoke(null, EventArgs.Empty);
         }
     }
 }

@@ -21,9 +21,9 @@ namespace Chatterino.Common
 
         public const string TwitchEmoteTemplate = "https://static-cdn.jtvnw.net/emoticons/v1/{id}/1.0";
 
-        private const string twitchemotesGlobalCache = "./cache/twitchemotes_global.json";
-        private const string bttvEmotesGlobalCache = "./cache/bttv_global.json";
-        private const string ffzEmotesGlobalCache = "./cache/ffz_global.json";
+        private const string twitchemotesGlobalCache = "./Cache/twitchemotes_global.json";
+        private const string bttvEmotesGlobalCache = "./Cache/bttv_global.json";
+        private const string ffzEmotesGlobalCache = "./Cache/ffz_global.json";
 
         public static void LoadGlobalEmotes()
         {
@@ -33,7 +33,7 @@ namespace Chatterino.Common
             {
                 try
                 {
-                    Directory.CreateDirectory("./cache");
+                    Directory.CreateDirectory("./Cache");
 
                     System.Text.Json.JsonParser parser = new System.Text.Json.JsonParser();
 
@@ -86,7 +86,7 @@ namespace Chatterino.Common
             {
                 try
                 {
-                    Directory.CreateDirectory("./cache");
+                    Directory.CreateDirectory("./Cache");
                     System.Text.Json.JsonParser parser = new System.Text.Json.JsonParser();
 
                     // better twitch tv emotes
@@ -142,7 +142,7 @@ namespace Chatterino.Common
             {
                 try
                 {
-                    Directory.CreateDirectory("./cache");
+                    Directory.CreateDirectory("./Cache");
                     System.Text.Json.JsonParser parser = new System.Text.Json.JsonParser();
 
                     // better twitch tv emotes

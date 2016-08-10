@@ -14,7 +14,7 @@ namespace Chatterino.Common
     public static class Util
     {
         // log in file
-        public static string LogBasePath { get; set; } = "./log/";
+        public static string LogBasePath { get; set; } = "./Log/";
         static bool checkedLogBase = false;
 
         static ConcurrentDictionary<string, StreamWriter> logWriters = new ConcurrentDictionary<string, StreamWriter>();

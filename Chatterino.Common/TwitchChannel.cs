@@ -109,7 +109,7 @@ namespace Chatterino.Common
             JoinWrite();
             JoinRead();
 
-            string bttvChannelEmotesCache = $"./cache/bttv_channel_{channelName}";
+            string bttvChannelEmotesCache = $"./Cache/bttv_channel_{channelName}";
 
             // recent chat
             Task.Run(() =>

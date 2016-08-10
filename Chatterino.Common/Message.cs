@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -54,6 +55,11 @@ namespace Chatterino.Common
 
         Regex linkRegex = new Regex(@"^((?<Protocol>\w+):\/\/)?(?<Domain>[\w%@-][\w.%-:@]+\w)\/?[\w\.?=#%&=\+\-@/$,]*$");
         static char[] linkIdentifiers = new char[] { '.', ':' };
+
+        private Message()
+        {
+
+        }
 
         public Message(IrcMessageData data, TwitchChannel channel, bool enableTimestamp = true, bool enablePingSound = true)
         {
@@ -410,6 +416,23 @@ namespace Chatterino.Common
             }
 
             Words.AddRange(text.Split(' ').Select(x => new Word { Type = SpanType.Text, Value = x, Color = color, CopyText = x }));
+        }
+
+        public static Message FromMD(string md)
+        {
+            Message msg = new Message();
+
+            string line;
+
+            using (StringReader reader = new StringReader(md))
+            {
+                while ((line = reader.ReadLine()) != null)
+                {
+                    
+                }
+            }
+
+            return msg;
         }
 
         bool measureText = true;
