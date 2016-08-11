@@ -48,7 +48,7 @@ namespace Chatterino.Common
                 }
                 catch (Exception exc)
                 {
-                    Console.WriteLine(exc.Message.Log("updates"));
+                    Console.WriteLine(exc.Log("updates"));
                 }
             });
         }

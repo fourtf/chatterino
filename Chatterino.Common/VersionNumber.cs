@@ -41,7 +41,7 @@ namespace Chatterino.Common
                 }
 
                 var revision = match.Groups["revision"];
-                if (build.Success)
+                if (revision.Success)
                 {
                     v.Revision = int.Parse(revision.Value.Substring(1), CultureInfo.InvariantCulture);
                 }
