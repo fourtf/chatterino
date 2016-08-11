@@ -16,7 +16,7 @@ namespace Chatterino.Controls
 
         private ChatControl chatControl;
 
-        Padding messagePadding = new Padding(12, 4, 12, 4);
+        Padding messagePadding = new Padding(12, 4, 12, 8);
         int minHeight;
 
         public ChatInputControl(ChatControl chatControl)
@@ -44,6 +44,13 @@ namespace Chatterino.Controls
                 Invalidate();
                 Update();
             };
+        }
+
+        protected override void OnMouseClick(MouseEventArgs e)
+        {
+            chatControl.Focus();
+
+            base.OnMouseClick(e);
         }
 
         protected override void OnResize(EventArgs e)
@@ -76,7 +83,11 @@ namespace Chatterino.Controls
 
             g.FillRectangle(App.ColorScheme.ChatInputOuter, 0, 0, Width - 1, Height - 1);
             //g.FillRectangle(App.ColorScheme.ChatInputInner, 8, 4, Width - 17, Height - 9);
+            //g.DrawRectangle(chatControl.Focused ? new Pen(App.ColorScheme.TextFocused) : App.ColorScheme.ChatInputBorder, 0, 0, Width - 1, Height - 1);
             g.DrawRectangle(App.ColorScheme.ChatInputBorder, 0, 0, Width - 1, Height - 1);
+
+            if (chatControl.Focused)
+                g.FillRectangle(new SolidBrush(App.ColorScheme.TextFocused), 8, Height - messagePadding.Bottom, Width - 17, 1);
 
             var sendMessage = Logic.Message;
 
@@ -93,50 +104,53 @@ namespace Chatterino.Controls
                 int x = 0;
                 bool isFirst = true;
 
-                foreach (var word in sendMessage.Words)
+                if (sendMessage.RawMessage.Length > 0)
                 {
-                    for (int j = 0; j < (word.SplitSegments?.Length ?? 1); j++)
+                    foreach (var word in sendMessage.Words)
                     {
-                        string text = word.SplitSegments?[j].Item1 ?? (string)word.Value;
+                        for (int j = 0; j < (word.SplitSegments?.Length ?? 1); j++)
+                        {
+                            string text = word.SplitSegments?[j].Item1 ?? (string)word.Value;
 
-                        if (j == 0)
-                            if (isFirst)
-                                isFirst = false;
-                            else
+                            if (j == 0)
+                                if (isFirst)
+                                    isFirst = false;
+                                else
+                                {
+                                    if (x == Logic.CaretPosition)
+                                    {
+                                        caretRect = new Rectangle(messagePadding.Left + word.X - spaceWidth, word.Y + messagePadding.Top, 1, word.Height);
+                                        goto end;
+                                    }
+                                    x++;
+                                }
+
+                            for (int i = 0; i < text.Length; i++)
                             {
                                 if (x == Logic.CaretPosition)
                                 {
-                                    caretRect = new Rectangle(messagePadding.Left + word.X - spaceWidth, word.Y + messagePadding.Top, 1, word.Height);
+                                    var size = TextRenderer.MeasureText(g, text.Remove(i), Fonts.GetFont(word.Font), Size.Empty, App.DefaultTextFormatFlags);
+                                    caretRect = new Rectangle(messagePadding.Left + (word.SplitSegments?[j].Item2.X ?? word.X) + size.Width,
+                                        (word.SplitSegments?[j].Item2.Y ?? word.Y) + messagePadding.Top,
+                                        1,
+                                        word.Height);
                                     goto end;
                                 }
                                 x++;
                             }
-
-                        for (int i = 0; i < text.Length; i++)
-                        {
-                            if (x == Logic.CaretPosition)
-                            {
-                                var size = TextRenderer.MeasureText(g, text.Remove(i), Fonts.GetFont(word.Font), Size.Empty, App.DefaultTextFormatFlags);
-                                caretRect = new Rectangle(messagePadding.Left + (word.SplitSegments?[j].Item2.X ?? word.X) + size.Width,
-                                    (word.SplitSegments?[j].Item2.Y ?? word.Y) + messagePadding.Top,
-                                    1,
-                                    word.Height);
-                                goto end;
-                            }
-                            x++;
                         }
                     }
+
+                    var _word = sendMessage.Words[sendMessage.Words.Count - 1];
+                    var _lastSegmentText = _word.SplitSegments?[_word.SplitSegments.Length - 1].Item1;
+                    var _lastSegment = _word.SplitSegments?[_word.SplitSegments.Length - 1].Item2;
+                    caretRect = _word.SplitSegments == null ? new Rectangle(messagePadding.Left + _word.X + _word.Width, _word.Y + messagePadding.Top, 1, _word.Height) : new Rectangle(messagePadding.Left + _lastSegment.Value.X + GuiEngine.Current.MeasureStringSize(g, _word.Font, _lastSegmentText).Width, _lastSegment.Value.Y + messagePadding.Top, 1, _lastSegment.Value.Height);
+
+                    end:
+
+                    if (caretRect != null)
+                        g.FillRectangle(App.ColorScheme.TextCaret, caretRect.Value);
                 }
-
-                var _word = sendMessage.Words[sendMessage.Words.Count - 1];
-                var _lastSegmentText = _word.SplitSegments?[_word.SplitSegments.Length - 1].Item1;
-                var _lastSegment = _word.SplitSegments?[_word.SplitSegments.Length - 1].Item2;
-                caretRect = _word.SplitSegments == null ? new Rectangle(messagePadding.Left + _word.X + _word.Width, _word.Y + messagePadding.Top, 1, _word.Height) : new Rectangle(messagePadding.Left + _lastSegment.Value.X + GuiEngine.Current.MeasureStringSize(g, _word.Font, _lastSegmentText).Width, _lastSegment.Value.Y + messagePadding.Top, 1, _lastSegment.Value.Height);
-
-                end:
-
-                if (caretRect != null)
-                    g.FillRectangle(App.ColorScheme.TextCaret, caretRect.Value);
             }
         }
     }

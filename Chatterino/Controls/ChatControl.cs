@@ -138,8 +138,17 @@ namespace Chatterino.Controls
             ChatControlHeader header = _header = new ChatControlHeader(this);
             Controls.Add(header);
 
-            GotFocus += (s, e) => { Input.Logic.ClearSelection(); header.Invalidate(); };
-            LostFocus += (s, e) => { header.Invalidate(); };
+            GotFocus += (s, e) =>
+            {
+                Input.Logic.ClearSelection();
+                Input.Invalidate();
+                header.Invalidate();
+            };
+            LostFocus += (s, e) =>
+            {
+                header.Invalidate();
+                Input.Invalidate();
+            };
         }
 
         // public functions
