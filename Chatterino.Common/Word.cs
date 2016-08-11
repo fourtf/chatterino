@@ -23,6 +23,7 @@ namespace Chatterino.Common
         public int Y { get; set; }
 
         public Tuple<string, CommonRectangle>[] SplitSegments { get; set; } = null;
+        public int[] CharacterWidths { get; set; } = null;
     }
 
     public enum SpanType

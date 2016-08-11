@@ -594,21 +594,50 @@ namespace Chatterino.Common
                         List<Tuple<string, CommonRectangle>> items = new List<Tuple<string, CommonRectangle>>();
 
                         string s;
-                        CommonSize size = new CommonSize();
-                        for (int j = 1; j < text.Length; j++)
+
+                        int[] widths = word.CharacterWidths;
+
+                        // calculate word widths
+                        if (widths == null)
                         {
-                            s = text.Substring(startIndex, j - startIndex);
-                            if ((size = GuiEngine.Current.MeasureStringSize(graphics, word.Font, s)).Width > width - spaceWidth - spaceWidth - spaceWidth)
+                            widths = new int[text.Length];
+
+                            int lastW = 0;
+                            for (int j = 0; j < text.Length; j++)
                             {
-                                items.Add(Tuple.Create(s, new CommonRectangle(0, y, size.Width, size.Height)));
-                                startIndex = j;
-                                y += word.Height;
-                                size = new CommonSize(0, 0);
+                                int w = GuiEngine.Current.MeasureStringSize(graphics, word.Font, text.Remove(j)).Width;
+                                widths[j] = w - lastW;
+                                lastW = w;
                             }
+
+                            word.CharacterWidths = widths;
                         }
 
-                        s = text.Substring(startIndex);
-                        items.Add(Tuple.Create(s, new CommonRectangle(0, y, size.Width, size.Height)));
+                        // create word splits
+                        {
+                            int w = widths[0];
+
+                            for (int j = 1; j < text.Length; j++)
+                            {
+                                w += widths[j];
+                                if (w > width - spaceWidth - spaceWidth - spaceWidth)
+                                {
+                                    items.Add(Tuple.Create(text.Substring(startIndex, j - startIndex), new CommonRectangle(0, y, w, word.Height)));
+                                    startIndex = j;
+                                    y += word.Height;
+                                    w = 0;
+                                }
+                            }
+
+                            s = text.Substring(startIndex);
+
+                            for (int j = startIndex; j < text.Length; j++)
+                            {
+                                w += widths[j];
+                            }
+
+                            items.Add(Tuple.Create(s, new CommonRectangle(0, y, w, word.Height)));
+                        }
 
                         x = GuiEngine.Current.MeasureStringSize(graphics, word.Font, s).Width + spaceWidth;
 
