@@ -31,6 +31,7 @@
             this.tabs = new Chatterino.Controls.SettingsTabControl();
             this.RightPanel = new System.Windows.Forms.Panel();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.chkHideInput = new System.Windows.Forms.CheckBox();
             this.txtMsgLimit = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.chkDoubleClickLinks = new System.Windows.Forms.CheckBox();
@@ -65,7 +66,6 @@
             this.spAppearance = new Chatterino.Controls.SettingsTabPage();
             this.spConnection = new Chatterino.Controls.SettingsTabPage();
             this.spHighlighted = new Chatterino.Controls.SettingsTabPage();
-            this.chkHideInput = new System.Windows.Forms.CheckBox();
             this.tabs.SuspendLayout();
             this.RightPanel.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -126,9 +126,20 @@
             this.panel1.Size = new System.Drawing.Size(448, 406);
             this.panel1.TabIndex = 0;
             // 
+            // chkHideInput
+            // 
+            this.chkHideInput.AutoSize = true;
+            this.chkHideInput.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.chkHideInput.Location = new System.Drawing.Point(21, 123);
+            this.chkHideInput.Name = "chkHideInput";
+            this.chkHideInput.Size = new System.Drawing.Size(133, 17);
+            this.chkHideInput.TabIndex = 12;
+            this.chkHideInput.Text = "Hide input box if empty";
+            this.chkHideInput.UseVisualStyleBackColor = true;
+            // 
             // txtMsgLimit
             // 
-            this.txtMsgLimit.Location = new System.Drawing.Point(101, 147);
+            this.txtMsgLimit.Location = new System.Drawing.Point(97, 148);
             this.txtMsgLimit.Name = "txtMsgLimit";
             this.txtMsgLimit.Size = new System.Drawing.Size(167, 20);
             this.txtMsgLimit.TabIndex = 10;
@@ -140,9 +151,9 @@
             this.label3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.label3.Location = new System.Drawing.Point(18, 151);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(77, 13);
+            this.label3.Size = new System.Drawing.Size(73, 13);
             this.label3.TabIndex = 11;
-            this.label3.Text = "Message Limit:";
+            this.label3.Text = "Message limit:";
             // 
             // chkDoubleClickLinks
             // 
@@ -150,9 +161,9 @@
             this.chkDoubleClickLinks.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.chkDoubleClickLinks.Location = new System.Drawing.Point(21, 100);
             this.chkDoubleClickLinks.Name = "chkDoubleClickLinks";
-            this.chkDoubleClickLinks.Size = new System.Drawing.Size(180, 17);
+            this.chkDoubleClickLinks.Size = new System.Drawing.Size(173, 17);
             this.chkDoubleClickLinks.TabIndex = 10;
-            this.chkDoubleClickLinks.Text = "Only open Links on Double Click";
+            this.chkDoubleClickLinks.Text = "Only open links on double click";
             this.chkDoubleClickLinks.UseVisualStyleBackColor = true;
             // 
             // chkEmojis
@@ -174,9 +185,9 @@
             this.chkAllowSameMessages.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.chkAllowSameMessages.Location = new System.Drawing.Point(21, 77);
             this.chkAllowSameMessages.Name = "chkAllowSameMessages";
-            this.chkAllowSameMessages.Size = new System.Drawing.Size(309, 17);
+            this.chkAllowSameMessages.Size = new System.Drawing.Size(306, 17);
             this.chkAllowSameMessages.TabIndex = 8;
-            this.chkAllowSameMessages.Text = "Allow sending Duplicate Messages (add a space at the end)";
+            this.chkAllowSameMessages.Text = "Allow sending duplicate messages (add a space at the end)";
             this.chkAllowSameMessages.UseVisualStyleBackColor = true;
             // 
             // chkGifEmotes
@@ -248,9 +259,9 @@
             this.chkTimestampSeconds.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.chkTimestampSeconds.Location = new System.Drawing.Point(21, 54);
             this.chkTimestampSeconds.Name = "chkTimestampSeconds";
-            this.chkTimestampSeconds.Size = new System.Drawing.Size(168, 17);
+            this.chkTimestampSeconds.Size = new System.Drawing.Size(162, 17);
             this.chkTimestampSeconds.TabIndex = 1;
-            this.chkTimestampSeconds.Text = "Show Seconds in Timestamps";
+            this.chkTimestampSeconds.Text = "Show seconds in timestamps";
             this.chkTimestampSeconds.UseVisualStyleBackColor = true;
             // 
             // chkTimestamps
@@ -261,9 +272,9 @@
             this.chkTimestamps.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.chkTimestamps.Location = new System.Drawing.Point(21, 31);
             this.chkTimestamps.Name = "chkTimestamps";
-            this.chkTimestamps.Size = new System.Drawing.Size(112, 17);
+            this.chkTimestamps.Size = new System.Drawing.Size(108, 17);
             this.chkTimestamps.TabIndex = 0;
-            this.chkTimestamps.Text = "Show Timestamps";
+            this.chkTimestamps.Text = "Show timestamps";
             this.chkTimestamps.UseVisualStyleBackColor = true;
             // 
             // panel2
@@ -424,9 +435,9 @@
             this.label2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.label2.Location = new System.Drawing.Point(18, 90);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(218, 17);
+            this.label2.Size = new System.Drawing.Size(147, 17);
             this.label2.TabIndex = 16;
-            this.label2.Text = "Highlighted Keywords (one per line)";
+            this.label2.Text = "Keywords (one per line)";
             // 
             // chkFlashTaskbar
             // 
@@ -434,9 +445,9 @@
             this.chkFlashTaskbar.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.chkFlashTaskbar.Location = new System.Drawing.Point(21, 60);
             this.chkFlashTaskbar.Name = "chkFlashTaskbar";
-            this.chkFlashTaskbar.Size = new System.Drawing.Size(238, 17);
+            this.chkFlashTaskbar.Size = new System.Drawing.Size(243, 17);
             this.chkFlashTaskbar.TabIndex = 15;
-            this.chkFlashTaskbar.Text = "Flash Taskbar when your Name is mentioned";
+            this.chkFlashTaskbar.Text = "Flash taskbar when any keyword is mentioned";
             this.chkFlashTaskbar.UseVisualStyleBackColor = true;
             // 
             // chkHighlight
@@ -445,9 +456,9 @@
             this.chkHighlight.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.chkHighlight.Location = new System.Drawing.Point(21, 13);
             this.chkHighlight.Name = "chkHighlight";
-            this.chkHighlight.Size = new System.Drawing.Size(224, 17);
+            this.chkHighlight.Size = new System.Drawing.Size(269, 17);
             this.chkHighlight.TabIndex = 13;
-            this.chkHighlight.Text = "Highlight Messages containing your Name";
+            this.chkHighlight.Text = "Highlight message where any keyword is mentioned";
             this.chkHighlight.UseVisualStyleBackColor = true;
             // 
             // chkPings
@@ -456,9 +467,9 @@
             this.chkPings.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.chkPings.Location = new System.Drawing.Point(21, 36);
             this.chkPings.Name = "chkPings";
-            this.chkPings.Size = new System.Drawing.Size(225, 17);
+            this.chkPings.Size = new System.Drawing.Size(232, 17);
             this.chkPings.TabIndex = 14;
-            this.chkPings.Text = "Play Sound when your Name is mentioned";
+            this.chkPings.Text = "Play sound when any keyword is mentioned";
             this.chkPings.UseVisualStyleBackColor = true;
             // 
             // spAppearance
@@ -495,17 +506,6 @@
             this.spHighlighted.Size = new System.Drawing.Size(150, 30);
             this.spHighlighted.TabIndex = 3;
             this.spHighlighted.Text = "Highlighting";
-            // 
-            // chkHideInput
-            // 
-            this.chkHideInput.AutoSize = true;
-            this.chkHideInput.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.chkHideInput.Location = new System.Drawing.Point(21, 123);
-            this.chkHideInput.Name = "chkHideInput";
-            this.chkHideInput.Size = new System.Drawing.Size(134, 17);
-            this.chkHideInput.TabIndex = 12;
-            this.chkHideInput.Text = "Hide input box if Empty";
-            this.chkHideInput.UseVisualStyleBackColor = true;
             // 
             // SettingsDialog
             // 
