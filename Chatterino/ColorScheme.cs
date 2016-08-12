@@ -8,6 +8,8 @@ namespace Chatterino
 {
     public class ColorScheme
     {
+        public bool IsLightTheme { get; private set; } = true;
+
         public Brush TooltipBackground { get; set; } = Brushes.Black;
         public Brush TooltipText { get; set; } = Brushes.White;
 
@@ -84,6 +86,8 @@ namespace Chatterino
                 }
                 catch { }
             }
+
+            IsLightTheme = new HSLColor((ChatBackground as SolidBrush)?.Color ?? Color.White).Luminosity > 0.5;
         }
 
         public void Save(string path)

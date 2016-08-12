@@ -14,7 +14,7 @@ namespace Chatterino
 
         public static Font Small = new Font("Helvetica Neue", 6.5f);
         public static Font Medium = new Font("Helvetica Neue", 9.5f);
-        public static Font MediumBold = new Font("Helvetica Neue", 9.5f, FontStyle.Bold);
+        public static Font MediumBold = new Font("Helvetica Neue", 9.5f);
         public static Font MediumItalic = new Font("Helvetica Neue", 9.5f, FontStyle.Italic);
         public static Font Large = new Font("Helvetica Neue", 11.5f);
         public static Font VeryLarge = new Font("Helvetica Neue", 13.5f);
@@ -23,7 +23,7 @@ namespace Chatterino
         {
             Small = new Font(family, size * 0.7f);
             Medium = new Font(family, size);
-            MediumBold = new Font(Medium, FontStyle.Bold);
+            MediumBold = new Font(family, size);
             MediumItalic = new Font(Medium, FontStyle.Italic);
             Large = new Font(family, size * 1.3f);
             VeryLarge = new Font(family, size * 1.6f);

@@ -390,7 +390,7 @@ namespace Chatterino.Common
         }
 
         public Message(string text)
-            : this(text, -1, false)
+            : this(text, null, false)
         {
 
         }

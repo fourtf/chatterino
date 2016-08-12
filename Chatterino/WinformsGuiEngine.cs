@@ -259,8 +259,17 @@ namespace Chatterino
 
                             Color color = word.Color == null ? textColor : Color.FromArgb(word.Color.Value);
                             HSLColor hsl = new HSLColor(color);
-                            if (hsl.Luminosity < 170)
-                                hsl.Luminosity = 170;
+
+                            if (App.ColorScheme.IsLightTheme)
+                            {
+                                if (hsl.Luminosity > 170)
+                                    hsl.Luminosity = 170;
+                            }
+                            else
+                            {
+                                if (hsl.Luminosity < 170)
+                                    hsl.Luminosity = 170;
+                            }
 
                             color = hsl;
 
