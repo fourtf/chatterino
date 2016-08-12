@@ -87,8 +87,14 @@ namespace Chatterino.Common
             {
                 if (AppSettings.CustomHighlightRegex != null && AppSettings.CustomHighlightRegex.IsMatch(text))
                 {
-                    if (AppSettings.ChatEnableHighlight)
+                    if (AppSettings.ChatEnableHighlight) {
                         Highlighted = true;
+
+                        object oVal;
+                        if (AppSettings.chatHighlightsIgnoreUsernames.TryGetValue(Username, out oVal)) {
+                            Highlighted = false;
+                        }
+                    }
                     if (EnablePings && enablePingSound)
                     {
                         if (AppSettings.ChatEnableHighlightSound)

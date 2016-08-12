@@ -75,6 +75,19 @@ namespace Chatterino.Controls
                 AppSettings.ChatCustomHighlights = list.ToArray();
             };
 
+            rtbIgnoredUsernames.Text = string.Join(Environment.NewLine, AppSettings.chatHighlightsIgnoreUsernames.Keys);
+            onSave += (s, e) =>
+            {
+                List<string> list = new List<string>();
+                StringReader reader = new StringReader(rtbIgnoredUsernames.Text);
+                string line;
+                while ((line = reader.ReadLine()) != null)
+                {
+                    list.Add(line.Trim().ToLower());
+                }
+                AppSettings.ChatHighlightsIgnoreUsernames = list.ToArray();
+            };
+
             //Buttons
             int x = 0;
 

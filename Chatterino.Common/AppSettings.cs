@@ -59,6 +59,22 @@ namespace Chatterino.Common
         }
         public static Regex CustomHighlightRegex { get; private set; } = null;
 
+        public static ConcurrentDictionary<string, object> chatHighlightsIgnoreUsernames = new ConcurrentDictionary<string, object>();
+        public static string[] ChatHighlightsIgnoreUsernames
+        {
+            get
+            {
+                return chatHighlightsIgnoreUsernames.Keys.ToArray();
+            }
+            set
+            {
+                chatHighlightsIgnoreUsernames.Clear();
+                foreach (var item in value) {
+                    chatHighlightsIgnoreUsernames.TryAdd(item, null);
+                }
+            }
+        }
+
         public static bool IgnoreTwitchBlocks { get; private set; } = true;
 
         public static bool ChatEnableBttvEmotes { get; set; } = true;
@@ -148,8 +164,9 @@ namespace Chatterino.Common
                     settings.Set(prop.Name, (bool)prop.GetValue(null));
                 else if (prop.PropertyType == typeof(string[]))
                     settings.Set(prop.Name, (string[])prop.GetValue(null));
-                else if (prop.PropertyType == typeof(ConcurrentDictionary<string, object>))
+                else if (prop.PropertyType == typeof(ConcurrentDictionary<string, object>)) {
                     settings.Set(prop.Name, ((ConcurrentDictionary<string, object>)prop.GetValue(null)).Keys);
+                }
             }
 
             settings.Save(path);
