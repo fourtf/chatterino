@@ -104,7 +104,7 @@ namespace Chatterino
 
                 DwMedium = new TextFormat(Factory, family, size);
                 DwMediumBold = new TextFormat(Factory, family, FontWeight.SemiBold, SharpDX.DirectWrite.FontStyle.Normal, size);
-                DwMediumItalic = new TextFormat(Factory, family, FontWeight.SemiBold, SharpDX.DirectWrite.FontStyle.Italic, size);
+                DwMediumItalic = new TextFormat(Factory, family, FontWeight.Medium, SharpDX.DirectWrite.FontStyle.Italic, size);
                 DwSmall = new TextFormat(Factory, family, size * 0.7f);
                 DwLarge = new TextFormat(Factory, family, size * 1.3f);
                 DwVeryLarge = new TextFormat(Factory, family, size * 1.6f);

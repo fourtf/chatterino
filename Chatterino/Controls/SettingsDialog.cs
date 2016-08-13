@@ -251,6 +251,11 @@ namespace Chatterino.Controls
             lblFont.Text = $"{Fonts.GetFont(FontType.Medium).Name}, {Fonts.GetFont(FontType.Medium).Size}";
         }
 
+        private void btnTextCustomPing_Click(object sender, EventArgs e)
+        {
+            GuiEngine.Current.PlaySound(NotificationSound.Ping, true);
+        }
+
         //RESET
         //void btnResetAll_Click(object sender, EventArgs e)
         //{

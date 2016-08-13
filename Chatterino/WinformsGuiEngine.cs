@@ -58,7 +58,7 @@ namespace Chatterino
         public SoundPlayer HighlightSound { get; private set; } = null;
         DateTime highlightTimeStamp = DateTime.MinValue;
 
-        public void PlaySound(NotificationSound sound)
+        public void PlaySound(NotificationSound sound, bool forceCustom = false)
         {
             try
             {
@@ -70,7 +70,7 @@ namespace Chatterino
                 {
                     SoundPlayer player = null;
 
-                    if (AppSettings.ChatCustomHighlightSound)
+                    if (forceCustom || AppSettings.ChatCustomHighlightSound)
                     {
                         try
                         {
@@ -111,7 +111,7 @@ namespace Chatterino
                         player = defaultHighlightSound;
                     }
 
-                    defaultHighlightSound.Play();
+                    player.Play();
                 }
             }
             catch { }

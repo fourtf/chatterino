@@ -438,17 +438,15 @@ namespace Chatterino.Controls
                 items = tabCompleteItems = channel.GetCompletionItems().Where(s => s.Key.StartsWith(word)).Select(x => x.Value).ToArray();
             }
 
-            if (items.Length >= 0)
-            {
-                currentTabIndex += forward ? 1 : -1;
+            currentTabIndex += forward ? 1 : -1;
 
-                currentTabIndex = currentTabIndex < 0 ? 0 : (currentTabIndex >= items.Length ? items.Length - 1 : currentTabIndex);
+            currentTabIndex = currentTabIndex < 0 ? 0 : (currentTabIndex >= items.Length ? items.Length - 1 : currentTabIndex);
 
-                Input.Logic.SelectionStart = wordStart;
-                Input.Logic.SelectionLength = word.Length;
+            Input.Logic.SelectionStart = wordStart;
+            Input.Logic.SelectionLength = word.Length;
 
+            if (currentTabIndex != -1)
                 Input.Logic.InsertText(items[currentTabIndex]);
-            }
         }
 
         private void resetCompletion()

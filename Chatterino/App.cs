@@ -96,7 +96,7 @@ namespace Chatterino
 
             // Settings/Colors
             AppSettings.Load("./Settings.ini");
-            ColorScheme.Load("./Custom/Colors.Dark.ini");
+            ColorScheme.Load("./Custom/Colors.ini");
 
             // Check for updates
             try

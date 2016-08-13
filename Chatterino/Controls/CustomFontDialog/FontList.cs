@@ -81,7 +81,9 @@ namespace CustomFontDialog
         {
             for (int i = 1; i < lstFont.Items.Count; i++)
             {
-                if ((string)lstFont.Items[i] == "Section") continue;
+#pragma warning disable CS0252
+                if (lstFont.Items[i] == "Section") continue;
+#pragma warning restore CS0252
                 Font f = (Font)lstFont.Items[i];
                 if (f.FontFamily.Name == ff.Name)
                 {

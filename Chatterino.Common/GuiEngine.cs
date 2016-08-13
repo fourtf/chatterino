@@ -23,7 +23,7 @@ namespace Chatterino.Common
     public interface IGuiEngine
     {
         void HandleLink(string link);
-        void PlaySound(NotificationSound sound);
+        void PlaySound(NotificationSound sound, bool forceCustom = false);
         object GetImage(ImageType type);
         void HandleAnimatedTwitchEmote(TwitchEmote emote);
         void FlashTaskbar();

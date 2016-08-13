@@ -27,7 +27,11 @@ namespace Chatterino.Controls
 
             this.chatControl = chatControl;
 
-            Height = minHeight = TextRenderer.MeasureText("X", Fonts.GdiMedium).Height + 8 + messagePadding.Top + messagePadding.Bottom;
+            Graphics g = App.UseDirectX ? null : CreateGraphics();
+
+            Height = minHeight = GuiEngine.Current.MeasureStringSize(g, FontType.Medium, "X").Height + 8 + messagePadding.Top + messagePadding.Bottom;
+
+            g?.Dispose();
 
             if (AppSettings.ChatHideInputIfEmpty && Logic.Text.Length == 0)
                 Visible = false;

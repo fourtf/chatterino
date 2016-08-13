@@ -210,7 +210,7 @@
     <None Include="Custom\Colors.Light.ini">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Custom\Colors.Dark.ini">
+    <None Include="Custom\Colors.ini">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="packages.config" />
