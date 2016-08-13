@@ -82,7 +82,7 @@ namespace Chatterino.Common
                 slashMe = true;
             }
 
-            // Split the message
+            // Highlights
             if ((AppSettings.ChatEnableHighlight || AppSettings.ChatEnableHighlightSound || AppSettings.ChatEnableHighlightTaskbar) && Username != IrcManager.Username.ToLower())
             {
                 if (AppSettings.CustomHighlightRegex != null && AppSettings.CustomHighlightRegex.IsMatch(text))
@@ -99,7 +99,7 @@ namespace Chatterino.Common
                 }
             }
 
-            // Read Tags
+            // Tags
             string value;
             if (data.Tags.TryGetValue("color", out value))
             {
@@ -189,8 +189,8 @@ namespace Chatterino.Common
                 }
             }
 
-            //  93064:0-6,8-14/80481:16-20,22-26
 
+            // Username
             DisplayName = string.IsNullOrWhiteSpace(DisplayName) ? Username : DisplayName;
             var messageUser = DisplayName + (slashMe ? "" : ":");
             words.Add(new Word
@@ -199,14 +199,16 @@ namespace Chatterino.Common
                 Value = messageUser,
                 Color = UsernameColor,
                 Font = FontType.MediumBold,
-                Link = "http://twitch.tv/" + Username,
+                Link = "@twitchuser:" + Username,
                 CopyText = messageUser
             });
 
             List<Tuple<int, TwitchEmote>> twitchEmotes = new List<Tuple<int, TwitchEmote>>();
 
+            // Twitch Emotes
             if (data.Tags.TryGetValue("emotes", out value))
             {
+                //  93064:0-6,8-14/80481:16-20,22-26
                 value.Split('/').Do(emote =>
                 {
                     if (emote != "")
@@ -462,6 +464,11 @@ namespace Chatterino.Common
             list.Add(closeMessage);
 
             return list.ToArray();
+        }
+
+        public void InvalidateTextMeasurements()
+        {
+            measureText = true;
         }
 
         bool measureText = true;

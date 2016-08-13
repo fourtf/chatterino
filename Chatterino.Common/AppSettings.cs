@@ -38,6 +38,7 @@ namespace Chatterino.Common
         public static bool ChatEnableHighlight { get; set; } = true;
         public static bool ChatEnableHighlightSound { get; set; } = true;
         public static bool ChatEnableHighlightTaskbar { get; set; } = true;
+        public static bool ChatCustomHighlightSound { get; set; } = false;
 
         private static string[] chatCustomHighlights = new string[0];
         public static string[] ChatCustomHighlights
@@ -77,6 +78,19 @@ namespace Chatterino.Common
         public static int WindowY { get; set; } = 200;
         public static int WindowWidth { get; set; } = 600;
         public static int WindowHeight { get; set; } = 400;
+
+        public static event EventHandler FontChanged;
+
+        public static string FontFamily { get; private set; } = "Helvetica Neue";
+        public static double FontBaseSize { get; private set; } = 10;
+
+        public static void SetFont(string family, float size)
+        {
+            FontFamily = family;
+            FontBaseSize = size;
+
+            FontChanged?.Invoke(null, EventArgs.Empty);
+        }
 
 
         // static stuff

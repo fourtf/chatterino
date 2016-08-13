@@ -281,11 +281,12 @@ namespace Chatterino.Controls
                 if (M != null && M.Length > 0)
                 {
                     int startIndex = Math.Max(0, (int)_scroll.Value);
+                    int yStart = MessagePadding.Top - (int)(M[startIndex].Height * (_scroll.Value % 1));
                     int h = Height - MessagePadding.Top - MessagePadding.Bottom;
 
                     if (startIndex < M.Length)
                     {
-                        int y = MessagePadding.Top - (int)(M[startIndex].Height * (_scroll.Value % 1));
+                        int y = yStart;
 
                         for (int i = 0; i < startIndex; i++)
                         {
@@ -326,7 +327,7 @@ namespace Chatterino.Controls
 
                         renderTarget.BeginDraw();
 
-                        int y = MessagePadding.Top - (int)(M[startIndex].Height * (_scroll.Value % 1));
+                        int y = yStart;
 
                         Dictionary<RawColor4, SCB> brushes = new Dictionary<RawColor4, SCB>();
 
@@ -402,6 +403,31 @@ namespace Chatterino.Controls
                         textBrush.Dispose();
                         g.ReleaseHdc(dc);
                         renderTarget.Dispose();
+                    }
+
+                    {
+                        int y = yStart;
+
+                        Brush disabledBrush = new SolidBrush(Color.FromArgb(172, (App.ColorScheme.ChatBackground as SolidBrush)?.Color ?? Color.Black));
+                        for (int i = startIndex; i < M.Length; i++)
+                        {
+                            var msg = M[i];
+
+                            if (msg.Disabled)
+                            {
+                                g.SmoothingMode = SmoothingMode.None;
+
+                                g.FillRectangle(disabledBrush, 0, y, 1000, msg.Height);
+                            }
+
+                            if (y - msg.Height > h)
+                            {
+                                break;
+                            }
+
+                            y += msg.Height;
+                        }
+                        disabledBrush.Dispose();
                     }
                 }
 

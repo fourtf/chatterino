@@ -101,14 +101,6 @@ namespace Chatterino
                 }
             }
 
-            if (message.Disabled)
-            {
-                g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.None;
-
-                Brush disabledBrush = new SolidBrush(Color.FromArgb(172, (App.ColorScheme.ChatBackground as SolidBrush)?.Color ?? Color.Black));
-                g.FillRectangle(disabledBrush, xOffset, yOffset, 1000, message.Height);
-            }
-
             if (selection != null && !selection.IsEmpty && selection.First.MessageIndex <= currentLine && selection.Last.MessageIndex >= currentLine)
             {
                 g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.None;

@@ -31,6 +31,10 @@
             this.tabs = new Chatterino.Controls.SettingsTabControl();
             this.RightPanel = new System.Windows.Forms.Panel();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.lblFont = new System.Windows.Forms.Label();
+            this.btnSelectFont = new System.Windows.Forms.Button();
+            this.label5 = new System.Windows.Forms.Label();
+            this.chkHideInput = new System.Windows.Forms.CheckBox();
             this.txtMsgLimit = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.chkDoubleClickLinks = new System.Windows.Forms.CheckBox();
@@ -65,7 +69,8 @@
             this.spAppearance = new Chatterino.Controls.SettingsTabPage();
             this.spConnection = new Chatterino.Controls.SettingsTabPage();
             this.spHighlighted = new Chatterino.Controls.SettingsTabPage();
-            this.chkHideInput = new System.Windows.Forms.CheckBox();
+            this.chkCustomPingSound = new System.Windows.Forms.CheckBox();
+            this.btnCustomHighlightOpenFile = new System.Windows.Forms.Button();
             this.tabs.SuspendLayout();
             this.RightPanel.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -84,8 +89,8 @@
             this.tabs.Location = new System.Drawing.Point(0, 0);
             this.tabs.Name = "tabs";
             this.tabs.Panel = this.RightPanel;
-            this.tabs.SelectedIndex = 0;
-            this.tabs.SelectedTab = this.spAppearance;
+            this.tabs.SelectedIndex = 2;
+            this.tabs.SelectedTab = this.spHighlighted;
             this.tabs.Size = new System.Drawing.Size(598, 448);
             this.tabs.TabIndex = 0;
             this.tabs.TabsWidth = 150;
@@ -96,9 +101,9 @@
             this.RightPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.RightPanel.Controls.Add(this.panel3);
             this.RightPanel.Controls.Add(this.panel1);
             this.RightPanel.Controls.Add(this.panel2);
-            this.RightPanel.Controls.Add(this.panel3);
             this.RightPanel.Location = new System.Drawing.Point(150, 0);
             this.RightPanel.Name = "RightPanel";
             this.RightPanel.Padding = new System.Windows.Forms.Padding(0, 0, 0, 42);
@@ -107,6 +112,9 @@
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.lblFont);
+            this.panel1.Controls.Add(this.btnSelectFont);
+            this.panel1.Controls.Add(this.label5);
             this.panel1.Controls.Add(this.chkHideInput);
             this.panel1.Controls.Add(this.txtMsgLimit);
             this.panel1.Controls.Add(this.label3);
@@ -125,6 +133,48 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(448, 406);
             this.panel1.TabIndex = 0;
+            // 
+            // lblFont
+            // 
+            this.lblFont.AutoSize = true;
+            this.lblFont.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.lblFont.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.lblFont.Location = new System.Drawing.Point(147, 186);
+            this.lblFont.Name = "lblFont";
+            this.lblFont.Size = new System.Drawing.Size(54, 13);
+            this.lblFont.TabIndex = 15;
+            this.lblFont.Text = "font name";
+            // 
+            // btnSelectFont
+            // 
+            this.btnSelectFont.Location = new System.Drawing.Point(58, 181);
+            this.btnSelectFont.Name = "btnSelectFont";
+            this.btnSelectFont.Size = new System.Drawing.Size(75, 23);
+            this.btnSelectFont.TabIndex = 14;
+            this.btnSelectFont.Text = "Select";
+            this.btnSelectFont.UseVisualStyleBackColor = true;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.label5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.label5.Location = new System.Drawing.Point(18, 186);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(31, 13);
+            this.label5.TabIndex = 13;
+            this.label5.Text = "Font:";
+            // 
+            // chkHideInput
+            // 
+            this.chkHideInput.AutoSize = true;
+            this.chkHideInput.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.chkHideInput.Location = new System.Drawing.Point(21, 123);
+            this.chkHideInput.Name = "chkHideInput";
+            this.chkHideInput.Size = new System.Drawing.Size(134, 17);
+            this.chkHideInput.TabIndex = 12;
+            this.chkHideInput.Text = "Hide input box if Empty";
+            this.chkHideInput.UseVisualStyleBackColor = true;
             // 
             // txtMsgLimit
             // 
@@ -161,7 +211,7 @@
             this.chkEmojis.Checked = true;
             this.chkEmojis.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkEmojis.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.chkEmojis.Location = new System.Drawing.Point(21, 275);
+            this.chkEmojis.Location = new System.Drawing.Point(21, 309);
             this.chkEmojis.Name = "chkEmojis";
             this.chkEmojis.Size = new System.Drawing.Size(92, 17);
             this.chkEmojis.TabIndex = 9;
@@ -185,7 +235,7 @@
             this.chkGifEmotes.Checked = true;
             this.chkGifEmotes.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkGifEmotes.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.chkGifEmotes.Location = new System.Drawing.Point(21, 252);
+            this.chkGifEmotes.Location = new System.Drawing.Point(21, 286);
             this.chkGifEmotes.Name = "chkGifEmotes";
             this.chkGifEmotes.Size = new System.Drawing.Size(133, 17);
             this.chkGifEmotes.TabIndex = 7;
@@ -198,7 +248,7 @@
             this.chkBttvEmotes.Checked = true;
             this.chkBttvEmotes.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkBttvEmotes.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.chkBttvEmotes.Location = new System.Drawing.Point(21, 206);
+            this.chkBttvEmotes.Location = new System.Drawing.Point(21, 240);
             this.chkBttvEmotes.Name = "chkBttvEmotes";
             this.chkBttvEmotes.Size = new System.Drawing.Size(149, 17);
             this.chkBttvEmotes.TabIndex = 6;
@@ -211,7 +261,7 @@
             this.chkFFzEmotes.Checked = true;
             this.chkFFzEmotes.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkFFzEmotes.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.chkFFzEmotes.Location = new System.Drawing.Point(21, 229);
+            this.chkFFzEmotes.Location = new System.Drawing.Point(21, 263);
             this.chkFFzEmotes.Name = "chkFFzEmotes";
             this.chkFFzEmotes.Size = new System.Drawing.Size(167, 17);
             this.chkFFzEmotes.TabIndex = 4;
@@ -223,7 +273,7 @@
             this.lblEmotes.AutoSize = true;
             this.lblEmotes.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblEmotes.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.lblEmotes.Location = new System.Drawing.Point(18, 182);
+            this.lblEmotes.Location = new System.Drawing.Point(18, 216);
             this.lblEmotes.Name = "lblEmotes";
             this.lblEmotes.Size = new System.Drawing.Size(51, 17);
             this.lblEmotes.TabIndex = 3;
@@ -398,6 +448,8 @@
             // 
             // panel3
             // 
+            this.panel3.Controls.Add(this.btnCustomHighlightOpenFile);
+            this.panel3.Controls.Add(this.chkCustomPingSound);
             this.panel3.Controls.Add(this.rtbHighlights);
             this.panel3.Controls.Add(this.label2);
             this.panel3.Controls.Add(this.chkFlashTaskbar);
@@ -411,9 +463,9 @@
             // 
             // rtbHighlights
             // 
-            this.rtbHighlights.Location = new System.Drawing.Point(21, 123);
+            this.rtbHighlights.Location = new System.Drawing.Point(21, 131);
             this.rtbHighlights.Name = "rtbHighlights";
-            this.rtbHighlights.Size = new System.Drawing.Size(404, 271);
+            this.rtbHighlights.Size = new System.Drawing.Size(404, 263);
             this.rtbHighlights.TabIndex = 17;
             this.rtbHighlights.Text = "";
             // 
@@ -422,7 +474,7 @@
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label2.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.label2.Location = new System.Drawing.Point(18, 90);
+            this.label2.Location = new System.Drawing.Point(18, 108);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(218, 17);
             this.label2.TabIndex = 16;
@@ -432,7 +484,7 @@
             // 
             this.chkFlashTaskbar.AutoSize = true;
             this.chkFlashTaskbar.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.chkFlashTaskbar.Location = new System.Drawing.Point(21, 60);
+            this.chkFlashTaskbar.Location = new System.Drawing.Point(21, 59);
             this.chkFlashTaskbar.Name = "chkFlashTaskbar";
             this.chkFlashTaskbar.Size = new System.Drawing.Size(238, 17);
             this.chkFlashTaskbar.TabIndex = 15;
@@ -468,6 +520,7 @@
             this.spAppearance.Location = new System.Drawing.Point(0, 0);
             this.spAppearance.Name = "spAppearance";
             this.spAppearance.Panel = this.panel1;
+            this.spAppearance.Selected = false;
             this.spAppearance.Size = new System.Drawing.Size(150, 30);
             this.spAppearance.TabIndex = 1;
             this.spAppearance.Text = "Appearance";
@@ -491,21 +544,29 @@
             this.spHighlighted.Location = new System.Drawing.Point(0, 60);
             this.spHighlighted.Name = "spHighlighted";
             this.spHighlighted.Panel = this.panel3;
-            this.spHighlighted.Selected = false;
             this.spHighlighted.Size = new System.Drawing.Size(150, 30);
             this.spHighlighted.TabIndex = 3;
             this.spHighlighted.Text = "Highlighting";
             // 
-            // chkHideInput
+            // chkCustomPingSound
             // 
-            this.chkHideInput.AutoSize = true;
-            this.chkHideInput.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.chkHideInput.Location = new System.Drawing.Point(21, 123);
-            this.chkHideInput.Name = "chkHideInput";
-            this.chkHideInput.Size = new System.Drawing.Size(134, 17);
-            this.chkHideInput.TabIndex = 12;
-            this.chkHideInput.Text = "Hide input box if Empty";
-            this.chkHideInput.UseVisualStyleBackColor = true;
+            this.chkCustomPingSound.AutoSize = true;
+            this.chkCustomPingSound.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.chkCustomPingSound.Location = new System.Drawing.Point(21, 82);
+            this.chkCustomPingSound.Name = "chkCustomPingSound";
+            this.chkCustomPingSound.Size = new System.Drawing.Size(135, 17);
+            this.chkCustomPingSound.TabIndex = 18;
+            this.chkCustomPingSound.Text = "Custom highlight sound";
+            this.chkCustomPingSound.UseVisualStyleBackColor = true;
+            // 
+            // btnCustomHighlightOpenFile
+            // 
+            this.btnCustomHighlightOpenFile.Image = global::Chatterino.Properties.Resources.OpenFolder_16x;
+            this.btnCustomHighlightOpenFile.Location = new System.Drawing.Point(161, 78);
+            this.btnCustomHighlightOpenFile.Name = "btnCustomHighlightOpenFile";
+            this.btnCustomHighlightOpenFile.Size = new System.Drawing.Size(24, 23);
+            this.btnCustomHighlightOpenFile.TabIndex = 19;
+            this.btnCustomHighlightOpenFile.UseVisualStyleBackColor = true;
             // 
             // SettingsDialog
             // 
@@ -574,5 +635,10 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.TextBox txtMsgLimit;
         private System.Windows.Forms.CheckBox chkHideInput;
+        private System.Windows.Forms.Button btnSelectFont;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label lblFont;
+        private System.Windows.Forms.CheckBox chkCustomPingSound;
+        private System.Windows.Forms.Button btnCustomHighlightOpenFile;
     }
 }

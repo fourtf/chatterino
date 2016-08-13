@@ -18,7 +18,7 @@ namespace Chatterino
     {
         public WinformsGuiEngine()
         {
-            Fonts.FontsChanged += (s, e) =>
+            AppSettings.FontChanged += (s, e) =>
             {
                 gdiSizeCaches.Clear();
                 dwSizeCaches.Clear();
@@ -54,7 +54,10 @@ namespace Chatterino
 
 
         // SOUNDS
-        SoundPlayer snd = new SoundPlayer(Properties.Resources.ping2);
+        SoundPlayer defaultHighlightSound = new SoundPlayer(Properties.Resources.ping2);
+        public SoundPlayer HighlightSound { get; private set; } = null;
+        DateTime highlightTimeStamp = DateTime.MinValue;
+
         public void PlaySound(NotificationSound sound)
         {
             try
@@ -64,7 +67,52 @@ namespace Chatterino
                 App.MainForm.Invoke(() => focused = App.MainForm.ContainsFocus);
 
                 if (!focused)
-                    snd.Play();
+                {
+                    SoundPlayer player = null;
+
+                    if (AppSettings.ChatCustomHighlightSound)
+                    {
+                        try
+                        {
+                            var fileInfo = new FileInfo("./Custom/Ping.wav");
+                            if (fileInfo.Exists)
+                            {
+                                if (fileInfo.LastWriteTime != highlightTimeStamp)
+                                {
+                                    HighlightSound?.Dispose();
+
+                                    try
+                                    {
+                                        using (FileStream stream = new FileStream("./Custom/Ping.wav", FileMode.Open))
+                                        {
+                                            HighlightSound = new SoundPlayer(stream);
+                                            HighlightSound.Load();
+                                        }
+
+                                        player = HighlightSound;
+                                        Console.WriteLine("loaded");
+                                    }
+                                    catch
+                                    {
+                                        HighlightSound.Dispose();
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                player = HighlightSound;
+                            }
+                        }
+                        catch { }
+                    }
+
+                    if (player == null)
+                    {
+                        player = defaultHighlightSound;
+                    }
+
+                    defaultHighlightSound.Play();
+                }
             }
             catch { }
         }
@@ -218,7 +266,11 @@ namespace Chatterino
                 else
                 {
                     if (text == " ")
-                        return new CommonSize(4, sizeCache.Item3);
+                    {
+                        float w1 = new SharpDX.DirectWrite.TextLayout(Fonts.Factory, "a a", Fonts.GetTextFormat(font), 1000000, 1000000).Metrics.Width;
+                        float w2 = new SharpDX.DirectWrite.TextLayout(Fonts.Factory, "a", Fonts.GetTextFormat(font), 1000000, 1000000).Metrics.Width;
+                        return new CommonSize((int)(w1 - (w2 * 2f)), sizeCache.Item3);
+                    }
 
                     var metrics = new SharpDX.DirectWrite.TextLayout(Fonts.Factory, text, Fonts.GetTextFormat(font), 1000000, 1000000).Metrics;
 

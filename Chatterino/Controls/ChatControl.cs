@@ -124,11 +124,13 @@ namespace Chatterino.Controls
 
             App.GifEmoteFramesUpdated += App_GifEmoteFramesUpdated;
             App.EmoteLoaded += App_EmoteLoaded;
+            Fonts.FontChanged += Fonts_FontChanged;
 
             Disposed += (s, e) =>
             {
                 App.GifEmoteFramesUpdated -= App_GifEmoteFramesUpdated;
                 App.EmoteLoaded -= App_EmoteLoaded;
+                Fonts.FontChanged -= Fonts_FontChanged;
 
                 TwitchChannel.RemoveChannel(ChannelName);
             };
@@ -149,6 +151,15 @@ namespace Chatterino.Controls
                 header.Invalidate();
                 Input.Invalidate();
             };
+        }
+
+        private void Fonts_FontChanged(object sender, EventArgs e)
+        {
+            this.Invoke(() =>
+            {
+                updateMessageBounds();
+                Invalidate();
+            });
         }
 
         // public functions

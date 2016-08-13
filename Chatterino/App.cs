@@ -74,8 +74,6 @@ namespace Chatterino
             if (Environment.OSVersion.Version.Major >= 6 && Environment.OSVersion.Version.Minor >= 1)
                 UseDirectX = true;
 
-            Fonts.SetFont("Helvetica Neue", 10.5f);
-
             // Exceptions
             Application.ThreadException += (s, e) =>
             {

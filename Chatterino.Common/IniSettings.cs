@@ -260,7 +260,7 @@ namespace Chatterino.Common
         public void Set(string key, string value) => map[key] = value;
         public void Set(string key, bool value) => map[key] = value.ToString();
         public void Set(string key, int value) => map[key] = value.ToString();
-        public void Set(string key, double value) => map[key] = value.ToString();
+        public void Set(string key, double value) => map[key] = value.ToString(CultureInfo.InvariantCulture);
         public void Set(string key, long value) => map[key] = value.ToString();
         public void Set(string key, ulong value) => map[key] = value.ToString();
         public void Set(string key, DateTime value) => map[key] = value.ToString(DateTimeFormat);

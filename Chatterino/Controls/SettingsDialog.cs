@@ -50,6 +50,7 @@ namespace Chatterino.Controls
             BindCheckBox(chkHighlight, "ChatEnableHighlight");
             BindCheckBox(chkPings, "ChatEnableHighlightSound");
             BindCheckBox(chkFlashTaskbar, "ChatEnableHighlightTaskbar");
+            BindCheckBox(chkCustomPingSound, "ChatCustomHighlightSound");
 
             BindCheckBox(chkBttvEmotes, "ChatEnableBttvEmotes");
             BindCheckBox(chkFFzEmotes, "ChatEnableFfzEmotes");
@@ -73,6 +74,43 @@ namespace Chatterino.Controls
                     list.Add(line.Trim());
                 }
                 AppSettings.ChatCustomHighlights = list.ToArray();
+            };
+
+            btnSelectFont.Click += (s, e) =>
+            {
+                using (CustomFontDialog.FontDialog dialog = new CustomFontDialog.FontDialog())
+                {
+                    if (dialog.ShowDialog(this) == DialogResult.OK)
+                    {
+                        AppSettings.SetFont(dialog.Font.Name, dialog.Font.Size);
+                    }
+                }
+
+                updateFontName();
+            };
+
+            updateFontName();
+
+            btnCustomHighlightOpenFile.Click += (s, e) =>
+            {
+                using (OpenFileDialog dialog = new OpenFileDialog())
+                {
+                    dialog.Filter = "wave sound file|*.wav";
+
+                    if (dialog.ShowDialog(this) == DialogResult.OK)
+                    {
+                        try
+                        {
+                            (GuiEngine.Current as WinformsGuiEngine).HighlightSound?.Dispose();
+
+                            File.Copy(dialog.FileName, "./Custom/Ping.wav", true);
+                        }
+                        catch (Exception exc)
+                        {
+                            MessageBox.Show(exc.Message, "Error copying the highlight sound");
+                        }
+                    }
+                }
             };
 
             //Buttons
@@ -206,6 +244,11 @@ namespace Chatterino.Controls
         private void tabs_PageSelected(object sender, EventArgs e)
         {
             Text = "Preferences - " + tabs.SelectedTab.Text;
+        }
+
+        private void updateFontName()
+        {
+            lblFont.Text = $"{Fonts.GetFont(FontType.Medium).Name}, {Fonts.GetFont(FontType.Medium).Size}";
         }
 
         //RESET

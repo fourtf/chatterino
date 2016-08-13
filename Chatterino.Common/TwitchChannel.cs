@@ -223,6 +223,18 @@ namespace Chatterino.Common
             IrcManager.Disconnected += IrcManager_Disconnected;
             IrcManager.NoticeAdded += IrcManager_NoticeAdded;
             AppSettings.MessageLimitChanged += AppSettings_MessageLimitChanged;
+            AppSettings.FontChanged += AppSettings_FontChanged;
+        }
+
+        private void AppSettings_FontChanged(object sender, EventArgs e)
+        {
+            lock (MessageLock)
+            {
+                foreach (Message msg in Messages)
+                {
+                    msg.InvalidateTextMeasurements();
+                }
+            }
         }
 
         private void IrcManager_Connected(object sender, EventArgs e)

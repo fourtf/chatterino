@@ -82,6 +82,19 @@
     <Compile Include="Controls\ChatInputControl.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\CustomFontDialog\FontDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls\CustomFontDialog\FontDialog.Designer.cs">
+      <DependentUpon>FontDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\CustomFontDialog\FontList.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\CustomFontDialog\FontList.Designer.cs">
+      <DependentUpon>FontList.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\CustomFontDialog\RecentlyUsedList.cs" />
     <Compile Include="Controls\LoginForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -162,6 +175,12 @@
     </Compile>
     <Compile Include="Win32.cs" />
     <Compile Include="WinformsGuiEngine.cs" />
+    <EmbeddedResource Include="Controls\CustomFontDialog\FontDialog.resx">
+      <DependentUpon>FontDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\CustomFontDialog\FontList.resx">
+      <DependentUpon>FontList.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Controls\LoginForm.resx">
       <DependentUpon>LoginForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -173,6 +192,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\UpdateDialog.resx">
       <DependentUpon>UpdateDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\UserInfoPopup.resx">
+      <DependentUpon>UserInfoPopup.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
@@ -254,7 +276,9 @@
     <None Include="Resources\settings.png" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Controls\CustomFontDialog\LICENSE.txt" />
     <Content Include="icon2.ico" />
+    <None Include="Resources\OpenFolder_16x.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
