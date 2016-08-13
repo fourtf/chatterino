@@ -1,4 +1,5 @@
 ﻿using Chatterino.Common;
+using SharpDX.Mathematics.Interop;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -8,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Message = Chatterino.Common.Message;
+using SCB = SharpDX.Direct2D1.SolidColorBrush;
 
 namespace Chatterino.Controls
 {
@@ -279,11 +281,11 @@ namespace Chatterino.Controls
                 if (M != null && M.Length > 0)
                 {
                     int startIndex = Math.Max(0, (int)_scroll.Value);
+                    int h = Height - MessagePadding.Top - MessagePadding.Bottom;
 
                     if (startIndex < M.Length)
                     {
                         int y = MessagePadding.Top - (int)(M[startIndex].Height * (_scroll.Value % 1));
-                        int h = Height - MessagePadding.Top - MessagePadding.Bottom;
 
                         for (int i = 0; i < startIndex; i++)
                         {
@@ -295,7 +297,7 @@ namespace Chatterino.Controls
                             var msg = M[i];
                             msg.IsVisible = true;
 
-                            msg.Draw(g, MessagePadding.Left, y, selection, i);
+                            MessageRenderer.DrawMessage(g, msg, MessagePadding.Left, y, selection, i, !App.UseDirectX);
 
                             if (y - msg.Height > h)
                             {
@@ -309,6 +311,97 @@ namespace Chatterino.Controls
 
                             y += msg.Height;
                         }
+                    }
+
+                    if (App.UseDirectX)
+                    {
+                        SharpDX.Direct2D1.DeviceContextRenderTarget renderTarget = null;
+                        IntPtr dc = IntPtr.Zero;
+
+                        dc = g.GetHdc();
+
+                        renderTarget = new SharpDX.Direct2D1.DeviceContextRenderTarget(MessageRenderer.D2D1Factory, MessageRenderer.RenderTargetProperties);
+
+                        renderTarget.BindDeviceContext(dc, new RawRectangle(0, 0, Width, Height));
+
+                        renderTarget.BeginDraw();
+
+                        int y = MessagePadding.Top - (int)(M[startIndex].Height * (_scroll.Value % 1));
+
+                        Dictionary<RawColor4, SCB> brushes = new Dictionary<RawColor4, SCB>();
+
+                        var textColor = App.ColorScheme.Text;
+                        var textBrush = new SCB(renderTarget, new RawColor4(textColor.R / 255f, textColor.G / 255f, textColor.B / 255f, 1));
+
+                        for (int i = startIndex; i < M.Length; i++)
+                        {
+                            var msg = M[i];
+
+                            foreach (Word word in msg.Words)
+                            {
+                                if (word.Type == SpanType.Text)
+                                {
+                                    SCB brush;
+
+                                    if (word.Color == null)
+                                    {
+                                        brush = textBrush;
+                                    }
+                                    else
+                                    {
+                                        int value = word.Color.Value;
+
+                                        HSLColor hsl = new HSLColor((value & 0xFF0000) >> 16, (value & 0x00FF00) >> 8, value & 0x0000FF);
+
+                                        if (!App.ColorScheme.IsLightTheme)
+                                        {
+                                            if (hsl.Luminosity > 170)
+                                                hsl.Luminosity = 170;
+                                        }
+                                        else
+                                        {
+                                            if (hsl.Luminosity < 170)
+                                                hsl.Luminosity = 170;
+                                        }
+
+                                        RawColor4 color = hsl.ToRawColor4();
+
+                                        if (!brushes.TryGetValue(color, out brush))
+                                        {
+                                            brushes[color] = brush = new SCB(renderTarget, color);
+                                        }
+                                    }
+
+                                    if (word.SplitSegments == null)
+                                    {
+                                        renderTarget.DrawText((string)word.Value, Fonts.GetTextFormat(word.Font), new RawRectangleF(MessagePadding.Left + word.X, y + word.Y, 10000, 1000), brush);
+                                    }
+                                    else
+                                    {
+                                        foreach (var split in word.SplitSegments)
+                                            renderTarget.DrawText(split.Item1, Fonts.GetTextFormat(word.Font), new RawRectangleF(MessagePadding.Left + split.Item2.X, y + split.Item2.Y, 10000, 1000), brush);
+                                    }
+                                }
+                            }
+
+                            if (y - msg.Height > h)
+                            {
+                                break;
+                            }
+
+                            y += msg.Height;
+                        }
+
+                        foreach (var b in brushes.Values)
+                        {
+                            b.Dispose();
+                        }
+
+                        renderTarget.EndDraw();
+
+                        textBrush.Dispose();
+                        g.ReleaseHdc(dc);
+                        renderTarget.Dispose();
                     }
                 }
 
@@ -498,7 +591,7 @@ namespace Chatterino.Controls
 
         protected virtual void updateMessageBounds(bool emoteChanged = false)
         {
-            var g = CreateGraphics();
+            object g = App.UseDirectX ? null : CreateGraphics();
 
             // determine if
             double scrollbarThumbHeight = 0;
@@ -558,7 +651,7 @@ namespace Chatterino.Controls
                     }
                 }
             }
-            g.Dispose();
+            (g as Graphics)?.Dispose();
 
             this.Invoke(() =>
             {

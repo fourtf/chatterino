@@ -122,6 +122,26 @@ namespace Chatterino
             this.luminosity = hslColor.luminosity;
         }
 
+        public SharpDX.Mathematics.Interop.RawColor4 ToRawColor4()
+        {
+            double r = 0, g = 0, b = 0;
+            if (luminosity != 0)
+            {
+                if (saturation == 0)
+                    r = g = b = luminosity;
+                else
+                {
+                    double temp2 = GetTemp2(this);
+                    double temp1 = 2.0 * luminosity - temp2;
+
+                    r = GetColorComponent(temp1, temp2, hue + 1.0 / 3.0);
+                    g = GetColorComponent(temp1, temp2, hue);
+                    b = GetColorComponent(temp1, temp2, hue - 1.0 / 3.0);
+                }
+            }
+            return new SharpDX.Mathematics.Interop.RawColor4((float)r, (float)g, (float)b, 1);
+        }
+
         public HSLColor() { }
         public HSLColor(Color color)
         {

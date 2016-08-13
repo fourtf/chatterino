@@ -32,8 +32,8 @@ namespace Chatterino.Common
         object ScaleImage(object image, double scale);
 
         CommonSize MeasureStringSize(object graphics, FontType font, string text);
-        void DrawMessage(object graphics, Message message, int xOffset, int yOffset, Selection selection, int currentLineIndex);
-        void DrawGifEmotes(object graphics, Message message, Selection selection, int currentLineIndex);
+        //void DrawMessage(object graphics, Message message, int xOffset, int yOffset, Selection selection, int currentLineIndex);
+        //void DrawGifEmotes(object graphics, Message message, Selection selection, int currentLineIndex);
 
         void DisposeMessageGraphicsBuffer(Message message);
 

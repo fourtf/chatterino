@@ -676,16 +676,6 @@ namespace Chatterino.Common
             return redraw;
         }
 
-        public void Draw(object graphics, int xOffset, int yOffset, Selection selection, int currentLine)
-        {
-            GuiEngine.Current.DrawMessage(graphics, this, xOffset, yOffset, selection, currentLine);
-        }
-
-        public void UpdateGifEmotes(object graphics, Selection selection, int currentLine)
-        {
-            GuiEngine.Current.DrawGifEmotes(graphics, this, selection, currentLine);
-        }
-
         public Word WordAtPoint(CommonPoint point)
         {
             for (int i = 0; i < Words.Count; i++)

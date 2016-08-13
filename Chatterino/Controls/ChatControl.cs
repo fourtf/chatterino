@@ -133,7 +133,7 @@ namespace Chatterino.Controls
                 TwitchChannel.RemoveChannel(ChannelName);
             };
 
-            Font = Fonts.Medium;
+            Font = Fonts.GdiMedium;
 
             ChatControlHeader header = _header = new ChatControlHeader(this);
             Controls.Add(header);
@@ -170,7 +170,8 @@ namespace Chatterino.Controls
                                 if (msg.IsVisible)
                                 {
                                     hasUpdated = true;
-                                    msg.UpdateGifEmotes(buffer.Graphics, selection, i);
+
+                                    MessageRenderer.DrawGifEmotes(buffer.Graphics, msg, selection, i);
                                 }
                             }
                         }

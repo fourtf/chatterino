@@ -23,6 +23,8 @@ namespace Chatterino
         private static bool restartAfterUpdates = false;
 
         // Drawing
+        public static bool UseDirectX { get; private set; } = false;
+
         public const TextFormatFlags DefaultTextFormatFlags = TextFormatFlags.NoPadding | TextFormatFlags.NoPrefix;
 
         public static event EventHandler GifEmoteFramesUpdating;
@@ -67,6 +69,12 @@ namespace Chatterino
             Application.SetCompatibleTextRenderingDefault(false);
 
             Icon = Icon.ExtractAssociatedIcon(Assembly.GetExecutingAssembly().Location);
+
+            // Fonts
+            if (Environment.OSVersion.Version.Major >= 6 && Environment.OSVersion.Version.Minor >= 1)
+                UseDirectX = true;
+
+            Fonts.SetFont("Helvetica Neue", 10.5f);
 
             // Exceptions
             Application.ThreadException += (s, e) =>

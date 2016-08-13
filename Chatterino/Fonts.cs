@@ -1,9 +1,11 @@
 ﻿using Chatterino.Common;
+using SharpDX.DirectWrite;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Chatterino
@@ -12,41 +14,105 @@ namespace Chatterino
     {
         public static event EventHandler FontsChanged;
 
-        public static Font Small = new Font("Helvetica Neue", 6.5f);
-        public static Font Medium = new Font("Helvetica Neue", 9.5f);
-        public static Font MediumBold = new Font("Helvetica Neue", 9.5f);
-        public static Font MediumItalic = new Font("Helvetica Neue", 9.5f, FontStyle.Italic);
-        public static Font Large = new Font("Helvetica Neue", 11.5f);
-        public static Font VeryLarge = new Font("Helvetica Neue", 13.5f);
+        public static string FontFamily { get; private set; } = null;
+        public static float FontBaseSize { get; private set; } = 13.333f;
 
-        public static void SetFont(string family, float size)
+        public static void SetFont(string family, float baseSize)
         {
-            Small = new Font(family, size * 0.7f);
-            Medium = new Font(family, size);
-            MediumBold = new Font(family, size);
-            MediumItalic = new Font(Medium, FontStyle.Italic);
-            Large = new Font(family, size * 1.3f);
-            VeryLarge = new Font(family, size * 1.6f);
+            FontFamily = family;
+            FontBaseSize = baseSize;
+
+            gdiInitialized = false;
+            dwInitialized = false;
 
             FontsChanged?.Invoke(null, EventArgs.Empty);
         }
 
-        public static Font GetFont(FontType type)
-        {
-            if (type == FontType.Medium)
-                return Medium;
-            else if (type == FontType.Small)
-                return Small;
-            else if (type == FontType.MediumBold)
-                return MediumBold;
-            else if (type == FontType.MediumItalic)
-                return MediumItalic;
-            else if (type == FontType.Large)
-                return Large;
-            else if (type == FontType.VeryLarge)
-                return VeryLarge;
+        #region GDI
+        static bool gdiInitialized = false;
 
-            throw new ArgumentException($"Font {type} doesn't exists.");
+        public static System.Drawing.Font GdiSmall, GdiMedium, GdiMediumBold, GdiMediumItalic, GdiLarge, GdiVeryLarge;
+
+        public static System.Drawing.Font GetFont(FontType type)
+        {
+            if (!gdiInitialized)
+            {
+                GdiMedium = new System.Drawing.Font(FontFamily, FontBaseSize, System.Drawing.FontStyle.Regular);
+                GdiMediumBold = new System.Drawing.Font(FontFamily, FontBaseSize, System.Drawing.FontStyle.Bold);
+                GdiMediumItalic = new System.Drawing.Font(FontFamily, FontBaseSize, System.Drawing.FontStyle.Italic);
+                GdiSmall = new System.Drawing.Font(FontFamily, FontBaseSize * 0.7f, System.Drawing.FontStyle.Regular);
+                GdiLarge = new System.Drawing.Font(FontFamily, FontBaseSize * 1.3f, System.Drawing.FontStyle.Regular);
+                GdiVeryLarge = new System.Drawing.Font(FontFamily, FontBaseSize * 1.6f, System.Drawing.FontStyle.Regular);
+            }
+
+            if (type == FontType.Medium)
+                return GdiMedium;
+            else if (type == FontType.Small)
+                return GdiSmall;
+            else if (type == FontType.MediumBold)
+                return GdiMediumBold;
+            else if (type == FontType.MediumItalic)
+                return GdiMediumItalic;
+            else if (type == FontType.Large)
+                return GdiLarge;
+            else if (type == FontType.VeryLarge)
+                return GdiVeryLarge;
+
+            return GdiMedium;
         }
+        #endregion GDI
+
+        #region DirectWrite
+        static bool dwInitialized = false;
+
+        static Factory fontFactory = null;
+
+        public static Factory Factory
+        {
+            get
+            {
+                if (fontFactory == null)
+                {
+                    fontFactory = new Factory();
+                }
+
+                return fontFactory;
+            }
+        }
+
+        public static TextFormat DwSmall, DwMedium, DwMediumBold, DwMediumItalic, DwLarge, DwVeryLarge;
+
+        public static TextFormat GetTextFormat(FontType type)
+        {
+            if (!dwInitialized)
+            {
+                var size = FontBaseSize * MessageRenderer.D2D1Factory.DesktopDpi.Height / 72f;
+
+                DwMedium = new TextFormat(Factory, FontFamily, size);
+                DwMediumBold = new TextFormat(Factory, FontFamily, FontWeight.SemiBold, SharpDX.DirectWrite.FontStyle.Normal, size);
+                DwMediumItalic = new TextFormat(Factory, FontFamily, FontWeight.SemiBold, SharpDX.DirectWrite.FontStyle.Italic, size);
+                DwSmall = new TextFormat(Factory, FontFamily, size * 0.7f);
+                DwLarge = new TextFormat(Factory, FontFamily, size * 1.3f);
+                DwVeryLarge = new TextFormat(Factory, FontFamily, size * 1.6f);
+
+                dwInitialized = true;
+            }
+
+            if (type == FontType.Medium)
+                return DwMedium;
+            else if (type == FontType.MediumBold)
+                return DwMediumBold;
+            else if (type == FontType.MediumItalic)
+                return DwMediumItalic;
+            else if (type == FontType.Small)
+                return DwSmall;
+            else if (type == FontType.Large)
+                return DwLarge;
+            else if (type == FontType.VeryLarge)
+                return DwVeryLarge;
+
+            return DwMedium;
+        }
+        #endregion DirectWrite
     }
 }

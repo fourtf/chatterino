@@ -1,4 +1,5 @@
 ﻿using Chatterino.Common;
+using SharpDX.Mathematics.Interop;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -7,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Message = Chatterino.Common.Message;
+using SCB = SharpDX.Direct2D1.SolidColorBrush;
 
 namespace Chatterino.Controls
 {
@@ -25,7 +27,7 @@ namespace Chatterino.Controls
 
             this.chatControl = chatControl;
 
-            Height = minHeight = TextRenderer.MeasureText("X", Fonts.Medium).Height + 8 + messagePadding.Top + messagePadding.Bottom;
+            Height = minHeight = TextRenderer.MeasureText("X", Fonts.GdiMedium).Height + 8 + messagePadding.Top + messagePadding.Bottom;
 
             if (AppSettings.ChatHideInputIfEmpty && Logic.Text.Length == 0)
                 Visible = false;
@@ -65,8 +67,11 @@ namespace Chatterino.Controls
             var msg = Logic.Message;
             if (msg != null)
             {
-                using (var g = CreateGraphics())
-                    msg.CalculateBounds(g, Width - messagePadding.Left - messagePadding.Right);
+                Graphics g = App.UseDirectX ? null : CreateGraphics();
+
+                msg.CalculateBounds(g, Width - messagePadding.Left - messagePadding.Right);
+
+                g?.Dispose();
 
                 Height = Math.Max(msg.Height + messagePadding.Top + messagePadding.Bottom, minHeight);
             }
@@ -95,7 +100,7 @@ namespace Chatterino.Controls
             {
                 Selection selection = Logic.Selection;
 
-                sendMessage.Draw(e.Graphics, messagePadding.Left, messagePadding.Top, selection, 0);
+                MessageRenderer.DrawMessage(e.Graphics, sendMessage, messagePadding.Left, messagePadding.Top, selection, 0, !App.UseDirectX);
 
                 int spaceWidth = GuiEngine.Current.MeasureStringSize(g, FontType.Medium, " ").Width;
 
@@ -129,7 +134,7 @@ namespace Chatterino.Controls
                             {
                                 if (x == Logic.CaretPosition)
                                 {
-                                    var size = TextRenderer.MeasureText(g, text.Remove(i), Fonts.GetFont(word.Font), Size.Empty, App.DefaultTextFormatFlags);
+                                    var size = GuiEngine.Current.MeasureStringSize(App.UseDirectX ? null : g, word.Font, text.Remove(i));
                                     caretRect = new Rectangle(messagePadding.Left + (word.SplitSegments?[j].Item2.X ?? word.X) + size.Width,
                                         (word.SplitSegments?[j].Item2.Y ?? word.Y) + messagePadding.Top,
                                         1,
@@ -144,12 +149,53 @@ namespace Chatterino.Controls
                     var _word = sendMessage.Words[sendMessage.Words.Count - 1];
                     var _lastSegmentText = _word.SplitSegments?[_word.SplitSegments.Length - 1].Item1;
                     var _lastSegment = _word.SplitSegments?[_word.SplitSegments.Length - 1].Item2;
-                    caretRect = _word.SplitSegments == null ? new Rectangle(messagePadding.Left + _word.X + _word.Width, _word.Y + messagePadding.Top, 1, _word.Height) : new Rectangle(messagePadding.Left + _lastSegment.Value.X + GuiEngine.Current.MeasureStringSize(g, _word.Font, _lastSegmentText).Width, _lastSegment.Value.Y + messagePadding.Top, 1, _lastSegment.Value.Height);
+                    caretRect = _word.SplitSegments == null ? new Rectangle(messagePadding.Left + _word.X + _word.Width, _word.Y + messagePadding.Top, 1, _word.Height) : new Rectangle(messagePadding.Left + _lastSegment.Value.X + GuiEngine.Current.MeasureStringSize(App.UseDirectX ? null : g, _word.Font, _lastSegmentText).Width, _lastSegment.Value.Y + messagePadding.Top, 1, _lastSegment.Value.Height);
 
                     end:
 
                     if (caretRect != null)
                         g.FillRectangle(App.ColorScheme.TextCaret, caretRect.Value);
+                }
+
+                if (App.UseDirectX)
+                {
+                    SharpDX.Direct2D1.DeviceContextRenderTarget renderTarget = null;
+                    IntPtr dc = IntPtr.Zero;
+
+                    dc = g.GetHdc();
+
+                    renderTarget = new SharpDX.Direct2D1.DeviceContextRenderTarget(MessageRenderer.D2D1Factory, MessageRenderer.RenderTargetProperties);
+
+                    renderTarget.BindDeviceContext(dc, new RawRectangle(0, 0, Width, Height));
+
+                    renderTarget.BeginDraw();
+
+                    Dictionary<RawColor4, SCB> brushes = new Dictionary<RawColor4, SCB>();
+
+                    var textColor = App.ColorScheme.Text;
+                    var textBrush = new SCB(renderTarget, new RawColor4(textColor.R / 255f, textColor.G / 255f, textColor.B / 255f, 1));
+
+                    foreach (Word word in sendMessage.Words)
+                    {
+                        if (word.Type == SpanType.Text)
+                        {
+                            if (word.SplitSegments == null)
+                            {
+                                renderTarget.DrawText((string)word.Value, Fonts.GetTextFormat(word.Font), new RawRectangleF(messagePadding.Left + word.X, messagePadding.Top + word.Y, 10000, 1000), textBrush);
+                            }
+                            else
+                            {
+                                foreach (var split in word.SplitSegments)
+                                    renderTarget.DrawText(split.Item1, Fonts.GetTextFormat(word.Font), new RawRectangleF(messagePadding.Left + split.Item2.X, messagePadding.Top + split.Item2.Y, 10000, 1000), textBrush);
+                            }
+                        }
+                    }
+
+                    renderTarget.EndDraw();
+
+                    textBrush.Dispose();
+                    g.ReleaseHdc(dc);
+                    renderTarget.Dispose();
                 }
             }
         }

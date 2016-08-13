@@ -20,7 +20,8 @@ namespace Chatterino
         {
             Fonts.FontsChanged += (s, e) =>
             {
-                sizeCaches.Clear();
+                gdiSizeCaches.Clear();
+                dwSizeCaches.Clear();
             };
         }
 
@@ -174,17 +175,25 @@ namespace Chatterino
 
 
         // MESSAGES
-        bool enableBitmapDoubleBuffering = false;
-
         static int sizeCacheStackLimit = 2048;
 
-        ConcurrentDictionary<FontType, Tuple<ConcurrentDictionary<string, CommonSize>, ConcurrentStack<string>, int>> sizeCaches = new ConcurrentDictionary<FontType, Tuple<ConcurrentDictionary<string, CommonSize>, ConcurrentStack<string>, int>>();
+        ConcurrentDictionary<FontType, Tuple<ConcurrentDictionary<string, CommonSize>, ConcurrentStack<string>, int>> gdiSizeCaches = new ConcurrentDictionary<FontType, Tuple<ConcurrentDictionary<string, CommonSize>, ConcurrentStack<string>, int>>();
+        ConcurrentDictionary<FontType, Tuple<ConcurrentDictionary<string, CommonSize>, ConcurrentStack<string>, int>> dwSizeCaches = new ConcurrentDictionary<FontType, Tuple<ConcurrentDictionary<string, CommonSize>, ConcurrentStack<string>, int>>();
 
         public CommonSize MeasureStringSize(object graphics, FontType font, string text)
         {
-            var sizeCache = sizeCaches.GetOrAdd(font, f =>
+            bool isGdi = graphics is Graphics;
+
+            var sizeCache = (isGdi ? gdiSizeCaches : dwSizeCaches).GetOrAdd(font, f =>
             {
-                return Tuple.Create(new ConcurrentDictionary<string, CommonSize>(), new ConcurrentStack<string>(), TextRenderer.MeasureText((Graphics)graphics, "X", Fonts.GetFont(font), Size.Empty, App.DefaultTextFormatFlags).Height);
+                int lineHeight;
+
+                if (isGdi)
+                    lineHeight = TextRenderer.MeasureText((Graphics)graphics, "X", Fonts.GetFont(font), Size.Empty, App.DefaultTextFormatFlags).Height;
+                else
+                    lineHeight = (int)new SharpDX.DirectWrite.TextLayout(Fonts.Factory, text, Fonts.GetTextFormat(font), 1000000, 1000000).Metrics.Height;
+
+                return Tuple.Create(new ConcurrentDictionary<string, CommonSize>(), new ConcurrentStack<string>(), lineHeight);
             });
 
             return sizeCache.Item1.GetOrAdd(text, s =>
@@ -201,247 +210,21 @@ namespace Chatterino
 
                 sizeCache.Item2.Push(s);
 
-                Size size = TextRenderer.MeasureText((IDeviceContext)graphics, text, Fonts.GetFont(font), Size.Empty, App.DefaultTextFormatFlags);
-                return new CommonSize(size.Width, sizeCache.Item3);
-            });
-        }
-
-        public void DrawMessage(object graphics, Common.Message message, int xOffset2, int yOffset2, Selection selection, int currentLine)
-        {
-            try
-            {
-                message.X = xOffset2;
-                message.Y = yOffset2;
-
-                Graphics g2 = (Graphics)graphics;
-
-                int spaceWidth = TextRenderer.MeasureText(g2, " ", Fonts.Medium, Size.Empty, App.DefaultTextFormatFlags).Width;
-
-                int xOffset = 0, yOffset = 0;
-                Graphics g = null;
-                Bitmap bitmap = null;
-
-                if (enableBitmapDoubleBuffering)
+                if (isGdi)
                 {
-                    if (message.buffer == null)
-                    {
-                        bitmap = new Bitmap(message.Width == 0 ? 10 : message.Width, message.Height == 0 ? 10 : message.Height);
-                        g = Graphics.FromImage(bitmap);
-                    }
+                    Size size = TextRenderer.MeasureText((IDeviceContext)graphics, text, Fonts.GetFont(font), Size.Empty, App.DefaultTextFormatFlags);
+                    return new CommonSize(size.Width, sizeCache.Item3);
                 }
                 else
                 {
-                    g = g2;
-                    xOffset = xOffset2;
-                    yOffset = yOffset2;
+                    if (text == " ")
+                        return new CommonSize(4, sizeCache.Item3);
+
+                    var metrics = new SharpDX.DirectWrite.TextLayout(Fonts.Factory, text, Fonts.GetTextFormat(font), 1000000, 1000000).Metrics;
+
+                    return new CommonSize((int)metrics.Width, (int)metrics.Height);
                 }
-
-                g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
-                g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.None;
-
-                if (!enableBitmapDoubleBuffering || message.buffer == null)
-                {
-                    message.X = xOffset2;
-                    var textColor = App.ColorScheme.Text;
-
-                    if (message.Highlighted)
-                        g.FillRectangle(App.ColorScheme.ChatBackgroundHighlighted, 0, yOffset, g.ClipBounds.Width, message.Height);
-
-                    g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.Default;
-
-                    for (int i = 0; i < message.Words.Count; i++)
-                    {
-                        var word = message.Words[i];
-
-                        if (word.Type == SpanType.Text)
-                        {
-                            Font font = Fonts.GetFont(word.Font);
-
-                            Color color = word.Color == null ? textColor : Color.FromArgb(word.Color.Value);
-                            HSLColor hsl = new HSLColor(color);
-
-                            if (App.ColorScheme.IsLightTheme)
-                            {
-                                if (hsl.Luminosity > 170)
-                                    hsl.Luminosity = 170;
-                            }
-                            else
-                            {
-                                if (hsl.Luminosity < 170)
-                                    hsl.Luminosity = 170;
-                            }
-
-                            color = hsl;
-
-                            if (word.SplitSegments == null)
-                            {
-                                TextRenderer.DrawText(g, (string)word.Value, font, new Point(xOffset + word.X, yOffset + word.Y), color, App.DefaultTextFormatFlags);
-                            }
-                            else
-                            {
-                                var segments = word.SplitSegments;
-                                for (int x = 0; x < segments.Length; x++)
-                                {
-                                    TextRenderer.DrawText(g, segments[x].Item1, font, new Point(xOffset + segments[x].Item2.X, yOffset + segments[x].Item2.Y), color, App.DefaultTextFormatFlags);
-                                }
-                            }
-                        }
-                        else if (word.Type == SpanType.Emote)
-                        {
-                            var emote = (TwitchEmote)word.Value;
-                            var img = (Image)emote.Image;
-                            if (img != null)
-                            {
-                                lock (img)
-                                {
-                                    g.DrawImage(img, word.X + xOffset, word.Y + yOffset, word.Width, word.Height);
-                                }
-                            }
-                            else
-                            {
-                                //g.DrawRectangle(Pens.Red, xOffset + word.X, word.Y + yOffset, word.Width, word.Height);
-                            }
-                        }
-                        else if (word.Type == SpanType.Image)
-                        {
-                            var img = (Image)word.Value;
-                            if (img != null)
-                                g.DrawImage(img, word.X + xOffset, word.Y + yOffset, word.Width, word.Height);
-                        }
-                    }
-
-                    if (message.Disabled)
-                    {
-                        g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.None;
-
-                        Brush disabledBrush = new SolidBrush(Color.FromArgb(172, (App.ColorScheme.ChatBackground as SolidBrush)?.Color ?? Color.Black));
-                        g.FillRectangle(disabledBrush, xOffset, yOffset, 1000, message.Height);
-                    }
-
-                    if (enableBitmapDoubleBuffering)
-                    {
-                        g.Flush();
-                        message.buffer = bitmap;
-                    }
-                }
-
-                if (enableBitmapDoubleBuffering)
-                {
-                    g2.DrawImageUnscaled((Image)message.buffer, xOffset2, yOffset2);
-                    DrawGifEmotes(g2, message, selection, currentLine);
-                }
-
-                if (selection != null && !selection.IsEmpty && selection.First.MessageIndex <= currentLine && selection.Last.MessageIndex >= currentLine)
-                {
-                    g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.None;
-
-                    var first = selection.First;
-                    var last = selection.Last;
-
-                    for (int i = 0; i < message.Words.Count; i++)
-                    {
-                        if ((currentLine != first.MessageIndex || i >= first.WordIndex) && (currentLine != last.MessageIndex || i <= last.WordIndex))
-                        {
-                            var word = message.Words[i];
-
-                            if (word.Type == SpanType.Text)
-                            {
-                                for (int j = 0; j < (word.SplitSegments?.Length ?? 1); j++)
-                                {
-                                    if ((first.MessageIndex == currentLine && first.WordIndex == i && first.SplitIndex > j) || (last.MessageIndex == currentLine && last.WordIndex == i && last.SplitIndex < j))
-                                        continue;
-
-                                    var split = word.SplitSegments?[j];
-                                    string text = split?.Item1 ?? (string)word.Value;
-                                    CommonRectangle rect = split?.Item2 ?? new CommonRectangle(word.X, word.Y, word.Width, word.Height);
-
-                                    int textLength = text.Length;
-
-                                    int offset = (first.MessageIndex == currentLine && first.SplitIndex == j && first.WordIndex == i) ? first.CharIndex : 0;
-                                    int length = ((last.MessageIndex == currentLine && last.SplitIndex == j && last.WordIndex == i) ? last.CharIndex : textLength) - offset;
-
-                                    if (offset == 0 && length == text.Length)
-                                        g2.FillRectangle(selectionBrush, rect.X + xOffset2, rect.Y + yOffset2, TextRenderer.MeasureText(g2, text, Fonts.GetFont(word.Font), Size.Empty, App.DefaultTextFormatFlags).Width + spaceWidth, rect.Height);
-                                    else if (offset == text.Length)
-                                        g2.FillRectangle(selectionBrush, rect.X + xOffset2 + rect.Width, rect.Y + yOffset2, spaceWidth, rect.Height);
-                                    else
-                                        g2.FillRectangle(selectionBrush,
-                                            rect.X + xOffset2 + (offset == 0 ? 0 : TextRenderer.MeasureText(g2, text.Remove(offset), Fonts.GetFont(word.Font), Size.Empty, App.DefaultTextFormatFlags).Width),
-                                            rect.Y + yOffset2,
-                                            TextRenderer.MeasureText(g2, text.Substring(offset, length),
-                                            Fonts.GetFont(word.Font), Size.Empty, App.DefaultTextFormatFlags).Width + ((last.MessageIndex > currentLine || last.SplitIndex > j || last.WordIndex > i) ? spaceWidth : 0), rect.Height);
-                                }
-                            }
-                            else if (word.Type == SpanType.Image)
-                            {
-                                int textLength = 2;
-
-                                int offset = (first.MessageIndex == currentLine && first.WordIndex == i) ? first.CharIndex : 0;
-                                int length = ((last.MessageIndex == currentLine && last.WordIndex == i) ? last.CharIndex : textLength) - offset;
-
-                                g2.FillRectangle(selectionBrush, word.X + xOffset2 + (offset == 0 ? 0 : word.Width), word.Y + yOffset2, (offset == 0 ? word.Width : 0) + (offset + length == 2 ? spaceWidth : 0), word.Height);
-                            }
-                            else if (word.Type == SpanType.Emote)
-                            {
-                                int textLength = 2;
-
-                                int offset = (first.MessageIndex == currentLine && first.WordIndex == i) ? first.CharIndex : 0;
-                                int length = ((last.MessageIndex == currentLine && last.WordIndex == i) ? last.CharIndex : textLength) - offset;
-
-                                if (!((TwitchEmote)word.Value).Animated)
-                                    g2.FillRectangle(selectionBrush, word.X + xOffset2, word.Y + yOffset2, word.Width + spaceWidth, word.Height);
-                            }
-                        }
-                    }
-                }
-            }
-            catch (Exception exc)
-            {
-                exc.Log("graphics");
-            }
-        }
-
-        Brush selectionBrush = new SolidBrush(Color.FromArgb(127, Color.Orange));
-
-        public void DrawGifEmotes(object graphics, Common.Message message, Selection selection, int currentLine)
-        {
-            var Words = message.Words;
-            Graphics g = (Graphics)graphics;
-
-            int spaceWidth = TextRenderer.MeasureText(g, " ", Fonts.Medium, Size.Empty, App.DefaultTextFormatFlags).Width;
-
-            for (int i = 0; i < Words.Count; i++)
-            {
-                var word = Words[i];
-
-                TwitchEmote emote;
-                if (word.Type == SpanType.Emote && (emote = (TwitchEmote)word.Value).Animated)
-                {
-                    if (emote.Image != null)
-                    {
-                        lock (emote.Image)
-                        {
-                            var CurrentXOffset = message.X;
-                            var CurrentYOffset = message.Y;
-
-                            g.FillRectangle(message.Highlighted ? App.ColorScheme.ChatBackgroundHighlighted : App.ColorScheme.ChatBackground, word.X + CurrentXOffset, word.Y + CurrentYOffset, word.Width, word.Height);
-                            g.DrawImage((Image)emote.Image, word.X + CurrentXOffset, word.Y + CurrentYOffset, word.Width, word.Height);
-
-                            //if (message.Highlighted)
-                            //    g.FillRectangle(, word.X + CurrentXOffset, word.Y + CurrentYOffset, word.Width, word.Height);
-
-                            if (selection != null && !selection.IsEmpty && (currentLine > selection.First.MessageIndex || (currentLine == selection.First.MessageIndex && i >= selection.First.WordIndex)) && (currentLine < selection.Last.MessageIndex || (selection.Last.MessageIndex == currentLine && i < selection.Last.WordIndex)))
-                                g.FillRectangle(selectionBrush, word.X + CurrentXOffset, word.Y + CurrentYOffset, word.Width, word.Height);
-
-                            if (message.Disabled)
-                            {
-                                g.FillRectangle(new SolidBrush(Color.FromArgb(172, (App.ColorScheme.ChatBackground as SolidBrush)?.Color ?? Color.Black)),
-                                    word.X + CurrentXOffset, word.Y + CurrentYOffset, word.Width + spaceWidth, word.Height);
-                            }
-                        }
-                    }
-                }
-            }
+            });
         }
 
         public void DisposeMessageGraphicsBuffer(Common.Message message)
