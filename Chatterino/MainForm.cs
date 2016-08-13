@@ -83,6 +83,14 @@ namespace Chatterino
             {
                 chatControl?.Input.Logic.Delete((keyData & Keys.Control) == Keys.Control, (keyData & ~Keys.Control) == Keys.Delete);
             }
+            else if (keyData == Keys.Home)
+                (App.MainForm?.SelectedControl as ChatControl).Process(c => c.Input.Logic.SetCaretPosition(0));
+            else if (keyData == (Keys.Home | Keys.Shift))
+                (App.MainForm?.SelectedControl as ChatControl).Process(c => c.Input.Logic.SetSelectionEnd(0));
+            else if (keyData == Keys.End)
+                (App.MainForm?.SelectedControl as ChatControl).Process(c => c.Input.Logic.SetCaretPosition(c.Input.Logic.Text.Length));
+            else if (keyData == (Keys.End | Keys.Shift))
+                (App.MainForm?.SelectedControl as ChatControl).Process(c => c.Input.Logic.SetSelectionEnd(c.Input.Logic.Text.Length));
 
             return base.ProcessCmdKey(ref msg, keyData);
         }
@@ -143,7 +151,10 @@ namespace Chatterino
                         App.ShowSettings();
                         break;
                     case Keys.C:
-                        (App.MainForm?.SelectedControl as ChatControl)?.CopySelection();
+                        (App.MainForm?.SelectedControl as ChatControl)?.CopySelection(false);
+                        break;
+                    case Keys.X:
+                        (App.MainForm?.SelectedControl as ChatControl)?.CopySelection(true);
                         break;
                     case Keys.V:
                         try
@@ -157,6 +168,18 @@ namespace Chatterino
                         break;
                     case Keys.L:
                         new LoginForm().ShowDialog();
+                        break;
+                }
+            }
+            else if (e.Modifiers == Keys.None)
+            {
+                switch (e.KeyCode)
+                {
+                    case Keys.Home:
+
+                        break;
+                    case Keys.End:
+
                         break;
                 }
             }

@@ -360,14 +360,16 @@ namespace Chatterino.Controls
                 {
                     resetCompletion();
                 }
-                else if (e.KeyChar == '\r')
+                else if (e.KeyChar == '\r' || e.KeyChar == '\n')
                 {
                     var text = Input.Logic.Text;
 
                     if (!string.IsNullOrWhiteSpace(text))
                     {
                         channel.SendMessage(text);
-                        Input.Logic.Clear();
+
+                        if ((ModifierKeys & Keys.Control) != Keys.Control)
+                            Input.Logic.Clear();
                     }
 
                     resetCompletion();
@@ -526,15 +528,20 @@ namespace Chatterino.Controls
             Invalidate();
         }
 
-        public override string GetSelectedText()
+        public override string GetSelectedText(bool clear)
         {
             if (selection?.IsEmpty ?? true)
             {
-                return Input.Logic.SelectedText;
+                string text = Input.Logic.SelectedText;
+
+                if (clear && text.Length > 0)
+                    Input.Logic.InsertText("");
+
+                return text;
             }
             else
             {
-                return base.GetSelectedText();
+                return base.GetSelectedText(clear);
             }
         }
 

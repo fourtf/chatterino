@@ -50,6 +50,8 @@ namespace Chatterino.Common
         {
             CaretPosition = SelectionStart = position;
             SelectionLength = 0;
+
+            invokeChanged();
         }
 
         public void ClearSelection()
@@ -135,6 +137,14 @@ namespace Chatterino.Common
                 SelectionStart = CaretPosition;
                 SelectionLength = 0;
             }
+
+            invokeChanged();
+        }
+
+        public void SetSelectionEnd(int position)
+        {
+            SelectionLength = -SelectionStart + position;
+            CaretPosition = position;
 
             invokeChanged();
         }

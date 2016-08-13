@@ -468,17 +468,17 @@ namespace Chatterino.Controls
             return null;
         }
 
-        public void CopySelection()
+        public void CopySelection(bool clear)
         {
             string text = null;
 
-            text = GetSelectedText();
+            text = GetSelectedText(clear);
 
             if (!string.IsNullOrEmpty(text))
                 Clipboard.SetText(text);
         }
 
-        public virtual string GetSelectedText()
+        public virtual string GetSelectedText(bool clear)
         {
             if (selection == null || selection.IsEmpty)
                 return null;
@@ -543,7 +543,6 @@ namespace Chatterino.Controls
 
                                         if (j + 1 == (word.SplitSegments?.Length ?? 1) && ((last.MessageIndex > currentLine) || last.WordIndex > i))
                                             appendNewline = true;
-                                        //b.Append(' ');
                                     }
                                 }
                                 else if (word.Type == SpanType.Image)
