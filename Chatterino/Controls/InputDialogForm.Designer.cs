@@ -70,6 +70,7 @@
             this.Controls.Add(this.textBox);
             this.Controls.Add(this.cancelButton);
             this.Controls.Add(this.okButton);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "InputDialogForm";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;

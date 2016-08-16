@@ -33,8 +33,6 @@ namespace Chatterino.Controls
             }
             catch { }
 
-            // Meebey.SmartIrc4net.ProxyType.
-
             tabs.SelectedIndex = 0;
             tabs.PageSelected += tabs_PageSelected;
             tabs_PageSelected(this, EventArgs.Empty);

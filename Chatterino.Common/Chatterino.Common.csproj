@@ -33,12 +33,6 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Meebey.SmartIrc4net">
-      <HintPath>lib\Meebey.SmartIrc4net.dll</HintPath>
-    </Reference>
-    <Reference Include="StarkSoftProxy">
-      <HintPath>lib\StarkSoftProxy.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Text.Json, Version=2.0.0.11, Culture=neutral, processorArchitecture=MSIL">
@@ -54,6 +48,8 @@
     <Compile Include="Badges.cs" />
     <Compile Include="ChatClearedEventArgs.cs" />
     <Compile Include="CommonPoint.cs" />
+    <Compile Include="IrcClient.cs" />
+    <Compile Include="IrcConnection.cs" />
     <Compile Include="Emojis.cs" />
     <Compile Include="Emotes.cs" />
     <Compile Include="FontType.cs" />
@@ -61,7 +57,7 @@
     <Compile Include="ImageType.cs" />
     <Compile Include="IniSettings.cs" />
     <Compile Include="IrcManager.cs" />
-    <Compile Include="IrcManager2.cs" />
+    <Compile Include="IrcMessage.cs" />
     <Compile Include="Message.cs" />
     <Compile Include="MessageBadges.cs" />
     <Compile Include="MessageInputLogic.cs" />

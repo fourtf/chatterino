@@ -148,4 +148,22 @@
   <data name="OpenFolder_16x" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\OpenFolder_16x.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="cheer1" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\cheer1.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="cheer100" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\cheer100.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="cheer1000" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\cheer1000.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="cheer10000" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\cheer10000.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="cheer100000" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\cheer100000.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="cheer5000" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\cheer5000.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>

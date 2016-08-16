@@ -190,6 +190,13 @@ namespace Chatterino
             [ImageType.BadgeModerator] = Properties.Resources.moderator_bg,
             [ImageType.BadgeStaff] = Properties.Resources.staff_bg,
             [ImageType.BadgeTurbo] = Properties.Resources.turbo_bg,
+
+            [ImageType.Cheer1] = Properties.Resources.cheer1,
+            [ImageType.Cheer100] = Properties.Resources.cheer100,
+            [ImageType.Cheer1000] = Properties.Resources.cheer1000,
+            [ImageType.Cheer5000] = Properties.Resources.cheer5000,
+            [ImageType.Cheer10000] = Properties.Resources.cheer10000,
+            [ImageType.Cheer100000] = Properties.Resources.cheer100000,
         };
 
         public object GetImage(ImageType type)

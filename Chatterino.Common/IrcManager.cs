@@ -1,10 +1,10 @@
-﻿using Meebey.SmartIrc4net;
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -19,8 +19,7 @@ namespace Chatterino.Common
         // Properties
         public static string Username { get; private set; } = null;
 
-        public static IrcClient IrcReadClient { get; set; }
-        public static IrcClient IrcWriteClient { get; set; }
+        public static IrcClient Client { get; set; }
 
         static bool readPongReceived = true;
         static bool writePongReceived = true;
@@ -34,44 +33,6 @@ namespace Chatterino.Common
         // Static Ctor
         static IrcManager()
         {
-            pingTimer = new System.Threading.Timer(t =>
-            {
-                bool reconnect = false;
-                if (IrcWriteClient != null)
-                {
-                    if (writePongReceived)
-                    {
-                        writePongReceived = false;
-                        try
-                        {
-                            IrcWriteClient.WriteLine("PING");
-                        }
-                        catch { }
-                    }
-                    else
-                        reconnect = true;
-                }
-                if (IrcReadClient != null)
-                {
-                    if (readPongReceived)
-                    {
-                        readPongReceived = false;
-                        try
-                        {
-                            IrcReadClient.WriteLine("PING");
-                        }
-                        catch { }
-                    }
-                    else
-                        reconnect = true;
-                }
-                if (reconnect)
-                {
-                    Disconnected?.Invoke(null, EventArgs.Empty);
-                    Connect();
-                }
-            }, null, 15000, 15000);
-
             // Chat Commands
             ChatCommands.TryAdd("shrug", s => ". " + s + " ¯\\_(ツ)_/¯");
             ChatCommands.TryAdd("brainpower", s => ". " + s + " O-oooooooooo AAAAE-A-A-I-A-U- JO-oooooooooooo AAE-O-A-A-U-U-A- E-eee-ee-eee AAAAE-A-E-I-E-A- JO-ooo-oo-oo-oo EEEEO-A-AAA-AAAA " + s);
@@ -152,7 +113,7 @@ namespace Chatterino.Common
                     catch { }
                 });
 
-                // fetch availlable twitch emotes
+                // fetch available twitch emotes
                 Task.Run(() =>
                 {
                     try
@@ -182,106 +143,56 @@ namespace Chatterino.Common
                 // connect read
                 Task.Run(() =>
                 {
-                    readPongReceived = true;
-
-                    var read = new IrcClient
+                    if (Client == null)
                     {
-                        Encoding = new UTF8Encoding(),
-                        EnableUTF8Recode = true,
-                    };
+                        Client = new IrcClient();
 
-                    read.OnDisconnecting += (s, e) =>
-                    {
-                        Disconnected?.Invoke(null, EventArgs.Empty);
-                    };
-
-                    setProxy(read);
-
-                    try
-                    {
-                        read.Connect("irc.chat.twitch.tv", 6667);
-
-                        try
+                        Client.ReadConnection.Connected += (s, e) =>
                         {
-                            read.Login(username, username, 0, username, (oauth.StartsWith("oauth:") ? oauth : "oauth:" + oauth));
-                            read.WriteLine("CAP REQ :twitch.tv/commands");
-                            read.WriteLine("CAP REQ :twitch.tv/tags");
-
-                            IrcReadClient = read;
-                            read.OnRawMessage += IrcClient_OnRawMessage;
-                            read.OnRawMessage += (s, e) =>
-                            {
-                                if (e.Data.RawMessageArray.Length > 0 && e.Data.RawMessageArray[0] == "PONG")
-                                    readPongReceived = true;
-                            };
-
                             foreach (var channel in TwitchChannel.Channels)
                             {
-                                channel.JoinRead();
+                                Client.ReadConnection.WriteLine("JOIN #" + channel.Name);
                             }
-
-                            Task.Run(() => read.Listen());
 
                             Connected?.Invoke(null, EventArgs.Empty);
-                        }
-                        catch (Exception exc)
+                        };
+
+                        Client.ReadConnection.Disconnected += (s, e) =>
                         {
-                            ConnectionError?.Invoke(null, new ValueEventArgs<Exception>(exc));
-                        }
-                    }
-                    catch (Exception exc)
-                    {
-                        ConnectionError?.Invoke(null, new ValueEventArgs<Exception>(exc));
-                    }
-                });
+                            Disconnected?.Invoke(null, EventArgs.Empty);
+                        };
 
-                // connect write
-                Task.Run(() =>
-                {
-                    writePongReceived = true;
-
-                    var write = new IrcClient
-                    {
-                        Encoding = new UTF8Encoding(),
-                        EnableUTF8Recode = true,
-                    };
-
-                    write.OnDisconnecting += (s, e) => { Disconnected?.Invoke(null, EventArgs.Empty); };
-
-                    setProxy(write);
-
-                    try
-                    {
-                        write.Connect("irc.chat.twitch.tv", 6667);
-
-                        try
+                        Client.WriteConnection.Connected += (s, e) =>
                         {
-                            write.Login(username, username, 0, username, (oauth.StartsWith("oauth:") ? oauth : "oauth:" + oauth));
-
-                            write.OnRawMessage += (s, e) =>
-                            {
-                                if (e.Data.RawMessageArray.Length > 0 && e.Data.RawMessageArray[0] == "PONG")
-                                    writePongReceived = true;
-                            };
-
-                            IrcWriteClient = write;
-
                             foreach (var channel in TwitchChannel.Channels)
                             {
-                                channel.JoinWrite();
+                                Client.WriteConnection.WriteLine("JOIN #" + channel.Name);
                             }
+                        };
+                    }
 
-                            Task.Run(() => write.Listen());
-                        }
-                        catch (Exception exc)
-                        {
-                            ConnectionError?.Invoke(null, new ValueEventArgs<Exception>(exc));
-                        }
-                    }
-                    catch (Exception exc)
+                    Client.Connect(username, (oauth.StartsWith("oauth:") ? oauth : "oauth:" + oauth));
+
+                    Client.ReadConnection.MessageReceived += ReadConnection_MessageReceived;
+                    Client.WriteConnection.MessageReceived += WriteConnection_MessageReceived;
+                });
+
+                // secret telemetry, please ignore :)
+                // anonymously count user on fourtf.com with the first 32 characters of a sha 256 hash of the username
+                Task.Run(() =>
+                {
+                    string hash;
+                    using (SHA256 sha = SHA256.Create())
                     {
-                        ConnectionError?.Invoke(null, new ValueEventArgs<Exception>(exc));
+                        hash = string.Join("", sha
+                          .ComputeHash(Encoding.UTF8.GetBytes(username))
+                          .Select(item => item.ToString("x2")));
                     }
+                    hash = hash.Remove(32);
+
+                    var request = WebRequest.Create($"https://fourtf.com/chatterino/countuser.php?hash={hash}");
+                    using (var response = request.GetResponse())
+                    using (var stream = response.GetResponseStream()) { }
                 });
             }
             else
@@ -290,44 +201,21 @@ namespace Chatterino.Common
             }
         }
 
-        static void setProxy(IrcClient client)
-        {
-            if (AppSettings.ProxyEnable)
-            {
-                ProxyType type;
-                Enum.TryParse(AppSettings.ProxyType, out type);
-                if (type != ProxyType.None)
-                {
-                    IrcWriteClient.ProxyType = type;
-                    IrcWriteClient.ProxyPort = AppSettings.ProxyPort;
-                    IrcWriteClient.ProxyHost = AppSettings.ProxyHost;
-                    IrcWriteClient.ProxyUsername = AppSettings.ProxyUsername;
-                    IrcWriteClient.ProxyPassword = AppSettings.ProxyPassword;
-                }
-            }
-        }
-
         public static void Disconnect()
         {
             bool disconnected = false;
 
-            try
+            oauth = null;
+            twitchBlockedUsers.Clear();
+
+            if (Client != null)
             {
-                oauth = null;
-                twitchBlockedUsers.Clear();
-                if (IrcReadClient != null)
-                {
-                    disconnected = true;
-                    IrcReadClient.OnRawMessage -= IrcClient_OnRawMessage;
-                    IrcReadClient = null;
-                }
-                if (IrcWriteClient != null)
-                {
-                    disconnected = true;
-                    IrcWriteClient = null;
-                }
+                disconnected = true;
+
+                Client.Disconnect();
+                Client.ReadConnection.MessageReceived -= ReadConnection_MessageReceived;
+                Client.WriteConnection.MessageReceived -= WriteConnection_MessageReceived;
             }
-            catch { }
 
             if (disconnected)
                 Disconnected?.Invoke(null, EventArgs.Empty);
@@ -360,7 +248,7 @@ namespace Chatterino.Common
                         message = message + " ";
                     }
 
-                    IrcWriteClient?.SendMessage(SendType.Message, "#" + channel.TrimStart('#'), Emojis.ReplaceShortCodes(message));
+                    Client.Say(Emojis.ReplaceShortCodes(message), channel.TrimStart('#'));
                 }
             }
         }
@@ -449,16 +337,28 @@ namespace Chatterino.Common
 
         static ConcurrentDictionary<Tuple<string, string>, object> recentChatClears = new ConcurrentDictionary<Tuple<string, string>, object>();
 
-        static void IrcClient_OnRawMessage(object sender, IrcEventArgs e)
+        private static void ReadConnection_MessageReceived(object sender, ValueEventArgs<IrcMessage> e)
         {
-            if (e.Data.Type == ReceiveType.QueryNotice)
+            var msg = e.Value;
+
+            if (msg.Command == "PRIVMSG")
             {
-                ConnectionError?.Invoke(null, new ValueEventArgs<Exception>(new Exception(e.Data.Message)));
+                TwitchChannel.GetChannel(msg.Middle.TrimStart('#')).Process(c =>
+                {
+                    Message message = new Message(msg, c);
+
+                    if (!AppSettings.IgnoreTwitchBlocks || !IsIgnoredUser(message.Username))
+                    {
+                        c.Users[message.Username.ToUpper()] = message.DisplayName;
+
+                        c.AddMessage(message);
+                    }
+                });
             }
-            else if (e.Data.RawMessageArray.Length > 2 && e.Data.RawMessageArray[2] == "CLEARCHAT")
+            else if (msg.Command == "CLEARCHAT")
             {
-                var channel = e.Data.RawMessageArray[3].TrimStart('#');
-                var user = e.Data.Message;
+                var channel = msg.Middle;
+                var user = msg.Params;
 
                 var key = Tuple.Create(user, channel);
 
@@ -471,51 +371,40 @@ namespace Chatterino.Common
                     new System.Threading.Timer(x => { recentChatClears.TryRemove(key, out o); }, null, 3000, System.Threading.Timeout.Infinite);
 
                     string reason;
-                    e.Data.Tags.TryGetValue("ban-reason", out reason);
+                    msg.Tags.TryGetValue("ban-reason", out reason);
                     string _duration;
                     int duration = 0;
-                    if (e.Data.Tags.TryGetValue("ban-duration", out _duration))
+
+                    if (msg.Tags.TryGetValue("ban-duration", out _duration))
                     {
                         int.TryParse(_duration, out duration);
                     }
 
-                    if (e.Data.RawMessageArray.Length > 3)
-                        TwitchChannel.GetChannel(e.Data.RawMessageArray[3].TrimStart('#')).Process(c => c.ClearChat(user, reason, duration));
+                    TwitchChannel.GetChannel((msg.Middle ?? "").TrimStart('#')).Process(c => c.ClearChat(user, reason, duration));
                 }
             }
-            else if (e.Data.RawMessageArray.Length > 2 && e.Data.RawMessageArray[2] == "NOTICE")
+            else if (msg.Command == "ROOMSTATE")
             {
-                TwitchChannel.GetChannel((e.Data.Channel ?? "").TrimStart('#')).Process(c =>
+                TwitchChannel.GetChannel((msg.Middle ?? "").TrimStart('#')).Process(c =>
                 {
-                    Message msg = new Message(e.Data.Message, null, true);
-
-                    c.AddMessage(msg);
-                });
-            }
-            else if (e.Data.RawMessageArray.Length > 3 && e.Data.RawMessageArray[2] == "ROOMSTATE")
-            {
-                TwitchChannel.GetChannel(e.Data.RawMessageArray[3].TrimStart('#')).Process(c =>
-                {
-                    // @broadcaster-lang=;emote-only=0;r9k=0;slow=0;subs-only=0 :tmi.twitch.tv ROOMSTATE #fourtf
-
                     RoomState state = c.RoomState;
 
                     string value;
-                    if (e.Data.Tags.TryGetValue("emote-only", out value))
+                    if (msg.Tags.TryGetValue("emote-only", out value))
                     {
                         if (value == "1")
                             state |= RoomState.EmoteOnly;
                         else
                             state &= ~RoomState.EmoteOnly;
                     }
-                    if (e.Data.Tags.TryGetValue("subs-only", out value))
+                    if (msg.Tags.TryGetValue("subs-only", out value))
                     {
                         if (value == "1")
                             state |= RoomState.SubOnly;
                         else
                             state &= ~RoomState.SubOnly;
                     }
-                    if (e.Data.Tags.TryGetValue("slow", out value))
+                    if (msg.Tags.TryGetValue("slow", out value))
                     {
                         if (value == "0")
                             state &= ~RoomState.SlowMode;
@@ -528,7 +417,7 @@ namespace Chatterino.Common
                             state |= RoomState.SlowMode;
                         }
                     }
-                    if (e.Data.Tags.TryGetValue("r9k", out value))
+                    if (msg.Tags.TryGetValue("r9k", out value))
                     {
                         if (value == "1")
                             state |= RoomState.R9k;
@@ -536,33 +425,41 @@ namespace Chatterino.Common
                             state &= ~RoomState.R9k;
                     }
                     //if (e.Data.Tags.TryGetValue("broadcaster-lang", out value))
-                    //{
-
-                    //}
 
                     c.RoomState = state;
+                    Console.WriteLine(c.RoomState);
                 });
             }
-            else
+            else if (msg.Command == "USERSTATE")
             {
-                if ((e.Data.Channel?.Length ?? 0) > 1 && e.Data.Channel?.Substring(1) != null
-                    && e.Data.RawMessageArray.Length > 4 && e.Data.RawMessageArray[2] == "PRIVMSG")
+                string value;
+
+                if (msg.Tags.TryGetValue("mod", out value))
                 {
-                    TwitchChannel.GetChannel((e.Data.Channel ?? "").TrimStart('#')).Process(c =>
-                    {
-                        Message msg = new Message(e.Data, c);
-
-                        if (!AppSettings.IgnoreTwitchBlocks || !IsIgnoredUser(msg.Username))
-                        {
-                            c.Users[msg.Username.ToUpper()] = msg.DisplayName;
-
-                            c.AddMessage(msg);
-                        }
-                    });
+                    TwitchChannel.GetChannel((msg.Middle ?? "").TrimStart('#')).Process(c => c.IsMod = value == "1");
                 }
             }
+            else if (msg.Command == "WHISPER")
+            {
+                var user = msg.PrefixNickname;
 
-            e.Data.RawMessage.Log();
+                TwitchChannel.WhisperChannel.AddMessage(new Message(msg, TwitchChannel.WhisperChannel, true, false));
+            }
+        }
+
+        private static void WriteConnection_MessageReceived(object sender, ValueEventArgs<IrcMessage> e)
+        {
+            var msg = e.Value;
+
+            if (msg.Command == "NOTICE")
+            {
+                TwitchChannel.GetChannel((msg.Middle ?? "").TrimStart('#')).Process(c =>
+                {
+                    Message message = new Message(msg.Params, null, true);
+
+                    c.AddMessage(message);
+                });
+            }
         }
     }
 }

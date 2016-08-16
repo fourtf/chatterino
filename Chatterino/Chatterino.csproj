@@ -278,6 +278,12 @@
   <ItemGroup>
     <Content Include="Controls\CustomFontDialog\LICENSE.txt" />
     <Content Include="icon2.ico" />
+    <None Include="Resources\cheer10000.png" />
+    <None Include="Resources\cheer5000.png" />
+    <None Include="Resources\cheer1000.png" />
+    <None Include="Resources\cheer100.png" />
+    <None Include="Resources\cheer1.png" />
+    <None Include="Resources\cheer100000.png" />
     <None Include="Resources\OpenFolder_16x.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

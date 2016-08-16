@@ -1,5 +1,4 @@
-﻿using Meebey.SmartIrc4net;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
@@ -61,7 +60,7 @@ namespace Chatterino.Common
 
         }
 
-        public Message(IrcMessageData data, TwitchChannel channel, bool enableTimestamp = true, bool enablePingSound = true)
+        public Message(IrcMessage data, TwitchChannel channel, bool enableTimestamp = true, bool enablePingSound = true)
         {
             var w = Stopwatch.StartNew();
 
@@ -69,9 +68,9 @@ namespace Chatterino.Common
 
             List<Word> words = new List<Word>();
 
-            string text = data.Message;
+            string text = data.Params ?? "";
 
-            Username = data.Nick;
+            Username = data.PrefixNickname;
 
             bool slashMe = false;
 
@@ -155,36 +154,100 @@ namespace Chatterino.Common
 
                 foreach (var badge in badges)
                 {
-                    switch (badge)
+                    if (badge.StartsWith("bits/"))
                     {
-                        case "staff/1":
-                            Badges |= MessageBadges.Staff;
-                            words.Add(new Word { Type = SpanType.Image, Value = GuiEngine.Current.GetImage(ImageType.BadgeStaff), Tooltip = "Twitch Staff" });
-                            break;
-                        case "admin/1":
-                            Badges |= MessageBadges.Admin;
-                            words.Add(new Word { Type = SpanType.Image, Value = GuiEngine.Current.GetImage(ImageType.BadgeAdmin), Tooltip = "Twitch Admin" });
-                            break;
-                        case "global_mod/1":
-                            Badges |= MessageBadges.GlobalMod;
-                            words.Add(new Word { Type = SpanType.Image, Value = GuiEngine.Current.GetImage(ImageType.BadgeGlobalmod), Tooltip = "Global Moderator" });
-                            break;
-                        case "moderator/1":
-                            Badges |= MessageBadges.Mod;
-                            words.Add(new Word { Type = SpanType.Image, Value = GuiEngine.Current.GetImage(ImageType.BadgeModerator), Tooltip = "Channel Moderator" });
-                            break;
-                        case "subscriber/1":
-                            Badges |= MessageBadges.Sub;
-                            words.Add(new Word { Type = SpanType.Emote, Value = channel.SubscriberBadge, Link = Channel.SubLink, Tooltip = "Channel Subscriber" });
-                            break;
-                        case "turbo/1":
-                            Badges |= MessageBadges.Turbo;
-                            words.Add(new Word { Type = SpanType.Image, Value = GuiEngine.Current.GetImage(ImageType.BadgeTurbo), Tooltip = "Turbo Subscriber" });
-                            break;
-                        case "broadcaster/1":
-                            Badges |= MessageBadges.Broadcaster;
-                            words.Add(new Word { Type = SpanType.Image, Value = GuiEngine.Current.GetImage(ImageType.BadgeBroadcaster), Tooltip = "Channel Broadcaster" });
-                            break;
+                        int cheer;
+                        if (int.TryParse(badge.Substring("bits/".Length), out cheer))
+                        {
+                            object image;
+
+                            if (cheer >= 100000)
+                            {
+                                image = GuiEngine.Current.GetImage(ImageType.Cheer100000);
+                            }
+                            else if (cheer >= 10000)
+                            {
+                                image = GuiEngine.Current.GetImage(ImageType.Cheer10000);
+                            }
+                            else if (cheer >= 5000)
+                            {
+                                image = GuiEngine.Current.GetImage(ImageType.Cheer5000);
+                            }
+                            else if (cheer >= 1000)
+                            {
+                                image = GuiEngine.Current.GetImage(ImageType.Cheer1000);
+                            }
+                            else if (cheer >= 100)
+                            {
+                                image = GuiEngine.Current.GetImage(ImageType.Cheer100);
+                            }
+                            else
+                            {
+                                image = GuiEngine.Current.GetImage(ImageType.Cheer1);
+                            }
+
+                            words.Add(new Word { Type = SpanType.Image, Value = image, Tooltip = "Twitch Cheer " + cheer });
+                        }
+
+                        //if (cheer >= 100000)
+                        //{
+                        //    color = "red";
+                        //}
+                        //else if (cheer >= 10000)
+                        //{
+                        //    color = "red";
+                        //}
+                        //else if (cheer >= 5000)
+                        //{
+                        //    color = "blue";
+                        //}
+                        //else if (cheer >= 1000)
+                        //{
+                        //    color = "green";
+                        //}
+                        //else if (cheer >= 100)
+                        //{
+                        //    color = "purple";
+                        //}
+                        //else
+                        //{
+                        //    color = "gray";
+                        //}
+                        //$"http://static-cdn.jtvnw.net/bits/light/animated/{color}/1"
+                    }
+                    else
+                    {
+                        switch (badge)
+                        {
+                            case "staff/1":
+                                Badges |= MessageBadges.Staff;
+                                words.Add(new Word { Type = SpanType.Image, Value = GuiEngine.Current.GetImage(ImageType.BadgeStaff), Tooltip = "Twitch Staff" });
+                                break;
+                            case "admin/1":
+                                Badges |= MessageBadges.Admin;
+                                words.Add(new Word { Type = SpanType.Image, Value = GuiEngine.Current.GetImage(ImageType.BadgeAdmin), Tooltip = "Twitch Admin" });
+                                break;
+                            case "global_mod/1":
+                                Badges |= MessageBadges.GlobalMod;
+                                words.Add(new Word { Type = SpanType.Image, Value = GuiEngine.Current.GetImage(ImageType.BadgeGlobalmod), Tooltip = "Global Moderator" });
+                                break;
+                            case "moderator/1":
+                                Badges |= MessageBadges.Mod;
+                                words.Add(new Word { Type = SpanType.Image, Value = GuiEngine.Current.GetImage(ImageType.BadgeModerator), Tooltip = "Channel Moderator" });
+                                break;
+                            case "subscriber/1":
+                                Badges |= MessageBadges.Sub;
+                                words.Add(new Word { Type = SpanType.Emote, Value = channel.SubscriberBadge, Link = Channel.SubLink, Tooltip = "Channel Subscriber" });
+                                break;
+                            case "turbo/1":
+                                Badges |= MessageBadges.Turbo;
+                                words.Add(new Word { Type = SpanType.Image, Value = GuiEngine.Current.GetImage(ImageType.BadgeTurbo), Tooltip = "Turbo Subscriber" });
+                                break;
+                            case "broadcaster/1":
+                                Badges |= MessageBadges.Broadcaster;
+                                words.Add(new Word { Type = SpanType.Image, Value = GuiEngine.Current.GetImage(ImageType.BadgeBroadcaster), Tooltip = "Channel Broadcaster" });
+                                break;
+                        }
                     }
                 }
             }

@@ -131,7 +131,7 @@ namespace Chatterino
                                 int length = ((last.MessageIndex == currentLine && last.SplitIndex == j && last.WordIndex == i) ? last.CharIndex : textLength) - offset;
 
                                 if (offset == 0 && length == text.Length)
-                                    g.FillRectangle(selectionBrush, rect.X + xOffset, rect.Y + yOffset, GuiEngine.Current.MeasureStringSize(App.UseDirectX ? null : g, word.Font, text).Width + spaceWidth, rect.Height);
+                                    g.FillRectangle(selectionBrush, rect.X + xOffset, rect.Y + yOffset, GuiEngine.Current.MeasureStringSize(App.UseDirectX ? null : g, word.Font, text).Width + spaceWidth - 1, rect.Height);
                                 else if (offset == text.Length)
                                     g.FillRectangle(selectionBrush, rect.X + xOffset + rect.Width, rect.Y + yOffset, spaceWidth, rect.Height);
                                 else
@@ -150,7 +150,7 @@ namespace Chatterino
                             int offset = (first.MessageIndex == currentLine && first.WordIndex == i) ? first.CharIndex : 0;
                             int length = ((last.MessageIndex == currentLine && last.WordIndex == i) ? last.CharIndex : textLength) - offset;
 
-                            g.FillRectangle(selectionBrush, word.X + xOffset + (offset == 0 ? 0 : word.Width), word.Y + yOffset, (offset == 0 ? word.Width : 0) + (offset + length == 2 ? spaceWidth : 0), word.Height);
+                            g.FillRectangle(selectionBrush, word.X + xOffset + (offset == 0 ? 0 : word.Width), word.Y + yOffset, (offset == 0 ? word.Width : 0) + (offset + length == 2 ? spaceWidth : 0) - 1, word.Height);
                         }
                         else if (word.Type == SpanType.Emote)
                         {
@@ -160,7 +160,7 @@ namespace Chatterino
                             int length = ((last.MessageIndex == currentLine && last.WordIndex == i) ? last.CharIndex : textLength) - offset;
 
                             if (!((TwitchEmote)word.Value).Animated)
-                                g.FillRectangle(selectionBrush, word.X + xOffset, word.Y + yOffset, word.Width + spaceWidth, word.Height);
+                                g.FillRectangle(selectionBrush, word.X + xOffset, word.Y + yOffset, word.Width + spaceWidth - 1, word.Height);
                         }
                     }
                 }

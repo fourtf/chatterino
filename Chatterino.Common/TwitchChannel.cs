@@ -98,125 +98,156 @@ namespace Chatterino.Common
         }
 
 
+        // Userstate
+        public event EventHandler UserStateChanged;
+
+        private bool isMod;
+
+        public bool IsMod
+        {
+            get
+            {
+                return isMod;
+            }
+            set
+            {
+                if (isMod != value)
+                {
+                    isMod = value;
+
+                    UserStateChanged?.Invoke(null, EventArgs.Empty);
+                }
+            }
+        }
+
+
         // ctor
         protected TwitchChannel(string channelName)
         {
-            Name = channelName.Trim('#');
-            SubLink = $"https://www.twitch.tv/{Name}/subscribe?ref=in_chat_subscriber_link";
-            ChannelLink = $"https://twitch.tv/{Name}";
-            PopoutPlayerLink = $"https://player.twitch.tv/?channel={Name}";
-
-            JoinWrite();
-            JoinRead();
-
-            string bttvChannelEmotesCache = $"./Cache/bttv_channel_{channelName}";
-
-            // recent chat
-            Task.Run(() =>
+            if (!channelName.StartsWith("/"))
             {
-                try
+                Name = channelName.Trim('#');
+                SubLink = $"https://www.twitch.tv/{Name}/subscribe?ref=in_chat_subscriber_link";
+                ChannelLink = $"https://twitch.tv/{Name}";
+                PopoutPlayerLink = $"https://player.twitch.tv/?channel={Name}";
+
+                Join();
+
+                string bttvChannelEmotesCache = $"./Cache/bttv_channel_{channelName}";
+
+                // recent chat
+                Task.Run(() =>
                 {
-                    List<Message> messages = new List<Message>();
-
-                    var request = WebRequest.Create($"http://fourtf.com:5005/lastmessages/{channelName}");
-                    using (var response = request.GetResponse())
-                    using (var stream = response.GetResponseStream())
+                    try
                     {
-                        StreamReader reader = new StreamReader(stream);
-                        string line;
-                        while ((line = reader.ReadLine()) != null)
+                        List<Message> messages = new List<Message>();
+
+                        var request = WebRequest.Create($"http://fourtf.com:5005/lastmessages/{channelName}");
+                        using (var response = request.GetResponse())
+                        using (var stream = response.GetResponseStream())
                         {
-                            var irc = IrcManager.IrcReadClient ?? new Meebey.SmartIrc4net.IrcClient();
-                            messages.Add(new Message(irc.MessageParser(line), this, false, false));
-                        }
-                    }
-
-                    AddMessagesAtStart(messages.ToArray());
-                }
-                catch { }
-            });
-
-            // bttv channel emotes
-            Task.Run(() =>
-            {
-                try
-                {
-                    JsonParser parser = new JsonParser();
-
-                    if (!File.Exists(bttvChannelEmotesCache) || DateTime.Now - new FileInfo(bttvChannelEmotesCache).LastWriteTime > TimeSpan.FromHours(1))
-                    {
-                        try
-                        {
-                            if (Util.IsLinux)
+                            StreamReader reader = new StreamReader(stream);
+                            string line;
+                            while ((line = reader.ReadLine()) != null)
                             {
-                                Util.LinuxDownloadFile("https://api.betterttv.net/2/channels/" + channelName, bttvChannelEmotesCache);
-                            }
-                            else
-                            {
-                                using (var webClient = new WebClient())
-                                using (var readStream = webClient.OpenRead("https://api.betterttv.net/2/channels/" + channelName))
-                                using (var writeStream = File.OpenWrite(bttvChannelEmotesCache))
+                                IrcMessage msg;
+
+                                if (IrcMessage.TryParse(line, out msg))
                                 {
-                                    readStream.CopyTo(writeStream);
+                                    if (msg.Params != null)
+                                        messages.Add(new Message(msg, this, false, false));
                                 }
                             }
                         }
-                        catch (Exception e)
-                        {
-                            e.Message.Log("emotes");
-                        }
+
+                        AddMessagesAtStart(messages.ToArray());
                     }
+                    catch { }
+                });
 
-                    using (var stream = File.OpenRead(bttvChannelEmotesCache))
-                    {
-                        dynamic json = parser.Parse(stream);
-                        var template = "https:" + json["urlTemplate"]; //{{id}} {{image}}
-
-                        foreach (dynamic e in json["emotes"])
-                        {
-                            string id = e["id"];
-                            string code = e["code"];
-
-                            TwitchEmote emote;
-                            if (Emotes.BttvChannelEmotesCache.TryGetValue(id, out emote))
-                            {
-                                BttvChannelEmotes[code] = emote;
-                            }
-                            else
-                            {
-                                string imageType = e["imageType"];
-                                string url = template.Replace("{{id}}", id).Replace("{{image}}", "1x");
-                                Emotes.BttvChannelEmotesCache[id] = BttvChannelEmotes[code] = new TwitchEmote { Name = code, Url = url, Tooltip = code + "\nBetterTTV Channel Emote" };
-                            }
-                        }
-                    }
-                    updateEmoteNameList();
-                }
-                catch { }
-            });
-
-            Task.Run(() =>
-            {
-                try
+                // bttv channel emotes
+                Task.Run(() =>
                 {
-                    var request = WebRequest.Create($"http://tmi.twitch.tv/group/user/{channelName}/chatters");
-                    using (var response = request.GetResponse())
-                    using (var stream = response.GetResponseStream())
+                    try
                     {
                         JsonParser parser = new JsonParser();
-                        dynamic json = parser.Parse(stream);
-                        dynamic chatters = json["chatters"];
-                        foreach (dynamic group in chatters)
+
+                        if (!File.Exists(bttvChannelEmotesCache) || DateTime.Now - new FileInfo(bttvChannelEmotesCache).LastWriteTime > TimeSpan.FromHours(1))
                         {
-                            foreach (string user in group.Value)
+                            try
                             {
-                                Users[user.ToUpper()] = user;
+                                if (Util.IsLinux)
+                                {
+                                    Util.LinuxDownloadFile("https://api.betterttv.net/2/channels/" + channelName, bttvChannelEmotesCache);
+                                }
+                                else
+                                {
+                                    using (var webClient = new WebClient())
+                                    using (var readStream = webClient.OpenRead("https://api.betterttv.net/2/channels/" + channelName))
+                                    using (var writeStream = File.OpenWrite(bttvChannelEmotesCache))
+                                    {
+                                        readStream.CopyTo(writeStream);
+                                    }
+                                }
+                            }
+                            catch (Exception e)
+                            {
+                                e.Message.Log("emotes");
+                            }
+                        }
+
+                        using (var stream = File.OpenRead(bttvChannelEmotesCache))
+                        {
+                            dynamic json = parser.Parse(stream);
+                            var template = "https:" + json["urlTemplate"]; //{{id}} {{image}}
+
+                            foreach (dynamic e in json["emotes"])
+                            {
+                                string id = e["id"];
+                                string code = e["code"];
+
+                                TwitchEmote emote;
+                                if (Emotes.BttvChannelEmotesCache.TryGetValue(id, out emote))
+                                {
+                                    BttvChannelEmotes[code] = emote;
+                                }
+                                else
+                                {
+                                    string imageType = e["imageType"];
+                                    string url = template.Replace("{{id}}", id).Replace("{{image}}", "1x");
+                                    Emotes.BttvChannelEmotesCache[id] = BttvChannelEmotes[code] = new TwitchEmote { Name = code, Url = url, Tooltip = code + "\nBetterTTV Channel Emote" };
+                                }
+                            }
+                        }
+                        updateEmoteNameList();
+                    }
+                    catch { }
+                });
+
+                // get chatters
+                Task.Run(() =>
+                {
+                    try
+                    {
+                        var request = WebRequest.Create($"http://tmi.twitch.tv/group/user/{channelName}/chatters");
+                        using (var response = request.GetResponse())
+                        using (var stream = response.GetResponseStream())
+                        {
+                            JsonParser parser = new JsonParser();
+                            dynamic json = parser.Parse(stream);
+                            dynamic chatters = json["chatters"];
+                            foreach (dynamic group in chatters)
+                            {
+                                foreach (string user in group.Value)
+                                {
+                                    Users[user.ToUpper()] = user;
+                                }
                             }
                         }
                     }
-                }
-                catch { }
-            });
+                    catch { }
+                });
+            }
 
             Emotes.EmotesLoaded += Emotes_EmotesLoaded;
             IrcManager.Connected += IrcManager_Connected;
@@ -281,11 +312,26 @@ namespace Chatterino.Common
 
 
         // Channels
+        static TwitchChannel()
+        {
+            WhisperChannel?.AddMessage(new Message("Please note that chatterino can only read whispers while it is running!", null, true));
+        }
+
         private static ConcurrentDictionary<string, TwitchChannel> channels = new ConcurrentDictionary<string, TwitchChannel>();
         public static IEnumerable<TwitchChannel> Channels { get { return channels.Values; } }
 
+        public static TwitchChannel WhisperChannel { get; private set; } = new TwitchChannel("/whispers");
+
         public static TwitchChannel AddChannel(string channelName)
         {
+            if (channelName.StartsWith("/"))
+            {
+                if (channelName == "/whispers")
+                {
+                    return WhisperChannel;
+                }
+            }
+
             return channels.AddOrUpdate((channelName ?? "").ToLower(), cname => new TwitchChannel(cname) { Uses = 1 }, (cname, c) => { c.Uses++; return c; });
         }
 
@@ -346,25 +392,22 @@ namespace Chatterino.Common
             return names;
         }
 
-        public void JoinWrite()
+        public void Join()
         {
-            IrcManager.IrcWriteClient?.RfcJoin("#" + Name);
-        }
-
-        public void JoinRead()
-        {
-            IrcManager.IrcReadClient?.RfcJoin("#" + Name);
+            IrcManager.Client?.Join("#" + Name);
         }
 
         public void Disconnect()
         {
-            IrcManager.IrcReadClient?.RfcPart("#" + Name);
-            IrcManager.IrcWriteClient?.RfcPart("#" + Name);
+            IrcManager.Client?.Part("#" + Name);
         }
 
         public void SendMessage(string text)
         {
-            IrcManager.SendMessage(Name, text);
+            if (Name == "/whispers")
+                IrcManager.SendMessage("jtv", text);
+            else
+                IrcManager.SendMessage(Name, text);
         }
 
 

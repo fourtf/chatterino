@@ -85,6 +85,8 @@ namespace Chatterino.Controls
                     {
                         _header?.Invalidate();
 
+                        updateMessageBounds();
+
                         Invalidate();
                     });
                 }

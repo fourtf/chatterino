@@ -14,6 +14,13 @@ namespace Chatterino.Common
         BadgeGlobalmod,
         BadgeModerator,
         BadgeStaff,
-        BadgeTurbo
+        BadgeTurbo,
+
+        Cheer1,
+        Cheer100,
+        Cheer1000,
+        Cheer5000,
+        Cheer10000,
+        Cheer100000
     }
 }

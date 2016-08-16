@@ -30,7 +30,21 @@
         {
             this.tabs = new Chatterino.Controls.SettingsTabControl();
             this.RightPanel = new System.Windows.Forms.Panel();
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.textBox4 = new System.Windows.Forms.TextBox();
+            this.lblProxyPassword = new System.Windows.Forms.Label();
+            this.textBox3 = new System.Windows.Forms.TextBox();
+            this.lblProxyUsername = new System.Windows.Forms.Label();
+            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.lblProxyType = new System.Windows.Forms.Label();
+            this.lblProxy = new System.Windows.Forms.Label();
+            this.chkProxyEnabled = new System.Windows.Forms.CheckBox();
             this.panel3 = new System.Windows.Forms.Panel();
+            this.btnTextCustomPing = new System.Windows.Forms.Button();
             this.btnCustomHighlightOpenFile = new System.Windows.Forms.Button();
             this.chkCustomPingSound = new System.Windows.Forms.CheckBox();
             this.rtbHighlights = new System.Windows.Forms.RichTextBox();
@@ -55,28 +69,14 @@
             this.lblTabs = new System.Windows.Forms.Label();
             this.chkTimestampSeconds = new System.Windows.Forms.CheckBox();
             this.chkTimestamps = new System.Windows.Forms.CheckBox();
-            this.panel2 = new System.Windows.Forms.Panel();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
-            this.label4 = new System.Windows.Forms.Label();
-            this.textBox4 = new System.Windows.Forms.TextBox();
-            this.lblProxyPassword = new System.Windows.Forms.Label();
-            this.textBox3 = new System.Windows.Forms.TextBox();
-            this.lblProxyUsername = new System.Windows.Forms.Label();
-            this.textBox2 = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.lblProxyType = new System.Windows.Forms.Label();
-            this.lblProxy = new System.Windows.Forms.Label();
-            this.chkProxyEnabled = new System.Windows.Forms.CheckBox();
             this.spAppearance = new Chatterino.Controls.SettingsTabPage();
             this.spConnection = new Chatterino.Controls.SettingsTabPage();
             this.spHighlighted = new Chatterino.Controls.SettingsTabPage();
-            this.btnTextCustomPing = new System.Windows.Forms.Button();
             this.tabs.SuspendLayout();
             this.RightPanel.SuspendLayout();
+            this.panel2.SuspendLayout();
             this.panel3.SuspendLayout();
             this.panel1.SuspendLayout();
-            this.panel2.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabs
@@ -84,14 +84,14 @@
             this.tabs.AllowDrop = true;
             this.tabs.Controls.Add(this.RightPanel);
             this.tabs.Controls.Add(this.spAppearance);
-            this.tabs.Controls.Add(this.spConnection);
             this.tabs.Controls.Add(this.spHighlighted);
+            this.tabs.Controls.Add(this.spConnection);
             this.tabs.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabs.Location = new System.Drawing.Point(0, 0);
             this.tabs.Name = "tabs";
             this.tabs.Panel = this.RightPanel;
             this.tabs.SelectedIndex = 2;
-            this.tabs.SelectedTab = this.spHighlighted;
+            this.tabs.SelectedTab = this.spConnection;
             this.tabs.Size = new System.Drawing.Size(598, 448);
             this.tabs.TabIndex = 0;
             this.tabs.TabsWidth = 150;
@@ -102,14 +102,144 @@
             this.RightPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.RightPanel.Controls.Add(this.panel2);
             this.RightPanel.Controls.Add(this.panel3);
             this.RightPanel.Controls.Add(this.panel1);
-            this.RightPanel.Controls.Add(this.panel2);
             this.RightPanel.Location = new System.Drawing.Point(150, 0);
             this.RightPanel.Name = "RightPanel";
             this.RightPanel.Padding = new System.Windows.Forms.Padding(0, 0, 0, 42);
             this.RightPanel.Size = new System.Drawing.Size(448, 448);
             this.RightPanel.TabIndex = 0;
+            // 
+            // panel2
+            // 
+            this.panel2.Controls.Add(this.comboBox1);
+            this.panel2.Controls.Add(this.label4);
+            this.panel2.Controls.Add(this.textBox4);
+            this.panel2.Controls.Add(this.lblProxyPassword);
+            this.panel2.Controls.Add(this.textBox3);
+            this.panel2.Controls.Add(this.lblProxyUsername);
+            this.panel2.Controls.Add(this.textBox2);
+            this.panel2.Controls.Add(this.label1);
+            this.panel2.Controls.Add(this.textBox1);
+            this.panel2.Controls.Add(this.lblProxyType);
+            this.panel2.Controls.Add(this.lblProxy);
+            this.panel2.Controls.Add(this.chkProxyEnabled);
+            this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel2.Location = new System.Drawing.Point(0, 0);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(448, 406);
+            this.panel2.TabIndex = 0;
+            // 
+            // comboBox1
+            // 
+            this.comboBox1.FormattingEnabled = true;
+            this.comboBox1.Location = new System.Drawing.Point(87, 52);
+            this.comboBox1.Name = "comboBox1";
+            this.comboBox1.Size = new System.Drawing.Size(167, 21);
+            this.comboBox1.TabIndex = 15;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.label4.Location = new System.Drawing.Point(18, 107);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(29, 13);
+            this.label4.TabIndex = 14;
+            this.label4.Text = "Port:";
+            // 
+            // textBox4
+            // 
+            this.textBox4.Location = new System.Drawing.Point(87, 103);
+            this.textBox4.Name = "textBox4";
+            this.textBox4.Size = new System.Drawing.Size(167, 20);
+            this.textBox4.TabIndex = 13;
+            // 
+            // lblProxyPassword
+            // 
+            this.lblProxyPassword.AutoSize = true;
+            this.lblProxyPassword.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.lblProxyPassword.Location = new System.Drawing.Point(18, 156);
+            this.lblProxyPassword.Name = "lblProxyPassword";
+            this.lblProxyPassword.Size = new System.Drawing.Size(56, 13);
+            this.lblProxyPassword.TabIndex = 12;
+            this.lblProxyPassword.Text = "Password:";
+            // 
+            // textBox3
+            // 
+            this.textBox3.Location = new System.Drawing.Point(87, 153);
+            this.textBox3.Name = "textBox3";
+            this.textBox3.Size = new System.Drawing.Size(167, 20);
+            this.textBox3.TabIndex = 11;
+            // 
+            // lblProxyUsername
+            // 
+            this.lblProxyUsername.AutoSize = true;
+            this.lblProxyUsername.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.lblProxyUsername.Location = new System.Drawing.Point(18, 131);
+            this.lblProxyUsername.Name = "lblProxyUsername";
+            this.lblProxyUsername.Size = new System.Drawing.Size(58, 13);
+            this.lblProxyUsername.TabIndex = 10;
+            this.lblProxyUsername.Text = "Username:";
+            // 
+            // textBox2
+            // 
+            this.textBox2.Location = new System.Drawing.Point(87, 128);
+            this.textBox2.Name = "textBox2";
+            this.textBox2.Size = new System.Drawing.Size(167, 20);
+            this.textBox2.TabIndex = 9;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.label1.Location = new System.Drawing.Point(18, 81);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(32, 13);
+            this.label1.TabIndex = 8;
+            this.label1.Text = "Host:";
+            // 
+            // textBox1
+            // 
+            this.textBox1.Location = new System.Drawing.Point(87, 78);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(167, 20);
+            this.textBox1.TabIndex = 7;
+            // 
+            // lblProxyType
+            // 
+            this.lblProxyType.AutoSize = true;
+            this.lblProxyType.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.lblProxyType.Location = new System.Drawing.Point(18, 55);
+            this.lblProxyType.Name = "lblProxyType";
+            this.lblProxyType.Size = new System.Drawing.Size(34, 13);
+            this.lblProxyType.TabIndex = 6;
+            this.lblProxyType.Text = "Type:";
+            // 
+            // lblProxy
+            // 
+            this.lblProxy.AutoSize = true;
+            this.lblProxy.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblProxy.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.lblProxy.Location = new System.Drawing.Point(18, 7);
+            this.lblProxy.Name = "lblProxy";
+            this.lblProxy.Size = new System.Drawing.Size(228, 17);
+            this.lblProxy.TabIndex = 4;
+            this.lblProxy.Text = "Proxy (doesn\'t work right now Keepo)";
+            // 
+            // chkProxyEnabled
+            // 
+            this.chkProxyEnabled.AutoSize = true;
+            this.chkProxyEnabled.Checked = true;
+            this.chkProxyEnabled.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkProxyEnabled.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.chkProxyEnabled.Location = new System.Drawing.Point(21, 31);
+            this.chkProxyEnabled.Name = "chkProxyEnabled";
+            this.chkProxyEnabled.Size = new System.Drawing.Size(88, 17);
+            this.chkProxyEnabled.TabIndex = 3;
+            this.chkProxyEnabled.Text = "Enable Proxy";
+            this.chkProxyEnabled.UseVisualStyleBackColor = true;
             // 
             // panel3
             // 
@@ -126,6 +256,16 @@
             this.panel3.Name = "panel3";
             this.panel3.Size = new System.Drawing.Size(448, 406);
             this.panel3.TabIndex = 1;
+            // 
+            // btnTextCustomPing
+            // 
+            this.btnTextCustomPing.Location = new System.Drawing.Point(193, 78);
+            this.btnTextCustomPing.Name = "btnTextCustomPing";
+            this.btnTextCustomPing.Size = new System.Drawing.Size(75, 23);
+            this.btnTextCustomPing.TabIndex = 20;
+            this.btnTextCustomPing.Text = "Test";
+            this.btnTextCustomPing.UseVisualStyleBackColor = true;
+            this.btnTextCustomPing.Click += new System.EventHandler(this.btnTextCustomPing_Click);
             // 
             // btnCustomHighlightOpenFile
             // 
@@ -405,136 +545,6 @@
             this.chkTimestamps.Text = "Show Timestamps";
             this.chkTimestamps.UseVisualStyleBackColor = true;
             // 
-            // panel2
-            // 
-            this.panel2.Controls.Add(this.comboBox1);
-            this.panel2.Controls.Add(this.label4);
-            this.panel2.Controls.Add(this.textBox4);
-            this.panel2.Controls.Add(this.lblProxyPassword);
-            this.panel2.Controls.Add(this.textBox3);
-            this.panel2.Controls.Add(this.lblProxyUsername);
-            this.panel2.Controls.Add(this.textBox2);
-            this.panel2.Controls.Add(this.label1);
-            this.panel2.Controls.Add(this.textBox1);
-            this.panel2.Controls.Add(this.lblProxyType);
-            this.panel2.Controls.Add(this.lblProxy);
-            this.panel2.Controls.Add(this.chkProxyEnabled);
-            this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel2.Location = new System.Drawing.Point(0, 0);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(448, 406);
-            this.panel2.TabIndex = 0;
-            // 
-            // comboBox1
-            // 
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(87, 52);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(167, 21);
-            this.comboBox1.TabIndex = 15;
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.label4.Location = new System.Drawing.Point(18, 107);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(29, 13);
-            this.label4.TabIndex = 14;
-            this.label4.Text = "Port:";
-            // 
-            // textBox4
-            // 
-            this.textBox4.Location = new System.Drawing.Point(87, 103);
-            this.textBox4.Name = "textBox4";
-            this.textBox4.Size = new System.Drawing.Size(167, 20);
-            this.textBox4.TabIndex = 13;
-            // 
-            // lblProxyPassword
-            // 
-            this.lblProxyPassword.AutoSize = true;
-            this.lblProxyPassword.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.lblProxyPassword.Location = new System.Drawing.Point(18, 156);
-            this.lblProxyPassword.Name = "lblProxyPassword";
-            this.lblProxyPassword.Size = new System.Drawing.Size(56, 13);
-            this.lblProxyPassword.TabIndex = 12;
-            this.lblProxyPassword.Text = "Password:";
-            // 
-            // textBox3
-            // 
-            this.textBox3.Location = new System.Drawing.Point(87, 153);
-            this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(167, 20);
-            this.textBox3.TabIndex = 11;
-            // 
-            // lblProxyUsername
-            // 
-            this.lblProxyUsername.AutoSize = true;
-            this.lblProxyUsername.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.lblProxyUsername.Location = new System.Drawing.Point(18, 131);
-            this.lblProxyUsername.Name = "lblProxyUsername";
-            this.lblProxyUsername.Size = new System.Drawing.Size(58, 13);
-            this.lblProxyUsername.TabIndex = 10;
-            this.lblProxyUsername.Text = "Username:";
-            // 
-            // textBox2
-            // 
-            this.textBox2.Location = new System.Drawing.Point(87, 128);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(167, 20);
-            this.textBox2.TabIndex = 9;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.label1.Location = new System.Drawing.Point(18, 81);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(32, 13);
-            this.label1.TabIndex = 8;
-            this.label1.Text = "Host:";
-            // 
-            // textBox1
-            // 
-            this.textBox1.Location = new System.Drawing.Point(87, 78);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(167, 20);
-            this.textBox1.TabIndex = 7;
-            // 
-            // lblProxyType
-            // 
-            this.lblProxyType.AutoSize = true;
-            this.lblProxyType.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.lblProxyType.Location = new System.Drawing.Point(18, 55);
-            this.lblProxyType.Name = "lblProxyType";
-            this.lblProxyType.Size = new System.Drawing.Size(34, 13);
-            this.lblProxyType.TabIndex = 6;
-            this.lblProxyType.Text = "Type:";
-            // 
-            // lblProxy
-            // 
-            this.lblProxy.AutoSize = true;
-            this.lblProxy.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblProxy.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.lblProxy.Location = new System.Drawing.Point(18, 7);
-            this.lblProxy.Name = "lblProxy";
-            this.lblProxy.Size = new System.Drawing.Size(228, 17);
-            this.lblProxy.TabIndex = 4;
-            this.lblProxy.Text = "Proxy (doesn\'t work right now Keepo)";
-            // 
-            // chkProxyEnabled
-            // 
-            this.chkProxyEnabled.AutoSize = true;
-            this.chkProxyEnabled.Checked = true;
-            this.chkProxyEnabled.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkProxyEnabled.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.chkProxyEnabled.Location = new System.Drawing.Point(21, 31);
-            this.chkProxyEnabled.Name = "chkProxyEnabled";
-            this.chkProxyEnabled.Size = new System.Drawing.Size(88, 17);
-            this.chkProxyEnabled.TabIndex = 3;
-            this.chkProxyEnabled.Text = "Enable Proxy";
-            this.chkProxyEnabled.UseVisualStyleBackColor = true;
-            // 
             // spAppearance
             // 
             this.spAppearance.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
@@ -551,34 +561,25 @@
             // 
             this.spConnection.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.spConnection.Image = null;
-            this.spConnection.Location = new System.Drawing.Point(0, 30);
+            this.spConnection.Location = new System.Drawing.Point(0, 60);
             this.spConnection.Name = "spConnection";
             this.spConnection.Panel = this.panel2;
-            this.spConnection.Selected = false;
             this.spConnection.Size = new System.Drawing.Size(150, 30);
             this.spConnection.TabIndex = 2;
             this.spConnection.Text = "Connection";
+            this.spConnection.Visible = false;
             // 
             // spHighlighted
             // 
             this.spHighlighted.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.spHighlighted.Image = null;
-            this.spHighlighted.Location = new System.Drawing.Point(0, 60);
+            this.spHighlighted.Location = new System.Drawing.Point(0, 30);
             this.spHighlighted.Name = "spHighlighted";
             this.spHighlighted.Panel = this.panel3;
+            this.spHighlighted.Selected = false;
             this.spHighlighted.Size = new System.Drawing.Size(150, 30);
             this.spHighlighted.TabIndex = 3;
             this.spHighlighted.Text = "Highlighting";
-            // 
-            // btnTextCustomPing
-            // 
-            this.btnTextCustomPing.Location = new System.Drawing.Point(193, 78);
-            this.btnTextCustomPing.Name = "btnTextCustomPing";
-            this.btnTextCustomPing.Size = new System.Drawing.Size(75, 23);
-            this.btnTextCustomPing.TabIndex = 20;
-            this.btnTextCustomPing.Text = "Test";
-            this.btnTextCustomPing.UseVisualStyleBackColor = true;
-            this.btnTextCustomPing.Click += new System.EventHandler(this.btnTextCustomPing_Click);
             // 
             // SettingsDialog
             // 
@@ -597,12 +598,12 @@
             this.Text = "Preferences";
             this.tabs.ResumeLayout(false);
             this.RightPanel.ResumeLayout(false);
+            this.panel2.ResumeLayout(false);
+            this.panel2.PerformLayout();
             this.panel3.ResumeLayout(false);
             this.panel3.PerformLayout();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
-            this.panel2.ResumeLayout(false);
-            this.panel2.PerformLayout();
             this.ResumeLayout(false);
 
         }
