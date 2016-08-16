@@ -1,5 +1,4 @@
 ﻿using Chatterino.Common;
-using Meebey.SmartIrc4net;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;

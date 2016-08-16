@@ -1,5 +1,10 @@
 ﻿# changelog
 
+## 0.1.4
+- fixed some notices not showing up
+- replaced irc library with my own irc implementation
+- added twitch cheer badges
+
 ## 0.1.3
 - improved performance of word-wrapping
 - enabled direct write instead of gdi on machines that support it
