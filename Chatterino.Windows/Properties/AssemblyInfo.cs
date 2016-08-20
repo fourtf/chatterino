@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // Allgemeine Informationen über eine Assembly werden über die folgenden 
 // Attribute gesteuert. Ändern Sie diese Attributwerte, um die Informationen zu ändern,
 // die einer Assembly zugeordnet sind.
-[assembly: AssemblyTitle("Chatterino.Eto")]
+[assembly: AssemblyTitle("Chatterino.Windows")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Chatterino.Eto")]
+[assembly: AssemblyProduct("Chatterino.Windows")]
 [assembly: AssemblyCopyright("Copyright ©  2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // Die folgende GUID bestimmt die ID der Typbibliothek, wenn dieses Projekt für COM verfügbar gemacht wird
-[assembly: Guid("a9450779-41cc-4857-9444-7cf4b9e1e58d")]
+[assembly: Guid("11d5a506-b66f-4143-b2d8-9886bb0d26cc")]
 
 // Versionsinformationen für eine Assembly bestehen aus den folgenden vier Werten:
 //

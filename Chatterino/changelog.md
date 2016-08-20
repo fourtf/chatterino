@@ -3,7 +3,8 @@
 ## 0.1.4
 - fixed some notices not showing up
 - replaced irc library with my own irc implementation
-- added twitch cheer badges
+- added twitch bit cheer badges
+- didn't add what I said I was gonna add
 
 ## 0.1.3
 - improved performance of word-wrapping
@@ -20,3 +21,8 @@
 ## 0.1.1
 - added a changelog viewer
 - made text input prettier
+
+
+
+
+
