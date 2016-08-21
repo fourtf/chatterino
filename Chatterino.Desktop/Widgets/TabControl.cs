@@ -10,6 +10,14 @@ namespace Chatterino.Desktop.Widgets
 {
     public partial class TabControl : Canvas
     {
+        public IEnumerable<TabPage> TabPages
+        {
+            get
+            {
+                return _tabPages.Select(x => x.Item2);
+            }
+        }
+
         List<Tuple<Tab, TabPage>> _tabPages = new List<Tuple<Tab, TabPage>>();
         public TabPage Selected { get; private set; }
 
@@ -167,20 +175,20 @@ namespace Chatterino.Desktop.Widgets
             layout();
         }
 
-        public void RemoveTab(Widget child)
+        public void RemoveTab(TabPage page)
         {
-            var index = _tabPages.FindIndex(x => x.Item2 == child);
+            var index = _tabPages.FindIndex(x => x.Item2 == page);
 
             if (index == -1)
                 throw new ArgumentException("\"child\" is not a child of this control.");
 
-            if (child is TabPage)
+            if (page is TabPage)
             {
                 RemoveChild(_tabPages[index].Item1);
                 _tabPages.RemoveAt(index);
             }
 
-            base.RemoveChild(child);
+            RemoveChild(page);
         }
 
         // private

@@ -11,6 +11,8 @@ namespace Chatterino.Desktop.Widgets
 {
     public class ChatTabPage : TabPage
     {
+        public bool HasCustomTitle { get; set; } = false;
+
         // COLUMNS
         public event EventHandler<ValueEventArgs<ChatColumn>> ColumnAdded;
         public event EventHandler<ValueEventArgs<ChatColumn>> ColumnRemoved;
@@ -69,6 +71,11 @@ namespace Chatterino.Desktop.Widgets
             ColumnRemoved?.Invoke(this, new ValueEventArgs<ChatColumn>(column));
         }
 
+        public void RemoveWidget(ChatWidget w)
+        {
+
+        }
+
         public ChatColumn FindColumn(ChatWidget w)
         {
             return Columns.FirstOrDefault(x => x.Widgets.Contains(w));
@@ -81,21 +88,48 @@ namespace Chatterino.Desktop.Widgets
 
         static ChatTabPage()
         {
-            MenuItem item;
-
-            item = new MenuItem { Label = "Add Vertical Split", Image = Image.FromResource("Chatterino.Desktop.Assets.2Columns_16x.png") };
-            item.Clicked += (s, e) =>
+            try
             {
-                menuPage?.AddColumn();
-            };
-            menu.Items.Add(item);
+                MenuItem item;
 
-            item = new MenuItem { Label = "Add Horizontal Split", Image = Image.FromResource("Chatterino.Desktop.Assets.2Rows_16x.png") };
-            item.Clicked += (s, e) =>
+                item = new MenuItem { Label = "Remove this Split", Image = getImage("Remove_9x_16x.png") };
+                item.Clicked += (s, e) =>
+                {
+                    menuPage?.AddColumn();
+                };
+                menu.Items.Add(item);
+
+                item = new MenuItem { Label = "Add Vertical Split", Image = getImage("2Columns_16x.png") };
+                item.Clicked += (s, e) =>
+                {
+                    menuPage?.AddColumn();
+                };
+                menu.Items.Add(item);
+
+                item = new MenuItem { Label = "Add Horizontal Split", Image = getImage("2Rows_16x.png") };
+                item.Clicked += (s, e) =>
+                {
+                    menuPage?.FindColumn(menuWidget).AddWidget(new ChatWidget());
+                };
+                menu.Items.Add(item);
+            }
+            catch (Exception exc)
             {
-                menuPage?.FindColumn(menuWidget).AddWidget(new ChatWidget());
-            };
-            menu.Items.Add(item);
+                Console.WriteLine("error:" + exc);
+            }
+
+            Console.WriteLine(menu.Items.Count);
+        }
+
+        static Image getImage(string name)
+        {
+            try
+            {
+                return Image.FromResource("Chatterino.Desktop.Assets." + name);
+            }
+            catch { }
+
+            return null;
         }
 
         // CONSTRUCTOR
@@ -135,12 +169,9 @@ namespace Chatterino.Desktop.Widgets
             BoundsChanged += (s, e) =>
             {
                 layout();
-            };
 
-            // add first column
-            var col = new ChatColumn();
-            col.AddWidget(new ChatWidget());
-            AddColumn(col);
+                QueueDraw();
+            };
         }
 
         private void W_ButtonReleased(object sender, ButtonEventArgs e)
