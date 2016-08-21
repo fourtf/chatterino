@@ -100,6 +100,11 @@ namespace Chatterino.Common
             return new HSLColor(h, s, l);
         }
 
+        public static HSLColor FromRGB(int color)
+        {
+            return unchecked(FromRGB((byte)(color >> 16) / 255f, (byte)((color >> 8) & 255) / 255f, (byte)(color & 255) / 255f));
+        }
+
         public void ToRGB(out float r, out float g, out float b)
         {
             float v;

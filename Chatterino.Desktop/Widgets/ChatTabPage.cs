@@ -73,7 +73,22 @@ namespace Chatterino.Desktop.Widgets
 
         public void RemoveWidget(ChatWidget w)
         {
+            if (CanRemoveWidget())
+            {
+                Columns.FirstOrDefault(x => x.Widgets.Contains(w)).Process(col =>
+                {
+                    col.RemoveWidget(w);
+                    if (col.WidgetCount == 0)
+                    {
+                        RemoveColumn(col);
+                    }
+                });
+            }
+        }
 
+        public bool CanRemoveWidget()
+        {
+            return columns.Count > 1 || ((columns.FirstOrDefault()?.WidgetCount ?? 1) > 1);
         }
 
         public ChatColumn FindColumn(ChatWidget w)
@@ -92,10 +107,13 @@ namespace Chatterino.Desktop.Widgets
             {
                 MenuItem item;
 
-                item = new MenuItem { Label = "Remove this Split", Image = getImage("Remove_9x_16x.png") };
+                item = new MenuItem { Label = "Remove this Split", Image = getImage("Remove_9x_16x.png"), Tag = "rsplit" };
                 item.Clicked += (s, e) =>
                 {
-                    menuPage?.AddColumn();
+                    if (menuWidget != null)
+                    {
+                        menuPage.RemoveWidget(menuWidget);
+                    }
                 };
                 menu.Items.Add(item);
 
@@ -181,7 +199,9 @@ namespace Chatterino.Desktop.Widgets
                 menuPage = this;
                 menuWidget = (ChatWidget)sender;
 
-                menu.Popup((Widget)sender, e.Position.X, e.Position.Y);
+                menu.Items.FirstOrDefault(m => m.Tag.Equals("rsplit")).Sensitive = CanRemoveWidget();
+                var b = GetChildBounds((Widget)sender);
+                menu.Popup(this, e.Position.X + b.X, e.Position.Y + b.Y);
             }
         }
 
@@ -212,17 +232,20 @@ namespace Chatterino.Desktop.Widgets
                 for (int i = 0; i < ColumnCount; i++)
                 {
                     ChatColumn col = columns[i];
-                    double rowHeight = columnHeight / col.WidgetCount;
-
-                    double y = 0;
-
-                    foreach (ChatWidget w in col.Widgets)
+                    if (col.WidgetCount > 0)
                     {
-                        SetChildBounds(w, new Rectangle((int)(Padding.Left + x), (Padding.Top + y), (int)columnWidth, (int)rowHeight));
+                        double rowHeight = columnHeight / col.WidgetCount;
 
-                        y += rowHeight;
+                        double y = 0;
+
+                        foreach (ChatWidget w in col.Widgets)
+                        {
+                            SetChildBounds(w, new Rectangle((int)(Padding.Left + x), (Padding.Top + y), (int)columnWidth, (int)rowHeight));
+
+                            y += rowHeight;
+                        }
+
                     }
-
                     x += columnWidth;
                 }
             }

@@ -96,12 +96,42 @@ namespace Chatterino.Desktop
 
         }
 
+        const int sizeCacheStackLimit = 1024;
+        ConcurrentDictionary<FontType, Tuple<ConcurrentDictionary<string, CommonSize>, ConcurrentStack<string>, int>> sizeCaches = new ConcurrentDictionary<FontType, Tuple<ConcurrentDictionary<string, CommonSize>, ConcurrentStack<string>, int>>();
+
         Font stdFont = Font.SystemSansSerifFont;
         public CommonSize MeasureStringSize(object graphics, FontType font, string text)
         {
-            var layout = new TextLayout() { Font = stdFont, Text = text };
+            var sizeCache = sizeCaches.GetOrAdd(font, f =>
+            {
+                int lineHeight = (int)new TextLayout() { Text = "X", Font = Fonts.GetFont(font) }.Height;
 
-            return new CommonSize((int)layout.Width, (int)layout.Height);
+                return Tuple.Create(new ConcurrentDictionary<string, CommonSize>(), new ConcurrentStack<string>(), lineHeight);
+            });
+
+            return sizeCache.Item1.GetOrAdd(text, s =>
+            {
+                if (sizeCache.Item2.Count >= sizeCacheStackLimit)
+                {
+                    string value;
+                    if (sizeCache.Item2.TryPop(out value))
+                    {
+                        CommonSize _s;
+                        sizeCache.Item1.TryRemove(value, out _s);
+                    }
+                }
+
+                sizeCache.Item2.Push(s);
+
+                //if (text == " ")
+                //{
+                //    float w1 = new SharpDX.DirectWrite.TextLayout(Fonts.Factory, "a a", Fonts.GetTextFormat(font), 1000000, 1000000).Metrics.Width;
+                //    float w2 = new SharpDX.DirectWrite.TextLayout(Fonts.Factory, "a", Fonts.GetTextFormat(font), 1000000, 1000000).Metrics.Width;
+                //    return new CommonSize((int)(w1 - (w2 * 2f)), sizeCache.Item3);
+                //}
+
+                return new CommonSize((int)new TextLayout() { Text = "X", Font = Fonts.GetFont(font) }.Width, sizeCache.Item3);
+            });
         }
 
         public void PlaySound(NotificationSound sound, bool forceCustom = false)

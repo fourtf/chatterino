@@ -90,6 +90,22 @@ namespace Chatterino.Desktop.Widgets
                     }
                 }
             };
+
+            // colors
+            App_ColorSchemeChanged(null, null);
+            App.ColorSchemeChanged += App_ColorSchemeChanged;
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            App.ColorSchemeChanged -= App_ColorSchemeChanged;
+
+            base.Dispose(disposing);
+        }
+
+        private void App_ColorSchemeChanged(object sender, EventArgs e)
+        {
+            BackgroundColor = App.ColorScheme.TabPanelBG;
         }
 
         private void layout()

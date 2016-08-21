@@ -15,6 +15,8 @@ namespace Chatterino.Desktop
         public bool IsLightTheme { get; private set; } = true;
 
         // Tabs
+        public Color TabPanelBG { get; set; } = Colors.White;
+
         public Color TabBG { get; set; } = rgb(0xFFFFFF);
         public Color TabHoverBG { get; set; } = rgb(0xCCCCCC);
         public Color TabSelectedBG { get; set; } = rgb(0x8E24AA);
@@ -28,7 +30,7 @@ namespace Chatterino.Desktop
         public Color TooltipText { get; set; } = Colors.White;
 
         // Chat
-        public Color ChatBackground { get; set; } = Colors.White;
+        public Color ChatBackground { get; set; } = rgb(0xF0F0F0);
         public Color ChatBackgroundHighlighted { get; set; } = Colors.LightBlue;
         public Color ChatInputOuter { get; set; } = Colors.White;
         public Color ChatInputInner { get; set; } = Colors.White;
@@ -41,7 +43,7 @@ namespace Chatterino.Desktop
         public Color TextFocused { get; set; } = Colors.Red;
         public Color Menu { get; set; } = Colors.Black;
 
-        public Color ScrollbarBG { get; set; } = Colors.White;
+        public Color ScrollbarBG { get; set; } = rgb(0xF0F0F0);
         public Color ScrollbarThumb { get; set; } = Colors.Gray;
         public Color ScrollbarThumbSelected { get; set; } = Colors.Gray;
         public Color ScrollbarArrow { get; set; } = Colors.Gray;

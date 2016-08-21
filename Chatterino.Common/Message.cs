@@ -25,7 +25,7 @@ namespace Chatterino.Common
 
         public string Username { get; set; }
         public string DisplayName { get; set; }
-        public int UsernameColor { get; set; }
+        public HSLColor UsernameColor { get; set; }
 
         public MessageBadges Badges { get; set; }
 
@@ -106,7 +106,7 @@ namespace Chatterino.Common
                 {
                     if (value.Length == 7 && value[0] == '#')
                     {
-                        UsernameColor = (-16777216 | Convert.ToInt32(value.Substring(1), 16));
+                        UsernameColor = HSLColor.FromRGB(Convert.ToInt32(value.Substring(1), 16));
                     }
                 }
                 catch { }
@@ -138,7 +138,7 @@ namespace Chatterino.Common
                 {
                     Type = SpanType.Text,
                     Value = timestamp,
-                    Color = -8355712,
+                    Color = HSLColor.FromRGB(-8355712),
                     Font = FontType.Small,
                     CopyText = timestamp
                 });
@@ -377,7 +377,7 @@ namespace Chatterino.Common
                             {
                                 Type = SpanType.Emote,
                                 Value = bttvEmote,
-                                Color = slashMe ? UsernameColor : new int?(),
+                                Color = slashMe ? UsernameColor : new HSLColor?(),
                                 Tooltip = bttvEmote.Tooltip,
                                 Link = bttvEmote.Url,
                                 CopyText = bttvEmote.Name
@@ -410,7 +410,7 @@ namespace Chatterino.Common
                             {
                                 Type = SpanType.Text,
                                 Value = s,
-                                Color = slashMe ? UsernameColor : (link == null ? new int?() : -8355712),
+                                Color = slashMe ? UsernameColor : (link == null ? new HSLColor?() : HSLColor.FromRGB(-8355712)),
                                 Link = link,
                                 CopyText = s
                             });
@@ -460,7 +460,7 @@ namespace Chatterino.Common
 
         }
 
-        public Message(string text, int? color, bool addTimeStamp)
+        public Message(string text, HSLColor? color, bool addTimeStamp)
         {
             RawMessage = text;
             Words = new List<Word>();
@@ -474,7 +474,7 @@ namespace Chatterino.Common
                 {
                     Type = SpanType.Text,
                     Value = timestamp,
-                    Color = color ?? -8355712,
+                    Color = color ?? HSLColor.FromRGB(-8355712),
                     Font = FontType.Small,
                     CopyText = timestamp
                 });
@@ -523,7 +523,7 @@ namespace Chatterino.Common
             }
 
             Message closeMessage = new Message();
-            closeMessage.Words = new List<Word> { new Word() { Value = "Close Changelog", Color = -8355712, Link = "@closeCurrentSplit" } };
+            closeMessage.Words = new List<Word> { new Word() { Value = "Close Changelog", Color = HSLColor.FromRGB(-8355712), Link = "@closeCurrentSplit" } };
             list.Add(closeMessage);
 
             return list.ToArray();

@@ -354,7 +354,7 @@ namespace Chatterino.Controls
                                         }
                                         else
                                         {
-                                            int value = word.Color.Value;
+                                            int value = 0;// word.Color.Value;
 
                                             HSLColor hsl = new HSLColor((value & 0xFF0000) >> 16, (value & 0x00FF00) >> 8, value & 0x0000FF);
 

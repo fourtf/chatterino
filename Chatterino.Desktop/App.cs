@@ -15,6 +15,7 @@ namespace Chatterino.Desktop
     {
         public static MainWindow Window { get; private set; }
         public static ColorScheme ColorScheme { get; private set; }
+        public static event EventHandler ColorSchemeChanged;
 
         public static VersionNumber CurrentVersion { get; private set; }
 

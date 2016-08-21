@@ -47,7 +47,8 @@ namespace Chatterino
                     {
                         Font font = Fonts.GetFont(word.Font);
 
-                        Color color = word.Color == null ? textColor : Color.FromArgb(word.Color.Value);
+                        //Color color = word.Color == null ? textColor : Color.FromArgb(word.Color.Value.ToRGB);
+                        Color color = Color.White;
                         HSLColor hsl = new HSLColor(color);
 
                         if (App.ColorScheme.IsLightTheme)

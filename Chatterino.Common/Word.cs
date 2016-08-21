@@ -11,7 +11,7 @@ namespace Chatterino.Common
     {
         public SpanType Type { get; set; }
         public object Value { get; set; }
-        public int? Color { get; set; }
+        public HSLColor? Color { get; set; }
         public string Link { get; set; }
         public string Tooltip { get; set; }
         public string CopyText { get; set; } = null;
