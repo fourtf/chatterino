@@ -32,11 +32,10 @@ namespace Chatterino.Desktop
 
                 try
                 {
-                    Medium = Font.FromName("Arial").WithSize(size);
+                    Medium = Font.FromName(family).WithSize(size);
                 }
                 catch
                 {
-                    family = "Arial";
                     Medium = Font.SystemSansSerifFont.WithSize(size);
                 }
 
@@ -45,6 +44,8 @@ namespace Chatterino.Desktop
                 Small = Medium.WithSize(size * 0.7);
                 Large = Medium.WithSize(size * 1.3);
                 VeryLarge = Medium.WithSize(size * 1.6);
+
+                Initialized = true;
             }
 
             if (type == FontType.Medium)
@@ -62,6 +63,5 @@ namespace Chatterino.Desktop
 
             return Medium;
         }
-
     }
 }

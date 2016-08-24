@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using TwitchIrc;
 
 namespace Chatterino.Common
 {
@@ -254,7 +255,19 @@ namespace Chatterino.Common
 
 
             // Username
-            DisplayName = string.IsNullOrWhiteSpace(DisplayName) ? Username : DisplayName;
+            if (string.IsNullOrWhiteSpace(DisplayName))
+            {
+                DisplayName = Username;
+            }
+            else
+            {
+                if (DisplayName.ToLower() != Username)
+                {
+                    DisplayName = DisplayName + " (" + Username + ")";
+
+                }
+            }
+
             var messageUser = DisplayName + (slashMe ? "" : ":");
             words.Add(new Word
             {
@@ -262,7 +275,8 @@ namespace Chatterino.Common
                 Value = messageUser,
                 Color = UsernameColor,
                 Font = FontType.MediumBold,
-                Link = "@twitchuser:" + Username,
+                Link = "https://twitch.tv/" + Username,
+                //Link = "@twitchuser:" + Username,
                 CopyText = messageUser
             });
 

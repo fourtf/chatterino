@@ -104,7 +104,7 @@ namespace Chatterino.Desktop
         {
             var sizeCache = sizeCaches.GetOrAdd(font, f =>
             {
-                int lineHeight = (int)new TextLayout() { Text = "X", Font = Fonts.GetFont(font) }.Height;
+                int lineHeight = (int)new TextLayout() { Text = "X", Font = Fonts.GetFont(font) }.GetSize().Height;
 
                 return Tuple.Create(new ConcurrentDictionary<string, CommonSize>(), new ConcurrentStack<string>(), lineHeight);
             });
@@ -130,7 +130,7 @@ namespace Chatterino.Desktop
                 //    return new CommonSize((int)(w1 - (w2 * 2f)), sizeCache.Item3);
                 //}
 
-                return new CommonSize((int)new TextLayout() { Text = "X", Font = Fonts.GetFont(font) }.Width, sizeCache.Item3);
+                return new CommonSize((int)new TextLayout() { Text = "X", Font = Fonts.GetFont(font) }.GetSize().Width, sizeCache.Item3);
             });
         }
 

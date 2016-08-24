@@ -8,6 +8,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using TwitchIrc;
 
 namespace Chatterino.Common
 {
@@ -21,14 +22,9 @@ namespace Chatterino.Common
 
         public static IrcClient Client { get; set; }
 
-        static bool readPongReceived = true;
-        static bool writePongReceived = true;
-
         public static ConcurrentDictionary<string, Func<string, string>> ChatCommands = new ConcurrentDictionary<string, Func<string, string>>();
 
         static ConcurrentDictionary<string, object> twitchBlockedUsers = new ConcurrentDictionary<string, object>();
-
-        static System.Threading.Timer pingTimer;
 
         // Static Ctor
         static IrcManager()
@@ -69,9 +65,14 @@ namespace Chatterino.Common
 
             var settings = new IniSettings();
             if (loginReader == null)
+            {
                 settings.Load("./login.ini");
+                settings.Load("./Login.ini");
+            }
             else
+            {
                 settings.Load(loginReader);
+            }
 
             if (settings.TryGetString("username", out username)
                 && settings.TryGetString("oauth", out oauth))
@@ -337,9 +338,9 @@ namespace Chatterino.Common
 
         static ConcurrentDictionary<Tuple<string, string>, object> recentChatClears = new ConcurrentDictionary<Tuple<string, string>, object>();
 
-        private static void ReadConnection_MessageReceived(object sender, ValueEventArgs<IrcMessage> e)
+        private static void ReadConnection_MessageReceived(object sender, MessageEventArgs e)
         {
-            var msg = e.Value;
+            var msg = e.Message;
 
             if (msg.Command == "PRIVMSG")
             {
@@ -447,9 +448,9 @@ namespace Chatterino.Common
             }
         }
 
-        private static void WriteConnection_MessageReceived(object sender, ValueEventArgs<IrcMessage> e)
+        private static void WriteConnection_MessageReceived(object sender, MessageEventArgs e)
         {
-            var msg = e.Value;
+            var msg = e.Message;
 
             if (msg.Command == "NOTICE")
             {

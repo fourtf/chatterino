@@ -6,14 +6,15 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Chatterino.Common
+namespace TwitchIrc
 {
     public class IrcConnection : IDisposable
     {
         // public properties
-        public event EventHandler<ValueEventArgs<IrcMessage>> MessageReceived;
+        public event EventHandler<MessageEventArgs> MessageReceived;
         public event EventHandler Connected;
         public event EventHandler Disconnected;
+        public event EventHandler<ExceptionEventArgs> ConnectionException;
 
         public bool IsConnected { get; private set; } = false;
         public bool IsMod { get; private set; } = false;
@@ -104,7 +105,7 @@ namespace Chatterino.Common
                                         receivedPong = true;
                                     }
 
-                                    MessageReceived?.Invoke(this, new ValueEventArgs<IrcMessage>(msg));
+                                    MessageReceived?.Invoke(this, new MessageEventArgs(msg));
                                 }
                             }
                         }
@@ -128,7 +129,7 @@ namespace Chatterino.Common
                 }
                 catch (Exception exc)
                 {
-                    exc.Log("irc");
+                    ConnectionException?.Invoke(this, new ExceptionEventArgs(exc));
                 }
             }
         }

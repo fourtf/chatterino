@@ -73,19 +73,20 @@ namespace Chatterino.Desktop
                                     color = hsl.ToColor();
                                 }
                             }
+                        }
 
-                            ctx.SetColor(color);
-                            if (word.SplitSegments == null)
+                        ctx.SetColor(color);
+                        if (word.SplitSegments == null)
+                        {
+                            Console.WriteLine(word.X);
+                            ctx.DrawTextLayout(new TextLayout() { Text = (string)word.Value, Font = font }, xOffset + word.X, yOffset + word.Y);
+                        }
+                        else
+                        {
+                            var segments = word.SplitSegments;
+                            for (int x = 0; x < segments.Length; x++)
                             {
-                                ctx.DrawTextLayout(new TextLayout() { Text = (string)word.Value, Font = font }, xOffset + word.X, yOffset + word.Y);
-                            }
-                            else
-                            {
-                                var segments = word.SplitSegments;
-                                for (int x = 0; x < segments.Length; x++)
-                                {
-                                    ctx.DrawTextLayout(new TextLayout() { Text = segments[x].Item1, Font = font }, xOffset + segments[x].Item2.X, yOffset + segments[x].Item2.Y);
-                                }
+                                ctx.DrawTextLayout(new TextLayout() { Text = segments[x].Item1, Font = font }, xOffset + segments[x].Item2.X, yOffset + segments[x].Item2.Y);
                             }
                         }
                     }

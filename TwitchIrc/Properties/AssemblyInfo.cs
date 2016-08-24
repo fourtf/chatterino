@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // Allgemeine Informationen über eine Assembly werden über die folgenden 
 // Attribute gesteuert. Ändern Sie diese Attributwerte, um die Informationen zu ändern,
 // die einer Assembly zugeordnet sind.
-[assembly: AssemblyTitle("Chatterino")]
+[assembly: AssemblyTitle("TwitchIrc")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Chatterino")]
+[assembly: AssemblyProduct("TwitchIrc")]
 [assembly: AssemblyCopyright("Copyright ©  2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // Die folgende GUID bestimmt die ID der Typbibliothek, wenn dieses Projekt für COM verfügbar gemacht wird
-[assembly: Guid("866998e7-3aa7-4d82-b392-c1bff18e19f8")]
+[assembly: Guid("8b6e613b-fb33-4b7c-ac28-7e4385e6bf64")]
 
 // Versionsinformationen für eine Assembly bestehen aus den folgenden vier Werten:
 //
@@ -32,10 +32,5 @@ using System.Runtime.InteropServices;
 // Sie können alle Werte angeben oder die standardmäßigen Build- und Revisionsnummern 
 // übernehmen, indem Sie "*" eingeben:
 // [assembly: AssemblyVersion("1.0.*")]
-#if DEBUG
-[assembly: AssemblyVersion("0.1.*")]
-[assembly: AssemblyFileVersion("0.1.5.0")]
-#else
-[assembly: AssemblyVersion("0.1.5.0")]
-[assembly: AssemblyFileVersion("0.1.5.0")]
-#endif
+[assembly: AssemblyVersion("1.0.0.0")]
+[assembly: AssemblyFileVersion("1.0.0.0")]

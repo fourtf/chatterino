@@ -80,6 +80,7 @@ namespace Chatterino.Desktop.Widgets
             }
         }
 
+        // Constructor
         public ChatWidget()
         {
             // Header
@@ -88,23 +89,23 @@ namespace Chatterino.Desktop.Widgets
             AddChild(_header);
 
             // Scroll
-            _scroll = new ScrollWidget { HeightRequest = 100, Sensitive = true, Maximum = 100, LargeChange = 33, SmallChange = 4 };
+            _scroll = new ScrollWidget { HeightRequest = 100, Sensitive = false, Maximum = 100, LargeChange = 33, SmallChange = 4 };
 
             AddChild(_scroll);
 
             _scroll.Scroll += (s, e) => 
             {
+                checkScrollBarPosition();
                 updateMessageBounds();
-
                 QueueDraw();
             };
-
 
             // Colors
             App_ColorSchemeChanged(null, null);
             App.ColorSchemeChanged += App_ColorSchemeChanged;
         }
 
+        // Event handlers
         private void App_ColorSchemeChanged(object sender, EventArgs e)
         {
             BackgroundColor = App.ColorScheme.ChatBackground;
@@ -226,6 +227,9 @@ namespace Chatterino.Desktop.Widgets
         {
             layout();
 
+            updateMessageBounds();
+            QueueDraw();
+
             base.OnBoundsChanged();
         }
 
@@ -235,7 +239,7 @@ namespace Chatterino.Desktop.Widgets
 
             if (M != null && M.Length > 0)
             {
-                int startIndex = Math.Max(0, (int)_scroll.Value);
+                int startIndex = Math.Min(Math.Max(0, (int)_scroll.Value), M.Length - 1);
                 int yStart = (int)(MessagePadding.Top - (int)(M[startIndex].Height * (_scroll.Value % 1)));
                 int h = (int)(Bounds.Height - MessagePadding.Top - MessagePadding.Bottom);
 
@@ -464,23 +468,25 @@ namespace Chatterino.Desktop.Widgets
                 }
             }
 
-            //Application.Invoke(() =>
-            //{
-            //    if (enableScrollbar)
-            //    {
-            //        _scroll.Sensitive = true;
-            //        _scroll.LargeChange = scrollbarThumbHeight;
-            //        _scroll.Maximum = messageCount - 1;
+            if (enableScrollbar)
+            {
+                _scroll.Sensitive = true;
+                _scroll.LargeChange = scrollbarThumbHeight;
+                _scroll.Maximum = messageCount - 1;
 
-            //        if (scrollAtBottom)
-            //            _scroll.Value = messageCount - scrollbarThumbHeight;
-            //    }
-            //    else
-            //    {
-            //        _scroll.Sensitive = false;
-            //        _scroll.Value = 0;
-            //    }
-            //});
+                if (scrollAtBottom)
+                    _scroll.Value = messageCount - scrollbarThumbHeight;
+            }
+            else
+            {
+                _scroll.Sensitive = false;
+                _scroll.Value = 0;
+            }
+        }
+
+        protected void checkScrollBarPosition()
+        {
+            scrollAtBottom = !_scroll.Sensitive || _scroll.Maximum < _scroll.Value + _scroll.LargeChange + 0.0001;
         }
 
         private void layout()

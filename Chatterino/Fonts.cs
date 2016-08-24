@@ -56,6 +56,8 @@ namespace Chatterino
                 GdiSmall = new System.Drawing.Font(family, size * 0.7f, System.Drawing.FontStyle.Regular);
                 GdiLarge = new System.Drawing.Font(family, size * 1.3f, System.Drawing.FontStyle.Regular);
                 GdiVeryLarge = new System.Drawing.Font(family, size * 1.6f, System.Drawing.FontStyle.Regular);
+
+                gdiInitialized = true;
             }
 
             if (type == FontType.Medium)

@@ -204,7 +204,7 @@ namespace Chatterino.Common
                 StartInfo = new ProcessStartInfo
                 {
                     FileName = "wget",
-                    Arguments = $"-O {path} {url}"
+                    Arguments = $"-O {path} {url} >/dev/null"
                 }
             };
             process.Start();

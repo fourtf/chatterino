@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Chatterino.Common
+namespace TwitchIrc
 {
     public class IrcMessage
     {
@@ -240,7 +240,6 @@ namespace Chatterino.Common
             return true;
 
             error:
-            line.Log("parsefail");
             message = null;
             return false;
         }
