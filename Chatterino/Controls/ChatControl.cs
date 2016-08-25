@@ -591,6 +591,7 @@ namespace Chatterino.Controls
                 contextMenu.MenuItems.Add(new MenuItem("Preferences", (s, e) => App.ShowSettings(), Shortcut.CtrlP));
 #if DEBUG
                 contextMenu.MenuItems.Add(new MenuItem("Copy Version Number", (s, e) => { Clipboard.SetText(App.CurrentVersion.ToString()); }));
+                contextMenu.MenuItems.Add(new MenuItem("Force GC", (s, e) => { GC.Collect(); }));
 #endif
 
                 roomstateContextMenu = new ContextMenu();

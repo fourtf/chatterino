@@ -354,22 +354,26 @@ namespace Chatterino.Controls
                                         }
                                         else
                                         {
-                                            int value = 0;// word.Color.Value;
-
-                                            HSLColor hsl = new HSLColor((value & 0xFF0000) >> 16, (value & 0x00FF00) >> 8, value & 0x0000FF);
+                                            HSLColor hsl = word.Color.Value;
 
                                             if (App.ColorScheme.IsLightTheme)
                                             {
-                                                if (hsl.Luminosity > 120)
-                                                    hsl.Luminosity = 120;
+                                                if (hsl.Luminosity > 0.5f)
+                                                {
+                                                    hsl = hsl.WithLuminosity(0.5f);
+                                                }
                                             }
                                             else
                                             {
-                                                if (hsl.Luminosity < 170)
-                                                    hsl.Luminosity = 170;
+                                                if (hsl.Luminosity < 0.66f)
+                                                {
+                                                    hsl = hsl.WithLuminosity(0.66f);
+                                                }
                                             }
 
-                                            RawColor4 color = hsl.ToRawColor4();
+                                            float r, _g, b;
+                                            hsl.ToRGB(out r, out _g, out b);
+                                            RawColor4 color = new RawColor4(r, _g, b, 1);
 
                                             if (!brushes.TryGetValue(color, out brush))
                                             {

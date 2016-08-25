@@ -87,7 +87,9 @@ namespace Chatterino
                 catch { }
             }
 
-            IsLightTheme = new HSLColor((ChatBackground as SolidBrush)?.Color ?? Color.White).Luminosity > 120;
+            Color c = (ChatBackground as SolidBrush)?.Color ?? Color.White;
+
+            IsLightTheme = HSLColor.FromRGB(c.R / 255f, c.G / 255f, c.B / 255f).Luminosity > 0.5f;
         }
 
         public void Save(string path)

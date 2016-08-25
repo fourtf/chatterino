@@ -57,7 +57,7 @@ namespace Chatterino
         static void Main()
         {
             CurrentVersion = VersionNumber.Parse(AssemblyName.GetAssemblyName(Assembly.GetExecutingAssembly().Location).Version.ToString());
-            
+
             Directory.SetCurrentDirectory(new FileInfo(Assembly.GetEntryAssembly().Location).Directory.FullName);
 
             GuiEngine.Initialize(new WinformsGuiEngine());

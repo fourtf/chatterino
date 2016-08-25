@@ -107,11 +107,12 @@ namespace Chatterino.Common
 
         public void ToRGB(out float r, out float g, out float b)
         {
-            float v;
+            float v, hue = this.hue;
 
-            r = luminosity;   // default to gray
+            r = luminosity;
             g = luminosity;
             b = luminosity;
+
             v = (luminosity <= 0f) ? (luminosity * (1f + saturation)) : (luminosity + saturation - luminosity * saturation);
 
             if (v > 0)
@@ -129,9 +130,11 @@ namespace Chatterino.Common
                 vsf = v * sv * fract;
                 mid1 = m + vsf;
                 mid2 = v - vsf;
+
                 switch (sextant)
                 {
                     case 0:
+                    case 6:
                         r = v;
                         g = mid1;
                         b = m;
@@ -163,9 +166,6 @@ namespace Chatterino.Common
                         break;
                 }
             }
-            r = r * 255f;
-            g = g * 255f;
-            b = b * 255f;
         }
     }
 }

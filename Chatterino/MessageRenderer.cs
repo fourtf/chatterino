@@ -47,22 +47,31 @@ namespace Chatterino
                     {
                         Font font = Fonts.GetFont(word.Font);
 
-                        //Color color = word.Color == null ? textColor : Color.FromArgb(word.Color.Value.ToRGB);
-                        Color color = Color.White;
-                        HSLColor hsl = new HSLColor(color);
+                        Color color = textColor;
 
-                        if (App.ColorScheme.IsLightTheme)
+                        if (word.Color.HasValue)
                         {
-                            if (hsl.Luminosity > 170)
-                                hsl.Luminosity = 170;
-                        }
-                        else
-                        {
-                            if (hsl.Luminosity < 170)
-                                hsl.Luminosity = 170;
-                        }
+                            HSLColor hsl = word.Color.Value;
 
-                        color = hsl;
+                            Console.WriteLine(hsl);
+
+                            if (App.ColorScheme.IsLightTheme)
+                            {
+                                if (hsl.Luminosity > 0.5f)
+                                {
+                                    hsl = hsl.WithLuminosity(0.5f);
+                                }
+                            }
+                            else
+                            {
+                                if (hsl.Luminosity < 0.5f)
+                                    hsl = hsl.WithLuminosity(0.5f);
+                            }
+
+                            float r, _g, b;
+                            hsl.ToRGB(out r, out _g, out b);
+                            color = Color.FromArgb((int)(r * 255), (int)(_g * 255), (int)(b * 255));
+                        }
 
                         if (word.SplitSegments == null)
                         {
