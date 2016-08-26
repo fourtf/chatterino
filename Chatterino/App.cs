@@ -40,7 +40,7 @@ namespace Chatterino
 
         public static Controls.SettingsDialog SettingsDialog { get; set; }
 
-        public static Controls.ToolTip ToolTip { get; private set; } = null;
+        static Controls.ToolTip ToolTip { get; set; } = null;
 
         private static bool windowFocused = true;
         public static bool WindowFocused
@@ -211,7 +211,19 @@ namespace Chatterino
                 ToolTip.Location = point;
 
                 if (!ToolTip.Visible)
+                {
                     ToolTip.Show();
+                }
+            }
+        }
+
+        public static void HideToolTip()
+        {
+            if (ToolTip != null)
+            {
+                ToolTip.Close();
+                ToolTip.Dispose();
+                ToolTip = null;
             }
         }
 

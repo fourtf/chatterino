@@ -12,6 +12,11 @@ namespace Chatterino.Desktop
 {
     public class XwtGuiEngine : IGuiEngine
     {
+        public virtual void FreezeImage(object obj)
+        {
+
+        }
+
         public void DisposeMessageGraphicsBuffer(Message message)
         {
         }
@@ -70,7 +75,11 @@ namespace Chatterino.Desktop
 
                 try
                 {
-                    return Image.FromResource(res);
+                    var image = Image.FromResource(res);
+
+                    GuiEngine.Current.FreezeImage(image);
+
+                    return image;
                 }
                 catch
                 {
@@ -130,7 +139,7 @@ namespace Chatterino.Desktop
                 //    return new CommonSize((int)(w1 - (w2 * 2f)), sizeCache.Item3);
                 //}
 
-                return new CommonSize((int)new TextLayout() { Text = "X", Font = Fonts.GetFont(font) }.GetSize().Width, sizeCache.Item3);
+                return new CommonSize((int)new TextLayout() { Text = text, Font = Fonts.GetFont(font) }.GetSize().Width, sizeCache.Item3);
             });
         }
 

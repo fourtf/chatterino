@@ -322,5 +322,10 @@ namespace Chatterino
 
             return newImage;
         }
+
+        public void FreezeImage(object img)
+        {
+
+        }
     }
 }

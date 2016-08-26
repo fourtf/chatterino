@@ -446,6 +446,13 @@ namespace Chatterino.Common
 
                 TwitchChannel.WhisperChannel.AddMessage(new Message(msg, TwitchChannel.WhisperChannel, true, false));
             }
+            else if (msg.Command == "USERNOTICE")
+            {
+                string sysMsg;
+                msg.Tags.TryGetValue("system-msg", out sysMsg);
+
+                TwitchChannel.GetChannel((msg.Middle ?? "").TrimStart('#')).Process(c => c.AddMessage(new Message(msg.Params == null ? (sysMsg ?? null) : $"{sysMsg}: {msg.Params}", HSLColor.Gray, true)));
+            }
         }
 
         private static void WriteConnection_MessageReceived(object sender, MessageEventArgs e)

@@ -86,7 +86,9 @@ namespace Chatterino.Common
                                                 using (var stream = response.GetResponseStream())
                                                 {
                                                     img = GuiEngine.Current.ReadImageFromStream(stream);
-                                                    return GuiEngine.Current.ScaleImage(img, 0.33);
+                                                    img = GuiEngine.Current.ScaleImage(img, 0.33);
+                                                    GuiEngine.Current.FreezeImage(img);
+                                                    return img;
                                                 }
                                             }
                                             catch

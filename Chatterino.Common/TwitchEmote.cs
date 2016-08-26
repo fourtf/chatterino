@@ -45,6 +45,8 @@ namespace Chatterino.Common
                                 {
                                     img = GuiEngine.Current.ReadImageFromStream(stream);
                                 }
+
+                                GuiEngine.Current.FreezeImage(img);
                             }
                             catch
                             {

@@ -22,6 +22,8 @@ namespace Chatterino.Common
 
     public interface IGuiEngine
     {
+        void FreezeImage(object img);
+
         void HandleLink(string link);
         void PlaySound(NotificationSound sound, bool forceCustom = false);
         object GetImage(ImageType type);

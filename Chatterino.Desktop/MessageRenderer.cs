@@ -78,7 +78,6 @@ namespace Chatterino.Desktop
                         ctx.SetColor(color);
                         if (word.SplitSegments == null)
                         {
-                            Console.WriteLine(word.X);
                             ctx.DrawTextLayout(new TextLayout() { Text = (string)word.Value, Font = font }, xOffset + word.X, yOffset + word.Y);
                         }
                         else
@@ -90,27 +89,29 @@ namespace Chatterino.Desktop
                             }
                         }
                     }
-                    else if (word.Type == SpanType.Emote)
+                }
+                else if (word.Type == SpanType.Emote)
+                {
+                    var emote = (TwitchEmote)word.Value;
+                    var img = (Image)emote.Image;
+                    if (img != null)
                     {
-                        var emote = (TwitchEmote)word.Value;
-                        var img = (Image)emote.Image;
-                        if (img != null)
+                        lock (img)
                         {
-                            lock (img)
-                            {
-                                ctx.DrawImage(img, word.X + xOffset, word.Y + yOffset, word.Width, word.Height);
-                            }
-                        }
-                        else
-                        {
-                            //g.DrawRectangle(Pens.Red, xOffset + word.X, word.Y + yOffset, word.Width, word.Height);
+                            ctx.DrawImage(img, word.X + xOffset, word.Y + yOffset, word.Width, word.Height);
                         }
                     }
-                    else if (word.Type == SpanType.Image)
+                    else
                     {
-                        var img = (Image)word.Value;
-                        if (img != null)
-                            ctx.DrawImage(img, word.X + xOffset, word.Y + yOffset, word.Width, word.Height);
+                        //g.DrawRectangle(Pens.Red, xOffset + word.X, word.Y + yOffset, word.Width, word.Height);
+                    }
+                }
+                else if (word.Type == SpanType.Image)
+                {
+                    var img = (Image)word.Value;
+                    if (img != null)
+                    {
+                        ctx.DrawImage(img, word.X + xOffset, word.Y + yOffset, word.Width, word.Height);
                     }
                 }
             }

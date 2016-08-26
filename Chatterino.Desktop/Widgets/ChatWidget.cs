@@ -93,7 +93,7 @@ namespace Chatterino.Desktop.Widgets
 
             AddChild(_scroll);
 
-            _scroll.Scroll += (s, e) => 
+            _scroll.Scroll += (s, e) =>
             {
                 checkScrollBarPosition();
                 updateMessageBounds();
@@ -468,20 +468,23 @@ namespace Chatterino.Desktop.Widgets
                 }
             }
 
-            if (enableScrollbar)
+            Application.Invoke(() =>
             {
-                _scroll.Sensitive = true;
-                _scroll.LargeChange = scrollbarThumbHeight;
-                _scroll.Maximum = messageCount - 1;
+                if (enableScrollbar)
+                {
+                    _scroll.Sensitive = true;
+                    _scroll.LargeChange = scrollbarThumbHeight;
+                    _scroll.Maximum = messageCount - 1;
 
-                if (scrollAtBottom)
-                    _scroll.Value = messageCount - scrollbarThumbHeight;
-            }
-            else
-            {
-                _scroll.Sensitive = false;
-                _scroll.Value = 0;
-            }
+                    if (scrollAtBottom)
+                        _scroll.Value = messageCount - scrollbarThumbHeight;
+                }
+                else
+                {
+                    _scroll.Sensitive = false;
+                    _scroll.Value = 0;
+                }
+            });
         }
 
         protected void checkScrollBarPosition()

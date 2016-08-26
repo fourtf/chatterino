@@ -1,5 +1,10 @@
 ﻿# changelog
 
+## 0.1.5
+- esc not closes some dialogs
+- fixed emote/name tabbing selecting words when there is no completion
+- fixed resubs
+
 ## 0.1.4
 - fixed some notices not showing up
 - replaced irc library with my own irc implementation

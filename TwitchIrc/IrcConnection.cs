@@ -75,9 +75,8 @@ namespace TwitchIrc
                 try
                 {
                     client = new TcpClient();
-
+                    client.NoDelay = true;
                     client.Connect("irc.chat.twitch.tv", 6667);
-
                     stream = client.GetStream();
 
                     StreamReader reader = new StreamReader(stream);
@@ -143,6 +142,7 @@ namespace TwitchIrc
                 stream.Write(bytes, 0, bytes.Length);
                 stream.WriteByte((byte)'\r');
                 stream.WriteByte((byte)'\n');
+                stream.Flush();
             }
         }
 

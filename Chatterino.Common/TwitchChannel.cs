@@ -59,7 +59,9 @@ namespace Chatterino.Common
                             using (var response = request.GetResponse())
                             using (var stream = response.GetResponseStream())
                             {
-                                return GuiEngine.Current.ReadImageFromStream(stream);
+                                var img = GuiEngine.Current.ReadImageFromStream(stream);
+                                GuiEngine.Current.FreezeImage(img);
+                                return img;
                             }
                         }
                         catch
@@ -271,17 +273,17 @@ namespace Chatterino.Common
 
         private void IrcManager_Connected(object sender, EventArgs e)
         {
-            AddMessage(new Message("connected to chat"));
+            AddMessage(new Message("connected to chat", HSLColor.Gray, true));
         }
 
         private void IrcManager_Disconnected(object sender, EventArgs e)
         {
-            AddMessage(new Message("disconnected from chat"));
+            AddMessage(new Message("disconnected from chat", HSLColor.Gray, true));
         }
 
         private void IrcManager_NoticeAdded(object sender, ValueEventArgs<string> e)
         {
-            AddMessage(new Message(e.Value));
+            AddMessage(new Message(e.Value, HSLColor.Gray, true));
         }
 
         private void AppSettings_MessageLimitChanged(object sender, EventArgs e)

@@ -443,11 +443,13 @@ namespace Chatterino.Controls
 
             currentTabIndex = currentTabIndex < 0 ? 0 : (currentTabIndex >= items.Length ? items.Length - 1 : currentTabIndex);
 
-            Input.Logic.SelectionStart = wordStart;
-            Input.Logic.SelectionLength = word.Length;
-
             if (currentTabIndex != -1)
+            {
+                Input.Logic.SelectionStart = wordStart;
+                Input.Logic.SelectionLength = word.Length;
+
                 Input.Logic.InsertText(items[currentTabIndex]);
+            }
         }
 
         private void resetCompletion()

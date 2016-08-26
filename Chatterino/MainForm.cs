@@ -47,7 +47,7 @@ namespace Chatterino
             Deactivate += (s, e) =>
             {
                 App.WindowFocused = false;
-                App.ToolTip?.Hide();
+                App.HideToolTip();
             };
 
             IrcManager.LoggedIn += (s, e) => SetTitle();

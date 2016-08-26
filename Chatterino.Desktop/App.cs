@@ -19,7 +19,7 @@ namespace Chatterino.Desktop
 
         public static VersionNumber CurrentVersion { get; private set; }
 
-        public static void Run(ToolkitType toolkit)
+        public static void Run(ToolkitType toolkit, Type guiEngineType = null)
         {
             // Set working directory
             Directory.SetCurrentDirectory(new FileInfo(Assembly.GetEntryAssembly().Location).Directory.FullName);
@@ -44,9 +44,13 @@ namespace Chatterino.Desktop
             Application.Initialize(toolkit);
 
             // GuiEngine
-            if (GuiEngine.Current == null)
+            if (guiEngineType == null)
             {
                 GuiEngine.Initialize(new XwtGuiEngine());
+            }
+            else
+            {
+                GuiEngine.Initialize((IGuiEngine)Activator.CreateInstance(guiEngineType));
             }
 
             // Load settings

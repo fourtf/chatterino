@@ -150,13 +150,13 @@ namespace Chatterino.Controls
                     }
                     else
                     {
-                        App.ToolTip?.Hide();
+                        App.HideToolTip();
                     }
                 }
                 else
                 {
                     Cursor = Cursors.Default;
-                    App.ToolTip?.Hide();
+                    App.HideToolTip();
                 }
             }
 
@@ -167,7 +167,7 @@ namespace Chatterino.Controls
         {
             Cursor = Cursors.Default;
 
-            App.ToolTip?.Hide();
+            App.HideToolTip();
 
             base.OnMouseLeave(e);
         }

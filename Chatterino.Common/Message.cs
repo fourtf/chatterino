@@ -63,7 +63,7 @@ namespace Chatterino.Common
 
         public Message(IrcMessage data, TwitchChannel channel, bool enableTimestamp = true, bool enablePingSound = true)
         {
-            var w = Stopwatch.StartNew();
+            //var w = Stopwatch.StartNew();
 
             Channel = channel;
 
@@ -464,8 +464,8 @@ namespace Chatterino.Common
 
             RawMessage = text;
 
-            w.Stop();
-            Console.WriteLine("Message parsed in " + w.Elapsed.TotalSeconds.ToString("0.000000") + " seconds");
+            //w.Stop();
+            //Console.WriteLine("Message parsed in " + w.Elapsed.TotalSeconds.ToString("0.000000") + " seconds");
         }
 
         public Message(string text)

@@ -174,7 +174,7 @@ namespace Chatterino.Desktop.Widgets
 
         protected override void OnMouseExited(EventArgs e)
         {
-            if (mDownIndex == -1)
+            //if (mDownIndex == -1)
             {
                 mOverIndex = -1;
             }

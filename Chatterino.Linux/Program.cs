@@ -10,7 +10,6 @@ namespace Chatterino.Linux
 {
     class Program
     {
-        [STAThread]
         static void Main(string[] args)
         {
             App.Run(ToolkitType.Gtk);
