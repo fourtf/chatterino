@@ -24,7 +24,11 @@ namespace Chatterino.Controls
         public ChangelogControl(string md)
         {
             lock (MessageLock)
+            {
                 messages = Message.ParseMD(md);
+            }
+
+            scrollAtBottom = false;
 
             updateMessageBounds();
         }

@@ -62,16 +62,32 @@ namespace Chatterino.Controls
             BindTextBox(textBox3, "ProxyPassword");
 
             rtbHighlights.Text = string.Join(Environment.NewLine, AppSettings.ChatCustomHighlights);
+            rtbUserBlacklist.Text = string.Join(Environment.NewLine, AppSettings.HighlightIgnoredUsers.Keys);
+
             onSave += (s, e) =>
             {
-                List<string> list = new List<string>();
-                StringReader reader = new StringReader(rtbHighlights.Text);
-                string line;
-                while ((line = reader.ReadLine()) != null)
+                // highlight keywords
                 {
-                    list.Add(line.Trim());
+                    List<string> list = new List<string>();
+                    StringReader reader = new StringReader(rtbHighlights.Text);
+                    string line;
+                    while ((line = reader.ReadLine()) != null)
+                    {
+                        list.Add(line.Trim());
+                    }
+                    AppSettings.ChatCustomHighlights = list.ToArray();
                 }
-                AppSettings.ChatCustomHighlights = list.ToArray();
+
+                // user blacklist
+                {
+                    AppSettings.HighlightIgnoredUsers.Clear();
+                    var reader = new StringReader(rtbUserBlacklist.Text);
+                    string line;
+                    while ((line = reader.ReadLine()) != null)
+                    {
+                        AppSettings.HighlightIgnoredUsers[line.Trim().ToLower()] = null;
+                    }
+                }
             };
 
             btnSelectFont.Click += (s, e) =>
@@ -221,22 +237,33 @@ namespace Chatterino.Controls
                 c.Text = value.ToString();
             }
             else
+            {
                 throw new ArgumentException($"The settings {name} doesn't exist.");
+            }
 
             onSave += (s, e) =>
             {
-                try
+                if (isNumeric)
                 {
-                    prop.SetValue(null, int.Parse(c.Text));
+                    try
+                    {
+                        prop.SetValue(null, int.Parse(c.Text));
+                    }
+                    catch { }
                 }
-                catch { }
+                else
+                {
+                    prop.SetValue(null, c.Text);
+                }
             };
 
             if (isNumeric)
+            {
                 c.TextChanged += (s, e) =>
                 {
                     c.Text = Regex.Replace(c.Text, "[^0-9]+", "");
                 };
+            }
         }
 
         private void tabs_PageSelected(object sender, EventArgs e)

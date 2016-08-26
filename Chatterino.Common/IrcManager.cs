@@ -92,7 +92,7 @@ namespace Chatterino.Common
                     {
                         int limit = 100;
                         int count = 0;
-                        string nextLink = $"https://api.twitch.tv/kraken/users/{username}/blocks?limit={limit}";
+                        string nextLink = $"https://api.twitch.tv/kraken/users/{username}/blocks?limit={limit}&client_id=7ue61iz46fz11y3cugd0l3tawb4taal";
 
                         var request = WebRequest.Create(nextLink + $"&oauth_token={oauth}");
                         using (var response = request.GetResponse())
@@ -119,7 +119,7 @@ namespace Chatterino.Common
                 {
                     try
                     {
-                        var request = WebRequest.Create($"https://api.twitch.tv/kraken/users/{username}/emotes?oauth_token={oauth}");
+                        var request = WebRequest.Create($"https://api.twitch.tv/kraken/users/{username}/emotes?oauth_token={oauth}&client_id=7ue61iz46fz11y3cugd0l3tawb4taal");
                         using (var response = request.GetResponse())
                         using (var stream = response.GetResponseStream())
                         {
@@ -223,7 +223,7 @@ namespace Chatterino.Common
         }
 
         // Send Messages
-        public static void SendMessage(string channel, string _message)
+        public static void SendMessage(string channel, string _message, bool isMod)
         {
             if (channel != null)
             {
@@ -249,7 +249,10 @@ namespace Chatterino.Common
                         message = message + " ";
                     }
 
-                    Client.Say(Emojis.ReplaceShortCodes(message), channel.TrimStart('#'));
+                    if (!Client.Say(Emojis.ReplaceShortCodes(message), channel.TrimStart('#'), isMod))
+                    {
+                        TwitchChannel.GetChannel(channel.TrimStart('#')).Process(c => c.AddMessage(new Message("Your message was not sent to protect you from a global ban.", HSLColor.Gray, false)));
+                    }
                 }
             }
         }
@@ -268,7 +271,7 @@ namespace Chatterino.Common
 
             try
             {
-                WebRequest request = WebRequest.Create($"https://api.twitch.tv/kraken/users/{Username}/blocks/{_username}?oauth_token={oauth}");
+                WebRequest request = WebRequest.Create($"https://api.twitch.tv/kraken/users/{Username}/blocks/{_username}?oauth_token={oauth}&client_id=7ue61iz46fz11y3cugd0l3tawb4taal");
                 request.Method = "PUT";
                 using (var response = (HttpWebResponse)request.GetResponse())
                 using (var stream = response.GetResponseStream())
@@ -302,7 +305,7 @@ namespace Chatterino.Common
 
             try
             {
-                WebRequest request = WebRequest.Create($"https://api.twitch.tv/kraken/users/{Username}/blocks/{username}?oauth_token={oauth}");
+                WebRequest request = WebRequest.Create($"https://api.twitch.tv/kraken/users/{Username}/blocks/{username}?oauth_token={oauth}&client_id=7ue61iz46fz11y3cugd0l3tawb4taal");
                 request.Method = "DELETE";
                 using (var response = (HttpWebResponse)request.GetResponse())
                 using (var stream = response.GetResponseStream())
@@ -346,13 +349,20 @@ namespace Chatterino.Common
             {
                 TwitchChannel.GetChannel(msg.Middle.TrimStart('#')).Process(c =>
                 {
-                    Message message = new Message(msg, c);
-
-                    if (!AppSettings.IgnoreTwitchBlocks || !IsIgnoredUser(message.Username))
+                    if (msg.PrefixUser == "twitchnotify")
                     {
-                        c.Users[message.Username.ToUpper()] = message.DisplayName;
+                        c.AddMessage(new Message(msg.Params ?? "", HSLColor.Gray, true));
+                    }
+                    else
+                    {
+                        Message message = new Message(msg, c);
 
-                        c.AddMessage(message);
+                        if (!AppSettings.IgnoreTwitchBlocks || !IsIgnoredUser(message.Username))
+                        {
+                            c.Users[message.Username.ToUpper()] = message.DisplayName;
+
+                            c.AddMessage(message);
+                        }
                     }
                 });
             }

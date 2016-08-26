@@ -1,9 +1,14 @@
 ﻿# changelog
 
 ## 0.1.5
-- esc not closes some dialogs
-- fixed emote/name tabbing selecting words when there is no completion
-- fixed resubs
+- esc now closes some dialogs
+- fixed emote/name tabbing when no completion is available
+- fixed subs/resubs
+- added ratelimiting for messages
+- fixed timeouts not showing up
+- added the option to ignore highlights from certain users
+- fixed name links not being clickable
+- fixed a graphics issue with extremely high windows
 
 ## 0.1.4
 - fixed some notices not showing up
@@ -26,8 +31,4 @@
 ## 0.1.1
 - added a changelog viewer
 - made text input prettier
-
-
-
-
 

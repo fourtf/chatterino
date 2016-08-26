@@ -54,6 +54,8 @@ namespace Chatterino.Common
             }
         }
 
+        public static ConcurrentDictionary<string, object> HighlightIgnoredUsers { get; private set; } = new ConcurrentDictionary<string, object>();
+
         public static void UpdateCustomHighlightRegex()
         {
             CustomHighlightRegex = new Regex($@"\b({(IrcManager.Username)}{(IrcManager.Username == null || chatCustomHighlights.Length == 0 ? "" : "|")}{string.Join("|", chatCustomHighlights.Select(x => Regex.Escape(x)))})\b".Log(), RegexOptions.IgnoreCase);

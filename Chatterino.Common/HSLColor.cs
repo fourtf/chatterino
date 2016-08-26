@@ -4,7 +4,7 @@ namespace Chatterino.Common
 {
     public struct HSLColor
     {
-        public static readonly HSLColor Gray = new HSLColor(0, 0, 0.5f);
+        public static readonly HSLColor Gray = new HSLColor(.8333f, .25f, 0.5f);
 
         private float hue;
 

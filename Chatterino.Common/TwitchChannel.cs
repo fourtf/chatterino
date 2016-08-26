@@ -123,6 +123,14 @@ namespace Chatterino.Common
             }
         }
 
+        public bool IsModOrBroadcaster
+        {
+            get
+            {
+                return IsMod || Name.ToLower() == IrcManager.Username.ToLower();
+            }
+        }
+
 
         // ctor
         protected TwitchChannel(string channelName)
@@ -408,9 +416,9 @@ namespace Chatterino.Common
         public void SendMessage(string text)
         {
             if (Name == "/whispers")
-                IrcManager.SendMessage("jtv", text);
+                IrcManager.SendMessage("jtv", text, IsModOrBroadcaster);
             else
-                IrcManager.SendMessage(Name, text);
+                IrcManager.SendMessage(Name, text, IsModOrBroadcaster);
         }
 
 

@@ -314,7 +314,7 @@ namespace Chatterino.Controls
                     {
                         foreach (var highlight in highlights)
                         {
-                            SolidBrush brush = colors.GetOrAdd(highlight.Color, (x) => new SolidBrush(Color.FromArgb(48, x)));
+                            SolidBrush brush = colors.GetOrAdd(highlight.Color, (x) => new SolidBrush(Color.FromArgb(127, x)));
 
                             var y = (int)(h * highlight.Position / Maximum);
 
@@ -332,7 +332,7 @@ namespace Chatterino.Controls
 
                             y += buttonSize;
 
-                            g.FillRectangle(brush, 0, y, Width, Math.Max(3, (int)(h * highlight.Height / Maximum)));
+                            g.FillRectangle(brush, Width / 2 - 2, y, 4, Math.Max(3, (int)(h * highlight.Height / Maximum)));
                         }
                     }
                 }

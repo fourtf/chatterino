@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,6 +13,13 @@ namespace TwitchIrc
         public IrcConnection WriteConnection { get; private set; }
 
         public bool SingleConnection { get; private set; }
+
+        // ratelimiting
+        static ConcurrentQueue<string> messageQueue = new ConcurrentQueue<string>();
+        static Queue<DateTime> lastMessagesPleb = new Queue<DateTime>();
+        static Queue<DateTime> lastMessagesMod = new Queue<DateTime>();
+
+        static object lastMessagesLock = new object();
 
         public IrcClient(bool singleConnection = false)
         {
@@ -39,9 +47,52 @@ namespace TwitchIrc
             }
         }
 
-        public void Say(string message, string channel)
+        public bool Say(string message, string channel, bool isMod)
         {
-            WriteConnection.WriteLine("PRIVMSG #" + channel + " :" + message);
+            lock (lastMessagesLock)
+            {
+                var now = DateTime.Now;
+
+                while (lastMessagesMod.Count > 0 && lastMessagesMod.Peek() < now)
+                {
+                    lastMessagesMod.Dequeue();
+                }
+
+                while (lastMessagesPleb.Count > 0 && lastMessagesPleb.Peek() < now)
+                {
+                    lastMessagesPleb.Dequeue();
+                }
+
+                if (isMod)
+                {
+                    if (lastMessagesMod.Count < 100)
+                    {
+                        WriteConnection.WriteLine("PRIVMSG #" + channel + " :" + message);
+
+                        lastMessagesMod.Enqueue(now + TimeSpan.FromSeconds(30));
+                        lastMessagesPleb.Enqueue(now + TimeSpan.FromSeconds(30));
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    if (lastMessagesPleb.Count < 20)
+                    {
+                        WriteConnection.WriteLine("PRIVMSG #" + channel + " :" + message);
+
+                        lastMessagesPleb.Enqueue(now + TimeSpan.FromSeconds(30));
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
         }
 
         public void WriteLine(string value)

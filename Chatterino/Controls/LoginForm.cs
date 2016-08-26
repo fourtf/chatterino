@@ -64,7 +64,7 @@ namespace Chatterino.Controls
                             var access_token = context.Request.QueryString["access_token"];
                             var scope = context.Request.QueryString["scope"];
 
-                            WebRequest request = WebRequest.Create("https://api.twitch.tv/kraken?oauth_token=" + access_token);
+                            WebRequest request = WebRequest.Create("https://api.twitch.tv/kraken?oauth_token=" + access_token + "&client_id=7ue61iz46fz11y3cugd0l3tawb4taal");
                             using (var response = request.GetResponse())
                             using (var stream = response.GetResponseStream())
                             {
@@ -120,7 +120,7 @@ namespace Chatterino.Controls
         {
             IrcManager.Disconnect();
 
-            Process.Start("http" + $"s://api.twitch.tv/kraken/oauth2/authorize?response_type=token&client_id=7ue61iz46fz11y3cugd0l3tawb4taal&redirect_uri=http://127.0.0.1:5215/code&force_verify=true&scope=chat_login+user_subscriptions+user_blocks_edit+user_blocks_read+user_follows_edit");
+            Process.Start("https://api.twitch.tv/kraken/oauth2/authorize?response_type=token&client_id=7ue61iz46fz11y3cugd0l3tawb4taal&redirect_uri=http://127.0.0.1:5215/code&force_verify=true&scope=chat_login+user_subscriptions+user_blocks_edit+user_blocks_read+user_follows_edit");
         }
     }
 }

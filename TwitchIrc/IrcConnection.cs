@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -17,7 +18,6 @@ namespace TwitchIrc
         public event EventHandler<ExceptionEventArgs> ConnectionException;
 
         public bool IsConnected { get; private set; } = false;
-        public bool IsMod { get; private set; } = false;
 
         // private variables
         private bool connecting = false;

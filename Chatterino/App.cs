@@ -71,7 +71,9 @@ namespace Chatterino
 
             // Fonts
             if (Environment.OSVersion.Version.Major >= 6 && Environment.OSVersion.Version.Minor >= 1)
+            {
                 UseDirectX = true;
+            }
 
             // Exceptions
             Application.ThreadException += (s, e) =>

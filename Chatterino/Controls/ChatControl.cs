@@ -415,6 +415,13 @@ namespace Chatterino.Controls
 
             for (; wordStart >= 0; wordStart--)
             {
+                if (text[wordStart] != ' ' && text[wordStart] != ',')
+                {
+                    break;
+                }
+            }
+            for (; wordStart >= 0; wordStart--)
+            {
                 if (text[wordStart] == ' ')
                 {
                     wordStart++;
@@ -448,7 +455,7 @@ namespace Chatterino.Controls
                 Input.Logic.SelectionStart = wordStart;
                 Input.Logic.SelectionLength = word.Length;
 
-                Input.Logic.InsertText(items[currentTabIndex]);
+                Input.Logic.InsertText(items[currentTabIndex] + " ");
             }
         }
 

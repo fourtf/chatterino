@@ -85,16 +85,19 @@ namespace Chatterino.Common
             // Highlights
             if ((AppSettings.ChatEnableHighlight || AppSettings.ChatEnableHighlightSound || AppSettings.ChatEnableHighlightTaskbar) && Username != IrcManager.Username.ToLower())
             {
-                if (AppSettings.CustomHighlightRegex != null && AppSettings.CustomHighlightRegex.IsMatch(text))
+                if (!AppSettings.HighlightIgnoredUsers.ContainsKey(Username))
                 {
-                    if (AppSettings.ChatEnableHighlight)
-                        Highlighted = true;
-                    if (EnablePings && enablePingSound)
+                    if (AppSettings.CustomHighlightRegex != null && AppSettings.CustomHighlightRegex.IsMatch(text))
                     {
-                        if (AppSettings.ChatEnableHighlightSound)
-                            GuiEngine.Current.PlaySound(NotificationSound.Ping);
-                        if (AppSettings.ChatEnableHighlightTaskbar)
-                            GuiEngine.Current.FlashTaskbar();
+                        if (AppSettings.ChatEnableHighlight)
+                            Highlighted = true;
+                        if (EnablePings && enablePingSound)
+                        {
+                            if (AppSettings.ChatEnableHighlightSound)
+                                GuiEngine.Current.PlaySound(NotificationSound.Ping);
+                            if (AppSettings.ChatEnableHighlightTaskbar)
+                                GuiEngine.Current.FlashTaskbar();
+                        }
                     }
                 }
             }
@@ -501,6 +504,10 @@ namespace Chatterino.Common
         {
             List<Message> list = new List<Message>();
 
+            Message closeMessage = new Message();
+            closeMessage.Words = new List<Word> { new Word() { Value = "Close Changelog", Color = HSLColor.FromRGB(1, 0, 0), Link = "@closeCurrentSplit" } };
+            list.Add(closeMessage);
+
             using (StringReader reader = new StringReader(md))
             {
                 string line;
@@ -536,8 +543,8 @@ namespace Chatterino.Common
                 }
             }
 
-            Message closeMessage = new Message();
-            closeMessage.Words = new List<Word> { new Word() { Value = "Close Changelog", Color = HSLColor.FromRGB(-8355712), Link = "@closeCurrentSplit" } };
+            closeMessage = new Message();
+            closeMessage.Words = new List<Word> { new Word() { Value = "Close Changelog", Color = HSLColor.FromRGB(1,0,0), Link = "@closeCurrentSplit" } };
             list.Add(closeMessage);
 
             return list.ToArray();

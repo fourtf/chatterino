@@ -115,7 +115,7 @@ namespace Chatterino.Controls
             {
                 var word = msg.WordAtPoint(new CommonPoint(e.X - MessagePadding.Left, e.Y - msg.Y));
 
-                var pos = msg.MessagePositionAtPoint(graphics, new CommonPoint(e.X - MessagePadding.Left, e.Y - msg.Y), index);
+                var pos = msg.MessagePositionAtPoint(App.UseDirectX ? null : graphics, new CommonPoint(e.X - MessagePadding.Left, e.Y - msg.Y), index);
                 //Console.WriteLine($"pos: {pos.MessageIndex} : {pos.WordIndex} : {pos.SplitIndex} : {pos.CharIndex}");
 
                 if (selection != null && mouseDown)
@@ -383,12 +383,12 @@ namespace Chatterino.Controls
 
                                         if (word.SplitSegments == null)
                                         {
-                                            renderTarget.DrawText((string)word.Value, Fonts.GetTextFormat(word.Font), new RawRectangleF(MessagePadding.Left + word.X, y + word.Y, 10000, 1000), brush);
+                                            renderTarget.DrawText((string)word.Value, Fonts.GetTextFormat(word.Font), new RawRectangleF(MessagePadding.Left + word.X, y + word.Y, 10000, 10000), brush);
                                         }
                                         else
                                         {
                                             foreach (var split in word.SplitSegments)
-                                                renderTarget.DrawText(split.Item1, Fonts.GetTextFormat(word.Font), new RawRectangleF(MessagePadding.Left + split.Item2.X, y + split.Item2.Y, 10000, 1000), brush);
+                                                renderTarget.DrawText(split.Item1, Fonts.GetTextFormat(word.Font), new RawRectangleF(MessagePadding.Left + split.Item2.X, y + split.Item2.Y, 10000, 10000), brush);
                                         }
                                     }
                                 }

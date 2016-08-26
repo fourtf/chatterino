@@ -254,7 +254,9 @@ namespace Chatterino.Common
 
             for (; i >= 0; i--)
             {
-                if (text[i] != ' ')
+                var c = text[i];
+
+                if (!(c == ' ' || (c >= '[' && c <= '`') || (c >= '{' && c <= '~') || (c >= ':' && c <= '@') || (c >= '!' && c <= '/')))
                 {
                     break;
                 }
@@ -262,7 +264,9 @@ namespace Chatterino.Common
 
             for (; i >= 0; i--)
             {
-                if (text[i] == ' ')
+                var c = text[i];
+
+                if (c == ' ' || (c >= '[' && c <= '`') || (c >= '{' && c <= '~') || (c >= ':' && c <= '@') || (c >= '!' && c <= '/'))
                 {
                     i++;
                     break;
@@ -280,7 +284,9 @@ namespace Chatterino.Common
 
             for (; i < text.Length; i++)
             {
-                if (text[i] == ' ')
+                var c = text[i];
+
+                if (c == ' ' || (c >= '[' && c <= '`') || (c >= '{' && c <= '~') || (c >= ':' && c <= '@') || (c >= '!' && c <= '/'))
                 {
                     break;
                 }
@@ -288,7 +294,9 @@ namespace Chatterino.Common
 
             for (; i < text.Length; i++)
             {
-                if (text[i] != ' ')
+                var c = text[i];
+
+                if (!(c == ' ' || (c >= '[' && c <= '`') || (c >= '{' && c <= '~') || (c >= ':' && c <= '@') || (c >= '!' && c <= '/')))
                 {
                     break;
                 }
