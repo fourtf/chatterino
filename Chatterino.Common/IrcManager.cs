@@ -51,6 +51,23 @@ namespace Chatterino.Common
                 }
                 return null;
             });
+
+            ChatCommands.TryAdd("cheertest312", s =>
+            {
+                foreach (string x in new[] { "1", "100", "1000", "5000", "10000" })
+                {
+                    IrcMessage msg;
+                    IrcMessage.TryParse($"@badges=subscriber/1;bits={x};color=;display-name=FOURTF;emotes=;mod=0;subscriber=1;turbo=0;user-type= :fourtf!fourtf@fourtf.tmi.twitch.tv PRIVMSG #fourtf :cheer{x} xD donation", out msg);
+
+                    foreach (TwitchChannel c in TwitchChannel.Channels)
+                    {
+                        Message message = new Message(msg, c);
+                        c.AddMessage(message);
+                    }
+                }
+
+                return null;
+            });
         }
 
         static string oauth = null;
@@ -251,7 +268,7 @@ namespace Chatterino.Common
 
                     if (!Client.Say(Emojis.ReplaceShortCodes(message), channel.TrimStart('#'), isMod))
                     {
-                        TwitchChannel.GetChannel(channel.TrimStart('#')).Process(c => c.AddMessage(new Message("Your message was not sent to protect you from a global ban.", HSLColor.Gray, false)));
+                        TwitchChannel.GetChannel(channel.TrimStart('#')).Process(c => c.AddMessage(new Message($"Your message was not sent to protect you from a global ban. (try again in {Client.GetTimeUntilNextMessage(isMod).Seconds} seconds.", HSLColor.Gray, false)));
                     }
                 }
             }

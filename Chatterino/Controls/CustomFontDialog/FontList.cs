@@ -151,7 +151,7 @@ namespace CustomFontDialog
             {
                 e.Graphics.FillRectangle(Brushes.AliceBlue, e.Bounds);
                 Font font = new Font(DefaultFont, FontStyle.Bold | FontStyle.Italic);
-                e.Graphics.DrawString("Recently Used", font, Brushes.Black, e.Bounds.X + 10, e.Bounds.Y + 3, StringFormat.GenericDefault);
+                e.Graphics.DrawString("Default Font", font, Brushes.Black, e.Bounds.X + 10, e.Bounds.Y + 3, StringFormat.GenericDefault);
             }
             else if (e.Index == AllFontsStartIndex - 1)
             {

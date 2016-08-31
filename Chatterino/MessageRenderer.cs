@@ -33,7 +33,9 @@ namespace Chatterino
             var textColor = App.ColorScheme.Text;
 
             if (message.Highlighted)
+            {
                 g.FillRectangle(App.ColorScheme.ChatBackgroundHighlighted, 0, yOffset, g.ClipBounds.Width, message.Height);
+            }
 
             g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.Default;
 
@@ -52,8 +54,6 @@ namespace Chatterino
                         if (word.Color.HasValue)
                         {
                             HSLColor hsl = word.Color.Value;
-
-                            Console.WriteLine(hsl);
 
                             if (App.ColorScheme.IsLightTheme)
                             {
@@ -174,6 +174,12 @@ namespace Chatterino
                         }
                     }
                 }
+            }
+
+            if (AppSettings.ChatSeperateMessages)
+            {
+                g.DrawLine(App.ColorScheme.ChatMessageSeperatorBorder, 0, yOffset + 1, message.Width + 128, yOffset + 1);
+                g.DrawLine(App.ColorScheme.ChatMessageSeperatorBorderInner, 0, yOffset, message.Width + 128, yOffset);
             }
         }
 

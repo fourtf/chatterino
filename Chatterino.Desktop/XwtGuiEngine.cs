@@ -34,8 +34,7 @@ namespace Chatterino.Desktop
                 string res = "Chatterino.Desktop.Assets.";
                 switch (t)
                 {
-                    case ImageType.
-                        BadgeAdmin:
+                    case ImageType.BadgeAdmin:
                         res += "admin_bg.png";
                         break;
                     case ImageType.BadgeBroadcaster:
@@ -109,6 +108,15 @@ namespace Chatterino.Desktop
         ConcurrentDictionary<FontType, Tuple<ConcurrentDictionary<string, CommonSize>, ConcurrentStack<string>, int>> sizeCaches = new ConcurrentDictionary<FontType, Tuple<ConcurrentDictionary<string, CommonSize>, ConcurrentStack<string>, int>>();
 
         Font stdFont = Font.SystemSansSerifFont;
+
+        public bool IsDarkTheme
+        {
+            get
+            {
+                return !App.ColorScheme.IsLightTheme;
+            }
+        }
+
         public CommonSize MeasureStringSize(object graphics, FontType font, string text)
         {
             var sizeCache = sizeCaches.GetOrAdd(font, f =>

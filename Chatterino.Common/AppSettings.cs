@@ -13,11 +13,31 @@ namespace Chatterino.Common
     {
         public static string CurrentVersion { get; set; } = "0.0";
 
+        // Theme
+        public static event EventHandler ThemeChanged;
+
+        private static string theme = "Dark";
+
+        public static string Theme
+        {
+            get { return theme; }
+            set
+            {
+                if (theme != value)
+                {
+                    theme = value;
+                    ThemeChanged?.Invoke(null, EventArgs.Empty);
+                }
+            }
+        }
+
+        // Chat
         public static bool ChatShowTimestamps { get; set; } = true;
         public static bool ChatShowTimestampSeconds { get; set; } = false;
         public static bool ChatAllowSameMessage { get; set; } = true;
         public static bool ChatLinksDoubleClickOnly { get; set; } = false;
         public static bool ChatHideInputIfEmpty { get; set; } = false;
+        public static bool ChatSeperateMessages { get; set; } = false;
 
         public static event EventHandler MessageLimitChanged;
 
@@ -36,7 +56,7 @@ namespace Chatterino.Common
         }
 
         public static bool ChatEnableHighlight { get; set; } = true;
-        public static bool ChatEnableHighlightSound { get; set; } = true;
+        public static bool ChatEnableHighlightSound { get; set; } = false;
         public static bool ChatEnableHighlightTaskbar { get; set; } = true;
         public static bool ChatCustomHighlightSound { get; set; } = false;
 
@@ -55,6 +75,7 @@ namespace Chatterino.Common
         }
 
         public static ConcurrentDictionary<string, object> HighlightIgnoredUsers { get; private set; } = new ConcurrentDictionary<string, object>();
+        public static ConcurrentDictionary<string, object> ChatIgnoredEmotes { get; private set; } = new ConcurrentDictionary<string, object>();
 
         public static void UpdateCustomHighlightRegex()
         {

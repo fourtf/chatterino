@@ -25,7 +25,15 @@ namespace Chatterino.Common
         public string Text
         {
             get { return text; }
-            set { text = value; Message = new Message(value); invokeChanged(); }
+            private set { text = value; Message = new Message(value); invokeChanged(); }
+        }
+
+        public void SetText(string text)
+        {
+            Text = text;
+            SelectionStart = CaretPosition = Text.Length;
+            SelectionLength = 0;
+            invokeChanged();
         }
 
         public int CaretPosition { get; private set; } = 0;

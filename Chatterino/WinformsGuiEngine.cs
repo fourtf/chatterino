@@ -56,6 +56,15 @@ namespace Chatterino
         // SOUNDS
         SoundPlayer defaultHighlightSound = new SoundPlayer(Properties.Resources.ping2);
         public SoundPlayer HighlightSound { get; private set; } = null;
+
+        public bool IsDarkTheme
+        {
+            get
+            {
+                return !App.ColorScheme.IsLightTheme;
+            }
+        }
+
         DateTime highlightTimeStamp = DateTime.MinValue;
 
         public void PlaySound(NotificationSound sound, bool forceCustom = false)
@@ -244,9 +253,15 @@ namespace Chatterino
                 int lineHeight;
 
                 if (isGdi)
+                {
                     lineHeight = TextRenderer.MeasureText((Graphics)graphics, "X", Fonts.GetFont(font), Size.Empty, App.DefaultTextFormatFlags).Height;
+                }
                 else
-                    lineHeight = (int)new SharpDX.DirectWrite.TextLayout(Fonts.Factory, text, Fonts.GetTextFormat(font), 1000000, 1000000).Metrics.Height;
+                {
+                    var metrics = new SharpDX.DirectWrite.TextLayout(Fonts.Factory, "X", Fonts.GetTextFormat(font), 1000000, 1000000).Metrics;
+                    lineHeight = (int)metrics.Height;
+                    //lineHeight = (int)Math.Ceiling(Fonts.GetTextFormat(font).FontSize);
+                }
 
                 return Tuple.Create(new ConcurrentDictionary<string, CommonSize>(), new ConcurrentStack<string>(), lineHeight);
             });
@@ -272,16 +287,9 @@ namespace Chatterino
                 }
                 else
                 {
-                    if (text == " ")
-                    {
-                        float w1 = new SharpDX.DirectWrite.TextLayout(Fonts.Factory, "a a", Fonts.GetTextFormat(font), 1000000, 1000000).Metrics.Width;
-                        float w2 = new SharpDX.DirectWrite.TextLayout(Fonts.Factory, "a", Fonts.GetTextFormat(font), 1000000, 1000000).Metrics.Width;
-                        return new CommonSize((int)(w1 - (w2 * 2f)), sizeCache.Item3);
-                    }
-
                     var metrics = new SharpDX.DirectWrite.TextLayout(Fonts.Factory, text, Fonts.GetTextFormat(font), 1000000, 1000000).Metrics;
 
-                    return new CommonSize((int)metrics.Width, (int)metrics.Height);
+                    return new CommonSize((int)metrics.WidthIncludingTrailingWhitespace, sizeCache.Item3);
                 }
             });
         }

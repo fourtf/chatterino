@@ -120,6 +120,54 @@ namespace Chatterino.Common
                 DisplayName = value;
             }
 
+            // Bits
+            string bits = null;
+            string bitsLink = null;
+            HSLColor? bitsColor = null;
+
+            if (data.Tags.TryGetValue("bits", out bits))
+            {
+                int cheer;
+
+                if (int.TryParse(bits, out cheer))
+                {
+                    string color = null;
+
+                    if (cheer >= 10000)
+                    {
+                        color = "red";
+                        bitsColor = new HSLColor(0, 1f, 0.5f);
+                    }
+                    else if (cheer >= 5000)
+                    {
+                        color = "blue";
+                        bitsColor = new HSLColor(0.61f, 1f, 0.4f);
+                    }
+                    else if (cheer >= 1000)
+                    {
+                        color = "green";
+                        bitsColor = new HSLColor(0.5f, 1f, 0.5f);
+                    }
+                    else if (cheer >= 100)
+                    {
+                        color = "purple";
+                        bitsColor = new HSLColor(0.8f, 1f, 0.5f);
+                    }
+                    else
+                    {
+                        color = "gray";
+                        bitsColor = HSLColor.FromRGB(0.5f, 0.5f, 0.5f);
+                    }
+
+                    bits = "cheer" + bits;
+                    bitsLink = $"http://static-cdn.jtvnw.net/bits/{(GuiEngine.Current.IsDarkTheme ? "dark" : "light")}/animated/{color}/1";
+                }
+                else
+                {
+                    bits = null;
+                }
+            }
+
             // Add timestamp
             string timestampTag;
             string timestamp = null;
@@ -147,10 +195,6 @@ namespace Chatterino.Common
                     CopyText = timestamp
                 });
             }
-
-            TwitchEmote fourtfBadge;
-            if (Common.Badges.FourtfGlobalBadges.TryGetValue(Username, out fourtfBadge))
-                words.Add(new Word { Type = SpanType.Emote, Value = fourtfBadge, Tooltip = fourtfBadge.Tooltip });
 
             if (data.Tags.TryGetValue("badges", out value))
             {
@@ -192,32 +236,6 @@ namespace Chatterino.Common
 
                             words.Add(new Word { Type = SpanType.Image, Value = image, Tooltip = "Twitch Cheer " + cheer });
                         }
-
-                        //if (cheer >= 100000)
-                        //{
-                        //    color = "red";
-                        //}
-                        //else if (cheer >= 10000)
-                        //{
-                        //    color = "red";
-                        //}
-                        //else if (cheer >= 5000)
-                        //{
-                        //    color = "blue";
-                        //}
-                        //else if (cheer >= 1000)
-                        //{
-                        //    color = "green";
-                        //}
-                        //else if (cheer >= 100)
-                        //{
-                        //    color = "purple";
-                        //}
-                        //else
-                        //{
-                        //    color = "gray";
-                        //}
-                        //$"http://static-cdn.jtvnw.net/bits/light/animated/{color}/1"
                     }
                     else
                     {
@@ -256,6 +274,10 @@ namespace Chatterino.Common
                 }
             }
 
+            TwitchEmote fourtfBadge;
+            if (Common.Badges.FourtfGlobalBadges.TryGetValue(Username, out fourtfBadge))
+                words.Add(new Word { Type = SpanType.Emote, Value = fourtfBadge, Tooltip = fourtfBadge.Tooltip });
+
 
             // Username
             if (string.IsNullOrWhiteSpace(DisplayName))
@@ -267,7 +289,6 @@ namespace Chatterino.Common
                 if (DisplayName.ToLower() != Username)
                 {
                     DisplayName = DisplayName + " (" + Username + ")";
-
                 }
             }
 
@@ -300,18 +321,23 @@ namespace Chatterino.Common
                             var coords = y.Split('-');
                             int index = int.Parse(coords[0]);
                             string name = text.Substring(index, int.Parse(coords[1]) - index + 1);
-                            TwitchEmote e;
-                            if (!Emotes.TwitchEmotesByIDCache.TryGetValue(id, out e))
+
+                            // ignore ignored emotes
+                            if (!AppSettings.ChatIgnoredEmotes.ContainsKey(name))
                             {
-                                e = new TwitchEmote
+                                TwitchEmote e;
+                                if (!Emotes.TwitchEmotesByIDCache.TryGetValue(id, out e))
                                 {
-                                    Name = name,
-                                    Url = Emotes.TwitchEmoteTemplate.Replace("{id}", id.ToString()),
-                                    Tooltip = name + "\nTwitch Emote"
-                                };
-                                Emotes.TwitchEmotesByIDCache[id] = e;
+                                    e = new TwitchEmote
+                                    {
+                                        Name = name,
+                                        Url = Emotes.TwitchEmoteTemplate.Replace("{id}", id.ToString()),
+                                        Tooltip = name + "\nTwitch Emote"
+                                    };
+                                    Emotes.TwitchEmotesByIDCache[id] = e;
+                                }
+                                twitchEmotes.Add(Tuple.Create(index, e));
                             }
-                            twitchEmotes.Add(Tuple.Create(index, e));
                         };
                     }
                 });
@@ -386,9 +412,17 @@ namespace Chatterino.Common
                         //    }
                         //}
 
+                        if (bits != null && s == bits)
+                        {
+                            words.Add(new Word { Type = SpanType.Emote, Value = Emotes.MiscEmotesByUrl.GetOrAdd(bitsLink, url => new TwitchEmote { Name = "cheer", Url = url, Tooltip = "Twitch Bits Badge" }), Tooltip = "Twitch Bits Donation", CopyText = bits, Link = "https://blog.twitch.tv/introducing-cheering-celebrate-together-da62af41fac6" });
+                            words.Add(new Word { Type = SpanType.Text, Value = "x" + bits.Substring(5), Font = FontType.Small, Color = bitsColor });
+
+                            continue;
+                        }
+
                         TwitchEmote bttvEmote;
-                        if (AppSettings.ChatEnableBttvEmotes && (Emotes.BttvGlobalEmotes.TryGetValue(s, out bttvEmote) || channel.BttvChannelEmotes.TryGetValue(s, out bttvEmote))
-                            || (AppSettings.ChatEnableFfzEmotes && Emotes.FfzGlobalEmotes.TryGetValue(s, out bttvEmote)))
+                        if (!AppSettings.ChatIgnoredEmotes.ContainsKey(s) && (AppSettings.ChatEnableBttvEmotes && (Emotes.BttvGlobalEmotes.TryGetValue(s, out bttvEmote) || channel.BttvChannelEmotes.TryGetValue(s, out bttvEmote))
+                            || (AppSettings.ChatEnableFfzEmotes && Emotes.FfzGlobalEmotes.TryGetValue(s, out bttvEmote))))
                         {
                             words.Add(new Word
                             {
@@ -504,10 +538,6 @@ namespace Chatterino.Common
         {
             List<Message> list = new List<Message>();
 
-            Message closeMessage = new Message();
-            closeMessage.Words = new List<Word> { new Word() { Value = "Close Changelog", Color = HSLColor.FromRGB(1, 0, 0), Link = "@closeCurrentSplit" } };
-            list.Add(closeMessage);
-
             using (StringReader reader = new StringReader(md))
             {
                 string line;
@@ -542,10 +572,6 @@ namespace Chatterino.Common
                     list.Add(msg);
                 }
             }
-
-            closeMessage = new Message();
-            closeMessage.Words = new List<Word> { new Word() { Value = "Close Changelog", Color = HSLColor.FromRGB(1,0,0), Link = "@closeCurrentSplit" } };
-            list.Add(closeMessage);
 
             return list.ToArray();
         }

@@ -38,7 +38,7 @@ namespace Chatterino.Common
             }
             catch (Exception exc)
             {
-                Console.WriteLine("Error while loading settings: \"" + exc.Message + "\"");
+                $"Error while loading settings: {exc.Message}".Log("settings");
             }
         }
 
@@ -73,7 +73,16 @@ namespace Chatterino.Common
             {
                 using (StreamWriter writer = new StreamWriter(path))
                 {
-                    foreach (var k in map)
+                    List<KeyValuePair<string, string>> items = new List<KeyValuePair<string, string>>();
+
+                    foreach (var kvp in map)
+                    {
+                        items.Add(kvp);
+                    }
+
+                    items.Sort((x1, x2) => x1.Key.CompareTo(x2.Key));
+
+                    foreach (var k in items)
                     {
                         writer.Write(k.Key);
                         writer.Write('=');
@@ -83,7 +92,7 @@ namespace Chatterino.Common
             }
             catch (Exception exc)
             {
-                Console.WriteLine("Error while loading settings: \"" + exc.Message + "\"");
+                $"Error while saving settings: {exc.Message}".Log("settings");
             }
         }
 

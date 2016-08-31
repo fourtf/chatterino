@@ -37,11 +37,20 @@ namespace Chatterino.Controls
             tabs.PageSelected += tabs_PageSelected;
             tabs_PageSelected(this, EventArgs.Empty);
 
+            // Appearance
+            comboTheme.Text = AppSettings.Theme;
+
+            onSave += (s, e) =>
+            {
+                AppSettings.Theme = comboTheme.Text;
+            };
+
             BindCheckBox(chkTimestamps, "ChatShowTimestamps");
             BindCheckBox(chkTimestampSeconds, "ChatShowTimestampSeconds");
             BindCheckBox(chkAllowSameMessages, "ChatAllowSameMessage");
             BindCheckBox(chkDoubleClickLinks, "ChatLinksDoubleClickOnly");
             BindCheckBox(chkHideInput, "ChatHideInputIfEmpty");
+            BindCheckBox(chkMessageSeperators, "ChatSeperateMessages");
 
             BindTextBox(txtMsgLimit, "ChatMessageLimit");
 
@@ -50,11 +59,29 @@ namespace Chatterino.Controls
             BindCheckBox(chkFlashTaskbar, "ChatEnableHighlightTaskbar");
             BindCheckBox(chkCustomPingSound, "ChatCustomHighlightSound");
 
+            // Emotes
             BindCheckBox(chkBttvEmotes, "ChatEnableBttvEmotes");
             BindCheckBox(chkFFzEmotes, "ChatEnableFfzEmotes");
             BindCheckBox(chkEmojis, "ChatEnableEmojis");
             BindCheckBox(chkGifEmotes, "ChatEnableGifAnimations");
 
+            rtbIngoredEmotes.Text = string.Join(Environment.NewLine, AppSettings.ChatIgnoredEmotes.Keys);
+            onSave += (s, e) =>
+            {
+                // user blacklist
+                {
+                    AppSettings.ChatIgnoredEmotes.Clear();
+                    var reader = new StringReader(rtbIngoredEmotes.Text);
+                    string line;
+                    while ((line = reader.ReadLine()) != null)
+                    {
+                        AppSettings.ChatIgnoredEmotes[line.Trim()] = null;
+                    }
+                }
+            };
+
+
+            // Proxy
             BindCheckBox(chkProxyEnabled, "ProxyEnable");
             BindTextBox(textBox1, "ProxyHost");
             BindTextBox(textBox4, "ProxyPort");

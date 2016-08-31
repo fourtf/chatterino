@@ -24,6 +24,8 @@ namespace Chatterino.Controls
         {
             InitializeComponent();
 
+            Icon = App.Icon;
+
             Task.Run(() =>
             {
                 try

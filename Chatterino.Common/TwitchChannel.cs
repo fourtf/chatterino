@@ -7,6 +7,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using TwitchIrc;
@@ -348,6 +349,9 @@ namespace Chatterino.Common
 
         public static void RemoveChannel(string channelName)
         {
+            if (channelName == null)
+                return;
+            
             channelName = channelName.ToLower();
 
             TwitchChannel data;
@@ -415,6 +419,8 @@ namespace Chatterino.Common
 
         public void SendMessage(string text)
         {
+            text = Regex.Replace(text, " +", " ");
+
             if (Name == "/whispers")
                 IrcManager.SendMessage("jtv", text, IsModOrBroadcaster);
             else

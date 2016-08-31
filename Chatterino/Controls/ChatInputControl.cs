@@ -23,6 +23,8 @@ namespace Chatterino.Controls
 
         public ChatInputControl(ChatControl chatControl)
         {
+            Cursor = Cursors.IBeam;
+
             SetStyle(ControlStyles.ResizeRedraw | ControlStyles.OptimizedDoubleBuffer, true);
 
             this.chatControl = chatControl;
@@ -52,11 +54,89 @@ namespace Chatterino.Controls
             };
         }
 
-        protected override void OnMouseClick(MouseEventArgs e)
+        bool mdown = false;
+
+        protected override void OnMouseMove(MouseEventArgs e)
         {
+            Graphics g = App.UseDirectX ? null : CreateGraphics();
+
+            if (mdown)
+            {
+                if (Logic.Message != null)
+                {
+                    var pos = getIndexFromMessagePosition(Logic.Message.MessagePositionAtPoint(g, new CommonPoint(e.X - messagePadding.Left, e.Y - messagePadding.Top), 0));
+
+                    Logic.SetSelectionEnd(pos);
+                }
+            }
+
+            g?.Dispose();
+
+            base.OnMouseMove(e);
+        }
+
+        private int getIndexFromMessagePosition(MessagePosition pos)
+        {
+            var msg = Logic.Message;
+
+            int position = 0;
+
+            for (int wordIndex = 0; wordIndex <= pos.WordIndex; wordIndex++)
+            {
+                var word = msg.Words[wordIndex];
+
+                for (int splitIndex = 0; splitIndex <= (wordIndex == pos.WordIndex ? pos.SplitIndex : (word.SplitSegments?.Length ?? 0)); splitIndex++)
+                {
+                    string split = word.SplitSegments?[splitIndex].Item1 ?? word.Value as string;
+
+                    if (pos.WordIndex == wordIndex && pos.SplitIndex == splitIndex)
+                    {
+                        for (int i = 0; i < pos.CharIndex; i++)
+                        {
+                            position++;
+                        }
+                        goto end;
+                    }
+                    else
+                    {
+                        position += split.Length + 1;
+                    }
+                }
+            }
+
+            end:
+            return position;
+        }
+
+        protected override void OnMouseDown(MouseEventArgs e)
+        {
+            Graphics g = App.UseDirectX ? null : CreateGraphics();
+
+            if (e.Button == MouseButtons.Left)
+            {
+                mdown = true;
+
+                if (Logic.Message != null)
+                {
+                    Logic.SetSelectionEnd(Logic.SelectionStart = getIndexFromMessagePosition(Logic.Message.MessagePositionAtPoint(g, new CommonPoint(e.X - messagePadding.Left, e.Y - messagePadding.Top), 0)));
+                }
+            }
+
+            g?.Dispose();
+
             chatControl.Focus();
 
             base.OnMouseClick(e);
+        }
+
+        protected override void OnMouseUp(MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                mdown = false;
+            }
+
+            base.OnMouseUp(e);
         }
 
         protected override void OnResize(EventArgs e)

@@ -1,27 +1,35 @@
 ﻿# changelog
 
+## 0.2
+- added tabs
+- added 4 themes (white and light are still work-in-progress)
+- added an option to seperate messages
+- added a filter for emotes
+- added cheerxxx emotes
+- added arrow up/down for previous/next message
+- added mouse text selection in the input box
+
 ## 0.1.5
-- esc now closes some dialogs
+- added ratelimiting for messages
+- added the option to ignore highlights from certain users
 - fixed emote/name tabbing when no completion is available
 - fixed subs/resubs
-- added ratelimiting for messages
 - fixed timeouts not showing up
-- added the option to ignore highlights from certain users
 - fixed name links not being clickable
 - fixed a graphics issue with extremely high windows
+- esc now closes some dialogs
 
 ## 0.1.4
-- fixed some notices not showing up
-- replaced irc library with my own irc implementation
 - added twitch bit cheer badges
-- didn't add what I said I was gonna add
+- replaced irc library with my own irc implementation
+- fixed some notices not showing up
 
 ## 0.1.3
-- improved performance of word-wrapping
-- enabled direct write instead of gdi on machines that support it
 - added setting to change font
 - added custom highlight sounds
 - added keyboard shortcuts: ctrl+x (cut text), ctrl+enter (send message without clearing the input), end + home (move to start / end of input)
+- added direct write support
+- improved performance of word-wrapping
 - updated icon (thanks to SwordAkimbo)
 
 ## 0.1.2
@@ -31,4 +39,3 @@
 ## 0.1.1
 - added a changelog viewer
 - made text input prettier
-

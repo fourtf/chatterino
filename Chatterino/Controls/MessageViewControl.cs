@@ -13,7 +13,7 @@ using SCB = SharpDX.Direct2D1.SolidColorBrush;
 
 namespace Chatterino.Controls
 {
-    public class MessageContainerControl : ColumnLayoutItemBase
+    public class MessageContainerControl : ColumnLayoutItem
     {
         public Padding MessagePadding { get; protected set; } = new Padding(8, 8, SystemInformation.VerticalScrollBarWidth + 8, 8);
 
@@ -282,160 +282,172 @@ namespace Chatterino.Controls
                     if (M != null && M.Length > 0)
                     {
                         int startIndex = Math.Max(0, (int)_scroll.Value);
-                        int yStart = MessagePadding.Top - (int)(M[startIndex].Height * (_scroll.Value % 1));
-                        int h = Height - MessagePadding.Top - MessagePadding.Bottom;
-
                         if (startIndex < M.Length)
                         {
-                            int y = yStart;
+                            int yStart = MessagePadding.Top - (int)(M[startIndex].Height * (_scroll.Value % 1));
+                            int h = Height - MessagePadding.Top - MessagePadding.Bottom;
 
-                            for (int i = 0; i < startIndex; i++)
+                            if (startIndex < M.Length)
                             {
-                                M[i].IsVisible = false;
-                            }
+                                int y = yStart;
 
-                            for (int i = startIndex; i < M.Length; i++)
-                            {
-                                var msg = M[i];
-                                msg.IsVisible = true;
-
-                                MessageRenderer.DrawMessage(g, msg, MessagePadding.Left, y, selection, i, !App.UseDirectX);
-
-                                if (y - msg.Height > h)
+                                for (int i = 0; i < startIndex; i++)
                                 {
-                                    for (; i < M.Length; i++)
-                                    {
-                                        M[i].IsVisible = false;
-                                    }
-
-                                    break;
+                                    M[i].IsVisible = false;
                                 }
 
-                                y += msg.Height;
-                            }
-                        }
-
-                        if (App.UseDirectX)
-                        {
-                            SharpDX.Direct2D1.DeviceContextRenderTarget renderTarget = null;
-                            IntPtr dc = IntPtr.Zero;
-
-                            dc = g.GetHdc();
-
-                            renderTarget = new SharpDX.Direct2D1.DeviceContextRenderTarget(MessageRenderer.D2D1Factory, MessageRenderer.RenderTargetProperties);
-
-                            renderTarget.BindDeviceContext(dc, new RawRectangle(0, 0, Width, Height));
-
-                            renderTarget.BeginDraw();
-
-                            //renderTarget.TextRenderingParams = new SharpDX.DirectWrite.RenderingParams(Fonts.Factory, 1, 1, 1, SharpDX.DirectWrite.PixelGeometry.Flat, SharpDX.DirectWrite.RenderingMode.CleartypeGdiClassic);
-                            renderTarget.TextAntialiasMode = SharpDX.Direct2D1.TextAntialiasMode.Cleartype;
-
-                            int y = yStart;
-
-                            Dictionary<RawColor4, SCB> brushes = new Dictionary<RawColor4, SCB>();
-
-                            var textColor = App.ColorScheme.Text;
-                            var textBrush = new SCB(renderTarget, new RawColor4(textColor.R / 255f, textColor.G / 255f, textColor.B / 255f, 1));
-
-                            for (int i = startIndex; i < M.Length; i++)
-                            {
-                                var msg = M[i];
-
-                                foreach (Word word in msg.Words)
+                                for (int i = startIndex; i < M.Length; i++)
                                 {
-                                    if (word.Type == SpanType.Text)
+                                    var msg = M[i];
+                                    msg.IsVisible = true;
+
+                                    MessageRenderer.DrawMessage(g, msg, MessagePadding.Left, y, selection, i, !App.UseDirectX);
+
+                                    if (y - msg.Height > h)
                                     {
-                                        SCB brush;
-
-                                        if (word.Color == null)
+                                        for (; i < M.Length; i++)
                                         {
-                                            brush = textBrush;
+                                            M[i].IsVisible = false;
                                         }
-                                        else
-                                        {
-                                            HSLColor hsl = word.Color.Value;
 
-                                            if (App.ColorScheme.IsLightTheme)
+                                        break;
+                                    }
+
+                                    y += msg.Height;
+                                }
+                            }
+
+                            if (App.UseDirectX)
+                            {
+                                SharpDX.Direct2D1.DeviceContextRenderTarget renderTarget = null;
+                                IntPtr dc = IntPtr.Zero;
+
+                                dc = g.GetHdc();
+
+                                renderTarget = new SharpDX.Direct2D1.DeviceContextRenderTarget(MessageRenderer.D2D1Factory, MessageRenderer.RenderTargetProperties);
+
+                                renderTarget.BindDeviceContext(dc, new RawRectangle(0, 0, Width, Height));
+
+                                renderTarget.BeginDraw();
+
+                                //renderTarget.TextRenderingParams = new SharpDX.DirectWrite.RenderingParams(Fonts.Factory, 1, 1, 1, SharpDX.DirectWrite.PixelGeometry.Flat, SharpDX.DirectWrite.RenderingMode.CleartypeGdiClassic);
+                                renderTarget.TextAntialiasMode = SharpDX.Direct2D1.TextAntialiasMode.Cleartype;
+
+                                int y = yStart;
+
+                                Dictionary<RawColor4, SCB> brushes = new Dictionary<RawColor4, SCB>();
+
+                                var textColor = App.ColorScheme.Text;
+                                var textBrush = new SCB(renderTarget, new RawColor4(textColor.R / 255f, textColor.G / 255f, textColor.B / 255f, 1));
+
+                                for (int i = startIndex; i < M.Length; i++)
+                                {
+                                    var msg = M[i];
+
+                                    foreach (Word word in msg.Words)
+                                    {
+                                        if (word.Type == SpanType.Text)
+                                        {
+                                            SCB brush;
+
+                                            if (word.Color == null)
                                             {
-                                                if (hsl.Luminosity > 0.5f)
-                                                {
-                                                    hsl = hsl.WithLuminosity(0.5f);
-                                                }
+                                                brush = textBrush;
                                             }
                                             else
                                             {
-                                                if (hsl.Luminosity < 0.66f)
+                                                HSLColor hsl = word.Color.Value;
+
+                                                if (App.ColorScheme.IsLightTheme)
                                                 {
-                                                    hsl = hsl.WithLuminosity(0.66f);
+                                                    if (hsl.Saturation > 0.4f)
+                                                    {
+                                                        hsl = hsl.WithSaturation(0.4f);
+                                                    }
+                                                    if (hsl.Luminosity > 0.5f)
+                                                    {
+                                                        hsl = hsl.WithLuminosity(0.5f);
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    if (hsl.Luminosity < 0.66f)
+                                                    {
+                                                        hsl = hsl.WithLuminosity(0.66f);
+                                                    }
+                                                }
+
+                                                if (hsl.Luminosity >= 0.9f)
+                                                {
+                                                    hsl = hsl.WithLuminosity(0.9f);
+                                                }
+
+                                                float r, _g, b;
+                                                hsl.ToRGB(out r, out _g, out b);
+                                                RawColor4 color = new RawColor4(r, _g, b, 1f);
+
+                                                if (!brushes.TryGetValue(color, out brush))
+                                                {
+                                                    brushes[color] = brush = new SCB(renderTarget, color);
                                                 }
                                             }
 
-                                            float r, _g, b;
-                                            hsl.ToRGB(out r, out _g, out b);
-                                            RawColor4 color = new RawColor4(r, _g, b, 1);
-
-                                            if (!brushes.TryGetValue(color, out brush))
+                                            if (word.SplitSegments == null)
                                             {
-                                                brushes[color] = brush = new SCB(renderTarget, color);
+                                                renderTarget.DrawText((string)word.Value, Fonts.GetTextFormat(word.Font), new RawRectangleF(MessagePadding.Left + word.X, y + word.Y, 10000, 10000), brush);
+                                            }
+                                            else
+                                            {
+                                                foreach (var split in word.SplitSegments)
+                                                    renderTarget.DrawText(split.Item1, Fonts.GetTextFormat(word.Font), new RawRectangleF(MessagePadding.Left + split.Item2.X, y + split.Item2.Y, 10000, 10000), brush);
                                             }
                                         }
-
-                                        if (word.SplitSegments == null)
-                                        {
-                                            renderTarget.DrawText((string)word.Value, Fonts.GetTextFormat(word.Font), new RawRectangleF(MessagePadding.Left + word.X, y + word.Y, 10000, 10000), brush);
-                                        }
-                                        else
-                                        {
-                                            foreach (var split in word.SplitSegments)
-                                                renderTarget.DrawText(split.Item1, Fonts.GetTextFormat(word.Font), new RawRectangleF(MessagePadding.Left + split.Item2.X, y + split.Item2.Y, 10000, 10000), brush);
-                                        }
                                     }
+
+                                    if (y - msg.Height > h)
+                                    {
+                                        break;
+                                    }
+
+                                    y += msg.Height;
                                 }
 
-                                if (y - msg.Height > h)
+                                foreach (var b in brushes.Values)
                                 {
-                                    break;
+                                    b.Dispose();
                                 }
 
-                                y += msg.Height;
+                                renderTarget.EndDraw();
+
+                                textBrush.Dispose();
+                                g.ReleaseHdc(dc);
+                                renderTarget.Dispose();
                             }
 
-                            foreach (var b in brushes.Values)
                             {
-                                b.Dispose();
-                            }
+                                int y = yStart;
 
-                            renderTarget.EndDraw();
-
-                            textBrush.Dispose();
-                            g.ReleaseHdc(dc);
-                            renderTarget.Dispose();
-                        }
-
-                        {
-                            int y = yStart;
-
-                            Brush disabledBrush = new SolidBrush(Color.FromArgb(172, (App.ColorScheme.ChatBackground as SolidBrush)?.Color ?? Color.Black));
-                            for (int i = startIndex; i < M.Length; i++)
-                            {
-                                var msg = M[i];
-
-                                if (msg.Disabled)
+                                Brush disabledBrush = new SolidBrush(Color.FromArgb(172, (App.ColorScheme.ChatBackground as SolidBrush)?.Color ?? Color.Black));
+                                for (int i = startIndex; i < M.Length; i++)
                                 {
-                                    g.SmoothingMode = SmoothingMode.None;
+                                    var msg = M[i];
 
-                                    g.FillRectangle(disabledBrush, 0, y, 1000, msg.Height);
+                                    if (msg.Disabled)
+                                    {
+                                        g.SmoothingMode = SmoothingMode.None;
+
+                                        g.FillRectangle(disabledBrush, 0, y, 1000, msg.Height);
+                                    }
+
+                                    if (y - msg.Height > h)
+                                    {
+                                        break;
+                                    }
+
+                                    y += msg.Height;
                                 }
-
-                                if (y - msg.Height > h)
-                                {
-                                    break;
-                                }
-
-                                y += msg.Height;
+                                disabledBrush.Dispose();
                             }
-                            disabledBrush.Dispose();
                         }
                     }
 
@@ -629,85 +641,89 @@ namespace Chatterino.Controls
 
         protected virtual void updateMessageBounds(bool emoteChanged = false)
         {
-            object g = App.UseDirectX ? null : CreateGraphics();
-
-            // determine if
-            double scrollbarThumbHeight = 0;
-            int totalHeight = Height - MessagePadding.Top - MessagePadding.Bottom;
-            int currentHeight = 0;
-            int tmpHeight = Height - MessagePadding.Top - MessagePadding.Bottom;
-            bool enableScrollbar = false;
-            int messageCount = 0;
-
-            if (MessageLock != null)
+            if (Parent?.Parent != null)
             {
-                lock (MessageLock)
+                object g = App.UseDirectX ? null : CreateGraphics();
+
+                // determine if
+                double scrollbarThumbHeight = 0;
+                int totalHeight = Height - MessagePadding.Top - MessagePadding.Bottom;
+                int currentHeight = 0;
+                int tmpHeight = Height - MessagePadding.Top - MessagePadding.Bottom;
+                bool enableScrollbar = false;
+                int messageCount = 0;
+
+                if (MessageLock != null)
                 {
-
-                    var messages = Messages;
-                    messageCount = messages.Length;
-
-                    int visibleStart = Math.Max(0, (int)_scroll.Value);
-
-                    // set EmotesChanged for messages
-                    if (emoteChanged)
+                    lock (MessageLock)
                     {
-                        for (int i = 0; i < messages.Length; i++)
+
+                        var messages = Messages;
+                        messageCount = messages.Length;
+
+                        int visibleStart = Math.Max(0, (int)_scroll.Value);
+
+                        // set EmotesChanged for messages
+                        if (emoteChanged)
                         {
-                            messages[i].EmoteBoundsChanged = true;
+                            for (int i = 0; i < messages.Length; i++)
+                            {
+                                messages[i].EmoteBoundsChanged = true;
+                            }
                         }
-                    }
 
-                    // calculate bounds for visible messages
-                    for (int i = visibleStart; i < messages.Length; i++)
-                    {
-                        var msg = messages[i];
-
-                        msg.CalculateBounds(g, Width - MessagePadding.Left - MessagePadding.Right);
-                        currentHeight += msg.Height;
-
-                        if (currentHeight > totalHeight)
+                        // calculate bounds for visible messages
+                        for (int i = visibleStart; i < messages.Length; i++)
                         {
-                            break;
+                            var msg = messages[i];
+
+                            msg.CalculateBounds(g, Width - MessagePadding.Left - MessagePadding.Right);
+                            currentHeight += msg.Height;
+
+                            if (currentHeight > totalHeight)
+                            {
+                                break;
+                            }
                         }
-                    }
 
-                    // calculate bounds for messages at the bottom to determine the size of the scrollbar thumb
-                    for (int i = messages.Length - 1; i >= 0; i--)
-                    {
-                        var msg = messages[i];
-                        msg.CalculateBounds(g, Width - MessagePadding.Left - MessagePadding.Right);
-                        scrollbarThumbHeight++;
-
-                        tmpHeight -= msg.Height;
-                        if (tmpHeight < 0)
+                        // calculate bounds for messages at the bottom to determine the size of the scrollbar thumb
+                        for (int i = messages.Length - 1; i >= 0; i--)
                         {
-                            enableScrollbar = true;
-                            scrollbarThumbHeight -= 1 - (double)tmpHeight / msg.Height;
-                            break;
+                            var msg = messages[i];
+                            msg.CalculateBounds(g, Width - MessagePadding.Left - MessagePadding.Right);
+                            scrollbarThumbHeight++;
+
+                            tmpHeight -= msg.Height;
+                            if (tmpHeight < 0)
+                            {
+                                enableScrollbar = true;
+                                scrollbarThumbHeight -= 1 - (double)tmpHeight / msg.Height;
+                                break;
+                            }
                         }
                     }
                 }
+
+                (g as Graphics)?.Dispose();
+
+                this.Invoke(() =>
+                {
+                    if (enableScrollbar)
+                    {
+                        _scroll.Enabled = true;
+                        _scroll.LargeChange = scrollbarThumbHeight;
+                        _scroll.Maximum = messageCount - 1;
+
+                        if (scrollAtBottom)
+                            _scroll.Value = messageCount - scrollbarThumbHeight;
+                    }
+                    else
+                    {
+                        _scroll.Enabled = false;
+                        _scroll.Value = 0;
+                    }
+                });
             }
-            (g as Graphics)?.Dispose();
-
-            this.Invoke(() =>
-            {
-                if (enableScrollbar)
-                {
-                    _scroll.Enabled = true;
-                    _scroll.LargeChange = scrollbarThumbHeight;
-                    _scroll.Maximum = messageCount - 1;
-
-                    if (scrollAtBottom)
-                        _scroll.Value = messageCount - scrollbarThumbHeight;
-                }
-                else
-                {
-                    _scroll.Enabled = false;
-                    _scroll.Value = 0;
-                }
-            });
         }
 
         protected void checkScrollBarPosition()

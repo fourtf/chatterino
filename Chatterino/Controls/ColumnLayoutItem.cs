@@ -7,11 +7,11 @@ using System.Windows.Forms;
 
 namespace Chatterino.Controls
 {
-    public class ColumnLayoutItemBase : Control
+    public class ColumnLayoutItem : Control
     {
         static Random random = new Random();
 
-        public ColumnLayoutItemBase()
+        public ColumnLayoutItem()
         {
             SetStyle(ControlStyles.ResizeRedraw, true);
             SetStyle(ControlStyles.Selectable, true);

@@ -69,8 +69,8 @@ namespace TwitchIrc
                     {
                         WriteConnection.WriteLine("PRIVMSG #" + channel + " :" + message);
 
-                        lastMessagesMod.Enqueue(now + TimeSpan.FromSeconds(30));
-                        lastMessagesPleb.Enqueue(now + TimeSpan.FromSeconds(30));
+                        lastMessagesMod.Enqueue(now + TimeSpan.FromSeconds(32));
+                        lastMessagesPleb.Enqueue(now + TimeSpan.FromSeconds(32));
                     }
                     else
                     {
@@ -83,7 +83,7 @@ namespace TwitchIrc
                     {
                         WriteConnection.WriteLine("PRIVMSG #" + channel + " :" + message);
 
-                        lastMessagesPleb.Enqueue(now + TimeSpan.FromSeconds(30));
+                        lastMessagesPleb.Enqueue(now + TimeSpan.FromSeconds(32));
                     }
                     else
                     {
@@ -93,6 +93,21 @@ namespace TwitchIrc
             }
 
             return true;
+        }
+
+        public TimeSpan GetTimeUntilNextMessage(bool isMod)
+        {
+            lock (lastMessagesLock)
+            {
+                if (isMod)
+                {
+                    return lastMessagesMod.Count >= 99 ? lastMessagesMod.Peek() - DateTime.Now : TimeSpan.Zero;
+                }
+                else
+                {
+                    return lastMessagesPleb.Count >= 19 ? lastMessagesPleb.Peek() - DateTime.Now : TimeSpan.Zero;
+                }
+            }
         }
 
         public void WriteLine(string value)

@@ -30,8 +30,22 @@ namespace Chatterino
         public static event EventHandler GifEmoteFramesUpdated;
 
         // Color Scheme
-        public static ColorScheme ColorScheme { get; set; } = new ColorScheme();
         public static event EventHandler ColorSchemeChanged;
+
+        private static ColorScheme colorScheme;
+
+        public static ColorScheme ColorScheme
+        {
+            get { return colorScheme; }
+            set
+            {
+                if (colorScheme != value)
+                {
+                    colorScheme = value;
+                    ColorSchemeChanged?.Invoke(null, null);
+                }
+            }
+        }
 
         // Window
         public static MainForm MainForm { get; set; }
@@ -97,7 +111,9 @@ namespace Chatterino
 
             // Settings/Colors
             AppSettings.Load("./Settings.ini");
-            ColorScheme.Load("./Custom/Colors.ini");
+            updateTheme();
+
+            AppSettings.ThemeChanged += (s, e) => updateTheme();
 
             // Check for updates
             try
@@ -229,9 +245,44 @@ namespace Chatterino
             }
         }
 
-        public static void TriggerColorSchemeChanged()
+        static void updateTheme()
         {
-            ColorSchemeChanged?.Invoke(null, EventArgs.Empty);
+            float multiplier = -0.8f;
+
+            switch (AppSettings.Theme)
+            {
+                case "White":
+                    multiplier = 1f;
+                    break;
+                case "Light":
+                    multiplier = 0.8f;
+                    break;
+                case "Dark":
+                    multiplier = -0.8f;
+                    break;
+                case "Black":
+                    multiplier = -1f;
+                    break;
+            }
+
+
+            ColorScheme = ColorScheme.FromHue(0.6f, multiplier);
+
+            if (MainForm != null)
+            {
+                Action<Control> invalidate = null;
+
+                invalidate = c =>
+                {
+                    foreach (Control C in c.Controls)
+                    {
+                        C.Invalidate();
+                        invalidate(C);
+                    }
+                };
+
+                invalidate(MainForm);
+            }
         }
     }
 }

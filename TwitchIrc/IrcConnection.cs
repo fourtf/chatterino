@@ -76,7 +76,10 @@ namespace TwitchIrc
                 {
                     client = new TcpClient();
                     client.NoDelay = true;
+                    client.ReceiveBufferSize = 8096;
+                    client.SendBufferSize = 8096;
                     client.Connect("irc.chat.twitch.tv", 6667);
+
                     stream = client.GetStream();
 
                     StreamReader reader = new StreamReader(stream);
@@ -89,8 +92,6 @@ namespace TwitchIrc
 
                             while ((line = reader.ReadLine()) != null)
                             {
-                                Console.WriteLine(line);
-
                                 IrcMessage msg;
 
                                 if (IrcMessage.TryParse(line, out msg))

@@ -128,7 +128,7 @@ namespace Chatterino.Common
                 sv = (v - m) / v;
                 hue *= 6f;
                 sextant = (int)hue;
-                fract = hue - sextant;
+                fract = hue - Math.Max(0, sextant);
                 vsf = v * sv * fract;
                 mid1 = m + vsf;
                 mid2 = v - vsf;

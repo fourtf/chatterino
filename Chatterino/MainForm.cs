@@ -29,7 +29,7 @@ namespace Chatterino
             {
                 AppSettings.CurrentVersion = App.CurrentVersion.ToString();
 
-                AddChangelog();
+                ShowChangelog();
             }
 #endif
 
@@ -55,11 +55,13 @@ namespace Chatterino
             StartPosition = FormStartPosition.Manual;
             Location = new Point(AppSettings.WindowX, AppSettings.WindowY);
             Size = new Size(AppSettings.WindowWidth, AppSettings.WindowHeight);
+
+            tabControl.TabPageSelected += (s, e) => { (e.Value as ColumnTabPage)?.Columns.FirstOrDefault()?.Widgets.FirstOrDefault()?.Focus(); };
         }
 
         protected override bool ProcessCmdKey(ref System.Windows.Forms.Message msg, Keys keyData)
         {
-            var chatControl = (App.MainForm?.SelectedControl as ChatControl);
+            var chatControl = (App.MainForm?.Selected as ChatControl);
 
             if (keyData == Keys.Tab || keyData == (Keys.Shift | Keys.Tab))
             {
@@ -79,18 +81,18 @@ namespace Chatterino
 
                 return true;
             }
-            else if (keyData == Keys.Back || keyData == (Keys.Back | Keys.Control) || keyData == Keys.Delete || keyData == (Keys.Delete | Keys.Control))
+            else if (keyData == Keys.Back || keyData == (Keys.Back | Keys.Control) || keyData == (Keys.Back | Keys.Shift) || keyData == Keys.Delete || keyData == (Keys.Delete | Keys.Control) || keyData == (Keys.Delete | Keys.Shift))
             {
                 chatControl?.Input.Logic.Delete((keyData & Keys.Control) == Keys.Control, (keyData & ~Keys.Control) == Keys.Delete);
             }
             else if (keyData == Keys.Home)
-                (App.MainForm?.SelectedControl as ChatControl).Process(c => c.Input.Logic.SetCaretPosition(0));
+                (App.MainForm?.Selected as ChatControl).Process(c => c.Input.Logic.SetCaretPosition(0));
             else if (keyData == (Keys.Home | Keys.Shift))
-                (App.MainForm?.SelectedControl as ChatControl).Process(c => c.Input.Logic.SetSelectionEnd(0));
+                (App.MainForm?.Selected as ChatControl).Process(c => c.Input.Logic.SetSelectionEnd(0));
             else if (keyData == Keys.End)
-                (App.MainForm?.SelectedControl as ChatControl).Process(c => c.Input.Logic.SetCaretPosition(c.Input.Logic.Text.Length));
+                (App.MainForm?.Selected as ChatControl).Process(c => c.Input.Logic.SetCaretPosition(c.Input.Logic.Text.Length));
             else if (keyData == (Keys.End | Keys.Shift))
-                (App.MainForm?.SelectedControl as ChatControl).Process(c => c.Input.Logic.SetSelectionEnd(c.Input.Logic.Text.Length));
+                (App.MainForm?.Selected as ChatControl).Process(c => c.Input.Logic.SetSelectionEnd(c.Input.Logic.Text.Length));
 
             return base.ProcessCmdKey(ref msg, keyData);
         }
@@ -105,17 +107,24 @@ namespace Chatterino
             );
         }
 
-        public Control SelectedControl
+        public ColumnLayoutItem Selected
         {
             get
             {
-                return columnLayoutControl1.Columns.SelectMany(x => x).FirstOrDefault(x => x.Focused);
+                return tabControl.TabPages.SelectMany(a => ((ColumnTabPage)a).Columns.SelectMany(b => b.Widgets)).FirstOrDefault(c => c.Focused);
+            }
+            set
+            {
+                value.Focus();
             }
         }
 
-        public ColumnLayoutControl ColumnLayout
+        public Controls.TabControl TabControl
         {
-            get { return columnLayoutControl1; }
+            get
+            {
+                return tabControl;
+            }
         }
 
         protected override void OnKeyDown(KeyEventArgs e)
@@ -134,7 +143,7 @@ namespace Chatterino
                         break;
                     case Keys.R:
                         {
-                            var focused = columnLayoutControl1.Columns.SelectMany(x => x).FirstOrDefault(x => x.Focused) as ChatControl;
+                            ChatControl focused = Selected as ChatControl;
                             if (focused != null)
                             {
                                 using (InputDialogForm dialog = new InputDialogForm("channel name") { Value = focused.ChannelName })
@@ -151,17 +160,17 @@ namespace Chatterino
                         App.ShowSettings();
                         break;
                     case Keys.C:
-                        (App.MainForm?.SelectedControl as ChatControl)?.CopySelection(false);
+                        (App.MainForm?.Selected as ChatControl)?.CopySelection(false);
                         break;
                     case Keys.X:
-                        (App.MainForm?.SelectedControl as ChatControl)?.CopySelection(true);
+                        (App.MainForm?.Selected as ChatControl)?.CopySelection(true);
                         break;
                     case Keys.V:
                         try
                         {
                             if (Clipboard.ContainsText())
                             {
-                                (App.MainForm?.SelectedControl as ChatControl)?.PasteText(Clipboard.GetText());
+                                (App.MainForm?.Selected as ChatControl)?.PasteText(Clipboard.GetText());
                             }
                         }
                         catch { }
@@ -187,27 +196,52 @@ namespace Chatterino
 
         public void AddNewSplit()
         {
-            var chat = new ChatControl();
+            ChatControl chatControl = new ChatControl();
 
-            columnLayoutControl1.AddToGrid(chat);
-            chat.Select();
+            (tabControl.Selected as ColumnTabPage)?.AddColumn()?.Process(col =>
+            {
+                col.AddWidget(chatControl);
+                col.Widgets.FirstOrDefault()?.Focus();
+            });
 
             RenameSelectedSplit();
         }
 
         public void RemoveSelectedSplit()
         {
-            Control focused = columnLayoutControl1.Columns.SelectMany(x => x).FirstOrDefault(x => x.Focused);
-            if (focused != null)
+            var selected = Selected;
+
+            if (selected != null)
             {
-                columnLayoutControl1.RemoveFromGrid(focused);
-                focused.Dispose();
+                ChatColumn column = null;
+                ColumnTabPage _page = null;
+
+                foreach (ColumnTabPage page in tabControl.TabPages.Where(x => x is ColumnTabPage))
+                {
+                    foreach (var c in page.Columns)
+                    {
+                        if (c.Widgets.Contains(selected))
+                        {
+                            _page = page;
+                            column = c;
+                            break;
+                        }
+                    }
+                }
+
+                if (column != null)
+                {
+                    column.RemoveWidget(selected);
+
+                    if (column.WidgetCount == 0)
+                        _page.RemoveColumn(column);
+                }
             }
         }
 
         public void RenameSelectedSplit()
         {
-            ChatControl focused = columnLayoutControl1.Columns.SelectMany(x => x).FirstOrDefault(x => x.Focused) as ChatControl;
+            ChatControl focused = Selected as ChatControl;
             if (focused != null)
             {
                 using (InputDialogForm dialog = new InputDialogForm("channel name") { Value = focused.ChannelName })
@@ -234,41 +268,92 @@ namespace Chatterino
 
         public void LoadLayout(string path)
         {
-            columnLayoutControl1.ClearGrid();
-
             try
             {
                 if (File.Exists(path))
                 {
                     XDocument doc = XDocument.Load(path);
+
                     doc.Root.Process(root =>
                     {
-                        int columnIndex = 0;
-                        root.Elements("column").Do(xD =>
+                        foreach (var tab in doc.Elements().First().Elements("tab"))
                         {
-                            int rowIndex = 0;
-                            xD.Elements().Do(x =>
+                            Console.WriteLine("tab");
+
+                            ColumnTabPage page = new ColumnTabPage();
+
+                            page.CustomTitle = tab.Attribute("title")?.Value;
+
+                            foreach (var col in tab.Elements("column"))
                             {
-                                switch (x.Name.LocalName)
+                                ChatColumn column = new ChatColumn();
+
+                                foreach (var chat in col.Elements("chat"))
                                 {
-                                    case "chat":
-                                        if (x.Attribute("type").Value == "twitch")
-                                        {
-                                            AddChannel(x.Attribute("channel").Value, columnIndex, rowIndex == 0 ? -1 : rowIndex);
-                                        }
-                                        break;
+                                    if (chat.Attribute("type")?.Value == "twitch")
+                                    {
+                                        Console.WriteLine("added chat");
+
+                                        string channel = chat.Attribute("channel")?.Value;
+
+                                        ChatControl widget = new ChatControl();
+                                        widget.ChannelName = channel;
+
+                                        column.AddWidget(widget);
+                                    }
                                 }
-                                rowIndex++;
-                            });
-                            columnIndex++;
-                        });
+
+                                page.AddColumn(column);
+                            }
+
+                            tabControl.AddTab(page);
+                        }
                     });
                 }
             }
-            catch { }
+            catch (Exception exc)
+            {
+                Console.WriteLine(exc.Message);
+            }
 
-            if (columnLayoutControl1.Columns.Count == 0)
-                AddChannel("fourtf");
+            //columnLayoutControl1.ClearGrid();
+
+            //try
+            //{
+            //    if (File.Exists(path))
+            //    {
+            //        XDocument doc = XDocument.Load(path);
+            //        doc.Root.Process(root =>
+            //        {
+            //            root.Elements("tab").Do(tab =>
+            //            {
+            //                int columnIndex = 0;
+            //                tab.Elements("column").Do(xD =>
+            //                {
+            //                    int rowIndex = 0;
+            //                    xD.Elements().Do(x =>
+            //                    {
+            //                        switch (x.Name.LocalName)
+            //                        {
+            //                            case "chat":
+            //                                if (x.Attribute("type").Value == "twitch")
+            //                                {
+            //                                    AddChannel(x.Attribute("channel").Value, columnIndex, rowIndex == 0 ? -1 : rowIndex);
+            //                                }
+            //                                break;
+            //                        }
+            //                        rowIndex++;
+            //                    });
+            //                    columnIndex++;
+            //                });
+            //            });
+            //        });
+            //    }
+            //}
+            //catch { }
+
+            //if (columnLayoutControl1.Columns.Count == 0)
+            //    AddChannel("fourtf");
         }
 
         public void SaveLayout(string path)
@@ -279,22 +364,28 @@ namespace Chatterino
                 XElement root = new XElement("layout");
                 doc.Add(root);
 
-                foreach (var column in columnLayoutControl1.Columns)
+                foreach (ColumnTabPage page in tabControl.TabPages)
                 {
-                    root.Add(new XElement("column").With(xcol =>
+                    root.Add(new XElement("tab").With(xtab =>
                     {
-                        foreach (var row in column)
+                        if (page.CustomTitle != null)
                         {
-                            var chat = row as ChatControl;
+                            xtab.SetAttributeValue("title", page.Title);
+                        }
 
-                            if (chat != null)
+                        foreach (ChatColumn col in page.Columns)
+                        {
+                            xtab.Add(new XElement("column").With(xcol =>
                             {
-                                xcol.Add(new XElement("chat").With(x =>
+                                foreach (ChatControl widget in col.Widgets.Where(x => x is ChatControl))
                                 {
-                                    x.SetAttributeValue("type", "twitch");
-                                    x.SetAttributeValue("channel", chat.ChannelName ?? "");
-                                }));
-                            }
+                                    xcol.Add(new XElement("chat").With(x =>
+                                    {
+                                        x.SetAttributeValue("type", "twitch");
+                                        x.SetAttributeValue("channel", widget.ChannelName ?? "");
+                                    }));
+                                }
+                            }));
                         }
                     }));
                 }
@@ -302,20 +393,67 @@ namespace Chatterino
                 doc.Save(path);
             }
             catch { }
+
+            //try
+            //{
+            //    XDocument doc = new XDocument();
+            //    XElement root = new XElement("layout");
+            //    doc.Add(root);
+
+            //    foreach (var column in columnLayoutControl1.Columns)
+            //    {
+            //        root.Add(new XElement("column").With(xcol =>
+            //        {
+            //            foreach (var row in column)
+            //            {
+            //                var chat = row as ChatControl;
+
+            //                if (chat != null)
+            //                {
+            //                    xcol.Add(new XElement("chat").With(x =>
+            //                    {
+            //                        x.SetAttributeValue("type", "twitch");
+            //                        x.SetAttributeValue("channel", chat.ChannelName ?? "");
+            //                    }));
+            //                }
+            //            }
+            //        }));
+            //    }
+
+            //    doc.Save(path);
+            //}
+            //catch { }
         }
 
-        public void AddChannel(string name, int column = -1, int row = -1)
-        {
-            columnLayoutControl1.AddToGrid(new ChatControl { ChannelName = name }, column, row);
-        }
-
-        public void AddChangelog()
+        public void ShowChangeLog()
         {
             try
             {
-                ColumnLayout.AddToGrid(new ChangelogControl(File.ReadAllText("Changelog.md")));
+                if (File.Exists("./Changelog.md"))
+                {
+                    var page = new ColumnTabPage();
+                    page.Title = "Changelog";
+
+                    page.AddColumn(new ChatColumn(new ChangelogControl(File.ReadAllText("./Changelog.md"))));
+
+                    tabControl.InsertTab(0, page, true);
+                }
             }
             catch { }
         }
+
+        //public void AddChannel(string name, int column = -1, int row = -1)
+        //{
+        //    //columnLayoutControl1.AddToGrid(new ChatControl { ChannelName = name }, column, row);
+        //}
+
+        //public void AddChangelog()
+        //{
+        //    try
+        //    {
+        //        ColumnLayout.AddToGrid(new ChangelogControl(File.ReadAllText("Changelog.md")));
+        //    }
+        //    catch { }
+        //}
     }
 }

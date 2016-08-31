@@ -153,6 +153,16 @@ namespace Chatterino.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap ExpandChevronDown_16x {
+            get {
+                object obj = ResourceManager.GetObject("ExpandChevronDown_16x", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap globalmod_bg {
             get {
                 object obj = ResourceManager.GetObject("globalmod_bg", resourceCulture);

@@ -30,6 +30,15 @@
         {
             this.tabs = new Chatterino.Controls.SettingsTabControl();
             this.RightPanel = new System.Windows.Forms.Panel();
+            this.panel4 = new System.Windows.Forms.Panel();
+            this.tabControl2 = new System.Windows.Forms.TabControl();
+            this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.label8 = new System.Windows.Forms.Label();
+            this.rtbIngoredEmotes = new System.Windows.Forms.RichTextBox();
+            this.chkEmojis = new System.Windows.Forms.CheckBox();
+            this.chkGifEmotes = new System.Windows.Forms.CheckBox();
+            this.chkBttvEmotes = new System.Windows.Forms.CheckBox();
+            this.chkFFzEmotes = new System.Windows.Forms.CheckBox();
             this.panel3 = new System.Windows.Forms.Panel();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
@@ -45,6 +54,9 @@
             this.chkHighlight = new System.Windows.Forms.CheckBox();
             this.chkPings = new System.Windows.Forms.CheckBox();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.comboTheme = new System.Windows.Forms.ComboBox();
+            this.label7 = new System.Windows.Forms.Label();
+            this.chkMessageSeperators = new System.Windows.Forms.CheckBox();
             this.lblFont = new System.Windows.Forms.Label();
             this.btnSelectFont = new System.Windows.Forms.Button();
             this.label5 = new System.Windows.Forms.Label();
@@ -52,13 +64,7 @@
             this.txtMsgLimit = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.chkDoubleClickLinks = new System.Windows.Forms.CheckBox();
-            this.chkEmojis = new System.Windows.Forms.CheckBox();
             this.chkAllowSameMessages = new System.Windows.Forms.CheckBox();
-            this.chkGifEmotes = new System.Windows.Forms.CheckBox();
-            this.chkBttvEmotes = new System.Windows.Forms.CheckBox();
-            this.chkFFzEmotes = new System.Windows.Forms.CheckBox();
-            this.lblEmotes = new System.Windows.Forms.Label();
-            this.lblTabs = new System.Windows.Forms.Label();
             this.chkTimestampSeconds = new System.Windows.Forms.CheckBox();
             this.chkTimestamps = new System.Windows.Forms.CheckBox();
             this.panel2 = new System.Windows.Forms.Panel();
@@ -75,10 +81,14 @@
             this.lblProxy = new System.Windows.Forms.Label();
             this.chkProxyEnabled = new System.Windows.Forms.CheckBox();
             this.spAppearance = new Chatterino.Controls.SettingsTabPage();
+            this.spEmotes = new Chatterino.Controls.SettingsTabPage();
             this.spHighlighted = new Chatterino.Controls.SettingsTabPage();
             this.spConnection = new Chatterino.Controls.SettingsTabPage();
             this.tabs.SuspendLayout();
             this.RightPanel.SuspendLayout();
+            this.panel4.SuspendLayout();
+            this.tabControl2.SuspendLayout();
+            this.tabPage3.SuspendLayout();
             this.panel3.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -92,13 +102,14 @@
             this.tabs.AllowDrop = true;
             this.tabs.Controls.Add(this.RightPanel);
             this.tabs.Controls.Add(this.spAppearance);
+            this.tabs.Controls.Add(this.spEmotes);
             this.tabs.Controls.Add(this.spHighlighted);
             this.tabs.Controls.Add(this.spConnection);
             this.tabs.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabs.Location = new System.Drawing.Point(0, 0);
             this.tabs.Name = "tabs";
             this.tabs.Panel = this.RightPanel;
-            this.tabs.SelectedIndex = 1;
+            this.tabs.SelectedIndex = 2;
             this.tabs.SelectedTab = this.spHighlighted;
             this.tabs.Size = new System.Drawing.Size(598, 448);
             this.tabs.TabIndex = 0;
@@ -111,6 +122,7 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.RightPanel.Controls.Add(this.panel3);
+            this.RightPanel.Controls.Add(this.panel4);
             this.RightPanel.Controls.Add(this.panel1);
             this.RightPanel.Controls.Add(this.panel2);
             this.RightPanel.Location = new System.Drawing.Point(150, 0);
@@ -118,6 +130,114 @@
             this.RightPanel.Padding = new System.Windows.Forms.Padding(0, 0, 0, 42);
             this.RightPanel.Size = new System.Drawing.Size(448, 448);
             this.RightPanel.TabIndex = 0;
+            // 
+            // panel4
+            // 
+            this.panel4.Controls.Add(this.tabControl2);
+            this.panel4.Controls.Add(this.chkEmojis);
+            this.panel4.Controls.Add(this.chkGifEmotes);
+            this.panel4.Controls.Add(this.chkBttvEmotes);
+            this.panel4.Controls.Add(this.chkFFzEmotes);
+            this.panel4.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel4.Location = new System.Drawing.Point(0, 0);
+            this.panel4.Name = "panel4";
+            this.panel4.Size = new System.Drawing.Size(448, 406);
+            this.panel4.TabIndex = 2;
+            // 
+            // tabControl2
+            // 
+            this.tabControl2.Controls.Add(this.tabPage3);
+            this.tabControl2.Location = new System.Drawing.Point(17, 110);
+            this.tabControl2.Name = "tabControl2";
+            this.tabControl2.SelectedIndex = 0;
+            this.tabControl2.Size = new System.Drawing.Size(415, 283);
+            this.tabControl2.TabIndex = 22;
+            // 
+            // tabPage3
+            // 
+            this.tabPage3.Controls.Add(this.label8);
+            this.tabPage3.Controls.Add(this.rtbIngoredEmotes);
+            this.tabPage3.Location = new System.Drawing.Point(4, 22);
+            this.tabPage3.Name = "tabPage3";
+            this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage3.Size = new System.Drawing.Size(407, 257);
+            this.tabPage3.TabIndex = 0;
+            this.tabPage3.Text = "Ignored Emotes";
+            this.tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.label8.ForeColor = System.Drawing.Color.Black;
+            this.label8.Location = new System.Drawing.Point(3, 5);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(230, 13);
+            this.label8.TabIndex = 22;
+            this.label8.Text = "Emotes that will be shown as text (one per line):";
+            // 
+            // rtbIngoredEmotes
+            // 
+            this.rtbIngoredEmotes.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.rtbIngoredEmotes.Location = new System.Drawing.Point(6, 21);
+            this.rtbIngoredEmotes.Name = "rtbIngoredEmotes";
+            this.rtbIngoredEmotes.Size = new System.Drawing.Size(395, 230);
+            this.rtbIngoredEmotes.TabIndex = 17;
+            this.rtbIngoredEmotes.Text = "";
+            // 
+            // chkEmojis
+            // 
+            this.chkEmojis.AutoSize = true;
+            this.chkEmojis.Checked = true;
+            this.chkEmojis.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkEmojis.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.chkEmojis.Location = new System.Drawing.Point(16, 82);
+            this.chkEmojis.Name = "chkEmojis";
+            this.chkEmojis.Size = new System.Drawing.Size(92, 17);
+            this.chkEmojis.TabIndex = 13;
+            this.chkEmojis.Text = "Enable Emojis";
+            this.chkEmojis.UseVisualStyleBackColor = true;
+            // 
+            // chkGifEmotes
+            // 
+            this.chkGifEmotes.AutoSize = true;
+            this.chkGifEmotes.Checked = true;
+            this.chkGifEmotes.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkGifEmotes.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.chkGifEmotes.Location = new System.Drawing.Point(16, 59);
+            this.chkGifEmotes.Name = "chkGifEmotes";
+            this.chkGifEmotes.Size = new System.Drawing.Size(133, 17);
+            this.chkGifEmotes.TabIndex = 12;
+            this.chkGifEmotes.Text = "Enable GIF Animations";
+            this.chkGifEmotes.UseVisualStyleBackColor = true;
+            // 
+            // chkBttvEmotes
+            // 
+            this.chkBttvEmotes.AutoSize = true;
+            this.chkBttvEmotes.Checked = true;
+            this.chkBttvEmotes.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkBttvEmotes.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.chkBttvEmotes.Location = new System.Drawing.Point(16, 13);
+            this.chkBttvEmotes.Name = "chkBttvEmotes";
+            this.chkBttvEmotes.Size = new System.Drawing.Size(149, 17);
+            this.chkBttvEmotes.TabIndex = 11;
+            this.chkBttvEmotes.Text = "Enable BetterTTV Emotes";
+            this.chkBttvEmotes.UseVisualStyleBackColor = true;
+            // 
+            // chkFFzEmotes
+            // 
+            this.chkFFzEmotes.AutoSize = true;
+            this.chkFFzEmotes.Checked = true;
+            this.chkFFzEmotes.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkFFzEmotes.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.chkFFzEmotes.Location = new System.Drawing.Point(16, 36);
+            this.chkFFzEmotes.Name = "chkFFzEmotes";
+            this.chkFFzEmotes.Size = new System.Drawing.Size(167, 17);
+            this.chkFFzEmotes.TabIndex = 10;
+            this.chkFFzEmotes.Text = "Enable FrankerFaceZ Emotes";
+            this.chkFFzEmotes.UseVisualStyleBackColor = true;
             // 
             // panel3
             // 
@@ -138,7 +258,7 @@
             // 
             this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Controls.Add(this.tabPage2);
-            this.tabControl1.Location = new System.Drawing.Point(21, 105);
+            this.tabControl1.Location = new System.Drawing.Point(16, 105);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
             this.tabControl1.Size = new System.Drawing.Size(415, 298);
@@ -214,7 +334,7 @@
             // 
             // btnTextCustomPing
             // 
-            this.btnTextCustomPing.Location = new System.Drawing.Point(193, 78);
+            this.btnTextCustomPing.Location = new System.Drawing.Point(188, 78);
             this.btnTextCustomPing.Name = "btnTextCustomPing";
             this.btnTextCustomPing.Size = new System.Drawing.Size(75, 23);
             this.btnTextCustomPing.TabIndex = 20;
@@ -225,7 +345,7 @@
             // btnCustomHighlightOpenFile
             // 
             this.btnCustomHighlightOpenFile.Image = global::Chatterino.Properties.Resources.OpenFolder_16x;
-            this.btnCustomHighlightOpenFile.Location = new System.Drawing.Point(161, 78);
+            this.btnCustomHighlightOpenFile.Location = new System.Drawing.Point(156, 78);
             this.btnCustomHighlightOpenFile.Name = "btnCustomHighlightOpenFile";
             this.btnCustomHighlightOpenFile.Size = new System.Drawing.Size(24, 23);
             this.btnCustomHighlightOpenFile.TabIndex = 19;
@@ -235,7 +355,7 @@
             // 
             this.chkCustomPingSound.AutoSize = true;
             this.chkCustomPingSound.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.chkCustomPingSound.Location = new System.Drawing.Point(21, 82);
+            this.chkCustomPingSound.Location = new System.Drawing.Point(16, 82);
             this.chkCustomPingSound.Name = "chkCustomPingSound";
             this.chkCustomPingSound.Size = new System.Drawing.Size(135, 17);
             this.chkCustomPingSound.TabIndex = 18;
@@ -246,7 +366,7 @@
             // 
             this.chkFlashTaskbar.AutoSize = true;
             this.chkFlashTaskbar.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.chkFlashTaskbar.Location = new System.Drawing.Point(21, 59);
+            this.chkFlashTaskbar.Location = new System.Drawing.Point(16, 59);
             this.chkFlashTaskbar.Name = "chkFlashTaskbar";
             this.chkFlashTaskbar.Size = new System.Drawing.Size(238, 17);
             this.chkFlashTaskbar.TabIndex = 15;
@@ -257,7 +377,7 @@
             // 
             this.chkHighlight.AutoSize = true;
             this.chkHighlight.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.chkHighlight.Location = new System.Drawing.Point(21, 13);
+            this.chkHighlight.Location = new System.Drawing.Point(16, 13);
             this.chkHighlight.Name = "chkHighlight";
             this.chkHighlight.Size = new System.Drawing.Size(224, 17);
             this.chkHighlight.TabIndex = 13;
@@ -268,7 +388,7 @@
             // 
             this.chkPings.AutoSize = true;
             this.chkPings.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.chkPings.Location = new System.Drawing.Point(21, 36);
+            this.chkPings.Location = new System.Drawing.Point(16, 36);
             this.chkPings.Name = "chkPings";
             this.chkPings.Size = new System.Drawing.Size(225, 17);
             this.chkPings.TabIndex = 14;
@@ -277,6 +397,9 @@
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.comboTheme);
+            this.panel1.Controls.Add(this.label7);
+            this.panel1.Controls.Add(this.chkMessageSeperators);
             this.panel1.Controls.Add(this.lblFont);
             this.panel1.Controls.Add(this.btnSelectFont);
             this.panel1.Controls.Add(this.label5);
@@ -284,13 +407,7 @@
             this.panel1.Controls.Add(this.txtMsgLimit);
             this.panel1.Controls.Add(this.label3);
             this.panel1.Controls.Add(this.chkDoubleClickLinks);
-            this.panel1.Controls.Add(this.chkEmojis);
             this.panel1.Controls.Add(this.chkAllowSameMessages);
-            this.panel1.Controls.Add(this.chkGifEmotes);
-            this.panel1.Controls.Add(this.chkBttvEmotes);
-            this.panel1.Controls.Add(this.chkFFzEmotes);
-            this.panel1.Controls.Add(this.lblEmotes);
-            this.panel1.Controls.Add(this.lblTabs);
             this.panel1.Controls.Add(this.chkTimestampSeconds);
             this.panel1.Controls.Add(this.chkTimestamps);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -299,12 +416,48 @@
             this.panel1.Size = new System.Drawing.Size(448, 406);
             this.panel1.TabIndex = 0;
             // 
+            // comboTheme
+            // 
+            this.comboTheme.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboTheme.FormattingEnabled = true;
+            this.comboTheme.Items.AddRange(new object[] {
+            "White",
+            "Light",
+            "Dark",
+            "Black"});
+            this.comboTheme.Location = new System.Drawing.Point(97, 11);
+            this.comboTheme.Name = "comboTheme";
+            this.comboTheme.Size = new System.Drawing.Size(167, 21);
+            this.comboTheme.TabIndex = 16;
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.label7.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.label7.Location = new System.Drawing.Point(14, 14);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(43, 13);
+            this.label7.TabIndex = 17;
+            this.label7.Text = "Theme:";
+            // 
+            // chkMessageSeperators
+            // 
+            this.chkMessageSeperators.AutoSize = true;
+            this.chkMessageSeperators.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.chkMessageSeperators.Location = new System.Drawing.Point(16, 202);
+            this.chkMessageSeperators.Name = "chkMessageSeperators";
+            this.chkMessageSeperators.Size = new System.Drawing.Size(119, 17);
+            this.chkMessageSeperators.TabIndex = 16;
+            this.chkMessageSeperators.Text = "Seperate messages";
+            this.chkMessageSeperators.UseVisualStyleBackColor = true;
+            // 
             // lblFont
             // 
             this.lblFont.AutoSize = true;
             this.lblFont.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
             this.lblFont.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.lblFont.Location = new System.Drawing.Point(190, 32);
+            this.lblFont.Location = new System.Drawing.Point(178, 39);
             this.lblFont.Name = "lblFont";
             this.lblFont.Size = new System.Drawing.Size(54, 13);
             this.lblFont.TabIndex = 15;
@@ -312,7 +465,7 @@
             // 
             // btnSelectFont
             // 
-            this.btnSelectFont.Location = new System.Drawing.Point(101, 27);
+            this.btnSelectFont.Location = new System.Drawing.Point(97, 34);
             this.btnSelectFont.Name = "btnSelectFont";
             this.btnSelectFont.Size = new System.Drawing.Size(75, 23);
             this.btnSelectFont.TabIndex = 14;
@@ -324,7 +477,7 @@
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
             this.label5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.label5.Location = new System.Drawing.Point(18, 32);
+            this.label5.Location = new System.Drawing.Point(14, 39);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(31, 13);
             this.label5.TabIndex = 13;
@@ -334,7 +487,7 @@
             // 
             this.chkHideInput.AutoSize = true;
             this.chkHideInput.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.chkHideInput.Location = new System.Drawing.Point(20, 172);
+            this.chkHideInput.Location = new System.Drawing.Point(16, 179);
             this.chkHideInput.Name = "chkHideInput";
             this.chkHideInput.Size = new System.Drawing.Size(134, 17);
             this.chkHideInput.TabIndex = 12;
@@ -343,7 +496,7 @@
             // 
             // txtMsgLimit
             // 
-            this.txtMsgLimit.Location = new System.Drawing.Point(101, 54);
+            this.txtMsgLimit.Location = new System.Drawing.Point(97, 61);
             this.txtMsgLimit.Name = "txtMsgLimit";
             this.txtMsgLimit.Size = new System.Drawing.Size(167, 20);
             this.txtMsgLimit.TabIndex = 10;
@@ -353,7 +506,7 @@
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
             this.label3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.label3.Location = new System.Drawing.Point(18, 58);
+            this.label3.Location = new System.Drawing.Point(14, 65);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(77, 13);
             this.label3.TabIndex = 11;
@@ -363,97 +516,23 @@
             // 
             this.chkDoubleClickLinks.AutoSize = true;
             this.chkDoubleClickLinks.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.chkDoubleClickLinks.Location = new System.Drawing.Point(20, 149);
+            this.chkDoubleClickLinks.Location = new System.Drawing.Point(16, 156);
             this.chkDoubleClickLinks.Name = "chkDoubleClickLinks";
             this.chkDoubleClickLinks.Size = new System.Drawing.Size(180, 17);
             this.chkDoubleClickLinks.TabIndex = 10;
             this.chkDoubleClickLinks.Text = "Only open Links on Double Click";
             this.chkDoubleClickLinks.UseVisualStyleBackColor = true;
             // 
-            // chkEmojis
-            // 
-            this.chkEmojis.AutoSize = true;
-            this.chkEmojis.Checked = true;
-            this.chkEmojis.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkEmojis.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.chkEmojis.Location = new System.Drawing.Point(21, 312);
-            this.chkEmojis.Name = "chkEmojis";
-            this.chkEmojis.Size = new System.Drawing.Size(92, 17);
-            this.chkEmojis.TabIndex = 9;
-            this.chkEmojis.Text = "Enable Emojis";
-            this.chkEmojis.UseVisualStyleBackColor = true;
-            // 
             // chkAllowSameMessages
             // 
             this.chkAllowSameMessages.AutoSize = true;
             this.chkAllowSameMessages.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.chkAllowSameMessages.Location = new System.Drawing.Point(20, 126);
+            this.chkAllowSameMessages.Location = new System.Drawing.Point(16, 133);
             this.chkAllowSameMessages.Name = "chkAllowSameMessages";
             this.chkAllowSameMessages.Size = new System.Drawing.Size(309, 17);
             this.chkAllowSameMessages.TabIndex = 8;
             this.chkAllowSameMessages.Text = "Allow sending Duplicate Messages (add a space at the end)";
             this.chkAllowSameMessages.UseVisualStyleBackColor = true;
-            // 
-            // chkGifEmotes
-            // 
-            this.chkGifEmotes.AutoSize = true;
-            this.chkGifEmotes.Checked = true;
-            this.chkGifEmotes.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkGifEmotes.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.chkGifEmotes.Location = new System.Drawing.Point(21, 289);
-            this.chkGifEmotes.Name = "chkGifEmotes";
-            this.chkGifEmotes.Size = new System.Drawing.Size(133, 17);
-            this.chkGifEmotes.TabIndex = 7;
-            this.chkGifEmotes.Text = "Enable GIF Animations";
-            this.chkGifEmotes.UseVisualStyleBackColor = true;
-            // 
-            // chkBttvEmotes
-            // 
-            this.chkBttvEmotes.AutoSize = true;
-            this.chkBttvEmotes.Checked = true;
-            this.chkBttvEmotes.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkBttvEmotes.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.chkBttvEmotes.Location = new System.Drawing.Point(21, 243);
-            this.chkBttvEmotes.Name = "chkBttvEmotes";
-            this.chkBttvEmotes.Size = new System.Drawing.Size(149, 17);
-            this.chkBttvEmotes.TabIndex = 6;
-            this.chkBttvEmotes.Text = "Enable BetterTTV Emotes";
-            this.chkBttvEmotes.UseVisualStyleBackColor = true;
-            // 
-            // chkFFzEmotes
-            // 
-            this.chkFFzEmotes.AutoSize = true;
-            this.chkFFzEmotes.Checked = true;
-            this.chkFFzEmotes.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkFFzEmotes.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.chkFFzEmotes.Location = new System.Drawing.Point(21, 266);
-            this.chkFFzEmotes.Name = "chkFFzEmotes";
-            this.chkFFzEmotes.Size = new System.Drawing.Size(167, 17);
-            this.chkFFzEmotes.TabIndex = 4;
-            this.chkFFzEmotes.Text = "Enable FrankerFaceZ Emotes";
-            this.chkFFzEmotes.UseVisualStyleBackColor = true;
-            // 
-            // lblEmotes
-            // 
-            this.lblEmotes.AutoSize = true;
-            this.lblEmotes.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblEmotes.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.lblEmotes.Location = new System.Drawing.Point(18, 219);
-            this.lblEmotes.Name = "lblEmotes";
-            this.lblEmotes.Size = new System.Drawing.Size(51, 17);
-            this.lblEmotes.TabIndex = 3;
-            this.lblEmotes.Text = "Emotes";
-            // 
-            // lblTabs
-            // 
-            this.lblTabs.AutoSize = true;
-            this.lblTabs.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblTabs.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.lblTabs.Location = new System.Drawing.Point(18, 7);
-            this.lblTabs.Name = "lblTabs";
-            this.lblTabs.Size = new System.Drawing.Size(34, 17);
-            this.lblTabs.TabIndex = 2;
-            this.lblTabs.Text = "Chat";
             // 
             // chkTimestampSeconds
             // 
@@ -461,7 +540,7 @@
             this.chkTimestampSeconds.Checked = true;
             this.chkTimestampSeconds.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkTimestampSeconds.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.chkTimestampSeconds.Location = new System.Drawing.Point(20, 103);
+            this.chkTimestampSeconds.Location = new System.Drawing.Point(16, 110);
             this.chkTimestampSeconds.Name = "chkTimestampSeconds";
             this.chkTimestampSeconds.Size = new System.Drawing.Size(168, 17);
             this.chkTimestampSeconds.TabIndex = 1;
@@ -474,7 +553,7 @@
             this.chkTimestamps.Checked = true;
             this.chkTimestamps.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkTimestamps.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.chkTimestamps.Location = new System.Drawing.Point(20, 80);
+            this.chkTimestamps.Location = new System.Drawing.Point(16, 87);
             this.chkTimestamps.Name = "chkTimestamps";
             this.chkTimestamps.Size = new System.Drawing.Size(112, 17);
             this.chkTimestamps.TabIndex = 0;
@@ -623,11 +702,23 @@
             this.spAppearance.TabIndex = 1;
             this.spAppearance.Text = "Appearance";
             // 
+            // spEmotes
+            // 
+            this.spEmotes.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.spEmotes.Image = null;
+            this.spEmotes.Location = new System.Drawing.Point(0, 30);
+            this.spEmotes.Name = "spEmotes";
+            this.spEmotes.Panel = this.panel4;
+            this.spEmotes.Selected = false;
+            this.spEmotes.Size = new System.Drawing.Size(150, 30);
+            this.spEmotes.TabIndex = 4;
+            this.spEmotes.Text = "Emotes";
+            // 
             // spHighlighted
             // 
             this.spHighlighted.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.spHighlighted.Image = null;
-            this.spHighlighted.Location = new System.Drawing.Point(0, 30);
+            this.spHighlighted.Location = new System.Drawing.Point(0, 60);
             this.spHighlighted.Name = "spHighlighted";
             this.spHighlighted.Panel = this.panel3;
             this.spHighlighted.Size = new System.Drawing.Size(150, 30);
@@ -638,7 +729,7 @@
             // 
             this.spConnection.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.spConnection.Image = null;
-            this.spConnection.Location = new System.Drawing.Point(0, 60);
+            this.spConnection.Location = new System.Drawing.Point(0, 90);
             this.spConnection.Name = "spConnection";
             this.spConnection.Panel = this.panel2;
             this.spConnection.Selected = false;
@@ -664,6 +755,11 @@
             this.Text = "Preferences";
             this.tabs.ResumeLayout(false);
             this.RightPanel.ResumeLayout(false);
+            this.panel4.ResumeLayout(false);
+            this.panel4.PerformLayout();
+            this.tabControl2.ResumeLayout(false);
+            this.tabPage3.ResumeLayout(false);
+            this.tabPage3.PerformLayout();
             this.panel3.ResumeLayout(false);
             this.panel3.PerformLayout();
             this.tabControl1.ResumeLayout(false);
@@ -687,11 +783,6 @@
         private SettingsTabPage spAppearance;
         private System.Windows.Forms.CheckBox chkTimestamps;
         private System.Windows.Forms.CheckBox chkTimestampSeconds;
-        private System.Windows.Forms.Label lblTabs;
-        private System.Windows.Forms.Label lblEmotes;
-        private System.Windows.Forms.CheckBox chkFFzEmotes;
-        private System.Windows.Forms.CheckBox chkGifEmotes;
-        private System.Windows.Forms.CheckBox chkBttvEmotes;
         private System.Windows.Forms.CheckBox chkAllowSameMessages;
         private SettingsTabPage spConnection;
         private System.Windows.Forms.Panel panel2;
@@ -707,7 +798,6 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.ComboBox comboBox1;
-        private System.Windows.Forms.CheckBox chkEmojis;
         private System.Windows.Forms.Panel panel3;
         private SettingsTabPage spHighlighted;
         private System.Windows.Forms.CheckBox chkFlashTaskbar;
@@ -730,5 +820,18 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.RichTextBox rtbUserBlacklist;
         private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.CheckBox chkMessageSeperators;
+        private System.Windows.Forms.ComboBox comboTheme;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.Panel panel4;
+        private SettingsTabPage spEmotes;
+        private System.Windows.Forms.CheckBox chkEmojis;
+        private System.Windows.Forms.CheckBox chkGifEmotes;
+        private System.Windows.Forms.CheckBox chkBttvEmotes;
+        private System.Windows.Forms.CheckBox chkFFzEmotes;
+        private System.Windows.Forms.TabControl tabControl2;
+        private System.Windows.Forms.TabPage tabPage3;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.RichTextBox rtbIngoredEmotes;
     }
 }

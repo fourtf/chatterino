@@ -64,7 +64,7 @@
             this.Controls.Add(this.label1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "LoginForm";
-            this.Text = "Nice fucking login form bro";
+            this.Text = "Login via Twitch";
             this.ResumeLayout(false);
 
         }

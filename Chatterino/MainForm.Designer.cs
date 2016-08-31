@@ -28,29 +28,25 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.columnLayoutControl1 = new Chatterino.Controls.ColumnLayoutControl();
+            this.tabControl = new Chatterino.Controls.TabControl();
             this.SuspendLayout();
             // 
-            // columnLayoutControl1
+            // tabControl1
             // 
-            this.columnLayoutControl1.AllowDrop = true;
-            this.columnLayoutControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.columnLayoutControl1.Location = new System.Drawing.Point(0, 0);
-            this.columnLayoutControl1.MaxColumns = 4;
-            this.columnLayoutControl1.MaxRows = 4;
-            this.columnLayoutControl1.Name = "columnLayoutControl1";
-            this.columnLayoutControl1.Size = new System.Drawing.Size(809, 501);
-            this.columnLayoutControl1.TabIndex = 0;
-            this.columnLayoutControl1.Text = "columnLayoutControl1";
+            this.tabControl.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.tabControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tabControl.Location = new System.Drawing.Point(0, 0);
+            this.tabControl.Name = "tabControl1";
+            this.tabControl.Size = new System.Drawing.Size(809, 501);
+            this.tabControl.TabIndex = 0;
+            this.tabControl.Text = "tabControl1";
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(809, 501);
-            this.Controls.Add(this.columnLayoutControl1);
+            this.Controls.Add(this.tabControl);
             this.Name = "MainForm";
             this.Text = "Chatterino";
             this.ResumeLayout(false);
@@ -59,7 +55,7 @@
 
         #endregion
 
-        private Controls.ColumnLayoutControl columnLayoutControl1;
+        private Controls.TabControl tabControl;
     }
 }
 

@@ -166,4 +166,7 @@
   <data name="cheer5000" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\cheer5000.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="ExpandChevronDown_16x" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ExpandChevronDown_16x.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>

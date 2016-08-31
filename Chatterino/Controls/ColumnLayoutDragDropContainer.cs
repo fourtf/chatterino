@@ -8,6 +8,6 @@ namespace Chatterino.Controls
 {
     public class ColumnLayoutDragDropContainer
     {
-        public ColumnLayoutItemBase Control { get; set; } = null;
+        public ColumnLayoutItem Control { get; set; } = null;
     }
 }

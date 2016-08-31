@@ -71,11 +71,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ChatColumn.cs" />
     <Compile Include="ColorScheme.cs" />
+    <Compile Include="Controls\AddChatControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\ChangelogControl.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\ChatInputControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\ColumnTabPage.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\CustomFontDialog\FontDialog.cs">
@@ -117,6 +124,15 @@
     <Compile Include="Controls\SettingsTabPage.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\TabControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\TabControl.MoreButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\TabPage.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\Tooltip.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -137,7 +153,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\ColumnLayoutDragDropContainer.cs" />
-    <Compile Include="Controls\ColumnLayoutItemBase.cs">
+    <Compile Include="Controls\ColumnLayoutItem.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Controls\ColumnLayoutPreviewItem.cs">
@@ -202,12 +218,9 @@
     <None Include="Changelog.md">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Custom\Colors.Light.ini">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="Custom\Colors.ini">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    <Compile Include="Controls\TabControl.Tab.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -221,18 +234,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\admin_1x.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\broadcaster_1x.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\mod_1x.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Resources\turbo_1x.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\admin_bg.png" />
@@ -273,6 +274,7 @@
   <ItemGroup>
     <Content Include="Controls\CustomFontDialog\LICENSE.txt" />
     <Content Include="icon2.ico" />
+    <None Include="Resources\ExpandChevronDown_16x.png" />
     <None Include="Resources\cheer10000.png" />
     <None Include="Resources\cheer5000.png" />
     <None Include="Resources\cheer1000.png" />

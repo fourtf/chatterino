@@ -22,6 +22,7 @@ namespace Chatterino.Common
 
     public interface IGuiEngine
     {
+        bool IsDarkTheme { get; }
         void FreezeImage(object img);
 
         void HandleLink(string link);
