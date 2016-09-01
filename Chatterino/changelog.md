@@ -1,5 +1,9 @@
 ﻿# changelog
 
+## 0.2.2
+- added x button to tabs
+- add option to disable twitch emotes
+
 ## 0.2
 - added tabs
 - added 4 themes (white and light are still work-in-progress)

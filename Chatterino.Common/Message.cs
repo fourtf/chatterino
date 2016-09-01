@@ -307,7 +307,7 @@ namespace Chatterino.Common
             List<Tuple<int, TwitchEmote>> twitchEmotes = new List<Tuple<int, TwitchEmote>>();
 
             // Twitch Emotes
-            if (data.Tags.TryGetValue("emotes", out value))
+            if (AppSettings.ChatEnableTwitchEmotes && data.Tags.TryGetValue("emotes", out value))
             {
                 //  93064:0-6,8-14/80481:16-20,22-26
                 value.Split('/').Do(emote =>

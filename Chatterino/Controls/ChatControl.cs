@@ -239,7 +239,16 @@ namespace Chatterino.Controls
             }
 
             if (e.Message.Highlighted)
+            {
                 _scroll.AddHighlight((channel?.MessageCount ?? 1) - 1, Color.Red);
+
+                ColumnTabPage parent = Parent as ColumnTabPage;
+
+                if (parent != null)
+                {
+                    parent.Highlighted = true;
+                }
+            }
 
             updateMessageBounds();
             Invalidate();
@@ -641,7 +650,7 @@ namespace Chatterino.Controls
                 contextMenu.MenuItems.Add(new MenuItem("Open Channel", (s, e) => { GuiEngine.Current.HandleLink(selected.Channel.ChannelLink); }));
                 contextMenu.MenuItems.Add(new MenuItem("Open Pop-out Player", (s, e) => { GuiEngine.Current.HandleLink(selected.Channel.PopoutPlayerLink); }));
                 contextMenu.MenuItems.Add("-");
-                contextMenu.MenuItems.Add(new MenuItem("Show Changelog", (s, e) => App.MainForm.ShowChangeLog()));
+                contextMenu.MenuItems.Add(new MenuItem("Show Changelog", (s, e) => App.MainForm.ShowChangelog()));
                 contextMenu.MenuItems.Add(LoginMenuItem = new MenuItem("Login", (s, e) => new LoginForm().ShowDialog(), Shortcut.CtrlL));
                 contextMenu.MenuItems.Add(new MenuItem("Preferences", (s, e) => App.ShowSettings(), Shortcut.CtrlP));
 #if DEBUG

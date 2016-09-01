@@ -97,8 +97,8 @@ namespace Chatterino
             scheme.ScrollbarThumb = getColor(gray, 0.8f).ToBrush();
 
             // Highlights
-            scheme.TabSelectedBG = getColor(highlight, 0.5f).WithSaturation(0.5f).ToBrush();
-            scheme.TabHighlightedBG = getColor(highlight, 0.8f).ToBrush();
+            scheme.TabSelectedBG = highlight.WithLuminosity(0.5f).WithSaturation(0.5f).ToBrush();
+            scheme.TabHighlightedBG = highlight.WithLuminosity(0.8f).WithSaturation(0.5f).ToBrush();
             scheme.TextFocused = getColor(highlight, 0.25f).ToColor();
 
             return scheme;

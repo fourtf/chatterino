@@ -268,7 +268,7 @@ namespace Chatterino.Common
 
                     if (!Client.Say(Emojis.ReplaceShortCodes(message), channel.TrimStart('#'), isMod))
                     {
-                        TwitchChannel.GetChannel(channel.TrimStart('#')).Process(c => c.AddMessage(new Message($"Your message was not sent to protect you from a global ban. (try again in {Client.GetTimeUntilNextMessage(isMod).Seconds} seconds.", HSLColor.Gray, false)));
+                        TwitchChannel.GetChannel(channel.TrimStart('#')).Process(c => c.AddMessage(new Message($"Your message was not sent to protect you from a global ban. (try again in {Client.GetTimeUntilNextMessage(isMod).Seconds} seconds)", HSLColor.Gray, false)));
                     }
                 }
             }

@@ -40,25 +40,25 @@ namespace Chatterino.Controls
             };
 
             // Drag + Drop
-            MouseMove += (s, e) =>
-            {
-                if (mouseDown)
-                {
-                    if (e.X < 0 || e.Y < 0 || e.X > Width || e.Y > Height)
-                    {
-                        ColumnLayoutControl layout = Parent as ColumnLayoutControl;
-                        if (layout != null)
-                        {
-                            var position = layout.RemoveFromGrid(this);
-                            OnSplitDragStart();
-                            if (DoDragDrop(new ColumnLayoutDragDropContainer { Control = this }, DragDropEffects.Move) == DragDropEffects.None)
-                            {
-                                layout.AddToGrid(this, position.Item1, position.Item2);
-                            }
-                        }
-                    }
-                }
-            };
+            //MouseMove += (s, e) =>
+            //{
+            //    if (mouseDown)
+            //    {
+            //        if (e.X < 0 || e.Y < 0 || e.X > Width || e.Y > Height)
+            //        {
+            //            ColumnLayoutControl layout = Parent as ColumnLayoutControl;
+            //            if (layout != null)
+            //            {
+            //                var position = layout.RemoveFromGrid(this);
+            //                OnSplitDragStart();
+            //                if (DoDragDrop(new ColumnLayoutDragDropContainer { Control = this }, DragDropEffects.Move) == DragDropEffects.None)
+            //                {
+            //                    layout.AddToGrid(this, position.Item1, position.Item2);
+            //                }
+            //            }
+            //        }
+            //    }
+            //};
 
             //BackColor = Color.FromArgb(-16777216 | (0x404040 | 0x808080 | random.Next(0xFFFFFF)));
         }

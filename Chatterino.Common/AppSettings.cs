@@ -85,6 +85,7 @@ namespace Chatterino.Common
 
         public static bool IgnoreTwitchBlocks { get; private set; } = true;
 
+        public static bool ChatEnableTwitchEmotes { get; set; } = true;
         public static bool ChatEnableBttvEmotes { get; set; } = true;
         public static bool ChatEnableFfzEmotes { get; set; } = true;
         public static bool ChatEnableEmojis { get; set; } = true;

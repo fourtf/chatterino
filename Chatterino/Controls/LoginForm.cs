@@ -108,12 +108,16 @@ namespace Chatterino.Controls
                         }
                     }
                 }
-                catch { }
+                catch
+                {
+
+                }
             });
         }
+
         protected override void OnClosing(CancelEventArgs e)
         {
-            listener.Stop();
+            listener.Close();
 
             base.OnClosing(e);
         }

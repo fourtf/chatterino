@@ -23,6 +23,7 @@ namespace Chatterino.Controls
                     {
                         selected = value;
                         Invalidate();
+                        tabPage.Highlighted = false;
                     }
                 }
             }
@@ -39,9 +40,16 @@ namespace Chatterino.Controls
 
             Point lastP = Point.Empty;
 
+            Rectangle xRectangle;
+
+            bool mouseOverX = false;
+            bool mouseDownX = false;
+
             // Constructor
             public Tab(TabControl tabControl, TabPage tabPage)
             {
+                SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
+
                 AllowDrop = true;
 
                 Text = "tab";
@@ -59,19 +67,45 @@ namespace Chatterino.Controls
                     Invalidate();
                 };
 
+                tabPage.HighlightedChanged += (s, e) =>
+                {
+                    Invalidate();
+                };
+
                 MouseDown += (s, e) =>
                 {
                     tabControl.select(tabPage);
+
+                    if (xRectangle.Contains(e.Location))
+                    {
+                        mouseDownX = true;
+                    }
+
                     mouseDown = true;
                 };
 
                 MouseUp += (s, e) =>
                 {
-                    mouseDown = false;
+                    if (e.Button == MouseButtons.Left)
+                    {
+                        if (mouseDownX && xRectangle.Contains(e.Location))
+                        {
+                            tabControl.RemoveTab(tabPage);
+                        }
+                    }
+
                     if (e.Button == MouseButtons.Right)
                     {
                         menu.Show(this, e.Location);
                     }
+
+                    if (e.Button == MouseButtons.Middle && ClientRectangle.Contains(e.Location))
+                    {
+                        tabControl.RemoveTab(tabPage);
+                    }
+
+                    mouseDownX = false;
+                    mouseDown = false;
                 };
 
                 MouseEnter += (s, e) =>
@@ -84,6 +118,7 @@ namespace Chatterino.Controls
                 MouseLeave += (s, e) =>
                 {
                     mouseOver = false;
+                    mouseOverX = false;
 
                     Invalidate();
                 };
@@ -119,6 +154,10 @@ namespace Chatterino.Controls
                             lastP = p;
                         }
                     }
+
+                    mouseOverX = xRectangle.Contains(e.Location);
+
+                    Invalidate();
                 };
 
                 bool dragOver = false;
@@ -151,6 +190,13 @@ namespace Chatterino.Controls
                 // Context
                 menu.MenuItems.Add(new MenuItem("Rename", (s, e) => rename()));
                 menu.MenuItems.Add(new MenuItem("Close", (s, e) => (Parent as TabControl)?.RemoveTab(tabPage)));
+            }
+
+            protected override void OnResize(EventArgs e)
+            {
+                xRectangle = new Rectangle(Width - 20, Height / 2 - 8, 16, 16);
+
+                base.OnResize(e);
             }
 
             void rename()
@@ -186,32 +232,71 @@ namespace Chatterino.Controls
                 rename();
             }
 
-            protected override void OnMouseUp(MouseEventArgs e)
-            {
-                base.OnMouseUp(e);
-
-                if (e.Button == MouseButtons.Middle)
-                {
-                    tabControl.RemoveTab(tabPage);
-                }
-            }
-
             private void calcSize()
             {
                 if (titleWidth == -1)
                 {
                     var size = TextRenderer.MeasureText(tabPage.Title, Font);
-                    Width = (int)(Padding.Left + size.Width + Padding.Right);
+                    Width = (int)(Padding.Left + size.Width + Padding.Right) + 12;
                     Height = GetHeight();
                 }
             }
 
+            Brush mouseOverXBrush = new SolidBrush(Color.FromArgb(64, 0, 0, 0));
+
             protected override void OnPaint(PaintEventArgs e)
             {
-                e.Graphics.FillRectangle(Selected ? App.ColorScheme.TabSelectedBG : (mouseOver ? App.ColorScheme.TabHoverBG : App.ColorScheme.TabBG), 0, 0, Width, Height);
+                Brush bg;
+                Color text;
+
+                if (Selected)
+                {
+                    bg = App.ColorScheme.TabSelectedBG;
+                    text = App.ColorScheme.TabSelectedText;
+                }
+                else if (mouseOver)
+                {
+                    bg = App.ColorScheme.TabHoverBG;
+                    text = App.ColorScheme.TabHoverText;
+                }
+                else if (tabPage.Highlighted)
+                {
+                    bg = App.ColorScheme.TabHighlightedBG;
+                    text = App.ColorScheme.TabHighlightedText;
+                }
+                else
+                {
+                    bg = App.ColorScheme.TabBG;
+                    text = App.ColorScheme.TabText;
+                }
+
+                e.Graphics.FillRectangle(bg, 0, 0, Width, Height);
 
                 // text
-                TextRenderer.DrawText(e.Graphics, tabPage.Title ?? "<no name>", Font, new Rectangle(0, 0, Width, Height), Selected ? App.ColorScheme.TabSelectedText : (mouseOver ? App.ColorScheme.TabHoverText : App.ColorScheme.TabText), App.DefaultTextFormatFlags | TextFormatFlags.VerticalCenter | TextFormatFlags.HorizontalCenter);
+                TextRenderer.DrawText(e.Graphics, tabPage.Title ?? "<no name>", Font, new Rectangle(0, 0, xRectangle.Left + 4, Height), text, App.DefaultTextFormatFlags | TextFormatFlags.VerticalCenter | TextFormatFlags.HorizontalCenter);
+
+                // x
+                if (mouseDownX || !mouseDown)
+                {
+                    if (mouseOver && mouseOverX)
+                    {
+                        e.Graphics.FillRectangle(mouseOverXBrush, xRectangle);
+
+                        if (mouseDown)
+                        {
+                            e.Graphics.FillRectangle(mouseOverXBrush, xRectangle);
+                        }
+                    }
+                }
+
+                if (Selected || mouseOver)
+                {
+                    using (Pen pen = new Pen(text))
+                    {
+                        e.Graphics.DrawLine(pen, xRectangle.Left + 4, xRectangle.Top + 4, xRectangle.Right - 5, xRectangle.Bottom - 5);
+                        e.Graphics.DrawLine(pen, xRectangle.Right - 5, xRectangle.Top + 4, xRectangle.Left + 4, xRectangle.Bottom - 5);
+                    }
+                }
             }
 
             internal static int GetHeight()

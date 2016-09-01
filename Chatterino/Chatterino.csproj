@@ -52,10 +52,6 @@
       <HintPath>..\packages\SharpDX.DXGI.3.0.2\lib\net45\SharpDX.DXGI.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="StarkSoftProxy, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Chatterino.Common\lib\StarkSoftProxy.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data" />
@@ -149,9 +145,7 @@
     <Compile Include="Controls\ChatControl.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\ColumnLayoutControl.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Include="Controls\ColumnLayoutControl.cs" />
     <Compile Include="Controls\ColumnLayoutDragDropContainer.cs" />
     <Compile Include="Controls\ColumnLayoutItem.cs">
       <SubType>Component</SubType>

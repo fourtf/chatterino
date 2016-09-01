@@ -60,6 +60,7 @@ namespace Chatterino.Controls
             BindCheckBox(chkCustomPingSound, "ChatCustomHighlightSound");
 
             // Emotes
+            BindCheckBox(chkTwitchEmotes, "ChatEnableTwitchEmotes");
             BindCheckBox(chkBttvEmotes, "ChatEnableBttvEmotes");
             BindCheckBox(chkFFzEmotes, "ChatEnableFfzEmotes");
             BindCheckBox(chkEmojis, "ChatEnableEmojis");

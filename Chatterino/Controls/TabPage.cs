@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Chatterino.Common;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -35,6 +36,26 @@ namespace Chatterino.Controls
                 {
                     selected = value;
                     Invalidate();
+                }
+            }
+        }
+
+        public event EventHandler<ValueEventArgs<bool>> HighlightedChanged;
+
+        private bool highlighted = false;
+
+        public bool Highlighted
+        {
+            get { return highlighted; }
+            set
+            {
+                if (!value || !Selected)
+                {
+                    if (highlighted != value)
+                    {
+                        highlighted = value;
+                        HighlightedChanged?.Invoke(this, new ValueEventArgs<bool>(value));
+                    }
                 }
             }
         }

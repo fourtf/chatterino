@@ -1,4 +1,4 @@
-﻿using System;
+﻿/*using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -269,3 +269,4 @@ namespace Chatterino.Controls
         public int MaxRows { get; set; } = 4;
     }
 }
+*/

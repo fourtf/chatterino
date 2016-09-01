@@ -22,6 +22,14 @@ namespace Chatterino
 
             Icon = App.Icon;
 
+            if (!File.Exists("./login.ini"))
+            {
+                using (var login = new LoginForm())
+                {
+                    login.ShowDialog();
+                }
+            }
+
             LoadLayout("./layout.xml");
 
 #if !DEBUG
@@ -303,6 +311,11 @@ namespace Chatterino
                                     }
                                 }
 
+                                if (column.WidgetCount == 0)
+                                {
+                                    column.AddWidget(new ChatControl());
+                                }
+
                                 page.AddColumn(column);
                             }
 
@@ -425,14 +438,14 @@ namespace Chatterino
             //catch { }
         }
 
-        public void ShowChangeLog()
+        public void ShowChangelog()
         {
             try
             {
                 if (File.Exists("./Changelog.md"))
                 {
                     var page = new ColumnTabPage();
-                    page.Title = "Changelog";
+                    page.CustomTitle = "Changelog";
 
                     page.AddColumn(new ChatColumn(new ChangelogControl(File.ReadAllText("./Changelog.md"))));
 
