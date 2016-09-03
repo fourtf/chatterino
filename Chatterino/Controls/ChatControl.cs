@@ -378,7 +378,15 @@ namespace Chatterino.Controls
                 if (e.KeyChar == '\u007f')
                     return;
 
-                if (e.KeyChar == '\b')
+                if (e.KeyChar == ' ' && ModifierKeys == Keys.Control)
+                {
+                    // show autocomplete
+                }
+                else if (e.KeyChar == '\x7F')
+                {
+                    Input.Logic.Delete(true, false);
+                }
+                else if (e.KeyChar == '\b')
                 {
                     resetCompletion();
                 }

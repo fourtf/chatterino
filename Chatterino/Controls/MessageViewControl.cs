@@ -436,7 +436,7 @@ namespace Chatterino.Controls
                                     {
                                         g.SmoothingMode = SmoothingMode.None;
 
-                                        g.FillRectangle(disabledBrush, 0, y, 1000, msg.Height);
+                                        g.FillRectangle(disabledBrush, 0, y, Width, msg.Height);
                                     }
 
                                     if (y - msg.Height > h)

@@ -25,8 +25,29 @@ namespace Chatterino.Common
         public string Text
         {
             get { return text; }
-            private set { text = value; Message = new Message(value); invokeChanged(); }
+            private set
+            {
+                text = value;
+                Message = new Message(value);
+
+                string sendmessage = Commands.ProcessMessage(value, false);
+
+                int messageLength = 0;
+                for (int j = 0; j < sendmessage.Length; j++)
+                {
+                    messageLength++;
+
+                    if (char.IsHighSurrogate(sendmessage[j]))
+                        j += 1;
+                }
+
+                MessageLength = messageLength;
+
+                invokeChanged();
+            }
         }
+
+        public int MessageLength { get; private set; } = 0;
 
         public void SetText(string text)
         {

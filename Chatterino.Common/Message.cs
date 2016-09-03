@@ -422,7 +422,7 @@ namespace Chatterino.Common
 
                         TwitchEmote bttvEmote;
                         if (!AppSettings.ChatIgnoredEmotes.ContainsKey(s) && (AppSettings.ChatEnableBttvEmotes && (Emotes.BttvGlobalEmotes.TryGetValue(s, out bttvEmote) || channel.BttvChannelEmotes.TryGetValue(s, out bttvEmote))
-                            || (AppSettings.ChatEnableFfzEmotes && Emotes.FfzGlobalEmotes.TryGetValue(s, out bttvEmote))))
+                            || (AppSettings.ChatEnableFfzEmotes && (Emotes.FfzGlobalEmotes.TryGetValue(s, out bttvEmote) || channel.FfzChannelEmotes.TryGetValue(s, out bttvEmote)))))
                         {
                             words.Add(new Word
                             {

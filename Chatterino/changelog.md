@@ -1,5 +1,10 @@
 ﻿# changelog
 
+## 0.2.3
+- added FFZ channel emotes
+- added a message length counter
+- fixed ctrl + backspace not deleting a word for some users
+
 ## 0.2.2
 - added x button to tabs
 - add option to disable twitch emotes

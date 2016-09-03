@@ -31,6 +31,9 @@ namespace Chatterino.Common
         public ConcurrentDictionary<string, TwitchEmote> BttvChannelEmotes { get; private set; }
             = new ConcurrentDictionary<string, TwitchEmote>();
 
+        public ConcurrentDictionary<string, TwitchEmote> FfzChannelEmotes { get; private set; }
+            = new ConcurrentDictionary<string, TwitchEmote>();
+
 
         // Sub Badge
         private TwitchEmote subBadge;
@@ -146,6 +149,7 @@ namespace Chatterino.Common
                 Join();
 
                 string bttvChannelEmotesCache = $"./Cache/bttv_channel_{channelName}";
+                string ffzChannelEmotesCache = $"./Cache/ffz_channel_{channelName}";
 
                 // recent chat
                 Task.Run(() =>
@@ -228,6 +232,76 @@ namespace Chatterino.Common
                                     string imageType = e["imageType"];
                                     string url = template.Replace("{{id}}", id).Replace("{{image}}", "1x");
                                     Emotes.BttvChannelEmotesCache[id] = BttvChannelEmotes[code] = new TwitchEmote { Name = code, Url = url, Tooltip = code + "\nBetterTTV Channel Emote" };
+                                }
+                            }
+                        }
+                        updateEmoteNameList();
+                    }
+                    catch { }
+                });
+
+                
+                // ffz channel emotes
+                Task.Run(() =>
+                {
+                    try
+                    {
+                        JsonParser parser = new JsonParser();
+
+                        if (!File.Exists(ffzChannelEmotesCache) || DateTime.Now - new FileInfo(ffzChannelEmotesCache).LastWriteTime > TimeSpan.FromHours(1))
+                        {
+                            try
+                            {
+                                if (Util.IsLinux)
+                                {
+                                    Util.LinuxDownloadFile("http://api.frankerfacez.com/v1/room/" + channelName, ffzChannelEmotesCache);
+                                }
+                                else
+                                {
+                                    using (var webClient = new WebClient())
+                                    using (var readStream = webClient.OpenRead("http://api.frankerfacez.com/v1/room/" + channelName))
+                                    using (var writeStream = File.OpenWrite(ffzChannelEmotesCache))
+                                    {
+                                        readStream.CopyTo(writeStream);
+                                    }
+                                }
+                            }
+                            catch (Exception e)
+                            {
+                                e.Message.Log("emotes");
+                            }
+                        }
+
+                        using (var stream = File.OpenRead(ffzChannelEmotesCache))
+                        {
+                            dynamic json = parser.Parse(stream);
+
+                            dynamic sets = json["sets"];
+
+                            foreach (dynamic set in sets.Values)
+                            {
+                                string title = set["title"];
+
+                                dynamic emoticons = set["emoticons"];
+
+                                foreach (dynamic emoticon in emoticons)
+                                {
+                                    string code = emoticon["name"];
+                                    string id = emoticon["id"];
+
+                                    dynamic urls = emoticon["urls"];
+
+                                    string url = "http:" + urls["1"];
+
+                                    TwitchEmote emote;
+                                    if (Emotes.FfzChannelEmotesCache.TryGetValue(id, out emote))
+                                    {
+                                        FfzChannelEmotes[code] = emote;
+                                    }
+                                    else
+                                    {
+                                        Emotes.FfzChannelEmotesCache[id] = FfzChannelEmotes[code] = new TwitchEmote { Name = code, Url = url, Tooltip = code + "\nFFZ Channel Emote\n" + title };
+                                    }
                                 }
                             }
                         }
@@ -392,6 +466,7 @@ namespace Chatterino.Common
             names.AddRange(Emotes.BttvGlobalEmotes.Keys.Select(x => new KeyValuePair<string, string>(x.ToUpper(), x)));
             names.AddRange(Emotes.FfzGlobalEmotes.Keys.Select(x => new KeyValuePair<string, string>(x.ToUpper(), x)));
             names.AddRange(BttvChannelEmotes.Keys.Select(x => new KeyValuePair<string, string>(x.ToUpper(), x)));
+            names.AddRange(FfzChannelEmotes.Keys.Select(x => new KeyValuePair<string, string>(x.ToUpper(), x)));
             names.AddRange(Emojis.ShortCodeToEmoji.Keys.Select(x => new KeyValuePair<string, string>(":" + x.ToUpper() + ":", ":" + x + ":")));
 
             emoteNames = names;
@@ -419,8 +494,6 @@ namespace Chatterino.Common
 
         public void SendMessage(string text)
         {
-            text = Regex.Replace(text, " +", " ");
-
             if (Name == "/whispers")
                 IrcManager.SendMessage("jtv", text, IsModOrBroadcaster);
             else

@@ -72,6 +72,15 @@ namespace Chatterino
             // Light scheme
             scheme.IsLightTheme = multiplier > 0;
 
+            //if (scheme.IsLightTheme)
+            //{
+            //    scheme.TabPanelBG = Color.White;
+            //}
+            //else
+            //{
+            //    scheme.TabPanelBG = Color.Gray;
+            //}
+
             // Text
             scheme.TextCaret = new SolidBrush(scheme.Text = (multiplier > 0 ? HSLColor.FromRGB(0, 0, 0) : HSLColor.FromRGB(1, 1, 1)).ToColor());
             scheme.ChatBorderFocused = scheme.ChatBorder = getColor(gray, 1f).ToPen();

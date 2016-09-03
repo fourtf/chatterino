@@ -70,6 +70,9 @@ namespace Chatterino
         [STAThread]
         static void Main()
         {
+            var s1 = Commands.ProcessMessage("asd    asd", false);
+            var s2 = Commands.ProcessMessage("/brainpower", false);
+
             CurrentVersion = VersionNumber.Parse(AssemblyName.GetAssemblyName(Assembly.GetExecutingAssembly().Location).Version.ToString());
 
             Directory.SetCurrentDirectory(new FileInfo(Assembly.GetEntryAssembly().Location).Directory.FullName);

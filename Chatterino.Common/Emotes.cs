@@ -17,6 +17,7 @@ namespace Chatterino.Common
         public static ConcurrentDictionary<string, TwitchEmote> BttvGlobalEmotes = new ConcurrentDictionary<string, TwitchEmote>();
         public static ConcurrentDictionary<string, TwitchEmote> FfzGlobalEmotes = new ConcurrentDictionary<string, TwitchEmote>();
         public static ConcurrentDictionary<string, TwitchEmote> BttvChannelEmotesCache = new ConcurrentDictionary<string, TwitchEmote>();
+        public static ConcurrentDictionary<string, TwitchEmote> FfzChannelEmotesCache = new ConcurrentDictionary<string, TwitchEmote>();
         public static ConcurrentDictionary<int, TwitchEmote> TwitchEmotesByIDCache = new ConcurrentDictionary<int, TwitchEmote>();
         public static ConcurrentDictionary<string, TwitchEmote> MiscEmotesByUrl = new ConcurrentDictionary<string, TwitchEmote>();
 

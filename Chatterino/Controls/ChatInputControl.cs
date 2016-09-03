@@ -17,23 +17,44 @@ namespace Chatterino.Controls
         public MessageInputLogic Logic { get; private set; } = new MessageInputLogic();
 
         private ChatControl chatControl;
+        private Rectangle? caretRect = null;
+
+        Timer caretBlinkTimer;
+        bool caretBlinkState = true;
 
         Padding messagePadding = new Padding(12, 4, 12, 8);
         int minHeight;
 
         public ChatInputControl(ChatControl chatControl)
         {
+            caretBlinkTimer = new Timer { Interval = SystemInformation.CaretBlinkTime };
+
+            caretBlinkTimer.Tick += (s, e) =>
+            {
+                if (caretRect != null)
+                {
+                    using (var g = CreateGraphics())
+                    {
+                        caretBlinkState = !caretBlinkState;
+
+
+                    }
+                }
+            };
+
             Cursor = Cursors.IBeam;
 
             SetStyle(ControlStyles.ResizeRedraw | ControlStyles.OptimizedDoubleBuffer, true);
 
             this.chatControl = chatControl;
 
-            Graphics g = App.UseDirectX ? null : CreateGraphics();
+            {
+                Graphics g = App.UseDirectX ? null : CreateGraphics();
 
-            Height = minHeight = GuiEngine.Current.MeasureStringSize(g, FontType.Medium, "X").Height + 8 + messagePadding.Top + messagePadding.Bottom;
+                Height = minHeight = GuiEngine.Current.MeasureStringSize(g, FontType.Medium, "X").Height + 8 + messagePadding.Top + messagePadding.Bottom;
 
-            g?.Dispose();
+                g?.Dispose();
+            }
 
             if (AppSettings.ChatHideInputIfEmpty && Logic.Text.Length == 0)
                 Visible = false;
@@ -48,6 +69,11 @@ namespace Chatterino.Controls
                 if (Logic.SelectionLength != 0)
                     chatControl.ClearSelection();
 
+                caretBlinkTimer.Stop();
+                caretBlinkTimer.Start();
+
+                caretBlinkState = true;
+
                 calculateBounds();
                 Invalidate();
                 Update();
@@ -55,6 +81,8 @@ namespace Chatterino.Controls
         }
 
         bool mdown = false;
+
+        public event ScrollEventHandler Scroll;
 
         protected override void OnMouseMove(MouseEventArgs e)
         {
@@ -179,6 +207,15 @@ namespace Chatterino.Controls
                 g.FillRectangle(new SolidBrush(App.ColorScheme.TextFocused), 8, Height - messagePadding.Bottom, Width - 17, 1);
 
             var sendMessage = Logic.Message;
+
+            {
+                if (Logic.MessageLength > 4)
+                {
+                    string messageLength = Logic.MessageLength.ToString();
+                    var size = TextRenderer.MeasureText(e.Graphics, messageLength, Font, Size.Empty, App.DefaultTextFormatFlags);
+                    TextRenderer.DrawText(e.Graphics, messageLength, Font, new Point(Width - size.Width, 0), Logic.MessageLength > 500 ? Color.Red : App.ColorScheme.Text, App.DefaultTextFormatFlags);
+                }
+            }
 
             if (sendMessage != null)
             {

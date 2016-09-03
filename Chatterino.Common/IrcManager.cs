@@ -22,54 +22,10 @@ namespace Chatterino.Common
 
         public static IrcClient Client { get; set; }
 
-        public static ConcurrentDictionary<string, Func<string, string>> ChatCommands = new ConcurrentDictionary<string, Func<string, string>>();
 
         static ConcurrentDictionary<string, object> twitchBlockedUsers = new ConcurrentDictionary<string, object>();
 
         // Static Ctor
-        static IrcManager()
-        {
-            // Chat Commands
-            ChatCommands.TryAdd("shrug", s => ". " + s + " ¯\\_(ツ)_/¯");
-            ChatCommands.TryAdd("brainpower", s => ". " + s + " O-oooooooooo AAAAE-A-A-I-A-U- JO-oooooooooooo AAE-O-A-A-U-U-A- E-eee-ee-eee AAAAE-A-E-I-E-A- JO-ooo-oo-oo-oo EEEEO-A-AAA-AAAA " + s);
-
-            ChatCommands.TryAdd("ignore", s =>
-            {
-                var S = s.SplitWords();
-                if (S.Length > 0)
-                {
-                    AddIgnoredUser(S[0]);
-                }
-                return null;
-            });
-            ChatCommands.TryAdd("unignore", s =>
-            {
-                var S = s.SplitWords();
-                if (S.Length > 0)
-                {
-                    RemoveIgnoredUser(S[0]);
-                }
-                return null;
-            });
-
-            ChatCommands.TryAdd("cheertest312", s =>
-            {
-                foreach (string x in new[] { "1", "100", "1000", "5000", "10000" })
-                {
-                    IrcMessage msg;
-                    IrcMessage.TryParse($"@badges=subscriber/1;bits={x};color=;display-name=FOURTF;emotes=;mod=0;subscriber=1;turbo=0;user-type= :fourtf!fourtf@fourtf.tmi.twitch.tv PRIVMSG #fourtf :cheer{x} xD donation", out msg);
-
-                    foreach (TwitchChannel c in TwitchChannel.Channels)
-                    {
-                        Message message = new Message(msg, c);
-                        c.AddMessage(message);
-                    }
-                }
-
-                return null;
-            });
-        }
-
         static string oauth = null;
 
         // Connection
@@ -244,32 +200,11 @@ namespace Chatterino.Common
         {
             if (channel != null)
             {
-                var message = _message;
+                var message = Commands.ProcessMessage(_message, true);
 
-                if (_message.Length > 1 && _message[0] == '/')
+                if (!Client.Say(message, channel.TrimStart('#'), isMod))
                 {
-                    int index = _message.IndexOf(' ');
-                    string _command = index == -1 ? _message.Substring(1) : _message.Substring(1, index - 1);
-                    _message = index == -1 ? "" : _message.Substring(index + 1);
-
-                    Func<string, string> command;
-                    if (ChatCommands.TryGetValue(_command, out command))
-                    {
-                        message = command(_message) ?? message;
-                    }
-                }
-
-                if (message != null)
-                {
-                    if (AppSettings.ChatAllowSameMessage)
-                    {
-                        message = message + " ";
-                    }
-
-                    if (!Client.Say(Emojis.ReplaceShortCodes(message), channel.TrimStart('#'), isMod))
-                    {
-                        TwitchChannel.GetChannel(channel.TrimStart('#')).Process(c => c.AddMessage(new Message($"Your message was not sent to protect you from a global ban. (try again in {Client.GetTimeUntilNextMessage(isMod).Seconds} seconds)", HSLColor.Gray, false)));
-                    }
+                    TwitchChannel.GetChannel(channel.TrimStart('#')).Process(c => c.AddMessage(new Message($"Your message was not sent to protect you from a global ban. (try again in {Client.GetTimeUntilNextMessage(isMod).Seconds} seconds)", HSLColor.Gray, false)));
                 }
             }
         }
@@ -390,26 +325,26 @@ namespace Chatterino.Common
 
                 var key = Tuple.Create(user, channel);
 
-                if (!recentChatClears.ContainsKey(key))
+                //if (!recentChatClears.ContainsKey(key))
+                //{
+                //    recentChatClears[key] = null;
+
+                //    object o;
+
+                //    new System.Threading.Timer(x => { recentChatClears.TryRemove(key, out o); }, null, 3000, System.Threading.Timeout.Infinite);
+
+                string reason;
+                msg.Tags.TryGetValue("ban-reason", out reason);
+                string _duration;
+                int duration = 0;
+
+                if (msg.Tags.TryGetValue("ban-duration", out _duration))
                 {
-                    recentChatClears[key] = null;
-
-                    object o;
-
-                    new System.Threading.Timer(x => { recentChatClears.TryRemove(key, out o); }, null, 3000, System.Threading.Timeout.Infinite);
-
-                    string reason;
-                    msg.Tags.TryGetValue("ban-reason", out reason);
-                    string _duration;
-                    int duration = 0;
-
-                    if (msg.Tags.TryGetValue("ban-duration", out _duration))
-                    {
-                        int.TryParse(_duration, out duration);
-                    }
-
-                    TwitchChannel.GetChannel((msg.Middle ?? "").TrimStart('#')).Process(c => c.ClearChat(user, reason, duration));
+                    int.TryParse(_duration, out duration);
                 }
+
+                TwitchChannel.GetChannel((msg.Middle ?? "").TrimStart('#')).Process(c => c.ClearChat(user, reason, duration));
+                //}
             }
             else if (msg.Command == "ROOMSTATE")
             {
@@ -452,9 +387,9 @@ namespace Chatterino.Common
                         else
                             state &= ~RoomState.R9k;
                     }
-                    //if (e.Data.Tags.TryGetValue("broadcaster-lang", out value))
+                //if (e.Data.Tags.TryGetValue("broadcaster-lang", out value))
 
-                    c.RoomState = state;
+                c.RoomState = state;
                     Console.WriteLine(c.RoomState);
                 });
             }
