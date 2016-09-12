@@ -94,6 +94,15 @@
       <DependentUpon>FontList.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\CustomFontDialog\RecentlyUsedList.cs" />
+    <Compile Include="Controls\EmoteList.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\EmoteListPopup.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls\FlatButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\LoginForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -268,6 +277,14 @@
   <ItemGroup>
     <Content Include="Controls\CustomFontDialog\LICENSE.txt" />
     <Content Include="icon2.ico" />
+    <None Include="Resources\Message_16xLG.png" />
+    <None Include="Resources\VSO_Link_blue_16x.png" />
+    <None Include="Resources\StatusAnnotations_Blocked_16xLG_color.png" />
+    <None Include="Resources\Emoji_Color_1F607_19.png" />
+    <None Include="Resources\CustomActionEditor_16x.png" />
+    <None Include="Resources\format_Bold_16xLG.png" />
+    <None Include="Resources\Emoji_Color_1F60A_19.png" />
+    <None Include="Resources\AppearanceEditorPart_16x.png" />
     <None Include="Resources\ExpandChevronDown_16x.png" />
     <None Include="Resources\cheer10000.png" />
     <None Include="Resources\cheer5000.png" />

@@ -25,8 +25,12 @@ namespace Chatterino.Controls
         Padding messagePadding = new Padding(12, 4, 12, 8);
         int minHeight;
 
+        FlatButton emoteListButton;
+
         public ChatInputControl(ChatControl chatControl)
         {
+            Size = new Size(100, 100);
+
             caretBlinkTimer = new Timer { Interval = SystemInformation.CaretBlinkTime };
 
             caretBlinkTimer.Tick += (s, e) =>
@@ -78,11 +82,25 @@ namespace Chatterino.Controls
                 Invalidate();
                 Update();
             };
+
+            // emote button
+            emoteListButton = new FlatButton();
+            emoteListButton.Image = (Image)GuiEngine.Current.ScaleImage(Properties.Resources.Emoji_Color_1F607_19, 0.85);
+            emoteListButton.Anchor = AnchorStyles.Right | AnchorStyles.Bottom;
+            emoteListButton.Size = new Size(16, 16);
+            emoteListButton.Cursor = Cursors.Default;
+            emoteListButton.Location = new Point(Width - emoteListButton.Width - 1, Height - emoteListButton.Height - 1);
+
+            emoteListButton.Click += (s, e) =>
+            {
+                chatControl.Focus();
+                App.ShowEmoteList(chatControl.Channel);
+            };
+
+            Controls.Add(emoteListButton);
         }
 
         bool mdown = false;
-
-        public event ScrollEventHandler Scroll;
 
         protected override void OnMouseMove(MouseEventArgs e)
         {
@@ -181,7 +199,7 @@ namespace Chatterino.Controls
             {
                 Graphics g = App.UseDirectX ? null : CreateGraphics();
 
-                msg.CalculateBounds(g, Width - messagePadding.Left - messagePadding.Right);
+                msg.CalculateBounds(g, Width - messagePadding.Left - messagePadding.Right - 20);
 
                 g?.Dispose();
 
@@ -204,16 +222,17 @@ namespace Chatterino.Controls
             g.DrawRectangle(App.ColorScheme.ChatInputBorder, 0, 0, Width - 1, Height - 1);
 
             if (chatControl.Focused)
-                g.FillRectangle(new SolidBrush(App.ColorScheme.TextFocused), 8, Height - messagePadding.Bottom, Width - 17, 1);
+                g.FillRectangle(new SolidBrush(App.ColorScheme.TextFocused), 8, Height - messagePadding.Bottom, Width - 17 - 16, 1);
 
             var sendMessage = Logic.Message;
 
+            if (AppSettings.ChatInputShowMessageLength)
             {
-                if (Logic.MessageLength > 4)
+                if (Logic.MessageLength > 1)
                 {
                     string messageLength = Logic.MessageLength.ToString();
                     var size = TextRenderer.MeasureText(e.Graphics, messageLength, Font, Size.Empty, App.DefaultTextFormatFlags);
-                    TextRenderer.DrawText(e.Graphics, messageLength, Font, new Point(Width - size.Width, 0), Logic.MessageLength > 500 ? Color.Red : App.ColorScheme.Text, App.DefaultTextFormatFlags);
+                    TextRenderer.DrawText(e.Graphics, messageLength, Font, new Point(Width - size.Width - 4, 0), Logic.MessageLength > 500 ? Color.Red : App.ColorScheme.Text, App.DefaultTextFormatFlags);
                 }
             }
 

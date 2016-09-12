@@ -16,6 +16,8 @@ namespace Chatterino
 {
     public partial class MainForm : Form
     {
+        private ColumnTabPage lastTabPage = null;
+
         public MainForm()
         {
             InitializeComponent();
@@ -64,45 +66,172 @@ namespace Chatterino
             Location = new Point(AppSettings.WindowX, AppSettings.WindowY);
             Size = new Size(AppSettings.WindowWidth, AppSettings.WindowHeight);
 
-            tabControl.TabPageSelected += (s, e) => { (e.Value as ColumnTabPage)?.Columns.FirstOrDefault()?.Widgets.FirstOrDefault()?.Focus(); };
+            tabControl.TabPageSelected += (s, e) =>
+            {
+                var tab = e.Value as ColumnTabPage;
+
+                if (lastTabPage != null)
+                {
+                    lastTabPage.LastSelected = Selected;
+                }
+
+                if (tab != null)
+                {
+                    if (tab.LastSelected != null && tab.Columns.SelectMany(x => x.Widgets).Contains(tab.LastSelected))
+                        Selected = tab.LastSelected;
+                    else
+                        Selected = tab?.Columns.FirstOrDefault()?.Widgets.FirstOrDefault();
+
+                    Selected?.Focus();
+                }
+
+                lastTabPage = tab;
+            };
+
+            lastTabPage = tabControl.Selected as ColumnTabPage;
         }
 
         protected override bool ProcessCmdKey(ref System.Windows.Forms.Message msg, Keys keyData)
         {
-            var chatControl = (App.MainForm?.Selected as ChatControl);
-
-            if (keyData == Keys.Tab || keyData == (Keys.Shift | Keys.Tab))
+            switch (keyData)
             {
-                chatControl?.HandleTabCompletion((keyData & Keys.Shift) != Keys.Shift);
-                return true;
-            }
-            else if (((keyData & ~(Keys.Control | Keys.Shift)) == Keys.Left) || ((keyData & ~(Keys.Control | Keys.Shift)) == Keys.Right)
-                || keyData == Keys.Up || keyData == Keys.Down)
-            {
-                chatControl?.HandleArrowKey(keyData);
+                case Keys.Control | Keys.T:
+                    AddNewSplit();
+                    break;
+                case Keys.Control | Keys.W:
+                    RemoveSelectedSplit();
+                    break;
+                case Keys.Control | Keys.P:
+                    App.ShowSettings();
+                    break;
+                case Keys.Control | Keys.L:
+                    new LoginForm().ShowDialog();
+                    break;
+                case Keys.Alt | Keys.Left:
+                    {
+                        var tab = tabControl.Selected as ColumnTabPage;
 
-                return true;
-            }
-            else if (keyData == (Keys.Control | Keys.A))
-            {
-                chatControl?.Input.Logic.SelectAll();
+                        if (tab != null && selected != null)
+                        {
+                            var index = tab.Columns.TakeWhile(x => !x.Widgets.Contains(selected)).Count();
 
-                return true;
-            }
-            else if (keyData == Keys.Back || keyData == (Keys.Back | Keys.Control) || keyData == (Keys.Back | Keys.Shift) || keyData == Keys.Delete || keyData == (Keys.Delete | Keys.Control) || keyData == (Keys.Delete | Keys.Shift))
-            {
-                chatControl?.Input.Logic.Delete((keyData & Keys.Control) == Keys.Control, (keyData & ~Keys.Control) == Keys.Delete);
-            }
-            else if (keyData == Keys.Home)
-                (App.MainForm?.Selected as ChatControl).Process(c => c.Input.Logic.SetCaretPosition(0));
-            else if (keyData == (Keys.Home | Keys.Shift))
-                (App.MainForm?.Selected as ChatControl).Process(c => c.Input.Logic.SetSelectionEnd(0));
-            else if (keyData == Keys.End)
-                (App.MainForm?.Selected as ChatControl).Process(c => c.Input.Logic.SetCaretPosition(c.Input.Logic.Text.Length));
-            else if (keyData == (Keys.End | Keys.Shift))
-                (App.MainForm?.Selected as ChatControl).Process(c => c.Input.Logic.SetSelectionEnd(c.Input.Logic.Text.Length));
+                            if (index > 0)
+                            {
+                                var newCol = tab.Columns.ElementAt(index - 1);
+                                Selected = newCol.Widgets.ElementAtOrDefault(tab.Columns.ElementAt(index).Widgets.TakeWhile(x => x != selected).Count()) ?? newCol.Widgets.Last();
+                            }
+                        }
+                    }
+                    break;
+                case Keys.Alt | Keys.Right:
+                    {
+                        var tab = tabControl.Selected as ColumnTabPage;
 
-            return base.ProcessCmdKey(ref msg, keyData);
+                        if (tab != null && selected != null)
+                        {
+                            var index = tab.Columns.TakeWhile(x => !x.Widgets.Contains(selected)).Count();
+
+                            if (index + 1 < tab.ColumnCount)
+                            {
+                                var newCol = tab.Columns.ElementAt(index + 1);
+                                Selected = newCol.Widgets.ElementAtOrDefault(tab.Columns.ElementAt(index).Widgets.TakeWhile(x => x != selected).Count()) ?? newCol.Widgets.Last();
+                            }
+                        }
+                    }
+                    break;
+                case Keys.Alt | Keys.Up:
+                    {
+                        var tab = tabControl.Selected as ColumnTabPage;
+
+                        if (tab != null && selected != null)
+                        {
+                            var col = tab.Columns.First(x => x.Widgets.Contains(selected));
+
+                            var index = col.Widgets.TakeWhile(x => x != selected).Count();
+
+                            if (index > 0)
+                            {
+                                Selected = col.Widgets.ElementAt(index - 1);
+                            }
+                        }
+                    }
+                    break;
+                case Keys.Alt | Keys.Down:
+                    {
+                        var tab = tabControl.Selected as ColumnTabPage;
+
+                        if (tab != null && selected != null)
+                        {
+                            var col = tab.Columns.First(x => x.Widgets.Contains(selected));
+
+                            var index = col.Widgets.TakeWhile(x => x != selected).Count();
+
+                            if (index + 1 < col.WidgetCount)
+                            {
+                                Selected = col.Widgets.ElementAt(index + 1);
+                            }
+                        }
+                    }
+                    break;
+                case Keys.Control | Keys.D1:
+                case Keys.Control | Keys.D2:
+                case Keys.Control | Keys.D3:
+                case Keys.Control | Keys.D4:
+                case Keys.Control | Keys.D5:
+                case Keys.Control | Keys.D6:
+                case Keys.Control | Keys.D7:
+                case Keys.Control | Keys.D8:
+                case Keys.Control | Keys.D9:
+                    {
+                        int tab = (keyData & ~Keys.Modifiers) - Keys.D0;
+
+                        var t = tabControl.TabPages.ElementAtOrDefault(tab - 1);
+
+                        if (t != null)
+                        {
+                            TabControl.Select(t);
+                        }
+                    }
+                    break;
+                case Keys.Control | Keys.Tab:
+                    {
+                        int index = tabControl.TabPages.TakeWhile(x => !x.Selected).Count();
+
+                        if (tabControl.TabPages.Count() > index + 1)
+                        {
+                            tabControl.Select(tabControl.TabPages.ElementAt(index + 1));
+                        }
+                    }
+                    break;
+                case Keys.Control | Keys.Shift | Keys.Tab:
+                    {
+                        int index = tabControl.TabPages.TakeWhile(x => !x.Selected).Count();
+
+                        if (index > 0)
+                        {
+                            tabControl.Select(tabControl.TabPages.ElementAt(index - 1));
+                        }
+                    }
+                    break;
+                case Keys.Tab:
+                case Keys.Shift | Keys.Tab:
+                case Keys.Left:
+                case Keys.Right:
+                case Keys.Up:
+                case Keys.Down:
+                    selected?.HandleKeys(keyData);
+                    break;
+                default:
+
+                    return false;
+            }
+
+            return true;
+        }
+
+        protected override void OnPreviewKeyDown(PreviewKeyDownEventArgs e)
+        {
+            e.IsInputKey = true;
         }
 
         public void SetTitle()
@@ -115,15 +244,25 @@ namespace Chatterino
             );
         }
 
+        ColumnLayoutItem selected = null;
+
         public ColumnLayoutItem Selected
         {
             get
             {
-                return tabControl.TabPages.SelectMany(a => ((ColumnTabPage)a).Columns.SelectMany(b => b.Widgets)).FirstOrDefault(c => c.Focused);
+                return selected;
+                //return tabControl.TabPages.SelectMany(a => ((ColumnTabPage)a).Columns.SelectMany(b => b.Widgets)).FirstOrDefault(c => c.Focused);
             }
-            set
+            internal set
             {
-                value.Focus();
+                if (selected != value)
+                {
+                    selected = value;
+
+                    value?.Focus();
+
+                    App.SetEmoteListChannel((selected as ChatControl)?.Channel);
+                }
             }
         }
 
@@ -139,67 +278,111 @@ namespace Chatterino
         {
             base.OnKeyDown(e);
 
-            if (e.Modifiers == Keys.Control)
-            {
-                switch (e.KeyCode)
-                {
-                    case Keys.T:
-                        AddNewSplit();
-                        break;
-                    case Keys.W:
-                        RemoveSelectedSplit();
-                        break;
-                    case Keys.R:
-                        {
-                            ChatControl focused = Selected as ChatControl;
-                            if (focused != null)
-                            {
-                                using (InputDialogForm dialog = new InputDialogForm("channel name") { Value = focused.ChannelName })
-                                {
-                                    if (dialog.ShowDialog() == DialogResult.OK)
-                                    {
-                                        focused.ChannelName = dialog.Value;
-                                    }
-                                }
-                            }
-                        }
-                        break;
-                    case Keys.P:
-                        App.ShowSettings();
-                        break;
-                    case Keys.C:
-                        (App.MainForm?.Selected as ChatControl)?.CopySelection(false);
-                        break;
-                    case Keys.X:
-                        (App.MainForm?.Selected as ChatControl)?.CopySelection(true);
-                        break;
-                    case Keys.V:
-                        try
-                        {
-                            if (Clipboard.ContainsText())
-                            {
-                                (App.MainForm?.Selected as ChatControl)?.PasteText(Clipboard.GetText());
-                            }
-                        }
-                        catch { }
-                        break;
-                    case Keys.L:
-                        new LoginForm().ShowDialog();
-                        break;
-                }
-            }
-            else if (e.Modifiers == Keys.None)
-            {
-                switch (e.KeyCode)
-                {
-                    case Keys.Home:
+            //if ((e.KeyCode & ~Keys.Modifiers) != Keys.ControlKey)
+            //{
+            //    ;
+            //}
 
-                        break;
-                    case Keys.End:
+            //if (e.Modifiers == Keys.Control)
+            //{
+            //    switch (e.KeyCode)
+            //    {
+            //        case Keys.T:
+            //            AddNewSplit();
+            //            break;
+            //        case Keys.W:
+            //            RemoveSelectedSplit();
+            //            break;
+            //        case Keys.R:
+            //            {
+            //                ChatControl focused = Selected as ChatControl;
+            //                if (focused != null)
+            //                {
+            //                    using (InputDialogForm dialog = new InputDialogForm("channel name") { Value = focused.ChannelName })
+            //                    {
+            //                        if (dialog.ShowDialog() == DialogResult.OK)
+            //                        {
+            //                            focused.ChannelName = dialog.Value;
+            //                        }
+            //                    }
+            //                }
+            //            }
+            //            break;
+            //        case Keys.P:
+            //            App.ShowSettings();
+            //            break;
+            //        case Keys.C:
+            //            (App.MainForm?.Selected as ChatControl)?.CopySelection(false);
+            //            break;
+            //        case Keys.X:
+            //            (App.MainForm?.Selected as ChatControl)?.CopySelection(true);
+            //            break;
+            //        case Keys.V:
+            //            try
+            //            {
+            //                if (Clipboard.ContainsText())
+            //                {
+            //                    (App.MainForm?.Selected as ChatControl)?.PasteText(Clipboard.GetText());
+            //                }
+            //            }
+            //            catch { }
+            //            break;
+            //        case Keys.L:
+            //            new LoginForm().ShowDialog();
+            //            break;
+            //        case Keys.D1:
+            //        case Keys.D2:
+            //        case Keys.D3:
+            //        case Keys.D4:
+            //        case Keys.D5:
+            //        case Keys.D6:
+            //        case Keys.D7:
+            //        case Keys.D8:
+            //        case Keys.D9:
+            //            {
+            //                int tab = e.KeyCode - Keys.D0;
 
-                        break;
-                }
-            }
+            //                var t = tabControl.TabPages.ElementAtOrDefault(tab - 1);
+
+            //                if (t != null)
+            //                {
+            //                    TabControl.Select(t);
+            //                }
+            //            }
+            //            break;
+            //        case Keys.Left:
+            //            var page = tabControl.Selected as ColumnTabPage;
+            //            if (page != null)
+            //            {
+            //                bool cont = false;
+            //                int index = page.Columns.TakeWhile(x => !(cont = x.Widgets.Contains(selected))).Count();
+
+            //                if (cont && index != 0)
+            //                {
+            //                    var newCol = page.Columns.ElementAt(index - 1);
+
+            //                    var newSelected = newCol.Widgets.ElementAtOrDefault(page.Columns.ElementAt(index).Widgets.TakeWhile(x => x != selected).Count()) ?? newCol.Widgets.Last();
+
+            //                    Selected = newSelected;
+            //                }
+            //            }
+            //            break;
+            //    }
+            //}
+            //else if (e.Modifiers == Keys.None)
+            //{
+            //    switch (e.KeyCode)
+            //    {
+            //        case Keys.Home:
+
+            //            break;
+            //        case Keys.End:
+
+            //            break;
+            //    }
+            //}
+
+            //e.Handled = true;
         }
 
         public void AddNewSplit()

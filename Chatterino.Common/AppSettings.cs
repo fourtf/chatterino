@@ -31,12 +31,23 @@ namespace Chatterino.Common
             }
         }
 
+        private static double themeHue = 0.6;
+
+        public static double ThemeHue
+        {
+            get { return themeHue; }
+            set { themeHue = value; ThemeChanged?.Invoke(null, null); }
+        }
+
         // Chat
+        public static double ScrollMultiplyer { get; set; } = 1;
+
         public static bool ChatShowTimestamps { get; set; } = true;
         public static bool ChatShowTimestampSeconds { get; set; } = false;
         public static bool ChatAllowSameMessage { get; set; } = true;
         public static bool ChatLinksDoubleClickOnly { get; set; } = false;
         public static bool ChatHideInputIfEmpty { get; set; } = false;
+        public static bool ChatInputShowMessageLength { get; set; } = false;
         public static bool ChatSeperateMessages { get; set; } = false;
 
         public static event EventHandler MessageLimitChanged;
@@ -83,7 +94,7 @@ namespace Chatterino.Common
         }
         public static Regex CustomHighlightRegex { get; private set; } = null;
 
-        public static bool IgnoreTwitchBlocks { get; private set; } = true;
+        public static bool EnableTwitchUserIgnores { get; set; } = true;
 
         public static bool ChatEnableTwitchEmotes { get; set; } = true;
         public static bool ChatEnableBttvEmotes { get; set; } = true;

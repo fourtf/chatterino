@@ -51,6 +51,8 @@ namespace Chatterino.Controls
         }
 
         // mouse
+        protected double mouseScrollMultiplyer = 1;
+
         protected string mouseDownLink = null;
         protected Word mouseDownWord = null;
         protected Selection selection = null;
@@ -82,6 +84,56 @@ namespace Chatterino.Controls
             };
 
             Controls.Add(_scroll);
+
+            App.GifEmoteFramesUpdated += App_GifEmoteFramesUpdated;
+            App.EmoteLoaded += App_EmoteLoaded;
+
+            Disposed += (s, e) =>
+            {
+                App.GifEmoteFramesUpdated -= App_GifEmoteFramesUpdated;
+                App.EmoteLoaded -= App_EmoteLoaded;
+            };
+        }
+
+        private void App_GifEmoteFramesUpdated(object s, EventArgs e)
+        {
+            lock (bufferLock)
+            {
+                if (buffer != null)
+                {
+                    bool hasUpdated = false;
+
+                    lock (MessageLock)
+                    {
+                        for (int i = 0; i < Messages.Length; i++)
+                        {
+                            var msg = Messages[i];
+                            if (msg.IsVisible)
+                            {
+                                hasUpdated = true;
+
+                                MessageRenderer.DrawGifEmotes(buffer.Graphics, msg, selection, i);
+                            }
+                        }
+                    }
+
+                    if (hasUpdated)
+                    {
+                        var borderPen = Selected ? App.ColorScheme.ChatBorderFocused : App.ColorScheme.ChatBorder;
+                        buffer.Graphics.DrawRectangle(borderPen, 0, Height - 1, Width - 1, 1);
+
+                        var g = CreateGraphics();
+
+                        buffer.Render(g);
+                    }
+                }
+            }
+        }
+
+        private void App_EmoteLoaded(object s, EventArgs e)
+        {
+            updateMessageBounds(true);
+            Invalidate();
         }
 
         // overrides
@@ -89,7 +141,7 @@ namespace Chatterino.Controls
         {
             if (_scroll.Enabled)
             {
-                _scroll.Value -= ((double)e.Delta / 20);
+                _scroll.Value -= ((double)e.Delta / 20 * mouseScrollMultiplyer);
 
                 if (e.Delta > 0)
                     scrollAtBottom = false;
@@ -272,7 +324,7 @@ namespace Chatterino.Controls
 
                     g.Clear((App.ColorScheme.ChatBackground as SolidBrush).Color);
 
-                    var borderPen = Focused ? App.ColorScheme.ChatBorderFocused : App.ColorScheme.ChatBorder;
+                    var borderPen = Selected ? App.ColorScheme.ChatBorderFocused : App.ColorScheme.ChatBorder;
 
                     g.SmoothingMode = SmoothingMode.AntiAlias;
 
@@ -469,6 +521,26 @@ namespace Chatterino.Controls
 
         }
 
+        public override void HandleKeys(Keys keys)
+        {
+            switch (keys)
+            {
+                case Keys.Control | Keys.C:
+                    CopySelection(false);
+                    break;
+
+                case Keys.Control | Keys.X:
+                    CopySelection(true);
+                    break;
+
+                default:
+                    base.HandleKeys(keys);
+                    break;
+            }
+
+            base.HandleKeys(keys);
+        }
+
         // Public Functions
         public Message MessageAtPoint(Point p, out int index)
         {
@@ -641,89 +713,86 @@ namespace Chatterino.Controls
 
         protected virtual void updateMessageBounds(bool emoteChanged = false)
         {
-            if (Parent?.Parent != null)
+            object g = App.UseDirectX ? null : CreateGraphics();
+
+            // determine if
+            double scrollbarThumbHeight = 0;
+            int totalHeight = Height - MessagePadding.Top - MessagePadding.Bottom;
+            int currentHeight = 0;
+            int tmpHeight = Height - MessagePadding.Top - MessagePadding.Bottom;
+            bool enableScrollbar = false;
+            int messageCount = 0;
+
+            if (MessageLock != null)
             {
-                object g = App.UseDirectX ? null : CreateGraphics();
-
-                // determine if
-                double scrollbarThumbHeight = 0;
-                int totalHeight = Height - MessagePadding.Top - MessagePadding.Bottom;
-                int currentHeight = 0;
-                int tmpHeight = Height - MessagePadding.Top - MessagePadding.Bottom;
-                bool enableScrollbar = false;
-                int messageCount = 0;
-
-                if (MessageLock != null)
+                lock (MessageLock)
                 {
-                    lock (MessageLock)
+
+                    var messages = Messages;
+                    messageCount = messages.Length;
+
+                    int visibleStart = Math.Max(0, (int)_scroll.Value);
+
+                    // set EmotesChanged for messages
+                    if (emoteChanged)
                     {
-
-                        var messages = Messages;
-                        messageCount = messages.Length;
-
-                        int visibleStart = Math.Max(0, (int)_scroll.Value);
-
-                        // set EmotesChanged for messages
-                        if (emoteChanged)
+                        for (int i = 0; i < messages.Length; i++)
                         {
-                            for (int i = 0; i < messages.Length; i++)
-                            {
-                                messages[i].EmoteBoundsChanged = true;
-                            }
+                            messages[i].EmoteBoundsChanged = true;
                         }
+                    }
 
-                        // calculate bounds for visible messages
-                        for (int i = visibleStart; i < messages.Length; i++)
+                    // calculate bounds for visible messages
+                    for (int i = visibleStart; i < messages.Length; i++)
+                    {
+                        var msg = messages[i];
+
+                        msg.CalculateBounds(g, Width - MessagePadding.Left - MessagePadding.Right);
+                        currentHeight += msg.Height;
+
+                        if (currentHeight > totalHeight)
                         {
-                            var msg = messages[i];
-
-                            msg.CalculateBounds(g, Width - MessagePadding.Left - MessagePadding.Right);
-                            currentHeight += msg.Height;
-
-                            if (currentHeight > totalHeight)
-                            {
-                                break;
-                            }
+                            break;
                         }
+                    }
 
-                        // calculate bounds for messages at the bottom to determine the size of the scrollbar thumb
-                        for (int i = messages.Length - 1; i >= 0; i--)
+                    // calculate bounds for messages at the bottom to determine the size of the scrollbar thumb
+                    for (int i = messages.Length - 1; i >= 0; i--)
+                    {
+                        var msg = messages[i];
+                        msg.CalculateBounds(g, Width - MessagePadding.Left - MessagePadding.Right);
+                        scrollbarThumbHeight++;
+
+                        tmpHeight -= msg.Height;
+                        if (tmpHeight < 0)
                         {
-                            var msg = messages[i];
-                            msg.CalculateBounds(g, Width - MessagePadding.Left - MessagePadding.Right);
-                            scrollbarThumbHeight++;
-
-                            tmpHeight -= msg.Height;
-                            if (tmpHeight < 0)
-                            {
-                                enableScrollbar = true;
-                                scrollbarThumbHeight -= 1 - (double)tmpHeight / msg.Height;
-                                break;
-                            }
+                            enableScrollbar = true;
+                            scrollbarThumbHeight -= 1 - (double)tmpHeight / msg.Height;
+                            break;
                         }
                     }
                 }
+            }
 
                 (g as Graphics)?.Dispose();
 
-                this.Invoke(() =>
+            this.Invoke(() =>
+            {
+                if (enableScrollbar)
                 {
-                    if (enableScrollbar)
-                    {
-                        _scroll.Enabled = true;
-                        _scroll.LargeChange = scrollbarThumbHeight;
-                        _scroll.Maximum = messageCount - 1;
+                    _scroll.Enabled = true;
+                    _scroll.LargeChange = scrollbarThumbHeight;
+                    _scroll.Maximum = messageCount - 1;
 
-                        if (scrollAtBottom)
-                            _scroll.Value = messageCount - scrollbarThumbHeight;
-                    }
-                    else
-                    {
-                        _scroll.Enabled = false;
-                        _scroll.Value = 0;
-                    }
-                });
-            }
+                    if (scrollAtBottom)
+                        _scroll.Value = messageCount - scrollbarThumbHeight;
+                }
+                else
+                {
+                    _scroll.Enabled = false;
+                    _scroll.Value = 0;
+                }
+            });
         }
 
         protected void checkScrollBarPosition()

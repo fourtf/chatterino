@@ -19,13 +19,28 @@ namespace Chatterino.Controls
             set
             {
                 tooltip = value;
+                calcSize();
+            }
+        }
 
-                if (tooltip != null)
-                {
-                    var size = CreateGraphics().MeasureString(tooltip, Font, 1000, format);
-                    Size = new Size(Padding.Left + (int)size.Width + Padding.Right,
-                        Padding.Top + (int)size.Height + Padding.Bottom);
-                }
+        private Image image;
+
+        public Image Image
+        {
+            get { return image; }
+            set
+            {
+                image = value;
+                calcSize();
+            }
+        }
+
+        void calcSize()
+        {
+            if (tooltip != null)
+            {
+                var size = CreateGraphics().MeasureString(tooltip, Font, 1000, format);
+                Size = new Size(Math.Max((image?.Width ?? 0) + 8, Padding.Left + (int)size.Width + Padding.Right), (image?.Height ?? -8) + 8 + Padding.Top + (int)size.Height + Padding.Bottom);
             }
         }
 
@@ -87,9 +102,14 @@ namespace Chatterino.Controls
 
             e.Graphics.FillRectangle(App.ColorScheme.TooltipBackground, e.ClipRectangle);
 
+            if (image != null)
+            {
+                e.Graphics.DrawImage(image, 4, 4);
+            }
+
             if (tooltip != null)
             {
-                e.Graphics.DrawString(tooltip, Font, App.ColorScheme.TooltipText, ClientRectangle, format);
+                e.Graphics.DrawString(tooltip, Font, App.ColorScheme.TooltipText, new Rectangle(0, image?.Height ?? 0, Width, Height - (image?.Height ?? 0)), format);
             }
         }
     }

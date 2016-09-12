@@ -30,7 +30,7 @@ namespace Chatterino.Common
                 text = value;
                 Message = new Message(value);
 
-                string sendmessage = Commands.ProcessMessage(value, false);
+                string sendmessage = Commands.ProcessMessage(value, false) ?? "";
 
                 int messageLength = 0;
                 for (int j = 0; j < sendmessage.Length; j++)

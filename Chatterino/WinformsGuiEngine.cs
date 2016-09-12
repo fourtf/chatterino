@@ -11,6 +11,7 @@ using System.Drawing;
 using System.Media;
 using System.Drawing.Imaging;
 using System.Collections.Concurrent;
+using Chatterino.Controls;
 
 namespace Chatterino
 {
@@ -32,10 +33,15 @@ namespace Chatterino
             {
                 if (link[0] == '@')
                 {
-                    switch (link.Substring(1))
+                    var S = link.Substring(1).Split('|');
+
+                    switch (S[0])
                     {
                         case "closeCurrentSplit":
                             App.MainForm.RemoveSelectedSplit();
+                            break;
+                        case "insertText":
+                            (App.MainForm.Selected as ChatControl)?.Input.Logic.InsertText(S[1]);
                             break;
                     }
                 }

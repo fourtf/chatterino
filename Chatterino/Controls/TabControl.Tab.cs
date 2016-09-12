@@ -74,7 +74,7 @@ namespace Chatterino.Controls
 
                 MouseDown += (s, e) =>
                 {
-                    tabControl.select(tabPage);
+                    tabControl.Select(tabPage);
 
                     if (xRectangle.Contains(e.Location))
                     {
@@ -172,7 +172,7 @@ namespace Chatterino.Controls
                     {
                         if (dragOver)
                         {
-                            (Parent as TabControl)?.select(tabPage);
+                            (Parent as TabControl)?.Select(tabPage);
                         }
                         timer.Dispose();
                     };

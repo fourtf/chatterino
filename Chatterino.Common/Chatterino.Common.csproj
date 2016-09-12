@@ -47,6 +47,7 @@
     <Compile Include="AppSettings.cs" />
     <Compile Include="Badges.cs" />
     <Compile Include="ChatClearedEventArgs.cs" />
+    <Compile Include="Command.cs" />
     <Compile Include="Commands.cs" />
     <Compile Include="CommonPoint.cs" />
     <Compile Include="HSLColor.cs" />

@@ -131,14 +131,10 @@ namespace Chatterino.Controls
 
             Controls.Add(Input);
 
-            App.GifEmoteFramesUpdated += App_GifEmoteFramesUpdated;
-            App.EmoteLoaded += App_EmoteLoaded;
             Fonts.FontChanged += Fonts_FontChanged;
 
             Disposed += (s, e) =>
             {
-                App.GifEmoteFramesUpdated -= App_GifEmoteFramesUpdated;
-                App.EmoteLoaded -= App_EmoteLoaded;
                 Fonts.FontChanged -= Fonts_FontChanged;
 
                 TwitchChannel.RemoveChannel(ChannelName);
@@ -176,50 +172,6 @@ namespace Chatterino.Controls
         }
 
         // public functions
-        private void App_GifEmoteFramesUpdated(object s, EventArgs e)
-        {
-            channel.Process(c =>
-            {
-                lock (bufferLock)
-                {
-                    if (buffer != null)
-                    {
-                        bool hasUpdated = false;
-
-                        lock (c.MessageLock)
-                        {
-                            for (int i = 0; i < c.Messages.Length; i++)
-                            {
-                                var msg = c.Messages[i];
-                                if (msg.IsVisible)
-                                {
-                                    hasUpdated = true;
-
-                                    MessageRenderer.DrawGifEmotes(buffer.Graphics, msg, selection, i);
-                                }
-                            }
-                        }
-
-                        if (hasUpdated)
-                        {
-                            var borderPen = Focused ? App.ColorScheme.ChatBorderFocused : App.ColorScheme.ChatBorder;
-                            buffer.Graphics.DrawRectangle(borderPen, 0, Height - 1, Width - 1, 1);
-
-                            var g = CreateGraphics();
-
-                            buffer.Render(g);
-                        }
-                    }
-                }
-            });
-        }
-
-        private void App_EmoteLoaded(object s, EventArgs e)
-        {
-            updateMessageBounds(true);
-            Invalidate();
-        }
-
         private void Channel_MessageAdded(object sender, MessageAddedEventArgs e)
         {
             if (e.RemovedMessage != null)
@@ -404,7 +356,10 @@ namespace Chatterino.Controls
                             lastMessages.RemoveAt(0);
                         }
 
-                        lastMessages.Add(text);
+                        if (lastMessages.Count == 0 || lastMessages[lastMessages.Count - 1] != text)
+                        {
+                            lastMessages.Add(text);
+                        }
                         lastMessages.Add("");
 
                         currentLastMessageIndex = lastMessages.Count - 1;
@@ -437,6 +392,124 @@ namespace Chatterino.Controls
 
                 g.FillRectangle(scrollToBottomBg, 1, start, Width - 2, ScrollToBottomBarHeight);
             }
+        }
+
+        public override void HandleKeys(Keys keys)
+        {
+            switch (keys)
+            {
+                // left
+                case Keys.Left:
+                    Input.Logic.MoveCursorLeft(false, false);
+                    break;
+                case Keys.Left | Keys.Control:
+                    Input.Logic.MoveCursorLeft(true, false);
+                    break;
+                case Keys.Left | Keys.Shift:
+                    Input.Logic.MoveCursorLeft(false, true);
+                    break;
+                case Keys.Left | Keys.Shift | Keys.Control:
+                    Input.Logic.MoveCursorLeft(true, true);
+                    break;
+
+                // right
+                case Keys.Right:
+                    Input.Logic.MoveCursorRight(false, false);
+                    break;
+                case Keys.Right | Keys.Control:
+                    Input.Logic.MoveCursorRight(true, false);
+                    break;
+                case Keys.Right | Keys.Shift:
+                    Input.Logic.MoveCursorRight(false, true);
+                    break;
+                case Keys.Right | Keys.Shift | Keys.Control:
+                    Input.Logic.MoveCursorRight(true, true);
+                    break;
+
+                // up + down
+                case Keys.Up:
+                    if (lastMessages.Count != 0)
+                    {
+                        if (currentLastMessageIndex > 0)
+                        {
+                            lastMessages[currentLastMessageIndex] = Input.Logic.Text;
+                            currentLastMessageIndex--;
+                            Input.Logic.SetText(lastMessages[currentLastMessageIndex]);
+                        }
+                    }
+                    break;
+                case Keys.Down:
+                    if (lastMessages.Count != 0)
+                    {
+                        if (currentLastMessageIndex < lastMessages.Count - 1)
+                        {
+                            lastMessages[currentLastMessageIndex] = Input.Logic.Text;
+                            currentLastMessageIndex++;
+                            Input.Logic.SetText(lastMessages[currentLastMessageIndex]);
+                        }
+                    }
+                    break;
+
+                // tabbing
+                case Keys.Tab:
+                    HandleTabCompletion(true);
+                    break;
+                case Keys.Shift | Keys.Tab:
+                    HandleTabCompletion(false);
+                    break;
+
+                // select all
+                case (Keys.Control | Keys.A):
+                    Input.Logic.SelectAll();
+                    break;
+
+                // delete
+                case Keys.Back:
+                case (Keys.Back | Keys.Control):
+                case (Keys.Back | Keys.Shift):
+                case Keys.Delete:
+                case (Keys.Delete | Keys.Control):
+                case (Keys.Delete | Keys.Shift):
+                    Input.Logic.Delete((keys & Keys.Control) == Keys.Control, (keys & ~Keys.Control) == Keys.Delete);
+                    break;
+
+                // paste
+                case Keys.Control | Keys.V:
+                    PasteText(Clipboard.GetText());
+                    break;
+
+                // home / end
+                case Keys.Home:
+                    Input.Logic.SetCaretPosition(0);
+                    break;
+                case Keys.Home | Keys.Shift:
+                    Input.Logic.SetSelectionEnd(0);
+                    break;
+                case Keys.End:
+                    Input.Logic.SetCaretPosition(Input.Logic.Text.Length);
+                    break;
+                case Keys.End | Keys.Shift:
+                    Input.Logic.SetSelectionEnd(Input.Logic.Text.Length);
+                    break;
+
+                // rename split
+                case Keys.Control | Keys.R:
+                    using (InputDialogForm dialog = new InputDialogForm("channel name") { Value = ChannelName })
+                    {
+                        if (dialog.ShowDialog() == DialogResult.OK)
+                        {
+                            ChannelName = dialog.Value;
+                        }
+                    }
+                    break;
+
+                // default
+                default:
+                    base.HandleKeys(keys);
+                    break;
+            }
+
+            base.HandleKeys(keys);
         }
 
         string[] tabCompleteItems = null;
@@ -527,64 +600,6 @@ namespace Chatterino.Controls
                 }
 
                 base.updateMessageBounds(emoteChanged);
-            }
-        }
-
-        public void HandleArrowKey(Keys keyData)
-        {
-            switch (keyData)
-            {
-                // left
-                case Keys.Left:
-                    Input.Logic.MoveCursorLeft(false, false);
-                    break;
-                case Keys.Left | Keys.Control:
-                    Input.Logic.MoveCursorLeft(true, false);
-                    break;
-                case Keys.Left | Keys.Shift:
-                    Input.Logic.MoveCursorLeft(false, true);
-                    break;
-                case Keys.Left | Keys.Shift | Keys.Control:
-                    Input.Logic.MoveCursorLeft(true, true);
-                    break;
-
-                // right
-                case Keys.Right:
-                    Input.Logic.MoveCursorRight(false, false);
-                    break;
-                case Keys.Right | Keys.Control:
-                    Input.Logic.MoveCursorRight(true, false);
-                    break;
-                case Keys.Right | Keys.Shift:
-                    Input.Logic.MoveCursorRight(false, true);
-                    break;
-                case Keys.Right | Keys.Shift | Keys.Control:
-                    Input.Logic.MoveCursorRight(true, true);
-                    break;
-
-                // up + down
-                case Keys.Up:
-                    if (lastMessages.Count != 0)
-                    {
-                        if (currentLastMessageIndex > 0)
-                        {
-                            lastMessages[currentLastMessageIndex] = Input.Logic.Text;
-                            currentLastMessageIndex--;
-                            Input.Logic.SetText(lastMessages[currentLastMessageIndex]);
-                        }
-                    }
-                    break;
-                case Keys.Down:
-                    if (lastMessages.Count != 0)
-                    {
-                        if (currentLastMessageIndex < lastMessages.Count - 1)
-                        {
-                            lastMessages[currentLastMessageIndex] = Input.Logic.Text;
-                            currentLastMessageIndex++;
-                            Input.Logic.SetText(lastMessages[currentLastMessageIndex]);
-                        }
-                    }
-                    break;
             }
         }
 
@@ -725,8 +740,8 @@ namespace Chatterino.Controls
             // local controls
             private ChatControl chatControl;
 
-            public ChatControlHeaderButton RoomstateButton { get; private set; }
-            public ChatControlHeaderButton DropDownButton { get; private set; }
+            public FlatButton RoomstateButton { get; private set; }
+            public FlatButton DropDownButton { get; private set; }
 
             // Constructor
             public ChatControlHeader(ChatControl chatControl)
@@ -778,7 +793,7 @@ namespace Chatterino.Controls
                 };
 
                 // Buttons
-                ChatControlHeaderButton button = DropDownButton = new ChatControlHeaderButton
+                FlatButton button = DropDownButton = new FlatButton
                 {
                     Height = Height - 2,
                     Width = Height - 2,
@@ -799,7 +814,7 @@ namespace Chatterino.Controls
 
                 Controls.Add(button);
 
-                RoomstateButton = button = new ChatControlHeaderButton
+                RoomstateButton = button = new FlatButton
                 {
                     Height = Height - 2,
                     Width = Height - 2,
@@ -844,97 +859,7 @@ namespace Chatterino.Controls
                 e.Graphics.DrawRectangle(App.ColorScheme.MenuBorder, 0, 0, Width - 1, Height - 1);
 
                 string title = string.IsNullOrWhiteSpace(chatControl.ChannelName) ? "<no channel>" : chatControl.ChannelName;
-                TextRenderer.DrawText(e.Graphics, title, chatControl.Font, new Rectangle(DropDownButton.Width, 0, Width - DropDownButton.Width - RoomstateButton.Width, Height), chatControl.Focused ? App.ColorScheme.TextFocused : App.ColorScheme.Text, App.DefaultTextFormatFlags | TextFormatFlags.VerticalCenter | TextFormatFlags.HorizontalCenter);
-            }
-        }
-
-        class ChatControlHeaderButton : Control
-        {
-            bool mouseOver = false;
-            bool mouseDown = false;
-
-            private Image image;
-
-            public Image Image
-            {
-                get { return image; }
-                set { image = value; Invalidate(); }
-            }
-
-            void calcSize()
-            {
-                if (Text != "")
-                {
-                    int width = Width;
-                    Width = 16 + TextRenderer.MeasureText(Text, Font).Width;
-                    if ((Anchor & AnchorStyles.Right) == AnchorStyles.Right)
-                        Location = new Point(Location.X - (Width - width), Location.Y);
-                    Invalidate();
-                }
-            }
-
-            public ChatControlHeaderButton()
-            {
-                TextChanged += (s, e) => calcSize();
-                SizeChanged += (s, e) => calcSize();
-
-                MouseEnter += (s, e) =>
-                {
-                    mouseOver = true;
-                    Invalidate();
-                };
-
-                MouseLeave += (s, e) =>
-                {
-                    mouseOver = false;
-                    Invalidate();
-                };
-
-                MouseDown += (s, e) =>
-                {
-                    if (e.Button == MouseButtons.Left)
-                    {
-                        mouseDown = true;
-                        Invalidate();
-                    }
-                };
-
-                MouseUp += (s, e) =>
-                {
-                    if (e.Button == MouseButtons.Left)
-                    {
-                        mouseDown = false;
-                        Invalidate();
-                    }
-                };
-            }
-
-            Brush mouseOverBrush = new SolidBrush(Color.FromArgb(48, 255, 255, 255));
-
-            protected override void OnPaintBackground(PaintEventArgs e)
-            {
-                e.Graphics.FillRectangle(App.ColorScheme.Menu, e.ClipRectangle);
-            }
-
-            protected override void OnPaint(PaintEventArgs e)
-            {
-                var g = e.Graphics;
-
-                if (mouseDown)
-                    g.FillRectangle(mouseOverBrush, 0, 0, Width, Height);
-
-                if (mouseOver)
-                    g.FillRectangle(mouseOverBrush, 0, 0, Width, Height);
-
-                if (image != null)
-                {
-                    g.DrawImage(image, Width / 2 - image.Width / 2, Height / 2 - image.Height / 2);
-                }
-
-                if (Text != null)
-                {
-                    TextRenderer.DrawText(g, Text, Font, ClientRectangle, App.ColorScheme.Text, TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);
-                }
+                TextRenderer.DrawText(e.Graphics, title, chatControl.Font, new Rectangle(DropDownButton.Width, 0, Width - DropDownButton.Width - RoomstateButton.Width, Height), chatControl.Selected ? App.ColorScheme.TextFocused : App.ColorScheme.Text, App.DefaultTextFormatFlags | TextFormatFlags.VerticalCenter | TextFormatFlags.HorizontalCenter);
             }
         }
     }

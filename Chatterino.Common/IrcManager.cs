@@ -25,6 +25,14 @@ namespace Chatterino.Common
 
         static ConcurrentDictionary<string, object> twitchBlockedUsers = new ConcurrentDictionary<string, object>();
 
+        public static IEnumerable<string> IgnoredUsers
+        {
+            get
+            {
+                return twitchBlockedUsers.Keys;
+            }
+        }
+
         // Static Ctor
         static string oauth = null;
 
@@ -81,6 +89,7 @@ namespace Chatterino.Common
                                 dynamic user = block["user"];
                                 string name = user["name"];
                                 string display_name = user["display_name"];
+                                twitchBlockedUsers[name] = null;
                             }
                         }
                     }
@@ -103,15 +112,17 @@ namespace Chatterino.Common
                             {
                                 foreach (dynamic emote in set.Value)
                                 {
-                                    // emote["id"]
+                                    int id;
 
-                                    Emotes.TwitchEmotes[emote["code"]] = null;
-                                    Emotes.TriggerEmotesLoaded();
+                                    int.TryParse(emote["id"], out id);
+
+                                    Emotes.TwitchEmotes[emote["code"]] = id;
                                 }
                             }
                         }
                     }
                     catch { }
+                    Emotes.TriggerEmotesLoaded();
                 });
 
                 // connect read
@@ -216,6 +227,15 @@ namespace Chatterino.Common
 
         public static void AddIgnoredUser(string username)
         {
+            string message;
+
+            TryAddIgnoredUser(username, out message);
+
+            NoticeAdded?.Invoke(null, new ValueEventArgs<string>(message));
+        }
+
+        public static bool TryAddIgnoredUser(string username, out string message)
+        {
             var _username = username.ToLower();
 
             bool success = false;
@@ -240,14 +260,27 @@ namespace Chatterino.Common
 
             if (success)
             {
-                NoticeAdded?.Invoke(null, new ValueEventArgs<string>($"Successfully ignored user \"{username}\"."));
                 twitchBlockedUsers[_username] = null;
+                message = $"Successfully ignored user \"{username}\".";
+                return true;
             }
             else
-                NoticeAdded?.Invoke(null, new ValueEventArgs<string>($"Error \"{(int)statusCode}\" while trying to ignore user \"{username}\"."));
+            {
+                message = $"Error \"{(int)statusCode}\" while trying to ignore user \"{username}\".";
+                return false;
+            }
         }
 
         public static void RemoveIgnoredUser(string username)
+        {
+            string message;
+
+            TryRemoveIgnoredUser(username, out message);
+
+            NoticeAdded?.Invoke(null, new ValueEventArgs<string>(message));
+        }
+
+        public static bool TryRemoveIgnoredUser(string username, out string message)
         {
             object value;
             username = username.ToLower();
@@ -277,10 +310,14 @@ namespace Chatterino.Common
             {
                 twitchBlockedUsers.TryRemove(username.ToLower(), out value);
 
-                NoticeAdded?.Invoke(null, new ValueEventArgs<string>($"Successfully unignored user \"{username}\"."));
+                message = $"Successfully unignored user \"{username}\".";
+                return true;
             }
             else
-                NoticeAdded?.Invoke(null, new ValueEventArgs<string>($"Error \"{(int)statusCode}\" while trying to unignore user \"{username}\"."));
+            {
+                message = $"Error \"{(int)statusCode}\" while trying to unignore user \"{username}\".";
+                return false;
+            }
         }
 
         // Messages
@@ -309,7 +346,7 @@ namespace Chatterino.Common
                     {
                         Message message = new Message(msg, c);
 
-                        if (!AppSettings.IgnoreTwitchBlocks || !IsIgnoredUser(message.Username))
+                        if (!AppSettings.EnableTwitchUserIgnores || !IsIgnoredUser(message.Username))
                         {
                             c.Users[message.Username.ToUpper()] = message.DisplayName;
 
@@ -387,9 +424,9 @@ namespace Chatterino.Common
                         else
                             state &= ~RoomState.R9k;
                     }
-                //if (e.Data.Tags.TryGetValue("broadcaster-lang", out value))
+                    //if (e.Data.Tags.TryGetValue("broadcaster-lang", out value))
 
-                c.RoomState = state;
+                    c.RoomState = state;
                     Console.WriteLine(c.RoomState);
                 });
             }

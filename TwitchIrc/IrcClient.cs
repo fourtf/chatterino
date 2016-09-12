@@ -51,44 +51,26 @@ namespace TwitchIrc
         {
             lock (lastMessagesLock)
             {
-                var now = DateTime.Now;
-
-                while (lastMessagesMod.Count > 0 && lastMessagesMod.Peek() < now)
+                while (lastMessagesMod.Count > 0 && lastMessagesMod.Peek() < DateTime.Now)
                 {
                     lastMessagesMod.Dequeue();
                 }
 
-                while (lastMessagesPleb.Count > 0 && lastMessagesPleb.Peek() < now)
+                while (lastMessagesPleb.Count > 0 && lastMessagesPleb.Peek() < DateTime.Now)
                 {
                     lastMessagesPleb.Dequeue();
                 }
 
-                if (isMod)
+                if (lastMessagesMod.Count < (isMod ? 99 : 19))
                 {
-                    if (lastMessagesMod.Count < 100)
-                    {
-                        WriteConnection.WriteLine("PRIVMSG #" + channel + " :" + message);
+                    WriteConnection.WriteLine("PRIVMSG #" + channel + " :" + message);
 
-                        lastMessagesMod.Enqueue(now + TimeSpan.FromSeconds(32));
-                        lastMessagesPleb.Enqueue(now + TimeSpan.FromSeconds(32));
-                    }
-                    else
-                    {
-                        return false;
-                    }
+                    lastMessagesMod.Enqueue(DateTime.Now + TimeSpan.FromSeconds(32));
+                    lastMessagesPleb.Enqueue(DateTime.Now + TimeSpan.FromSeconds(32));
                 }
                 else
                 {
-                    if (lastMessagesPleb.Count < 20)
-                    {
-                        WriteConnection.WriteLine("PRIVMSG #" + channel + " :" + message);
-
-                        lastMessagesPleb.Enqueue(now + TimeSpan.FromSeconds(32));
-                    }
-                    else
-                    {
-                        return false;
-                    }
+                    return false;
                 }
             }
 

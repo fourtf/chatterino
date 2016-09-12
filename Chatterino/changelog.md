@@ -1,8 +1,29 @@
 ﻿# changelog
 
+## 0.2.6.2
+- added CTRL + 1-9 to select tabs
+- added ALT + arrow keys to switch tabs
+- added ignored users
+- added a settings for the message length counter
+- added an emote list popup
+- added an option to change the hue of the theme
+- changed preferences so all the changes are immediate and cancel reverts them
+- fixed tabing localized names
+- removed 1 hour emote cache
+- tweaked global bad prevention
+
+## 0.2.5
+- fixed emote names not showing up that I broke in 0.2.4 like a true professional
+
+## 0.2.4
+- fixed an issue where it would not save custom commands for some users
+
 ## 0.2.3
 - added FFZ channel emotes
 - added a message length counter
+- added custom commands
+- added a donation page https://streamtip.com/t/fourtf
+- fixed timeouts not being displayed sometimes
 - fixed ctrl + backspace not deleting a word for some users
 
 ## 0.2.2

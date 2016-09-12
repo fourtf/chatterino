@@ -55,6 +55,7 @@ namespace Chatterino
         public static Controls.SettingsDialog SettingsDialog { get; set; }
 
         static Controls.ToolTip ToolTip { get; set; } = null;
+        static Controls.EmoteListPopup EmoteList { get; set; } = null;
 
         private static bool windowFocused = true;
         public static bool WindowFocused
@@ -66,13 +67,20 @@ namespace Chatterino
         // Emotes
         public static event EventHandler EmoteLoaded;
 
+        [System.Runtime.InteropServices.DllImport("shcore.dll")]
+        static extern int SetProcessDpiAwareness(_Process_DPI_Awareness value);
+
+        enum _Process_DPI_Awareness
+        {
+            Process_DPI_Unaware = 0,
+            Process_System_DPI_Aware = 1,
+            Process_Per_Monitor_DPI_Aware = 2
+        }
+
         // Main Entry Point
         [STAThread]
         static void Main()
         {
-            var s1 = Commands.ProcessMessage("asd    asd", false);
-            var s2 = Commands.ProcessMessage("/brainpower", false);
-
             CurrentVersion = VersionNumber.Parse(AssemblyName.GetAssemblyName(Assembly.GetExecutingAssembly().Location).Version.ToString());
 
             Directory.SetCurrentDirectory(new FileInfo(Assembly.GetEntryAssembly().Location).Directory.FullName);
@@ -80,9 +88,12 @@ namespace Chatterino
             GuiEngine.Initialize(new WinformsGuiEngine());
 
             ServicePointManager.ServerCertificateValidationCallback = (a, b, c, d) => true;
+            ServicePointManager.DefaultConnectionLimit = 1000;
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+
+            //SetProcessDpiAwareness(_Process_DPI_Awareness.Process_Per_Monitor_DPI_Aware);
 
             Icon = Icon.ExtractAssociatedIcon(Assembly.GetExecutingAssembly().Location);
 
@@ -94,13 +105,13 @@ namespace Chatterino
 
             // Exceptions
             Application.ThreadException += (s, e) =>
-            {
-                e.Exception.Log("exception", "{0}\n");
-            };
+                    {
+                        e.Exception.Log("exception", "{0}\n");
+                    };
             AppDomain.CurrentDomain.UnhandledException += (s, e) =>
-            {
-                (e.ExceptionObject as Exception).Log("exception", "{0}\n");
-            };
+                        {
+                            (e.ExceptionObject as Exception).Log("exception", "{0}\n");
+                        };
 
             // Update gif emotes
             new Timer { Interval = 20, Enabled = true }.Tick += (s, e) =>
@@ -114,6 +125,8 @@ namespace Chatterino
 
             // Settings/Colors
             AppSettings.Load("./Settings.ini");
+            Commands.LoadOrDefault("./Custom/Commands.txt");
+
             updateTheme();
 
             AppSettings.ThemeChanged += (s, e) => updateTheme();
@@ -188,6 +201,11 @@ namespace Chatterino
             // Save settings
             AppSettings.Save("./Settings.ini");
 
+            if (!Directory.Exists("./Custom"))
+                Directory.CreateDirectory("./Custom");
+
+            Commands.Save("./Custom/Commands.txt");
+
             // Install updates
             if (installUpdatesOnExit)
             {
@@ -221,7 +239,7 @@ namespace Chatterino
 
         public static void ShowToolTip(Point point, string text)
         {
-            if (WindowFocused)
+            if (WindowFocused || (EmoteList?.ContainsFocus ?? false))
             {
                 if (ToolTip == null)
                 {
@@ -248,6 +266,28 @@ namespace Chatterino
             }
         }
 
+        public static void ShowEmoteList(TwitchChannel channel)
+        {
+            if (EmoteList == null)
+            {
+                EmoteList = new Controls.EmoteListPopup();
+            }
+
+            EmoteList.SetChannel(channel);
+
+            EmoteList.Show();
+
+            EmoteList.FormClosed += (s, e) =>
+            {
+                EmoteList = null;
+            };
+        }
+
+        public static void SetEmoteListChannel(TwitchChannel channel)
+        {
+            EmoteList?.SetChannel(channel);
+        }
+
         static void updateTheme()
         {
             float multiplier = -0.8f;
@@ -269,23 +309,25 @@ namespace Chatterino
             }
 
 
-            ColorScheme = ColorScheme.FromHue(0.6f, multiplier);
+            ColorScheme = ColorScheme.FromHue((float)Math.Max(Math.Min(AppSettings.ThemeHue, 1), 0), multiplier);
 
-            if (MainForm != null)
-            {
-                Action<Control> invalidate = null;
+            MainForm?.Refresh();
 
-                invalidate = c =>
-                {
-                    foreach (Control C in c.Controls)
-                    {
-                        C.Invalidate();
-                        invalidate(C);
-                    }
-                };
+            //if (MainForm != null)
+            //{
+            //    Action<Control> invalidate = null;
 
-                invalidate(MainForm);
-            }
+            //    invalidate = c =>
+            //    {
+            //        foreach (Control C in c.Controls)
+            //        {
+            //            C.Invalidate();
+            //            invalidate(C);
+            //        }
+            //    };
+
+            //    invalidate(MainForm);
+            //}
         }
     }
 }

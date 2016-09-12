@@ -64,7 +64,7 @@ namespace Chatterino.Controls
 
         public TabPage()
         {
-            Padding = new Padding(0, 2, 0, 0);
+            Padding = new Padding(0, 4, 0, 0);
         }
 
         protected override void OnPaint(PaintEventArgs e)

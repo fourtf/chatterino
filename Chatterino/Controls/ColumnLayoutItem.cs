@@ -11,18 +11,42 @@ namespace Chatterino.Controls
     {
         static Random random = new Random();
 
+        public bool Selected
+        {
+            get
+            {
+                var mainForm = FindForm() as MainForm;
+
+                if (mainForm != null)
+                {
+                    return mainForm.Selected == this;
+                }
+
+                return false;
+            }
+        }
+
         public ColumnLayoutItem()
         {
             SetStyle(ControlStyles.ResizeRedraw, true);
             SetStyle(ControlStyles.Selectable, true);
 
             // Focus
-            GotFocus += (s, e) => { Invalidate(); };
+            GotFocus += (s, e) =>
+            {
+                Invalidate();
+                var mainForm = FindForm() as MainForm;
+
+                if (mainForm != null)
+                {
+                    mainForm.Selected = this;
+                }
+            };
             LostFocus += (s, e) => { Invalidate(); };
             MouseDown += (s, e) =>
             {
                 //if (e.Button == MouseButtons.Left)
-                    Select();
+                Select();
             };
 
             // Mousedown
@@ -61,6 +85,18 @@ namespace Chatterino.Controls
             //};
 
             //BackColor = Color.FromArgb(-16777216 | (0x404040 | 0x808080 | random.Next(0xFFFFFF)));
+        }
+
+        protected override void OnKeyDown(KeyEventArgs e)
+        {
+            HandleKeys(e.KeyData);
+
+            base.OnKeyDown(e);
+        }
+
+        public virtual void HandleKeys(Keys keys)
+        {
+
         }
 
         protected virtual void OnSplitDragStart()

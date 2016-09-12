@@ -198,7 +198,7 @@ namespace Chatterino.Controls
 
             if (select || _tabPages.Count == 1)
             {
-                this.select(page);
+                this.Select(page);
             }
 
             layout();
@@ -214,7 +214,7 @@ namespace Chatterino.Controls
 
             if (select || _tabPages.Count == 1)
             {
-                this.select(page);
+                this.Select(page);
             }
 
             layout();
@@ -237,11 +237,11 @@ namespace Chatterino.Controls
 
             if (index < _tabPages.Count)
             {
-                select(_tabPages[index].Item2);
+                Select(_tabPages[index].Item2);
             }
             else if (_tabPages.Count > 0)
             {
-                select(_tabPages[index - 1].Item2);
+                Select(_tabPages[index - 1].Item2);
             }
             else
             {
@@ -251,8 +251,7 @@ namespace Chatterino.Controls
             }
         }
 
-        // private
-        private void select(TabPage page)
+        public void Select(TabPage page)
         {
             var s = _selected;
 

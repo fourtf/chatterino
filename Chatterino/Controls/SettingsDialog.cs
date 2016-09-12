@@ -1,4 +1,5 @@
 ﻿using Chatterino.Common;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -38,11 +39,41 @@ namespace Chatterino.Controls
             tabs_PageSelected(this, EventArgs.Empty);
 
             // Appearance
-            comboTheme.Text = AppSettings.Theme;
+            string originalTheme = comboTheme.Text = AppSettings.Theme;
+            double originalThemeHue = AppSettings.ThemeHue;
 
-            onSave += (s, e) =>
+            comboTheme.SelectedValueChanged += (s, e) =>
             {
                 AppSettings.Theme = comboTheme.Text;
+            };
+
+            trackBar1.Value = Math.Max(Math.Min((int)Math.Round(originalThemeHue * 360), 360), 0);
+
+            trackBar1.ValueChanged += (s, e) =>
+            {
+                AppSettings.ThemeHue = trackBar1.Value / 360.0;
+                App.MainForm.Refresh();
+            };
+
+
+            onCancel += (s, e) =>
+            {
+                AppSettings.Theme = originalTheme;
+                AppSettings.ThemeHue = originalThemeHue;
+                App.MainForm.Refresh();
+            };
+
+            btnSelectFont.Click += (s, e) =>
+            {
+                using (CustomFontDialog.FontDialog dialog = new CustomFontDialog.FontDialog())
+                {
+                    if (dialog.ShowDialog(this) == DialogResult.OK)
+                    {
+                        AppSettings.SetFont(dialog.Font.Name, dialog.Font.Size);
+                    }
+                }
+
+                updateFontName();
             };
 
             BindCheckBox(chkTimestamps, "ChatShowTimestamps");
@@ -59,6 +90,78 @@ namespace Chatterino.Controls
             BindCheckBox(chkFlashTaskbar, "ChatEnableHighlightTaskbar");
             BindCheckBox(chkCustomPingSound, "ChatCustomHighlightSound");
 
+            BindCheckBox(chkInputShowMessageLength, "ChatInputShowMessageLength");
+
+            // Commands
+            lock (Commands.CustomCommandsLock)
+            {
+                foreach (Command c in Commands.CustomCommands)
+                {
+                    dgvCommands.Rows.Add(c.Raw);
+                }
+            }
+
+            dgvCommands.MultiSelect = false;
+            dgvCommands.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
+            dgvCommands.Columns[0].DefaultCellStyle.WrapMode = DataGridViewTriState.True;
+
+            dgvCommands.KeyDown += (s, e) =>
+            {
+                if (e.KeyData == (Keys.Control | Keys.Back))
+                {
+                    e.Handled = true;
+                }
+            };
+
+            btnCommandAdd.Click += (s, e) =>
+            {
+                dgvCommands.Rows.Add();
+                dgvCommands.Rows[dgvCommands.Rows.Count - 1].Selected = true;
+            };
+
+            Action updateCustomCommands = () =>
+            {
+                lock (Commands.CustomCommandsLock)
+                {
+                    Commands.CustomCommands.Clear();
+
+                    foreach (DataGridViewRow row in dgvCommands.Rows)
+                    {
+                        Commands.CustomCommands.Add(new Command((string)row.Cells[0].Value));
+                    }
+                }
+            };
+
+            btnCommandRemove.Click += (s, e) =>
+            {
+                if (dgvCommands.SelectedCells.Count != 0)
+                {
+                    dgvCommands.Rows.RemoveAt(dgvCommands.SelectedCells[0].RowIndex);
+                }
+
+                updateCustomCommands();
+            };
+
+            List<Command> originalCustomCommand = Commands.CustomCommands;
+
+            lock (Commands.CustomCommandsLock)
+            {
+                Commands.CustomCommands = new List<Command>(Commands.CustomCommands);
+            }
+
+            dgvCommands.CellValueChanged += (s, e) =>
+            {
+                updateCustomCommands();
+            };
+
+            onCancel += (s, e) =>
+            {
+                lock (Commands.CustomCommandsLock)
+                {
+                    Commands.CustomCommands = originalCustomCommand;
+                }
+            };
+
             // Emotes
             BindCheckBox(chkTwitchEmotes, "ChatEnableTwitchEmotes");
             BindCheckBox(chkBttvEmotes, "ChatEnableBttvEmotes");
@@ -66,21 +169,89 @@ namespace Chatterino.Controls
             BindCheckBox(chkEmojis, "ChatEnableEmojis");
             BindCheckBox(chkGifEmotes, "ChatEnableGifAnimations");
 
-            rtbIngoredEmotes.Text = string.Join(Environment.NewLine, AppSettings.ChatIgnoredEmotes.Keys);
-            onSave += (s, e) =>
+            string originalIgnoredEmotes = rtbIngoredEmotes.Text = string.Join(Environment.NewLine, AppSettings.ChatIgnoredEmotes.Keys);
+
+            rtbIngoredEmotes.LostFocus += (s, e) =>
             {
-                // user blacklist
+                AppSettings.ChatIgnoredEmotes.Clear();
+                var reader = new StringReader(rtbIngoredEmotes.Text);
+                string line;
+                while ((line = reader.ReadLine()) != null)
                 {
-                    AppSettings.ChatIgnoredEmotes.Clear();
-                    var reader = new StringReader(rtbIngoredEmotes.Text);
-                    string line;
-                    while ((line = reader.ReadLine()) != null)
+                    AppSettings.ChatIgnoredEmotes[line.Trim()] = null;
+                }
+            };
+
+            onCancel += (s, e) =>
+            {
+                AppSettings.ChatIgnoredEmotes.Clear();
+                var reader = new StringReader(originalIgnoredEmotes);
+                string line;
+                while ((line = reader.ReadLine()) != null)
+                {
+                    AppSettings.ChatIgnoredEmotes[line.Trim()] = null;
+                }
+            };
+
+            // Ignored Users
+            BindCheckBox(chkTwitchIgnores, "EnableTwitchUserIgnores");
+
+            foreach (string user in IrcManager.IgnoredUsers)
+            {
+                dgvIgnoredUsers.Rows.Add(user);
+            }
+
+            dgvIgnoredUsers.MultiSelect = false;
+            dgvIgnoredUsers.ReadOnly = true;
+            dgvIgnoredUsers.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
+            dgvIgnoredUsers.Columns[0].DefaultCellStyle.WrapMode = DataGridViewTriState.True;
+
+            btnIgnoredUserAdd.Click += (s, e) =>
+            {
+                using (var dialog = new InputDialogForm("Input Username"))
+                {
+                    if (dialog.ShowDialog() == DialogResult.OK)
                     {
-                        AppSettings.ChatIgnoredEmotes[line.Trim()] = null;
+                        string message;
+
+                        if (IrcManager.TryAddIgnoredUser(dialog.Value.Trim(), out message))
+                        {
+                            dgvIgnoredUsers.Rows.Add(dialog.Value.Trim());
+                        }
+                        else
+                        {
+                            MessageBox.Show(message, "Error while ignoring user");
+                        }
                     }
                 }
             };
 
+            btnIgnoredUserRemove.Click += (s, e) =>
+            {
+                if (dgvIgnoredUsers.SelectedCells.Count != 0)
+                {
+                    string message;
+                    string username = (string)dgvIgnoredUsers.SelectedCells[0].Value;
+
+                    if (IrcManager.TryRemoveIgnoredUser(username, out message))
+                    {
+                        dgvIgnoredUsers.Rows.RemoveAt(dgvIgnoredUsers.SelectedCells[0].RowIndex);
+                    }
+                    else
+                    {
+                        MessageBox.Show(message, "Error while unignoring user");
+                    }
+                }
+            };
+
+            // Links
+
+            //RegistryKey browserKeys;
+            ////on 64bit the browsers are in a different location
+            //browserKeys = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\WOW6432Node\Clients\StartMenuInternet");
+            //if (browserKeys == null)
+            //    browserKeys = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Clients\StartMenuInternet");
+            //string[] browserNames = browserKeys.GetSubKeyNames();
 
             // Proxy
             BindCheckBox(chkProxyEnabled, "ProxyEnable");
@@ -89,15 +260,39 @@ namespace Chatterino.Controls
             BindTextBox(textBox2, "ProxyUsername");
             BindTextBox(textBox3, "ProxyPassword");
 
-            rtbHighlights.Text = string.Join(Environment.NewLine, AppSettings.ChatCustomHighlights);
-            rtbUserBlacklist.Text = string.Join(Environment.NewLine, AppSettings.HighlightIgnoredUsers.Keys);
+            string customHighlightsOriginal = rtbHighlights.Text = string.Join(Environment.NewLine, AppSettings.ChatCustomHighlights);
+            string highlightIgnoredUsersOriginal = rtbUserBlacklist.Text = string.Join(Environment.NewLine, AppSettings.HighlightIgnoredUsers.Keys);
 
-            onSave += (s, e) =>
+            // Highlights
+            rtbHighlights.LostFocus += (s, e) =>
+            {
+                List<string> list = new List<string>();
+                StringReader reader = new StringReader(rtbHighlights.Text);
+                string line;
+                while ((line = reader.ReadLine()) != null)
+                {
+                    list.Add(line.Trim());
+                }
+                AppSettings.ChatCustomHighlights = list.ToArray();
+            };
+
+            rtbUserBlacklist.LostFocus += (s, e) =>
+            {
+                AppSettings.HighlightIgnoredUsers.Clear();
+                var reader = new StringReader(rtbUserBlacklist.Text);
+                string line;
+                while ((line = reader.ReadLine()) != null)
+                {
+                    AppSettings.HighlightIgnoredUsers[line.Trim().ToLower()] = null;
+                }
+            };
+
+            onCancel += (s, e) =>
             {
                 // highlight keywords
                 {
                     List<string> list = new List<string>();
-                    StringReader reader = new StringReader(rtbHighlights.Text);
+                    StringReader reader = new StringReader(customHighlightsOriginal);
                     string line;
                     while ((line = reader.ReadLine()) != null)
                     {
@@ -109,26 +304,13 @@ namespace Chatterino.Controls
                 // user blacklist
                 {
                     AppSettings.HighlightIgnoredUsers.Clear();
-                    var reader = new StringReader(rtbUserBlacklist.Text);
+                    var reader = new StringReader(highlightIgnoredUsersOriginal);
                     string line;
                     while ((line = reader.ReadLine()) != null)
                     {
                         AppSettings.HighlightIgnoredUsers[line.Trim().ToLower()] = null;
                     }
                 }
-            };
-
-            btnSelectFont.Click += (s, e) =>
-            {
-                using (CustomFontDialog.FontDialog dialog = new CustomFontDialog.FontDialog())
-                {
-                    if (dialog.ShowDialog(this) == DialogResult.OK)
-                    {
-                        AppSettings.SetFont(dialog.Font.Name, dialog.Font.Size);
-                    }
-                }
-
-                updateFontName();
             };
 
             updateFontName();
@@ -144,6 +326,9 @@ namespace Chatterino.Controls
                         try
                         {
                             (GuiEngine.Current as WinformsGuiEngine).HighlightSound?.Dispose();
+
+                            if (!Directory.Exists("./Custom"))
+                                Directory.CreateDirectory("./Custom");
 
                             File.Copy(dialog.FileName, "./Custom/Ping.wav", true);
                         }
@@ -203,18 +388,19 @@ namespace Chatterino.Controls
             //x += 12 + btnResetAll.Width;
         }
 
-        event EventHandler onSave;
+        //event EventHandler onSave;
+        event EventHandler onCancel;
 
         void btnOK_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.OK;
-            onSave?.Invoke(this, EventArgs.Empty);
             Close();
         }
 
         void btnCancel_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
+            onCancel?.Invoke(this, EventArgs.Empty);
             Close();
         }
 
@@ -240,16 +426,26 @@ namespace Chatterino.Controls
 
         private void BindCheckBox(CheckBox c, string name)
         {
+            bool original;
+
             PropertyInfo prop;
             if (AppSettings.Properties.TryGetValue(name, out prop))
             {
-                var value = prop.GetValue(null);
-                c.Checked = (bool)value;
+                original = (bool)prop.GetValue(null);
+                c.Checked = original;
             }
             else
                 throw new ArgumentException($"The settings {name} doesn't exist.");
 
-            onSave += (s, e) => { prop.SetValue(null, c.Checked); };
+            c.CheckedChanged += (s, e) =>
+            {
+                prop.SetValue(null, c.Checked);
+            };
+
+            onCancel += (s, e) =>
+            {
+                prop.SetValue(null, original);
+            };
         }
 
         private void BindTextBox(TextBox c, string name)
@@ -257,19 +453,21 @@ namespace Chatterino.Controls
             PropertyInfo prop;
             bool isNumeric;
 
+            object original;
+
             if (AppSettings.Properties.TryGetValue(name, out prop))
             {
                 isNumeric = prop.PropertyType == typeof(int);
 
-                var value = prop.GetValue(null);
-                c.Text = value.ToString();
+                original = prop.GetValue(null);
+                c.Text = original.ToString(); ;
             }
             else
             {
                 throw new ArgumentException($"The settings {name} doesn't exist.");
             }
 
-            onSave += (s, e) =>
+            c.TextChanged += (s, e) =>
             {
                 if (isNumeric)
                 {
@@ -283,6 +481,11 @@ namespace Chatterino.Controls
                 {
                     prop.SetValue(null, c.Text);
                 }
+            };
+
+            onCancel += (s, e) =>
+            {
+                prop.SetValue(null, original);
             };
 
             if (isNumeric)

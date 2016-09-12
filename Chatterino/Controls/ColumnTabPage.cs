@@ -41,6 +41,8 @@ namespace Chatterino.Controls
         public event EventHandler<ValueEventArgs<ChatColumn>> ColumnAdded;
         public event EventHandler<ValueEventArgs<ChatColumn>> ColumnRemoved;
 
+        public ColumnLayoutItem LastSelected { get; set; } = null;
+
         public int ColumnCount
         {
             get

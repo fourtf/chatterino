@@ -73,6 +73,16 @@ namespace Chatterino.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap AppearanceEditorPart_16x {
+            get {
+                object obj = ResourceManager.GetObject("AppearanceEditorPart_16x", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap broadcaster_bg {
             get {
                 object obj = ResourceManager.GetObject("broadcaster_bg", resourceCulture);
@@ -143,9 +153,39 @@ namespace Chatterino.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap CustomActionEditor_16x {
+            get {
+                object obj = ResourceManager.GetObject("CustomActionEditor_16x", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap dev_bg {
             get {
                 object obj = ResourceManager.GetObject("dev_bg", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Emoji_Color_1F607_19 {
+            get {
+                object obj = ResourceManager.GetObject("Emoji_Color_1F607_19", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Emoji_Color_1F60A_19 {
+            get {
+                object obj = ResourceManager.GetObject("Emoji_Color_1F60A_19", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -163,9 +203,29 @@ namespace Chatterino.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap format_Bold_16xLG {
+            get {
+                object obj = ResourceManager.GetObject("format_Bold_16xLG", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap globalmod_bg {
             get {
                 object obj = ResourceManager.GetObject("globalmod_bg", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Message_16xLG {
+            get {
+                object obj = ResourceManager.GetObject("Message_16xLG", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -222,9 +282,29 @@ namespace Chatterino.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap StatusAnnotations_Blocked_16xLG_color {
+            get {
+                object obj = ResourceManager.GetObject("StatusAnnotations_Blocked_16xLG_color", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap turbo_bg {
             get {
                 object obj = ResourceManager.GetObject("turbo_bg", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap VSO_Link_blue_16x {
+            get {
+                object obj = ResourceManager.GetObject("VSO_Link_blue_16x", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

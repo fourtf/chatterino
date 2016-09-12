@@ -188,7 +188,7 @@ namespace Chatterino.Common
                     {
                         JsonParser parser = new JsonParser();
 
-                        if (!File.Exists(bttvChannelEmotesCache) || DateTime.Now - new FileInfo(bttvChannelEmotesCache).LastWriteTime > TimeSpan.FromHours(1))
+                        //if (!File.Exists(bttvChannelEmotesCache))
                         {
                             try
                             {
@@ -221,6 +221,7 @@ namespace Chatterino.Common
                             {
                                 string id = e["id"];
                                 string code = e["code"];
+                                string channel = e["channel"];
 
                                 TwitchEmote emote;
                                 if (Emotes.BttvChannelEmotesCache.TryGetValue(id, out emote))
@@ -231,7 +232,7 @@ namespace Chatterino.Common
                                 {
                                     string imageType = e["imageType"];
                                     string url = template.Replace("{{id}}", id).Replace("{{image}}", "1x");
-                                    Emotes.BttvChannelEmotesCache[id] = BttvChannelEmotes[code] = new TwitchEmote { Name = code, Url = url, Tooltip = code + "\nBetterTTV Channel Emote" };
+                                    Emotes.BttvChannelEmotesCache[id] = BttvChannelEmotes[code] = new TwitchEmote { Name = code, Url = url, Tooltip = code + "\nBetterTTV Channel Emote\nChannel: " + channel };
                                 }
                             }
                         }
@@ -239,7 +240,6 @@ namespace Chatterino.Common
                     }
                     catch { }
                 });
-
                 
                 // ffz channel emotes
                 Task.Run(() =>
@@ -248,7 +248,7 @@ namespace Chatterino.Common
                     {
                         JsonParser parser = new JsonParser();
 
-                        if (!File.Exists(ffzChannelEmotesCache) || DateTime.Now - new FileInfo(ffzChannelEmotesCache).LastWriteTime > TimeSpan.FromHours(1))
+                        //if (!File.Exists(ffzChannelEmotesCache))
                         {
                             try
                             {
@@ -288,6 +288,8 @@ namespace Chatterino.Common
                                 {
                                     string code = emoticon["name"];
                                     string id = emoticon["id"];
+                                    dynamic owner = emoticon["owner"];
+                                    string ownerName = owner["display_name"];
 
                                     dynamic urls = emoticon["urls"];
 
@@ -300,7 +302,7 @@ namespace Chatterino.Common
                                     }
                                     else
                                     {
-                                        Emotes.FfzChannelEmotesCache[id] = FfzChannelEmotes[code] = new TwitchEmote { Name = code, Url = url, Tooltip = code + "\nFFZ Channel Emote\n" + title };
+                                        Emotes.FfzChannelEmotesCache[id] = FfzChannelEmotes[code] = new TwitchEmote { Name = code, Url = url, Tooltip = code + "\nFFZ Channel Emote\nChannel: " + ownerName };
                                     }
                                 }
                             }

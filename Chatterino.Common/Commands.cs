@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -13,12 +14,15 @@ namespace Chatterino.Common
     {
         public static ConcurrentDictionary<string, Func<string, bool, string>> ChatCommands = new ConcurrentDictionary<string, Func<string, bool, string>>();
 
+        public static readonly object CustomCommandsLock = new object();
+        public static List<Command> CustomCommands = new List<Command>();
+
         // static ctor
         static Commands()
         {
             // Chat Commands
-            ChatCommands.TryAdd("shrug", (s, execute) => ". " + s + " ¯\\_(ツ)_/¯");
-            ChatCommands.TryAdd("brainpower", (s, execute) => ". " + s + " O-oooooooooo AAAAE-A-A-I-A-U- JO-oooooooooooo AAE-O-A-A-U-U-A- E-eee-ee-eee AAAAE-A-E-I-E-A- JO-ooo-oo-oo-oo EEEEO-A-AAA-AAAA " + s);
+            //ChatCommands.TryAdd("shrug", (s, execute) => ". " + s + " ¯\\_(ツ)_/¯");
+            //ChatCommands.TryAdd("brainpower", (s, execute) => ". " + s + " O-oooooooooo AAAAE-A-A-I-A-U- JO-oooooooooooo AAE-O-A-A-U-U-A- E-eee-ee-eee AAAAE-A-E-I-E-A- JO-ooo-oo-oo-oo EEEEO-A-AAA-AAAA " + s);
 
             ChatCommands.TryAdd("ignore", (s, execute) =>
             {
@@ -64,8 +68,6 @@ namespace Chatterino.Common
 
                 return null;
             });
-
-
         }
 
         // public
@@ -75,12 +77,26 @@ namespace Chatterino.Common
             {
                 int index = text.IndexOf(' ');
                 string _command = index == -1 ? text.Substring(1) : text.Substring(1, index - 1);
-                var args  = index == -1 ? "" : text.Substring(index + 1);
+                var args = index == -1 ? "" : text.Substring(index + 1);
 
                 Func<string, bool, string> command;
                 if (ChatCommands.TryGetValue(_command, out command))
                 {
                     text = command(args, executeCommands);
+                }
+                else
+                {
+                    lock (CustomCommandsLock)
+                    {
+                        foreach (var c in CustomCommands)
+                        {
+                            if (c.Name == _command)
+                            {
+                                text = c.Execute(args);
+                                break;
+                            }
+                        }
+                    }
                 }
             }
 
@@ -102,29 +118,58 @@ namespace Chatterino.Common
             {
                 return null;
             }
+        }
 
-            //var message = _message;
+        // io
+        public static void LoadOrDefault(string path)
+        {
+            lock (CustomCommandsLock)
+            {
+                try
+                {
+                    if (File.Exists(path))
+                    {
+                        using (StreamReader reader = new StreamReader(path))
+                        {
+                            CustomCommands.Clear();
 
-            //if (_message.Length > 1 && _message[0] == '/')
-            //{
-            //    int index = _message.IndexOf(' ');
-            //    string _command = index == -1 ? _message.Substring(1) : _message.Substring(1, index - 1);
-            //    _message = index == -1 ? "" : _message.Substring(index + 1);
+                            string line;
+                            while ((line = reader.ReadLine()) != null)
+                            {
+                                CustomCommands.Add(new Command(line));
+                            }
+                        }
+                    }
+                    else
+                    {
+                        CustomCommands.Add(new Command("/slap /me slaps {1} around a bit with a large trout"));
+                        CustomCommands.Add(new Command("/shrug {1+} ¯\\_(ツ)_/¯"));
+                        CustomCommands.Add(new Command("/brainpower {1+} O-oooooooooo AAAAE-A-A-I-A-U- JO-oooooooooooo AAE-O-A-A-U-U-A- E-eee-ee-eee AAAAE-A-E-I-E-A- JO-ooo-oo-oo-oo EEEEO-A-AAA-AAAA {1+}"));
+                    }
+                }
+                catch (Exception exc)
+                {
+                    exc.Message.Log("commands");
+                }
+            }
+        }
 
-            //    Func<string, string> command;
-            //    if (ChatCommands.TryGetValue(_command, out command))
-            //    {
-            //        message = command(_message) ?? message;
-            //    }
-            //}
-
-            //if (message != null)
-            //{
-            //    if (AppSettings.ChatAllowSameMessage)
-            //    {
-            //        message = message + " ";
-            //    }
-            //}
+        public static void Save(string path)
+        {
+            try
+            {
+                using (StreamWriter writer = new StreamWriter(path))
+                {
+                    lock (CustomCommandsLock)
+                    {
+                        foreach (var command in CustomCommands)
+                        {
+                            writer.WriteLine(command.Raw);
+                        }
+                    }
+                }
+            }
+            catch { }
         }
     }
 }

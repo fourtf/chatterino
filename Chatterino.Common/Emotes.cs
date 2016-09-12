@@ -13,7 +13,7 @@ namespace Chatterino.Common
     {
         public static event EventHandler EmotesLoaded;
 
-        public static ConcurrentDictionary<string, string> TwitchEmotes = new ConcurrentDictionary<string, string>();
+        public static ConcurrentDictionary<string, int> TwitchEmotes = new ConcurrentDictionary<string, int>();
         public static ConcurrentDictionary<string, TwitchEmote> BttvGlobalEmotes = new ConcurrentDictionary<string, TwitchEmote>();
         public static ConcurrentDictionary<string, TwitchEmote> FfzGlobalEmotes = new ConcurrentDictionary<string, TwitchEmote>();
         public static ConcurrentDictionary<string, TwitchEmote> BttvChannelEmotesCache = new ConcurrentDictionary<string, TwitchEmote>();
@@ -92,7 +92,7 @@ namespace Chatterino.Common
                     System.Text.Json.JsonParser parser = new System.Text.Json.JsonParser();
 
                     // better twitch tv emotes
-                    if (!File.Exists(bttvEmotesGlobalCache) || DateTime.Now - new FileInfo(bttvEmotesGlobalCache).LastWriteTime > TimeSpan.FromHours(1))
+                    //if (!File.Exists(bttvEmotesGlobalCache))
                     {
                         try
                         {
@@ -148,7 +148,7 @@ namespace Chatterino.Common
                     System.Text.Json.JsonParser parser = new System.Text.Json.JsonParser();
 
                     // better twitch tv emotes
-                    if (!File.Exists(ffzEmotesGlobalCache) || DateTime.Now - new FileInfo(ffzEmotesGlobalCache).LastWriteTime > TimeSpan.FromHours(1))
+                    //if (!File.Exists(ffzEmotesGlobalCache))
                     {
                         try
                         {
@@ -200,6 +200,24 @@ namespace Chatterino.Common
         internal static void TriggerEmotesLoaded()
         {
             EmotesLoaded?.Invoke(null, EventArgs.Empty);
+        }
+
+        public static TwitchEmote GetTwitchEmoteById(int id, string name)
+        {
+            TwitchEmote e;
+
+            if (!TwitchEmotesByIDCache.TryGetValue(id, out e))
+            {
+                e = new TwitchEmote
+                {
+                    Name = name,
+                    Url = TwitchEmoteTemplate.Replace("{id}", id.ToString()),
+                    Tooltip = name + "\nTwitch Emote"
+                };
+                TwitchEmotesByIDCache[id] = e;
+            }
+
+            return e;
         }
     }
 }

@@ -53,7 +53,7 @@ namespace Chatterino.Common
         public List<Word> Words { get; set; }
         public TwitchChannel Channel { get; set; }
 
-        Regex linkRegex = new Regex(@"^((?<Protocol>\w+):\/\/)?(?<Domain>[\w%@-][\w.%-:@]+\w)\/?[\w\.?=#%&=\+\-@/$,]*$");
+        static Regex linkRegex = new Regex(@"^((?<Protocol>\w+):\/\/)?(?<Domain>[\w%@-][\w.%-:@]+\w)\/?[\w\.?=#%&=\+\-@/$,]*$", RegexOptions.Compiled);
         static char[] linkIdentifiers = new char[] { '.', ':' };
 
         private Message()
@@ -284,15 +284,8 @@ namespace Chatterino.Common
             {
                 DisplayName = Username;
             }
-            else
-            {
-                if (DisplayName.ToLower() != Username)
-                {
-                    DisplayName = DisplayName + " (" + Username + ")";
-                }
-            }
 
-            var messageUser = DisplayName + (slashMe ? "" : ":");
+            var messageUser = DisplayName + (DisplayName.ToLower() != Username ? $" ({Username})" : "") + (slashMe ? "" : ":");
             words.Add(new Word
             {
                 Type = SpanType.Text,
@@ -325,17 +318,8 @@ namespace Chatterino.Common
                             // ignore ignored emotes
                             if (!AppSettings.ChatIgnoredEmotes.ContainsKey(name))
                             {
-                                TwitchEmote e;
-                                if (!Emotes.TwitchEmotesByIDCache.TryGetValue(id, out e))
-                                {
-                                    e = new TwitchEmote
-                                    {
-                                        Name = name,
-                                        Url = Emotes.TwitchEmoteTemplate.Replace("{id}", id.ToString()),
-                                        Tooltip = name + "\nTwitch Emote"
-                                    };
-                                    Emotes.TwitchEmotesByIDCache[id] = e;
-                                }
+                                TwitchEmote e = Emotes.GetTwitchEmoteById(id, name);
+
                                 twitchEmotes.Add(Tuple.Create(index, e));
                             }
                         };
@@ -436,26 +420,9 @@ namespace Chatterino.Common
                         }
                         else
                         {
-                            string link = null;
+                            string link = matchLink(split);
 
-                            if (split.IndexOfAny(linkIdentifiers) != -1)
-                            {
-                                Match m = linkRegex.Match(split);
 
-                                if (m.Success)
-                                {
-                                    link = m.Value;
-
-                                    if (!m.Groups["Protocol"].Success)
-                                        link = "http://" + link;
-
-                                    if (!m.Groups["Protocol"].Success || m.Groups["Protocol"].Value.ToUpper() == "HTTP" || m.Groups["Protocol"].Value.ToUpper() == "HTTPS")
-                                    {
-                                        if (m.Groups["Domain"].Value.IndexOf('.') == -1)
-                                            link = null;
-                                    }
-                                }
-                            }
 
                             words.Add(new Word
                             {
@@ -534,6 +501,12 @@ namespace Chatterino.Common
             Words.AddRange(text.Split(' ').Select(x => new Word { Type = SpanType.Text, Value = x, Color = color, CopyText = x }));
         }
 
+        public Message(List<Word> words)
+        {
+            RawMessage = "";
+            Words = words;
+        }
+
         public static Message[] ParseMD(string md)
         {
             List<Message> list = new List<Message>();
@@ -567,7 +540,7 @@ namespace Chatterino.Common
                     }
 
                     // Add words
-                    msg.Words = line.Split(' ').Select(x => new Word { Type = SpanType.Text, Font = font, Value = x, CopyText = x }).ToList();
+                    msg.Words = line.Split(' ').Select(x => new Word { Type = SpanType.Text, Font = font, Value = x, CopyText = x, Link = matchLink(x) }).ToList();
 
                     list.Add(msg);
                 }
@@ -981,6 +954,33 @@ namespace Chatterino.Common
                 }
             }
             return 0;
+        }
+
+        // private
+        private static string matchLink(string text)
+        {
+            string link = null;
+
+            if (text.IndexOfAny(linkIdentifiers) != -1)
+            {
+                Match m = linkRegex.Match(text);
+
+                if (m.Success)
+                {
+                    link = m.Value;
+
+                    if (!m.Groups["Protocol"].Success)
+                        link = "http://" + link;
+
+                    if (!m.Groups["Protocol"].Success || m.Groups["Protocol"].Value.ToUpper() == "HTTP" || m.Groups["Protocol"].Value.ToUpper() == "HTTPS")
+                    {
+                        if (m.Groups["Domain"].Value.IndexOf('.') == -1)
+                            link = null;
+                    }
+                }
+            }
+
+            return link;
         }
     }
 }
