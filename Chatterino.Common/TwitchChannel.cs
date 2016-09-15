@@ -50,7 +50,7 @@ namespace Chatterino.Common
                         {
                             string imageUrl = null;
 
-                            var request = WebRequest.Create($"https://api.twitch.tv/kraken/chat/{Name}/badges");
+                            var request = WebRequest.Create($"https://api.twitch.tv/kraken/chat/{Name}/badges?client_id=7ue61iz46fz11y3cugd0l3tawb4taal");
                             using (var response = request.GetResponse())
                             using (var stream = response.GetResponseStream())
                             {
@@ -68,7 +68,7 @@ namespace Chatterino.Common
                                 return img;
                             }
                         }
-                        catch
+                        catch (Exception exc)
                         {
                             return null;
                         }

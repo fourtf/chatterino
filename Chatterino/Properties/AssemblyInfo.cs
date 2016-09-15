@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("Chatterino")]
-[assembly: AssemblyCopyright("Copyright ©  2016")]
+[assembly: AssemblyCopyright("Copyright © fourtf 2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -34,8 +34,8 @@ using System.Runtime.InteropServices;
 // [assembly: AssemblyVersion("1.0.*")]
 #if DEBUG
 [assembly: AssemblyVersion("0.2.*")]
-[assembly: AssemblyFileVersion("0.2.6.2")]
+[assembly: AssemblyFileVersion("0.2.6.4")]
 #else
-[assembly: AssemblyVersion("0.2.6.2")]
-[assembly: AssemblyFileVersion("0.2.6.2")]
+[assembly: AssemblyVersion("0.2.6.4")]
+[assembly: AssemblyFileVersion("0.2.6.4")]
 #endif

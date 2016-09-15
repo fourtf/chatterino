@@ -1,5 +1,11 @@
 ﻿# changelog
 
+## 0.2.6.4
+- fixed sub badges not showing up
+
+## 0.2.6.3
+- fixed commands not updating when one is deleted
+
 ## 0.2.6.2
 - added CTRL + 1-9 to select tabs
 - added ALT + arrow keys to switch tabs
