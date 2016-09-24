@@ -24,7 +24,7 @@ namespace Chatterino.Desktop
             message.X = xOffset;
             var textColor = App.ColorScheme.Text;
 
-            if (message.Highlighted)
+            if (message.HighlightType)
             {
                 ctx.SetColor(App.ColorScheme.ChatBackgroundHighlighted);
                 ctx.Rectangle(0, yOffset, 1000, message.Height);

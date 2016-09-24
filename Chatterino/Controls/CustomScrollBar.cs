@@ -277,85 +277,89 @@ namespace Chatterino.Controls
         // drawing
         protected override void OnPaint(PaintEventArgs e)
         {
-            var g = e.Graphics;
-
-            if (Enabled)
+            try
             {
-                // top button
-                //g.FillRectangle(mOverIndex == 0 ? App.ColorScheme.ScrollbarThumbSelected : App.ColorScheme.ScrollbarThumb
-                //    , 0, 0, buttonSize, buttonSize);
+                var g = e.Graphics;
 
-                // top button triangle
-                g.FillPolygon(App.ColorScheme.ScrollbarThumbSelected,
-                    new Point[] {
+                if (Enabled)
+                {
+                    // top button
+                    //g.FillRectangle(mOverIndex == 0 ? App.ColorScheme.ScrollbarThumbSelected : App.ColorScheme.ScrollbarThumb
+                    //    , 0, 0, buttonSize, buttonSize);
+
+                    // top button triangle
+                    g.FillPolygon(App.ColorScheme.ScrollbarThumbSelected,
+                        new Point[] {
                     new Point(buttonSize * 3 / 4, buttonSize * 5 / 8),
                     new Point(buttonSize / 4,     buttonSize * 5 / 8),
                     new Point(buttonSize / 2,     buttonSize * 3 / 8),
-                    });
+                        });
 
-                g.FillRectangle(App.ColorScheme.ChatBackground, 0, Height - buttonSize - 1, Width, 1);
+                    g.FillRectangle(App.ColorScheme.ChatBackground, 0, Height - buttonSize - 1, Width, 1);
 
-                // bottom button
-                //g.FillRectangle(mOverIndex == 4 ? App.ColorScheme.ScrollbarThumbSelected : App.ColorScheme.ScrollbarThumb
-                //    , 0, Height - buttonSize, buttonSize, buttonSize);
+                    // bottom button
+                    //g.FillRectangle(mOverIndex == 4 ? App.ColorScheme.ScrollbarThumbSelected : App.ColorScheme.ScrollbarThumb
+                    //    , 0, Height - buttonSize, buttonSize, buttonSize);
 
-                // bottom button triangle
-                g.FillPolygon(App.ColorScheme.ScrollbarThumbSelected,
-                    new Point[] {
+                    // bottom button triangle
+                    g.FillPolygon(App.ColorScheme.ScrollbarThumbSelected,
+                        new Point[] {
                     new Point(buttonSize / 4,     Height - buttonSize * 5 / 8),
                     new Point(buttonSize * 3 / 4, Height - buttonSize * 5 / 8),
                     new Point(buttonSize / 2,     Height - buttonSize * 3 / 8),
-                    });
+                        });
 
-                // draw thumb
-                g.FillRectangle(mOverIndex == 2 ? App.ColorScheme.ScrollbarThumbSelected : App.ColorScheme.ScrollbarThumb
-                    , 0, buttonSize + thumbOffset, buttonSize, thumbHeight);
+                    // draw thumb
+                    g.FillRectangle(mOverIndex == 2 ? App.ColorScheme.ScrollbarThumbSelected : App.ColorScheme.ScrollbarThumb
+                        , 0, buttonSize + thumbOffset, buttonSize, thumbHeight);
 
-                if (Height != 0 && Maximum != 0)
-                {
-                    var h = (Height - buttonSize - buttonSize - minThumbHeight);
-
-                    lock (highlights)
+                    if (Height != 0 && Maximum != 0)
                     {
-                        foreach (var highlight in highlights)
+                        var h = (Height - buttonSize - buttonSize - minThumbHeight);
+
+                        lock (highlights)
                         {
-
-                            SolidBrush brush = colors.GetOrAdd(highlight.Color, (x) =>
+                            foreach (var highlight in highlights)
                             {
-                                Color bg = (App.ColorScheme.ChatBackground as SolidBrush)?.Color ?? Color.Black;
 
-                                Color n = Color.FromArgb(
-                                    (bg.R + x.R) / 2,
-                                    (bg.G + x.G) / 2,
-                                    (bg.B + x.B) / 2);
-
-                                return new SolidBrush(n);
-                            });
-
-                            var y = (int)(h * highlight.Position / Maximum);
-
-                            int a = 0;
-
-                            if (y > thumbOffset)
-                            {
-                                if (y > thumbOffset + thumbHeight - minThumbHeight)
+                                SolidBrush brush = colors.GetOrAdd(highlight.Color, (x) =>
                                 {
-                                    y += minThumbHeight - 3;
-                                }
-                                else
+                                    Color bg = (App.ColorScheme.ChatBackground as SolidBrush)?.Color ?? Color.Black;
+
+                                    Color n = Color.FromArgb(
+                                        (bg.R + x.R) / 2,
+                                        (bg.G + x.G) / 2,
+                                        (bg.B + x.B) / 2);
+
+                                    return new SolidBrush(n);
+                                });
+
+                                var y = (int)(h * highlight.Position / Maximum);
+
+                                int a = 0;
+
+                                if (y > thumbOffset)
                                 {
-                                    a += 2;
-                                    y = (int)((y - thumbOffset) * (thumbHeight / ((double)thumbHeight - (minThumbHeight - 3)))) + thumbOffset;
+                                    if (y > thumbOffset + thumbHeight - minThumbHeight)
+                                    {
+                                        y += minThumbHeight - 3;
+                                    }
+                                    else
+                                    {
+                                        a += 2;
+                                        y = (int)((y - thumbOffset) * (thumbHeight / ((double)thumbHeight - (minThumbHeight - 3)))) + thumbOffset;
+                                    }
                                 }
+
+                                y += buttonSize;
+
+                                g.FillRectangle(brush, Width / 2 - 2, y, 4, a + Math.Max(4, (int)(h * highlight.Height / Maximum)));
                             }
-
-                            y += buttonSize;
-
-                            g.FillRectangle(brush, Width / 2 - 2, y, 4, a + Math.Max(4, (int)(h * highlight.Height / Maximum)));
                         }
                     }
                 }
             }
+            catch { }
         }
     }
 }

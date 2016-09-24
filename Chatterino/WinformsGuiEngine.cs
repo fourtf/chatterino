@@ -213,7 +213,7 @@ namespace Chatterino
             [ImageType.Cheer10000] = Properties.Resources.cheer10000,
             [ImageType.Cheer100000] = Properties.Resources.cheer100000,
         };
-
+        
         public object GetImage(ImageType type)
         {
             lock (images)
@@ -264,9 +264,12 @@ namespace Chatterino
                 }
                 else
                 {
-                    var metrics = new SharpDX.DirectWrite.TextLayout(Fonts.Factory, "X", Fonts.GetTextFormat(font), 1000000, 1000000).Metrics;
-                    lineHeight = (int)metrics.Height;
-                    //lineHeight = (int)Math.Ceiling(Fonts.GetTextFormat(font).FontSize);
+                    using (var layout = new SharpDX.DirectWrite.TextLayout(Fonts.Factory, "X", Fonts.GetTextFormat(font), 1000000, 1000000))
+                    {
+                        var metrics = layout.Metrics;
+                        lineHeight = (int)metrics.Height;
+                        //lineHeight = (int)Math.Ceiling(Fonts.GetTextFormat(font).FontSize);
+                    }
                 }
 
                 return Tuple.Create(new ConcurrentDictionary<string, CommonSize>(), new ConcurrentStack<string>(), lineHeight);
@@ -293,9 +296,12 @@ namespace Chatterino
                 }
                 else
                 {
-                    var metrics = new SharpDX.DirectWrite.TextLayout(Fonts.Factory, text, Fonts.GetTextFormat(font), 1000000, 1000000).Metrics;
+                    using (var layout = new SharpDX.DirectWrite.TextLayout(Fonts.Factory, text, Fonts.GetTextFormat(font), 1000000, 1000000))
+                    {
+                        var metrics = layout.Metrics;
 
-                    return new CommonSize((int)metrics.WidthIncludingTrailingWhitespace, sizeCache.Item3);
+                        return new CommonSize((int)metrics.WidthIncludingTrailingWhitespace, sizeCache.Item3);
+                    }
                 }
             });
         }

@@ -47,6 +47,16 @@ namespace TwitchIrc
             }
         }
 
+        public void Reconnect()
+        {
+            ReadConnection.Reconnect();
+
+            if (!SingleConnection)
+            {
+                WriteConnection.Reconnect();
+            }
+        }
+
         public bool Say(string message, string channel, bool isMod)
         {
             lock (lastMessagesLock)

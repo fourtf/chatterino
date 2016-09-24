@@ -103,16 +103,19 @@ namespace Chatterino.Controls
                 {
                     bool hasUpdated = false;
 
-                    lock (MessageLock)
+                    if (MessageLock != null)
                     {
-                        for (int i = 0; i < Messages.Length; i++)
+                        lock (MessageLock)
                         {
-                            var msg = Messages[i];
-                            if (msg.IsVisible)
+                            for (int i = 0; i < Messages.Length; i++)
                             {
-                                hasUpdated = true;
+                                var msg = Messages[i];
+                                if (msg.IsVisible)
+                                {
+                                    hasUpdated = true;
 
-                                MessageRenderer.DrawGifEmotes(buffer.Graphics, msg, selection, i);
+                                    MessageRenderer.DrawGifEmotes(buffer.Graphics, msg, selection, i);
+                                }
                             }
                         }
                     }
@@ -136,12 +139,20 @@ namespace Chatterino.Controls
             Invalidate();
         }
 
+        public void LeakXD()
+        {
+            using (var g = CreateGraphics())
+            {
+                OnPaint(new PaintEventArgs(g, new Rectangle(0, 0, 100, 100)));
+            }
+        }
+
         // overrides
         protected override void OnMouseWheel(MouseEventArgs e)
         {
             if (_scroll.Enabled)
             {
-                _scroll.Value -= ((double)e.Delta / 20 * mouseScrollMultiplyer);
+                _scroll.Value -= ((double)e.Delta / 40 * mouseScrollMultiplyer * AppSettings.ScrollMultiplyer);
 
                 if (e.Delta > 0)
                     scrollAtBottom = false;
@@ -372,9 +383,7 @@ namespace Chatterino.Controls
                             if (App.UseDirectX)
                             {
                                 SharpDX.Direct2D1.DeviceContextRenderTarget renderTarget = null;
-                                IntPtr dc = IntPtr.Zero;
-
-                                dc = g.GetHdc();
+                                IntPtr dc = g.GetHdc();
 
                                 renderTarget = new SharpDX.Direct2D1.DeviceContextRenderTarget(MessageRenderer.D2D1Factory, MessageRenderer.RenderTargetProperties);
 
@@ -774,7 +783,7 @@ namespace Chatterino.Controls
                 }
             }
 
-                (g as Graphics)?.Dispose();
+            (g as Graphics)?.Dispose();
 
             this.Invoke(() =>
             {

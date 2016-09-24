@@ -36,6 +36,12 @@ namespace Chatterino.Common
         // Static Ctor
         static string oauth = null;
 
+        public struct TwitchEmoteValue
+        {
+            public int Set { get; set; }
+            public int ID { get; set; }
+        }
+
         // Connection
         public static void Connect(TextReader loginReader = null)
         {
@@ -110,13 +116,17 @@ namespace Chatterino.Common
 
                             foreach (dynamic set in json["emoticon_sets"])
                             {
+                                int setID;
+
+                                int.TryParse(set.Key, out setID);
+
                                 foreach (dynamic emote in set.Value)
                                 {
                                     int id;
 
                                     int.TryParse(emote["id"], out id);
 
-                                    Emotes.TwitchEmotes[emote["code"]] = id;
+                                    Emotes.TwitchEmotes[emote["code"]] = new TwitchEmoteValue { ID = id, Set = setID };
                                 }
                             }
                         }
@@ -205,6 +215,8 @@ namespace Chatterino.Common
             if (disconnected)
                 Disconnected?.Invoke(null, EventArgs.Empty);
         }
+
+
 
         // Send Messages
         public static void SendMessage(string channel, string _message, bool isMod)
@@ -450,7 +462,24 @@ namespace Chatterino.Common
                 string sysMsg;
                 msg.Tags.TryGetValue("system-msg", out sysMsg);
 
-                TwitchChannel.GetChannel((msg.Middle ?? "").TrimStart('#')).Process(c => c.AddMessage(new Message(msg.Params == null ? (sysMsg ?? null) : $"{sysMsg}: {msg.Params}", HSLColor.Gray, true)));
+                TwitchChannel.GetChannel((msg.Middle ?? "").TrimStart('#')).Process(c =>
+                {
+                    try
+                    {
+                        Message sysMessage = new Message(sysMsg, HSLColor.Gray, true)
+                        {
+                            HighlightType = HighlightType.Resub
+                        };
+                        c.AddMessage(sysMessage);
+
+                        Message message = new Message(msg, c)
+                        {
+                            HighlightType = HighlightType.Resub
+                        };
+                        c.AddMessage(message);
+                    }
+                    catch { }
+                });
             }
         }
 

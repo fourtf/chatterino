@@ -73,12 +73,36 @@ namespace Chatterino.Common
         // public
         public static string ProcessMessage(string text, bool executeCommands)
         {
-            if (text.Length > 1 && text[0] == '/')
-            {
-                int index = text.IndexOf(' ');
-                string _command = index == -1 ? text.Substring(1) : text.Substring(1, index - 1);
-                var args = index == -1 ? "" : text.Substring(index + 1);
+            string _command = null;
+            string args = null;
 
+            if (text.Length > 1)
+            {
+                if (text[0] == '/')
+                {
+                    int index = text.IndexOf(' ');
+                    _command = index == -1 ? text.Substring(1) : text.Substring(1, index - 1);
+                    args = index == -1 ? "" : text.Substring(index + 1);
+                }
+                else if (AppSettings.ChatAllowCommandsAtEnd)
+                {
+                    int index = text.LastIndexOf(' ');
+
+                    if (index != -1)
+                    {
+                        string s = text.Substring(index + 1);
+
+                        if (s.Length > 0 && s[0] == '/')
+                        {
+                            _command = s.Substring(1);
+                            args = text.Remove(index);
+                        }
+                    }
+                }
+            }
+
+            if (_command != null)
+            {
                 Func<string, bool, string> command;
                 if (ChatCommands.TryGetValue(_command, out command))
                 {

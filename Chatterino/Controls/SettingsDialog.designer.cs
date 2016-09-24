@@ -31,13 +31,16 @@
             this.tabs = new Chatterino.Controls.SettingsTabControl();
             this.RightPanel = new System.Windows.Forms.Panel();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.label11 = new System.Windows.Forms.Label();
+            this.trackBar2 = new System.Windows.Forms.TrackBar();
+            this.btnSelectFont = new System.Windows.Forms.Button();
+            this.label10 = new System.Windows.Forms.Label();
             this.trackBar1 = new System.Windows.Forms.TrackBar();
             this.chkInputShowMessageLength = new System.Windows.Forms.CheckBox();
             this.comboTheme = new System.Windows.Forms.ComboBox();
             this.label7 = new System.Windows.Forms.Label();
             this.chkMessageSeperators = new System.Windows.Forms.CheckBox();
             this.lblFont = new System.Windows.Forms.Label();
-            this.btnSelectFont = new System.Windows.Forms.Button();
             this.label5 = new System.Windows.Forms.Label();
             this.chkHideInput = new System.Windows.Forms.CheckBox();
             this.txtMsgLimit = new System.Windows.Forms.TextBox();
@@ -45,6 +48,13 @@
             this.chkAllowSameMessages = new System.Windows.Forms.CheckBox();
             this.chkTimestampSeconds = new System.Windows.Forms.CheckBox();
             this.chkTimestamps = new System.Windows.Forms.CheckBox();
+            this.panel5 = new System.Windows.Forms.Panel();
+            this.chkAllowCommandAtEnd = new System.Windows.Forms.CheckBox();
+            this.lblCommands = new System.Windows.Forms.Label();
+            this.btnCommandRemove = new System.Windows.Forms.Button();
+            this.btnCommandAdd = new System.Windows.Forms.Button();
+            this.dgvCommands = new System.Windows.Forms.DataGridView();
+            this.Command = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.panel8 = new System.Windows.Forms.Panel();
             this.panel6 = new System.Windows.Forms.Panel();
             this.chkTwitchIgnores = new System.Windows.Forms.CheckBox();
@@ -53,12 +63,6 @@
             this.dgvIgnoredUsers = new System.Windows.Forms.DataGridView();
             this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.label9 = new System.Windows.Forms.Label();
-            this.panel5 = new System.Windows.Forms.Panel();
-            this.lblCommands = new System.Windows.Forms.Label();
-            this.btnCommandRemove = new System.Windows.Forms.Button();
-            this.btnCommandAdd = new System.Windows.Forms.Button();
-            this.dgvCommands = new System.Windows.Forms.DataGridView();
-            this.Command = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.panel4 = new System.Windows.Forms.Panel();
             this.chkTwitchEmotes = new System.Windows.Forms.CheckBox();
             this.tabControl2 = new System.Windows.Forms.TabControl();
@@ -107,15 +111,16 @@
             this.spHighlighted = new Chatterino.Controls.SettingsTabPage();
             this.spWhispers = new Chatterino.Controls.SettingsTabPage();
             this.spConnection = new Chatterino.Controls.SettingsTabPage();
-            this.label10 = new System.Windows.Forms.Label();
+            this.lblScrollSpeed = new System.Windows.Forms.Label();
             this.tabs.SuspendLayout();
             this.RightPanel.SuspendLayout();
             this.panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
-            this.panel6.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvIgnoredUsers)).BeginInit();
             this.panel5.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvCommands)).BeginInit();
+            this.panel6.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvIgnoredUsers)).BeginInit();
             this.panel4.SuspendLayout();
             this.tabControl2.SuspendLayout();
             this.tabPage3.SuspendLayout();
@@ -155,9 +160,9 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.RightPanel.Controls.Add(this.panel1);
+            this.RightPanel.Controls.Add(this.panel5);
             this.RightPanel.Controls.Add(this.panel8);
             this.RightPanel.Controls.Add(this.panel6);
-            this.RightPanel.Controls.Add(this.panel5);
             this.RightPanel.Controls.Add(this.panel4);
             this.RightPanel.Controls.Add(this.panel7);
             this.RightPanel.Controls.Add(this.panel3);
@@ -170,6 +175,9 @@
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.lblScrollSpeed);
+            this.panel1.Controls.Add(this.label11);
+            this.panel1.Controls.Add(this.trackBar2);
             this.panel1.Controls.Add(this.btnSelectFont);
             this.panel1.Controls.Add(this.label10);
             this.panel1.Controls.Add(this.trackBar1);
@@ -190,6 +198,49 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(448, 406);
             this.panel1.TabIndex = 0;
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.label11.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.label11.Location = new System.Drawing.Point(14, 278);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(70, 13);
+            this.label11.TabIndex = 22;
+            this.label11.Text = "Scroll Speed:";
+            // 
+            // trackBar2
+            // 
+            this.trackBar2.LargeChange = 45;
+            this.trackBar2.Location = new System.Drawing.Point(89, 273);
+            this.trackBar2.Maximum = 400;
+            this.trackBar2.Minimum = 100;
+            this.trackBar2.Name = "trackBar2";
+            this.trackBar2.Size = new System.Drawing.Size(250, 45);
+            this.trackBar2.TabIndex = 21;
+            this.trackBar2.TickStyle = System.Windows.Forms.TickStyle.None;
+            this.trackBar2.Value = 200;
+            // 
+            // btnSelectFont
+            // 
+            this.btnSelectFont.Location = new System.Drawing.Point(99, 80);
+            this.btnSelectFont.Name = "btnSelectFont";
+            this.btnSelectFont.Size = new System.Drawing.Size(75, 23);
+            this.btnSelectFont.TabIndex = 14;
+            this.btnSelectFont.Text = "Select";
+            this.btnSelectFont.UseVisualStyleBackColor = true;
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.label10.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.label10.Location = new System.Drawing.Point(14, 41);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(66, 13);
+            this.label10.TabIndex = 20;
+            this.label10.Text = "Theme Hue:";
             // 
             // trackBar1
             // 
@@ -258,15 +309,6 @@
             this.lblFont.Size = new System.Drawing.Size(54, 13);
             this.lblFont.TabIndex = 15;
             this.lblFont.Text = "font name";
-            // 
-            // btnSelectFont
-            // 
-            this.btnSelectFont.Location = new System.Drawing.Point(99, 80);
-            this.btnSelectFont.Name = "btnSelectFont";
-            this.btnSelectFont.Size = new System.Drawing.Size(75, 23);
-            this.btnSelectFont.TabIndex = 14;
-            this.btnSelectFont.Text = "Select";
-            this.btnSelectFont.UseVisualStyleBackColor = true;
             // 
             // label5
             // 
@@ -344,6 +386,85 @@
             this.chkTimestamps.TabIndex = 0;
             this.chkTimestamps.Text = "Show Timestamps";
             this.chkTimestamps.UseVisualStyleBackColor = true;
+            // 
+            // panel5
+            // 
+            this.panel5.Controls.Add(this.chkAllowCommandAtEnd);
+            this.panel5.Controls.Add(this.lblCommands);
+            this.panel5.Controls.Add(this.btnCommandRemove);
+            this.panel5.Controls.Add(this.btnCommandAdd);
+            this.panel5.Controls.Add(this.dgvCommands);
+            this.panel5.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel5.Location = new System.Drawing.Point(0, 0);
+            this.panel5.Name = "panel5";
+            this.panel5.Size = new System.Drawing.Size(448, 406);
+            this.panel5.TabIndex = 3;
+            // 
+            // chkAllowCommandAtEnd
+            // 
+            this.chkAllowCommandAtEnd.AutoSize = true;
+            this.chkAllowCommandAtEnd.Checked = true;
+            this.chkAllowCommandAtEnd.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkAllowCommandAtEnd.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.chkAllowCommandAtEnd.Location = new System.Drawing.Point(176, 17);
+            this.chkAllowCommandAtEnd.Name = "chkAllowCommandAtEnd";
+            this.chkAllowCommandAtEnd.Size = new System.Drawing.Size(205, 17);
+            this.chkAllowCommandAtEnd.TabIndex = 1;
+            this.chkAllowCommandAtEnd.Text = "Allow commands at the end of the line";
+            this.chkAllowCommandAtEnd.UseVisualStyleBackColor = true;
+            // 
+            // lblCommands
+            // 
+            this.lblCommands.AutoSize = true;
+            this.lblCommands.ForeColor = System.Drawing.Color.White;
+            this.lblCommands.Location = new System.Drawing.Point(13, 321);
+            this.lblCommands.Name = "lblCommands";
+            this.lblCommands.Size = new System.Drawing.Size(270, 78);
+            this.lblCommands.TabIndex = 4;
+            this.lblCommands.Text = "/name command\r\n\r\n{1} = first word, {2} = seconds word, ...\r\n{1+} = first word and" +
+    " after, {2+} = second word and after\r\n\r\nwarning: you could override important tw" +
+    "itch commands";
+            // 
+            // btnCommandRemove
+            // 
+            this.btnCommandRemove.Location = new System.Drawing.Point(95, 13);
+            this.btnCommandRemove.Name = "btnCommandRemove";
+            this.btnCommandRemove.Size = new System.Drawing.Size(75, 23);
+            this.btnCommandRemove.TabIndex = 2;
+            this.btnCommandRemove.Text = "Remove";
+            this.btnCommandRemove.UseVisualStyleBackColor = true;
+            // 
+            // btnCommandAdd
+            // 
+            this.btnCommandAdd.Location = new System.Drawing.Point(15, 13);
+            this.btnCommandAdd.Name = "btnCommandAdd";
+            this.btnCommandAdd.Size = new System.Drawing.Size(75, 23);
+            this.btnCommandAdd.TabIndex = 1;
+            this.btnCommandAdd.Text = "Add";
+            this.btnCommandAdd.UseVisualStyleBackColor = true;
+            // 
+            // dgvCommands
+            // 
+            this.dgvCommands.AllowUserToAddRows = false;
+            this.dgvCommands.AllowUserToDeleteRows = false;
+            this.dgvCommands.AllowUserToResizeColumns = false;
+            this.dgvCommands.AllowUserToResizeRows = false;
+            this.dgvCommands.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvCommands.ColumnHeadersVisible = false;
+            this.dgvCommands.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.Command});
+            this.dgvCommands.Location = new System.Drawing.Point(16, 48);
+            this.dgvCommands.Name = "dgvCommands";
+            this.dgvCommands.RowHeadersVisible = false;
+            this.dgvCommands.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dgvCommands.Size = new System.Drawing.Size(415, 270);
+            this.dgvCommands.TabIndex = 0;
+            // 
+            // Command
+            // 
+            this.Command.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.Command.HeaderText = "Command";
+            this.Command.Name = "Command";
             // 
             // panel8
             // 
@@ -431,71 +552,6 @@
             this.label9.Text = "/ignore in chat to ignore someone\r\n/unignore in chat to unignore someone\r\n\r\nChatt" +
     "erino uses the twitch ignore api.\r\nIf you use your own oauth key make sure that " +
     "it has the proper permissions.";
-            // 
-            // panel5
-            // 
-            this.panel5.Controls.Add(this.lblCommands);
-            this.panel5.Controls.Add(this.btnCommandRemove);
-            this.panel5.Controls.Add(this.btnCommandAdd);
-            this.panel5.Controls.Add(this.dgvCommands);
-            this.panel5.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel5.Location = new System.Drawing.Point(0, 0);
-            this.panel5.Name = "panel5";
-            this.panel5.Size = new System.Drawing.Size(448, 406);
-            this.panel5.TabIndex = 3;
-            // 
-            // lblCommands
-            // 
-            this.lblCommands.AutoSize = true;
-            this.lblCommands.ForeColor = System.Drawing.Color.White;
-            this.lblCommands.Location = new System.Drawing.Point(13, 321);
-            this.lblCommands.Name = "lblCommands";
-            this.lblCommands.Size = new System.Drawing.Size(270, 78);
-            this.lblCommands.TabIndex = 4;
-            this.lblCommands.Text = "/name command\r\n\r\n{1} = first word, {2} = seconds word, ...\r\n{1+} = first word and" +
-    " after, {2+} = second word and after\r\n\r\nwarning: you could override important tw" +
-    "itch commands";
-            // 
-            // btnCommandRemove
-            // 
-            this.btnCommandRemove.Location = new System.Drawing.Point(95, 13);
-            this.btnCommandRemove.Name = "btnCommandRemove";
-            this.btnCommandRemove.Size = new System.Drawing.Size(75, 23);
-            this.btnCommandRemove.TabIndex = 2;
-            this.btnCommandRemove.Text = "Remove";
-            this.btnCommandRemove.UseVisualStyleBackColor = true;
-            // 
-            // btnCommandAdd
-            // 
-            this.btnCommandAdd.Location = new System.Drawing.Point(15, 13);
-            this.btnCommandAdd.Name = "btnCommandAdd";
-            this.btnCommandAdd.Size = new System.Drawing.Size(75, 23);
-            this.btnCommandAdd.TabIndex = 1;
-            this.btnCommandAdd.Text = "Add";
-            this.btnCommandAdd.UseVisualStyleBackColor = true;
-            // 
-            // dgvCommands
-            // 
-            this.dgvCommands.AllowUserToAddRows = false;
-            this.dgvCommands.AllowUserToDeleteRows = false;
-            this.dgvCommands.AllowUserToResizeColumns = false;
-            this.dgvCommands.AllowUserToResizeRows = false;
-            this.dgvCommands.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvCommands.ColumnHeadersVisible = false;
-            this.dgvCommands.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.Command});
-            this.dgvCommands.Location = new System.Drawing.Point(16, 48);
-            this.dgvCommands.Name = "dgvCommands";
-            this.dgvCommands.RowHeadersVisible = false;
-            this.dgvCommands.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvCommands.Size = new System.Drawing.Size(415, 270);
-            this.dgvCommands.TabIndex = 0;
-            // 
-            // Command
-            // 
-            this.Command.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.Command.HeaderText = "Command";
-            this.Command.Name = "Command";
             // 
             // panel4
             // 
@@ -1037,16 +1093,16 @@
             this.spConnection.Text = "Connection";
             this.spConnection.Visible = false;
             // 
-            // label10
+            // lblScrollSpeed
             // 
-            this.label10.AutoSize = true;
-            this.label10.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.label10.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.label10.Location = new System.Drawing.Point(14, 41);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(66, 13);
-            this.label10.TabIndex = 20;
-            this.label10.Text = "Theme Hue:";
+            this.lblScrollSpeed.AutoSize = true;
+            this.lblScrollSpeed.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.lblScrollSpeed.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.lblScrollSpeed.Location = new System.Drawing.Point(345, 278);
+            this.lblScrollSpeed.Name = "lblScrollSpeed";
+            this.lblScrollSpeed.Size = new System.Drawing.Size(33, 13);
+            this.lblScrollSpeed.TabIndex = 23;
+            this.lblScrollSpeed.Text = "100%";
             // 
             // SettingsDialog
             // 
@@ -1067,13 +1123,14 @@
             this.RightPanel.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).EndInit();
-            this.panel6.ResumeLayout(false);
-            this.panel6.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvIgnoredUsers)).EndInit();
             this.panel5.ResumeLayout(false);
             this.panel5.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvCommands)).EndInit();
+            this.panel6.ResumeLayout(false);
+            this.panel6.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvIgnoredUsers)).EndInit();
             this.panel4.ResumeLayout(false);
             this.panel4.PerformLayout();
             this.tabControl2.ResumeLayout(false);
@@ -1176,5 +1233,9 @@
         private System.Windows.Forms.CheckBox chkTwitchIgnores;
         private System.Windows.Forms.TrackBar trackBar1;
         private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.CheckBox chkAllowCommandAtEnd;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.TrackBar trackBar2;
+        private System.Windows.Forms.Label lblScrollSpeed;
     }
 }

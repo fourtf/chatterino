@@ -129,7 +129,7 @@ namespace Chatterino.Desktop.Widgets
                 _scroll.RemoveHighlightsWhere(h => h.Position < 0);
             }
 
-            if (e.Message.Highlighted)
+            if (e.Message.HighlightType)
                 _scroll.AddHighlight((channel?.MessageCount ?? 1) - 1, Colors.Red);
 
             updateMessageBounds();
@@ -142,7 +142,7 @@ namespace Chatterino.Desktop.Widgets
 
             for (int i = 0; i < e.Value.Length; i++)
             {
-                if (e.Value[i].Highlighted)
+                if (e.Value[i].HighlightType)
                     _scroll.AddHighlight(i, Colors.Red);
             }
 

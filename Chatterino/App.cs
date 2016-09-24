@@ -105,13 +105,13 @@ namespace Chatterino
 
             // Exceptions
             Application.ThreadException += (s, e) =>
-                    {
-                        e.Exception.Log("exception", "{0}\n");
-                    };
+            {
+                e.Exception.Log("exception", "{0}\n");
+            };
             AppDomain.CurrentDomain.UnhandledException += (s, e) =>
-                        {
-                            (e.ExceptionObject as Exception).Log("exception", "{0}\n");
-                        };
+            {
+                (e.ExceptionObject as Exception).Log("exception", "{0}\n");
+            };
 
             // Update gif emotes
             new Timer { Interval = 20, Enabled = true }.Tick += (s, e) =>
@@ -193,6 +193,8 @@ namespace Chatterino
             Emotes.LoadGlobalEmotes();
             Badges.LoadGlobalBadges();
 
+            Net.StartHttpServer();
+
             // Show form
             MainForm = new MainForm();
 
@@ -212,6 +214,8 @@ namespace Chatterino
                 Process.Start(Path.Combine(new FileInfo(Assembly.GetEntryAssembly().Location).Directory.FullName, "Updater", "Chatterino.Updater.exe"), restartAfterUpdates ? "--restart" : "");
                 System.Threading.Thread.Sleep(1000);
             }
+
+            Environment.Exit(0);
         }
 
         // Public Functions

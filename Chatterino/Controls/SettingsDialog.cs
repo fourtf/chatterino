@@ -55,6 +55,23 @@ namespace Chatterino.Controls
                 App.MainForm.Refresh();
             };
 
+            double defaultScrollSpeed = AppSettings.ScrollMultiplyer; 
+
+            trackBar2.Value = Math.Min(400, Math.Max(100, (int)(AppSettings.ScrollMultiplyer * 200)));
+
+            onCancel += (s, e) =>
+            {
+                AppSettings.ScrollMultiplyer = defaultScrollSpeed;
+            };
+
+            lblScrollSpeed.Text = (int)(AppSettings.ScrollMultiplyer * 100) + "%";
+
+            trackBar2.ValueChanged += (s, e) =>
+            {
+                AppSettings.ScrollMultiplyer = (double)trackBar2.Value / 200;
+
+                lblScrollSpeed.Text = (int)(AppSettings.ScrollMultiplyer * 100) + "%";
+            };
 
             onCancel += (s, e) =>
             {
@@ -100,6 +117,20 @@ namespace Chatterino.Controls
                     dgvCommands.Rows.Add(c.Raw);
                 }
             }
+            //ChatAllowCommandsAtEnd
+            bool defaultAllowCommandAtEnd = AppSettings.ChatAllowCommandsAtEnd;
+
+            chkAllowCommandAtEnd.Checked = AppSettings.ChatAllowCommandsAtEnd;
+
+            chkAllowCommandAtEnd.CheckedChanged += (s, e) =>
+            {
+                AppSettings.ChatAllowCommandsAtEnd = chkAllowCommandAtEnd.Checked;
+            };
+
+            onCancel += (s, e) =>
+            {
+                AppSettings.ChatAllowCommandsAtEnd = defaultAllowCommandAtEnd;
+            };
 
             dgvCommands.MultiSelect = false;
             dgvCommands.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;

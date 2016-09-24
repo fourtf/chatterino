@@ -32,17 +32,21 @@ namespace Chatterino.Controls
 
                 // twitch emotes
                 {
-                    List<Word> words = new List<Word>();
+                    messages.Add(new Message("Twitch Emotes"));
 
-                    foreach (var emote in Emotes.TwitchEmotes.OrderBy(x => x.Key))
+                    foreach (var emotes in Emotes.TwitchEmotes.GroupBy(x => x.Value.Set))
                     {
-                        words.Add(new Word { Type = SpanType.Emote, Value = Emotes.GetTwitchEmoteById(emote.Value, emote.Key), Tooltip = emote.Key + "\nTwitch Emote", CopyText = emote.Key, Link = "@insertText|" + emote.Key + " " });
-                    }
+                        List<Word> words = new List<Word>();
 
-                    if (words.Count != 0)
-                    {
-                        messages.Add(new Message("Twitch Emotes"));
-                        messages.Add(new Message(words));
+                        foreach (var emote in emotes.OrderBy(x => x.Key))
+                        {
+                            words.Add(new Word { Type = SpanType.Emote, Value = Emotes.GetTwitchEmoteById(emote.Value.ID, emote.Key), Tooltip = emote.Key + "\nTwitch Emote", CopyText = emote.Key, Link = "@insertText|" + emote.Key + " " });
+                        }
+
+                        if (words.Count != 0)
+                        {
+                            messages.Add(new Message(words));
+                        }
                     }
                 }
 

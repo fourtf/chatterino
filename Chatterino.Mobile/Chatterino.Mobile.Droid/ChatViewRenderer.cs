@@ -48,38 +48,31 @@ namespace Chatterino.Mobile.Droid
 
         public _ChatView(Context context) : base(context)
         {
-            IrcManager.MessageReceived += IrcManager_MessageReceived;
+            channel = TwitchChannel.AddChannel("pajlada");
+
+            channel.MessageAdded += Channel_MessageAdded;
         }
 
-        private void IrcManager_MessageReceived(object sender, MessageEventArgs e)
+        private void Channel_MessageAdded(object sender, MessageAddedEventArgs e)
         {
-            Console.WriteLine("###received");
+            e.Message.CalculateBounds(null, MeasuredWidth);
 
-            //if (e.Message.Channel == channel)
-            {
-                e.Message.CalculateBounds(null, MeasuredWidth);
-                lock (messages)
-                {
-                    messages.Add(e.Message);
-                }
-                Console.WriteLine("###invalidated");
-                MainActivity.Current.RunOnUiThread(() => Invalidate());
-            }
+            MainActivity.Current.RunOnUiThread(() => Invalidate());
         }
 
-        void updateMessageBounds(bool emoteChanged = false)
-        {
-            int totalHeight = 0;
-            lock (messages)
-            {
-                foreach (var msg in messages)
-                {
-                    msg.Y = totalHeight;
-                    totalHeight += msg.Height;
-                }
-            }
-            totalMessageHeight = totalHeight;
-        }
+        //void updateMessageBounds(bool emoteChanged = false)
+        //{
+        //    int totalHeight = 0;
+        //    lock (messages)
+        //    {
+        //        foreach (var msg in messages)
+        //        {
+        //            msg.Y = totalHeight;
+        //            totalHeight += msg.Height;
+        //        }
+        //    }
+        //    totalMessageHeight = totalHeight;
+        //}
 
         List<Message> messages = new List<Message>();
 

@@ -17,6 +17,8 @@ namespace Chatterino.Controls
         const int LastMessagesLimit = 25;
 
         // Properties
+        public bool IsNetCurrent { get; private set; } = false;
+
         public const int TopMenuBarHeight = 32;
         public const int ScrollToBottomBarHeight = 24;
 
@@ -49,50 +51,73 @@ namespace Chatterino.Controls
 
         private string channelName;
 
+        // the channelname, can be /current which will set ActualChannelName to Net.CurrentChannel
         public string ChannelName
         {
             get { return channelName; }
             set
             {
                 value = value.Trim();
+
                 if (value != channelName)
                 {
-                    _scroll.RemoveHighlightsWhere(x => true);
-
-                    if (channel != null)
-                    {
-                        channel.MessageAdded -= Channel_MessageAdded;
-                        channel.MessagesAddedAtStart -= Channel_MessagesAddedAtStart;
-                        channel.MessagesRemovedAtStart -= Channel_MessagesRemovedAtStart;
-                        channel.ChatCleared -= Channel_ChatCleared;
-                        channel.RoomStateChanged -= Channel_RoomStateChanged;
-                        channel = null;
-                        TwitchChannel.RemoveChannel(ChannelName);
-                    }
-
                     channelName = value;
+                    IsNetCurrent = value == "/current";
 
-                    if (!string.IsNullOrWhiteSpace(channelName))
+                    if (IsNetCurrent)
                     {
-                        channel = TwitchChannel.AddChannel(channelName);
-                        channel.MessageAdded += Channel_MessageAdded;
-                        channel.MessagesAddedAtStart += Channel_MessagesAddedAtStart;
-                        channel.MessagesRemovedAtStart += Channel_MessagesRemovedAtStart;
-                        channel.ChatCleared += Channel_ChatCleared;
-                        channel.RoomStateChanged += Channel_RoomStateChanged;
+                        ActualChannelName = Net.CurrentChannel;
                     }
-
-                    this.Invoke(() =>
+                    else
                     {
-                        _header?.Invalidate();
-
-                        updateMessageBounds();
-
-                        Invalidate();
-                    });
-
-                    (Parent as ColumnTabPage)?.UpdateDefaultTitle();
+                        ActualChannelName = value;
+                    }
                 }
+            }
+        }
+
+        private string actualChannelName;
+
+        private string ActualChannelName
+        {
+            get { return actualChannelName; }
+            set
+            {
+                _scroll.RemoveHighlightsWhere(x => true);
+
+                if (channel != null)
+                {
+                    channel.MessageAdded -= Channel_MessageAdded;
+                    channel.MessagesAddedAtStart -= Channel_MessagesAddedAtStart;
+                    channel.MessagesRemovedAtStart -= Channel_MessagesRemovedAtStart;
+                    channel.ChatCleared -= Channel_ChatCleared;
+                    channel.RoomStateChanged -= Channel_RoomStateChanged;
+                    channel = null;
+                    TwitchChannel.RemoveChannel(actualChannelName);
+                }
+
+                actualChannelName = value;
+
+                if (!string.IsNullOrWhiteSpace(value))
+                {
+                    channel = TwitchChannel.AddChannel(value);
+                    channel.MessageAdded += Channel_MessageAdded;
+                    channel.MessagesAddedAtStart += Channel_MessagesAddedAtStart;
+                    channel.MessagesRemovedAtStart += Channel_MessagesRemovedAtStart;
+                    channel.ChatCleared += Channel_ChatCleared;
+                    channel.RoomStateChanged += Channel_RoomStateChanged;
+                }
+
+                this.Invoke(() =>
+                {
+                    _header?.Invalidate();
+
+                    updateMessageBounds();
+
+                    Invalidate();
+                });
+
+                (Parent as ColumnTabPage)?.UpdateDefaultTitle();
             }
         }
 
@@ -132,12 +157,14 @@ namespace Chatterino.Controls
             Controls.Add(Input);
 
             Fonts.FontChanged += Fonts_FontChanged;
+            Net.CurrentChannelChanged += Net_CurrentChannelChanged;
 
             Disposed += (s, e) =>
             {
                 Fonts.FontChanged -= Fonts_FontChanged;
+                Net.CurrentChannelChanged -= Net_CurrentChannelChanged;
 
-                TwitchChannel.RemoveChannel(ChannelName);
+                TwitchChannel.RemoveChannel(ActualChannelName);
             };
 
             //Font = Fonts.GdiMedium;
@@ -160,6 +187,14 @@ namespace Chatterino.Controls
                 header.Invalidate();
                 Input.Invalidate();
             };
+        }
+
+        private void Net_CurrentChannelChanged(object sender, ValueEventArgs<string> e)
+        {
+            if (IsNetCurrent)
+            {
+                ActualChannelName = e.Value;
+            }
         }
 
         private void Fonts_FontChanged(object sender, EventArgs e)
@@ -190,7 +225,7 @@ namespace Chatterino.Controls
                 _scroll.RemoveHighlightsWhere(h => h.Position < 0);
             }
 
-            if (e.Message.Highlighted)
+            if (e.Message.HighlightType == HighlightType.Highlighted)
             {
                 _scroll.AddHighlight((channel?.MessageCount ?? 1) - 1, Color.Red);
 
@@ -212,8 +247,10 @@ namespace Chatterino.Controls
 
             for (int i = 0; i < e.Value.Length; i++)
             {
-                if (e.Value[i].Highlighted)
+                if (e.Value[i].HighlightType == HighlightType.Highlighted)
+                {
                     _scroll.AddHighlight(i, Color.Red);
+                }
             }
 
             updateMessageBounds();
@@ -673,12 +710,28 @@ namespace Chatterino.Controls
                 contextMenu.MenuItems.Add(new MenuItem("Open Channel", (s, e) => { GuiEngine.Current.HandleLink(selected.Channel.ChannelLink); }));
                 contextMenu.MenuItems.Add(new MenuItem("Open Pop-out Player", (s, e) => { GuiEngine.Current.HandleLink(selected.Channel.PopoutPlayerLink); }));
                 contextMenu.MenuItems.Add("-");
+                contextMenu.MenuItems.Add(new MenuItem("Manual Reconnect", (s, e) =>
+                {
+                    IrcManager.Client.Reconnect();
+                }));
                 contextMenu.MenuItems.Add(new MenuItem("Show Changelog", (s, e) => App.MainForm.ShowChangelog()));
                 contextMenu.MenuItems.Add(LoginMenuItem = new MenuItem("Login", (s, e) => new LoginForm().ShowDialog(), Shortcut.CtrlL));
                 contextMenu.MenuItems.Add(new MenuItem("Preferences", (s, e) => App.ShowSettings(), Shortcut.CtrlP));
 #if DEBUG
                 contextMenu.MenuItems.Add(new MenuItem("Copy Version Number", (s, e) => { Clipboard.SetText(App.CurrentVersion.ToString()); }));
                 contextMenu.MenuItems.Add(new MenuItem("Force GC", (s, e) => { GC.Collect(); }));
+                contextMenu.MenuItems.Add(new MenuItem("test", (s, e) =>
+                {
+                    for (int i = 0; i < 1000000; i++)
+                    {
+                        //var a = new SharpDX.DirectWrite.TextLayout(Fonts.Factory, "X", Fonts.GetTextFormat(FontType.Medium), 1000000, 1000000).Metrics;
+
+                        //(App.MainForm.Selected as ChatControl).Process(x =>
+                        //{
+                        //    x.Channel.AddMessage(new Message("testtesttest"));
+                        //});
+                    }
+                }));
 #endif
 
                 roomstateContextMenu = new ContextMenu();
@@ -858,7 +911,13 @@ namespace Chatterino.Controls
                 //e.Graphics.DrawRectangle(Focused ? App.ColorScheme.ChatBorderFocused : App.ColorScheme.ChatBorder, 0, 1, Width - 1, Height - 1);
                 e.Graphics.DrawRectangle(App.ColorScheme.MenuBorder, 0, 0, Width - 1, Height - 1);
 
-                string title = string.IsNullOrWhiteSpace(chatControl.ChannelName) ? "<no channel>" : chatControl.ChannelName;
+                string title = string.IsNullOrWhiteSpace(chatControl.ActualChannelName) ? "<no channel>" : chatControl.ActualChannelName;
+
+                if (chatControl.IsNetCurrent)
+                {
+                    title += " (current)";
+                }
+
                 TextRenderer.DrawText(e.Graphics, title, chatControl.Font, new Rectangle(DropDownButton.Width, 0, Width - DropDownButton.Width - RoomstateButton.Width, Height), chatControl.Selected ? App.ColorScheme.TextFocused : App.ColorScheme.Text, App.DefaultTextFormatFlags | TextFormatFlags.VerticalCenter | TextFormatFlags.HorizontalCenter);
             }
         }

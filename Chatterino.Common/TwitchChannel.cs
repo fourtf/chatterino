@@ -21,6 +21,8 @@ namespace Chatterino.Common
         // properties
         public string Name { get; private set; }
 
+        public int RoomID { get; private set; } = -1;
+
         public string SubLink { get; private set; }
         public string ChannelLink { get; private set; }
         public string PopoutPlayerLink { get; private set; }
@@ -78,6 +80,10 @@ namespace Chatterino.Common
         }
 
 
+        // Moderator Badge
+        public TwitchEmote ModeratorBadge { get; private set; } = null;
+
+
         // Roomstate
         public event EventHandler RoomStateChanged;
 
@@ -101,7 +107,14 @@ namespace Chatterino.Common
         public int SlowModeTime
         {
             get { return slowModeTime; }
-            set { slowModeTime = value; }
+            set
+            {
+                if (slowModeTime != value)
+                {
+                    slowModeTime = value;
+                    RoomStateChanged?.Invoke(this, EventArgs.Empty);
+                }
+            }
         }
 
 
@@ -154,31 +167,116 @@ namespace Chatterino.Common
                 // recent chat
                 Task.Run(() =>
                 {
+                    //try
+                    //{
+                    //    List<Message> messages = new List<Message>();
+
+                    //    var request = WebRequest.Create($"http://fourtf.com:5005/lastmessages/{channelName}");
+                    //    using (var response = request.GetResponse())
+                    //    using (var stream = response.GetResponseStream())
+                    //    {
+                    //        StreamReader reader = new StreamReader(stream);
+                    //        string line;
+                    //        while ((line = reader.ReadLine()) != null)
+                    //        {
+                    //            IrcMessage msg;
+
+                    //            if (IrcMessage.TryParse(line, out msg))
+                    //            {
+                    //                if (msg.Params != null)
+                    //                    messages.Add(new Message(msg, this, false, false));
+                    //            }
+                    //        }
+                    //    }
+
+                    //    AddMessagesAtStart(messages.ToArray());
+                    //}
+                    //catch { }
+
+                    // call twitch kraken api
                     try
                     {
                         List<Message> messages = new List<Message>();
 
-                        var request = WebRequest.Create($"http://fourtf.com:5005/lastmessages/{channelName}");
+                        var request = WebRequest.Create($"https://api.twitch.tv/kraken/channels/{Name}?client_id=7ue61iz46fz11y3cugd0l3tawb4taal");
                         using (var response = request.GetResponse())
                         using (var stream = response.GetResponseStream())
                         {
-                            StreamReader reader = new StreamReader(stream);
-                            string line;
-                            while ((line = reader.ReadLine()) != null)
-                            {
-                                IrcMessage msg;
+                            JsonParser parser = new JsonParser();
 
-                                if (IrcMessage.TryParse(line, out msg))
-                                {
-                                    if (msg.Params != null)
-                                        messages.Add(new Message(msg, this, false, false));
-                                }
+                            dynamic json = parser.Parse(stream);
+
+                            int roomID;
+
+                            if (int.TryParse(json["_id"], out roomID))
+                            {
+                                RoomID = roomID;
                             }
+
+                            //StreamReader reader = new StreamReader(stream);
+                            //string line;
+                            //while ((line = reader.ReadLine()) != null)
+                            //{
+                            //    IrcMessage msg;
+
+                            //    if (IrcMessage.TryParse(line, out msg))
+                            //    {
+                            //        if (msg.Params != null)
+                            //            messages.Add(new Message(msg, this, false, false));
+                            //    }
+                            //}
                         }
 
                         AddMessagesAtStart(messages.ToArray());
                     }
                     catch { }
+
+                    if (RoomID != -1)
+                    {
+                        try
+                        {
+                            List<Message> messages = new List<Message>();
+
+                            var request = WebRequest.Create($"https://tmi.twitch.tv/api/rooms/{RoomID}/recent_messages?client_id=7ue61iz46fz11y3cugd0l3tawb4taal");
+                            using (var response = request.GetResponse())
+                            using (var stream = response.GetResponseStream())
+                            {
+                                JsonParser parser = new JsonParser();
+
+                                dynamic json = parser.Parse(stream);
+
+                                dynamic _messages = json["messages"];
+
+                                foreach (string s in _messages)
+                                {
+                                    IrcMessage msg;
+
+                                    if (IrcMessage.TryParse(s, out msg))
+                                    {
+                                        messages.Add(new Message(msg, this));
+                                    }
+                                }
+
+                                ;
+
+                                //StreamReader reader = new StreamReader(stream);
+                                //string line;
+                                //while ((line = reader.ReadLine()) != null)
+                                //{
+                                //    IrcMessage msg;
+
+                                //    if (IrcMessage.TryParse(line, out msg))
+                                //    {
+                                //        if (msg.Params != null)
+                                //            messages.Add(new Message(msg, this, false, false));
+                                //    }
+                                //}
+                            }
+
+                            AddMessagesAtStart(messages.ToArray());
+                        }
+                        catch { }
+                    }
                 });
 
                 // bttv channel emotes
@@ -240,7 +338,7 @@ namespace Chatterino.Common
                     }
                     catch { }
                 });
-                
+
                 // ffz channel emotes
                 Task.Run(() =>
                 {
@@ -275,6 +373,19 @@ namespace Chatterino.Common
                         using (var stream = File.OpenRead(ffzChannelEmotesCache))
                         {
                             dynamic json = parser.Parse(stream);
+
+                            dynamic room = json["room"];
+
+                            try
+                            {
+                                object moderator;
+
+                                if (room.TryGetValue("moderator_badge", out moderator))
+                                {
+                                    ModeratorBadge = new TwitchEmote { Url = "https:" + (moderator as string), Tooltip = "FFZ custom moderator badge" };
+                                }
+                            }
+                            catch { }
 
                             dynamic sets = json["sets"];
 
@@ -427,7 +538,7 @@ namespace Chatterino.Common
         {
             if (channelName == null)
                 return;
-            
+
             channelName = channelName.ToLower();
 
             TwitchChannel data;

@@ -32,9 +32,20 @@ namespace Chatterino
             message.X = xOffset;
             var textColor = App.ColorScheme.Text;
 
-            if (message.Highlighted)
+            Brush highlightBrush = null;
+
+            if (message.HighlightType == HighlightType.Highlighted)
             {
-                g.FillRectangle(App.ColorScheme.ChatBackgroundHighlighted, 0, yOffset, g.ClipBounds.Width, message.Height);
+                highlightBrush = App.ColorScheme.ChatBackgroundHighlighted;
+            }
+            else if (message.HighlightType == HighlightType.Resub)
+            {
+                highlightBrush = App.ColorScheme.ChatBackgroundResub;
+            }
+
+            if (highlightBrush != null)
+            {
+                g.FillRectangle(highlightBrush, 0, yOffset, g.ClipBounds.Width, message.Height);
             }
 
             g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.Default;
@@ -204,7 +215,22 @@ namespace Chatterino
                             var CurrentXOffset = message.X;
                             var CurrentYOffset = message.Y;
 
-                            g.FillRectangle(message.Highlighted ? App.ColorScheme.ChatBackgroundHighlighted : App.ColorScheme.ChatBackground, word.X + CurrentXOffset, word.Y + CurrentYOffset, word.Width, word.Height);
+                            Brush backgroundBrush;
+
+                            if (message.HighlightType == HighlightType.Highlighted)
+                            {
+                                backgroundBrush = App.ColorScheme.ChatBackgroundHighlighted;
+                            }
+                            else if (message.HighlightType == HighlightType.Resub)
+                            {
+                                backgroundBrush = App.ColorScheme.ChatBackgroundResub;
+                            }
+                            else
+                            {
+                                backgroundBrush = App.ColorScheme.ChatBackground;
+                            }
+
+                            g.FillRectangle(backgroundBrush, word.X + CurrentXOffset, word.Y + CurrentYOffset, word.Width, word.Height);
                             g.DrawImage((Image)emote.Image, word.X + CurrentXOffset, word.Y + CurrentYOffset, word.Width, word.Height);
 
                             //if (message.Highlighted)

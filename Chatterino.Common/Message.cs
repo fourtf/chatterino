@@ -21,7 +21,7 @@ namespace Chatterino.Common
         public int Width { get; set; } = 0;
 
         public bool Disabled { get; set; } = false;
-        public bool Highlighted { get; set; } = false;
+        public HighlightType HighlightType { get; set; } = HighlightType.None;
         public bool EmoteBoundsChanged { get; set; } = true;
 
         public string Username { get; set; }
@@ -71,7 +71,7 @@ namespace Chatterino.Common
 
             string text = data.Params ?? "";
 
-            Username = data.PrefixNickname;
+            Username = data.PrefixNickname ?? "";
 
             bool slashMe = false;
 
@@ -90,7 +90,10 @@ namespace Chatterino.Common
                     if (AppSettings.CustomHighlightRegex != null && AppSettings.CustomHighlightRegex.IsMatch(text))
                     {
                         if (AppSettings.ChatEnableHighlight)
-                            Highlighted = true;
+                        {
+                            HighlightType = HighlightType.Highlighted;
+                        }
+
                         if (EnablePings && enablePingSound)
                         {
                             if (AppSettings.ChatEnableHighlightSound)
@@ -172,7 +175,23 @@ namespace Chatterino.Common
             string timestampTag;
             string timestamp = null;
 
-            if (data.Tags.TryGetValue("timestamp-utc", out timestampTag))
+            string tmiTimestamp;
+            long tmiTimestampInt;
+
+            if (data.Tags.TryGetValue("tmi-sent-ts", out tmiTimestamp))
+            {
+
+                if (long.TryParse(tmiTimestamp, out tmiTimestampInt))
+                {
+                    DateTime dtDateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+
+                    var time = dtDateTime.AddSeconds(tmiTimestampInt / 1000).ToLocalTime();
+
+                    timestamp = time.ToString(AppSettings.ChatShowTimestampSeconds ? "HH:mm:ss" : "HH:mm");
+                    enableTimestamp = true;
+                }
+            }
+            else if (data.Tags.TryGetValue("timestamp-utc", out timestampTag))
             {
                 DateTime time;
                 if (DateTime.TryParseExact(timestampTag, "yyyyMMdd-HHmmss", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out time))
@@ -255,7 +274,14 @@ namespace Chatterino.Common
                                 break;
                             case "moderator/1":
                                 Badges |= MessageBadges.Mod;
-                                words.Add(new Word { Type = SpanType.Image, Value = GuiEngine.Current.GetImage(ImageType.BadgeModerator), Tooltip = "Channel Moderator" });
+                                if (channel.ModeratorBadge == null)
+                                {
+                                    words.Add(new Word { Type = SpanType.Image, Value = GuiEngine.Current.GetImage(ImageType.BadgeModerator), Tooltip = "Channel Moderator" });
+                                }
+                                else
+                                {
+                                    words.Add(new Word { Type = SpanType.Emote, Value = channel.ModeratorBadge, Tooltip = channel.ModeratorBadge.Name });
+                                }
                                 break;
                             case "subscriber/1":
                                 Badges |= MessageBadges.Sub;

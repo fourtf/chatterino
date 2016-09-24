@@ -16,6 +16,7 @@ namespace Chatterino
         public Color ChatSeperator { get; set; } = Color.Red;
         public Brush ChatBackground { get; set; } = Brushes.White;
         public Brush ChatBackgroundHighlighted { get; set; } = Brushes.LightBlue;
+        public Brush ChatBackgroundResub { get; set; } = Brushes.LightBlue;
         public Brush ChatInputOuter { get; set; } = Brushes.White;
         public Brush ChatInputInner { get; set; } = Brushes.White;
         public Pen ChatInputBorder { get; set; } = Pens.White;
@@ -91,10 +92,17 @@ namespace Chatterino
 
             // Backgrounds
             scheme.ChatBackground = getColor(gray, 0.95f).ToBrush();
+
             if (scheme.IsLightTheme)
+            {
                 scheme.ChatBackgroundHighlighted = getColor(HSLColor.FromRGB(1f, 0.5f, 0.5f), 0.9f).ToBrush();
+                scheme.ChatBackgroundResub = getColor(HSLColor.FromRGB(0.5f, 0.5f, 1f), 0.9f).ToBrush();
+            }
             else
+            {
                 scheme.ChatBackgroundHighlighted = getColor(HSLColor.FromRGB(0.6f, 0.5f, 0.52f), 0.9f).ToBrush();
+                scheme.ChatBackgroundResub = getColor(HSLColor.FromRGB(0.52f, 0.5f, 0.6f), 0.9f).ToBrush();
+            }
 
             scheme.Menu = getColor(gray, 0.90f).ToBrush();
             scheme.MenuBorder = getColor(gray, 0.86f).ToPen();

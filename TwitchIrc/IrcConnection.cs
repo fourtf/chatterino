@@ -59,6 +59,11 @@ namespace TwitchIrc
             client?.Close();
         }
 
+        public void Reconnect()
+        {
+            connect();
+        }
+
         // private methods
         private void connect()
         {

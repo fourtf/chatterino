@@ -50,6 +50,8 @@ namespace Chatterino.Common
         public static bool ChatInputShowMessageLength { get; set; } = false;
         public static bool ChatSeperateMessages { get; set; } = false;
 
+        public static bool ChatAllowCommandsAtEnd { get; set; } = true;
+
         public static event EventHandler MessageLimitChanged;
 
         private static int chatMessageLimit = 1000;
@@ -126,6 +128,8 @@ namespace Chatterino.Common
 
             FontChanged?.Invoke(null, EventArgs.Empty);
         }
+
+        public static string BrowserExtensionKey { get; set; } = "pass123";
 
 
         // static stuff

@@ -60,6 +60,7 @@
       <HintPath>..\packages\System.Text.Json.2.0.0.11\lib\net40\System.Text.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Drawing" />
@@ -173,6 +174,7 @@
     <Compile Include="Controls\InputDialogForm.Designer.cs">
       <DependentUpon>InputDialogForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Net.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -266,6 +268,10 @@
     <ProjectReference Include="..\Chatterino.Common\Chatterino.Common.csproj">
       <Project>{d6032f9b-b3ad-4d1a-942a-acd06ea16a4a}</Project>
       <Name>Chatterino.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TwitchIrc\TwitchIrc.csproj">
+      <Project>{8b6e613b-fb33-4b7c-ac28-7e4385e6bf64}</Project>
+      <Name>TwitchIrc</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

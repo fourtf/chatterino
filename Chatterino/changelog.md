@@ -1,5 +1,9 @@
 ﻿# changelog
 
+## 0.3
+- added an option for the mouse scroll speed
+- added option for a manual reconnect
+
 ## 0.2.6.4
 - fixed sub badges not showing up
 

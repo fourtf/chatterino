@@ -18,6 +18,14 @@ namespace Chatterino.Mobile.Droid
 {
     public class AndroidGuiEngine : IGuiEngine
     {
+        public bool IsDarkTheme
+        {
+            get
+            {
+                return false;
+            }
+        }
+
         public void DisposeMessageGraphicsBuffer(Common.Message message)
         {
 
@@ -62,6 +70,11 @@ namespace Chatterino.Mobile.Droid
 
         }
 
+        public void FreezeImage(object img)
+        {
+            throw new NotImplementedException();
+        }
+
         public object GetImage(ImageType type)
         {
             return null;
@@ -104,9 +117,19 @@ namespace Chatterino.Mobile.Droid
             //throw new NotImplementedException();
         }
 
+        public void PlaySound(NotificationSound sound, bool forceCustom = false)
+        {
+            throw new NotImplementedException();
+        }
+
         public object ReadImageFromStream(Stream stream)
         {
             return Drawable.CreateFromStream(stream, "");
+        }
+
+        public object ScaleImage(object image, double scale)
+        {
+            throw new NotImplementedException();
         }
     }
 }
