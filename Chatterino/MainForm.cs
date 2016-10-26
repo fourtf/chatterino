@@ -22,6 +22,13 @@ namespace Chatterino
         {
             InitializeComponent();
 
+            TopMost = AppSettings.WindowTopMost;
+
+            AppSettings.WindowTopMostChanged += (s, e) =>
+            {
+                TopMost = AppSettings.WindowTopMost;
+            };
+
             Icon = App.Icon;
 
             if (!File.Exists("./login.ini"))
@@ -201,6 +208,10 @@ namespace Chatterino
                         {
                             tabControl.Select(tabControl.TabPages.ElementAt(index + 1));
                         }
+                        else
+                        {
+                            tabControl.Select(tabControl.TabPages.ElementAt(0));
+                        }
                     }
                     break;
                 case Keys.Control | Keys.Shift | Keys.Tab:
@@ -210,6 +221,10 @@ namespace Chatterino
                         if (index > 0)
                         {
                             tabControl.Select(tabControl.TabPages.ElementAt(index - 1));
+                        }
+                        else
+                        {
+                            tabControl.Select(tabControl.TabPages.ElementAt(tabControl.TabPages.Count() - 1));
                         }
                     }
                     break;

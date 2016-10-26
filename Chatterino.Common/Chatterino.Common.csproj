@@ -59,6 +59,8 @@
     <Compile Include="ImageType.cs" />
     <Compile Include="IniSettings.cs" />
     <Compile Include="IrcManager.cs" />
+    <Compile Include="Link.cs" />
+    <Compile Include="LinkType.cs" />
     <Compile Include="Message.cs" />
     <Compile Include="MessageBadges.cs" />
     <Compile Include="MessageInputLogic.cs" />
@@ -68,6 +70,7 @@
     <Compile Include="RoomState.cs" />
     <Compile Include="Selection.cs" />
     <Compile Include="Updates.cs" />
+    <Compile Include="UserInfoData.cs" />
     <Compile Include="ValueEventArgs.cs" />
     <Compile Include="VersionNumber.cs" />
     <Compile Include="Word.cs" />

@@ -53,7 +53,7 @@ namespace Chatterino
                 }
                 GdiMediumBold = new System.Drawing.Font(family, size, System.Drawing.FontStyle.Bold);
                 GdiMediumItalic = new System.Drawing.Font(family, size, System.Drawing.FontStyle.Italic);
-                GdiSmall = new System.Drawing.Font(family, size * 0.7f, System.Drawing.FontStyle.Regular);
+                GdiSmall = new System.Drawing.Font(family, size * 0.75f, System.Drawing.FontStyle.Regular);
                 GdiLarge = new System.Drawing.Font(family, size * 1.3f, System.Drawing.FontStyle.Regular);
                 GdiVeryLarge = new System.Drawing.Font(family, size * 1.6f, System.Drawing.FontStyle.Regular);
 
@@ -107,7 +107,7 @@ namespace Chatterino
                 DwMedium = new TextFormat(Factory, family, size);
                 DwMediumBold = new TextFormat(Factory, family, FontWeight.SemiBold, SharpDX.DirectWrite.FontStyle.Normal, size);
                 DwMediumItalic = new TextFormat(Factory, family, FontWeight.Medium, SharpDX.DirectWrite.FontStyle.Italic, size);
-                DwSmall = new TextFormat(Factory, family, size * 0.7f);
+                DwSmall = new TextFormat(Factory, family, size * 0.75f);
                 DwLarge = new TextFormat(Factory, family, size * 1.3f);
                 DwVeryLarge = new TextFormat(Factory, family, size * 1.6f);
 

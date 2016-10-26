@@ -93,6 +93,16 @@ namespace Chatterino.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap BrowserLink_16x {
+            get {
+                object obj = ResourceManager.GetObject("BrowserLink_16x", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap cheer1 {
             get {
                 object obj = ResourceManager.GetObject("cheer1", resourceCulture);
@@ -153,6 +163,16 @@ namespace Chatterino.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap CopyLongTextToClipboard_16x {
+            get {
+                object obj = ResourceManager.GetObject("CopyLongTextToClipboard_16x", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap CustomActionEditor_16x {
             get {
                 object obj = ResourceManager.GetObject("CustomActionEditor_16x", resourceCulture);
@@ -196,6 +216,16 @@ namespace Chatterino.Properties {
         internal static System.Drawing.Bitmap ExpandChevronDown_16x {
             get {
                 object obj = ResourceManager.GetObject("ExpandChevronDown_16x", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Filter_16x {
+            get {
+                object obj = ResourceManager.GetObject("Filter_16x", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -295,6 +325,16 @@ namespace Chatterino.Properties {
         internal static System.Drawing.Bitmap turbo_bg {
             get {
                 object obj = ResourceManager.GetObject("turbo_bg", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap twitchprime_bg {
+            get {
+                object obj = ResourceManager.GetObject("twitchprime_bg", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

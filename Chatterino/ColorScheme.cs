@@ -101,7 +101,7 @@ namespace Chatterino
             else
             {
                 scheme.ChatBackgroundHighlighted = getColor(HSLColor.FromRGB(0.6f, 0.5f, 0.52f), 0.9f).ToBrush();
-                scheme.ChatBackgroundResub = getColor(HSLColor.FromRGB(0.52f, 0.5f, 0.6f), 0.9f).ToBrush();
+                scheme.ChatBackgroundResub = getColor(HSLColor.FromRGB(0.52f, 0.5f, 0.6f), 0.8f).ToBrush();
             }
 
             scheme.Menu = getColor(gray, 0.90f).ToBrush();

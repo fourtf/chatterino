@@ -128,7 +128,7 @@ namespace Chatterino.Common
                             string imageType = e["imageType"];
                             string url = template.Replace("{{id}}", id).Replace("{{image}}", "1x");
 
-                            BttvGlobalEmotes[code] = new TwitchEmote { Name = code, Url = url, Tooltip = code + "\nBetterTTV Global Emote" };
+                            BttvGlobalEmotes[code] = new TwitchEmote { Name = code, Url = url, IsHat = code.StartsWith("Hallo"), Tooltip = code + "\nBetterTTV Global Emote" };
                         }
                     }
                     EmotesLoaded?.Invoke(null, EventArgs.Empty);

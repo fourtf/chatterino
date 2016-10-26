@@ -227,11 +227,18 @@ namespace Chatterino.Controls
             if (index == -1)
                 throw new ArgumentException("\"child\" is not a child of this control.");
 
-            if (page is TabPage)
+            ColumnTabPage ctab = page as ColumnTabPage;
+
+            if (ctab != null)
             {
-                Controls.Remove(_tabPages[index].Item1);
-                _tabPages.RemoveAt(index);
+                foreach (ChatControl c in ctab.Columns.SelectMany(x => x.Widgets).Where(w => w is ChatControl))
+                {
+                    TwitchChannel.RemoveChannel(c.ChannelName);
+                }
             }
+
+            Controls.Remove(_tabPages[index].Item1);
+            _tabPages.RemoveAt(index);
 
             Controls.Remove(page);
 
@@ -246,7 +253,6 @@ namespace Chatterino.Controls
             else
             {
                 var p = new ColumnTabPage();
-                p.AddColumn();
                 AddTab(p);
             }
         }

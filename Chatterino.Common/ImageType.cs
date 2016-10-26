@@ -15,6 +15,7 @@ namespace Chatterino.Common
         BadgeModerator,
         BadgeStaff,
         BadgeTurbo,
+        BadgeTwitchPrime,
 
         Cheer1,
         Cheer100,

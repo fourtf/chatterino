@@ -18,7 +18,7 @@ namespace Chatterino.Controls
 
             Text = "Emotes - Chatterino";
 
-            TopMost = true;
+            //TopMost = true;
 
             container = new EmoteList();
             container.Dock = DockStyle.Fill;
@@ -27,6 +27,13 @@ namespace Chatterino.Controls
 
             Width = 500;
             Height = 600;
+
+            TopMost = AppSettings.WindowTopMost;
+
+            AppSettings.WindowTopMostChanged += (s, e) =>
+            {
+                TopMost = AppSettings.WindowTopMost;
+            };
         }
 
         public void SetChannel(TwitchChannel channel)

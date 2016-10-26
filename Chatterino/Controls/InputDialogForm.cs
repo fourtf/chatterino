@@ -22,6 +22,13 @@ namespace Chatterino.Controls
         {
             InitializeComponent();
 
+            TopMost = Common.AppSettings.WindowTopMost;
+
+            Common.AppSettings.WindowTopMostChanged += (s, e) =>
+            {
+                TopMost = Common.AppSettings.WindowTopMost;
+            };
+
             StartPosition = FormStartPosition.CenterScreen;
 
             Text = title;

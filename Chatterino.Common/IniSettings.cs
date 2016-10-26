@@ -273,7 +273,7 @@ namespace Chatterino.Common
         public void Set(string key, long value) => map[key] = value.ToString();
         public void Set(string key, ulong value) => map[key] = value.ToString();
         public void Set(string key, DateTime value) => map[key] = value.ToString(DateTimeFormat);
-        public void Set(string key, IEnumerable<string> values) => map[key] = string.Join(",", values.Select(x => Regex.Replace(x, "[\n\r\\\\]", m =>
+        public void Set(string key, IEnumerable<string> values) => map[key] = string.Join(",", (values ?? new string[0]).Select(x => Regex.Replace(x, "[\n\r\\\\]", m =>
         {
             var a = m.Value;
             if (a[0] == '\n')

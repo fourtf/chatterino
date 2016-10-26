@@ -13,6 +13,7 @@ using System.Diagnostics;
 using System.IO;
 using Chatterino.Common;
 using System.Text.Json;
+using System.Net.NetworkInformation;
 
 namespace Chatterino.Controls
 {
@@ -110,7 +111,11 @@ namespace Chatterino.Controls
                 }
                 catch
                 {
-
+                    buttonLogin.Invoke(() =>
+                    {
+                        buttonLogin.Enabled = false;
+                        lblError.Visible = true;
+                    });
                 }
             });
         }

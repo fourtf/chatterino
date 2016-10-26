@@ -40,6 +40,7 @@ namespace Chatterino.Common
         {
             public int Set { get; set; }
             public int ID { get; set; }
+            public string ChannelName { get; set; }
         }
 
         // Connection
@@ -51,6 +52,7 @@ namespace Chatterino.Common
             string username, oauth;
 
             var settings = new IniSettings();
+
             if (loginReader == null)
             {
                 settings.Load("./login.ini");
@@ -126,7 +128,7 @@ namespace Chatterino.Common
 
                                     int.TryParse(emote["id"], out id);
 
-                                    Emotes.TwitchEmotes[emote["code"]] = new TwitchEmoteValue { ID = id, Set = setID };
+                                    Emotes.TwitchEmotes[emote["code"]] = new TwitchEmoteValue { ID = id, Set = setID, ChannelName = "<unknown>" };
                                 }
                             }
                         }
@@ -216,18 +218,16 @@ namespace Chatterino.Common
                 Disconnected?.Invoke(null, EventArgs.Empty);
         }
 
-
-
         // Send Messages
-        public static void SendMessage(string channel, string _message, bool isMod)
+        public static void SendMessage(TwitchChannel channel, string _message, bool isMod)
         {
             if (channel != null)
             {
-                var message = Commands.ProcessMessage(_message, true);
+                var message = Commands.ProcessMessage(_message, channel, true);
 
-                if (!Client.Say(message, channel.TrimStart('#'), isMod))
+                if (!Client.Say(message, channel.Name.TrimStart('#'), isMod))
                 {
-                    TwitchChannel.GetChannel(channel.TrimStart('#')).Process(c => c.AddMessage(new Message($"Your message was not sent to protect you from a global ban. (try again in {Client.GetTimeUntilNextMessage(isMod).Seconds} seconds)", HSLColor.Gray, false)));
+                    TwitchChannel.GetChannel(channel.Name.TrimStart('#')).Process(c => c.AddMessage(new Message($"Your message was not sent to protect you from a global ban. (try again in {Client.GetTimeUntilNextMessage(isMod).Seconds} seconds)", HSLColor.Gray, false)));
                 }
             }
         }
@@ -332,6 +332,82 @@ namespace Chatterino.Common
             }
         }
 
+        // Check followed users
+        public static bool TryCheckIfFollowing(string username, out bool result, out string message)
+        {
+            try
+            {
+                var request = WebRequest.Create($"https://api.twitch.tv/kraken/users/{Username}/follows/channels/{username}?client_id=7ue61iz46fz11y3cugd0l3tawb4taal&oauth_token={oauth}");
+                using (var response = request.GetResponse())
+                using (var stream = response.GetResponseStream())
+                {
+                    result = true;
+                    message = null;
+                    return true;
+                }
+            }
+            catch (Exception exc)
+            {
+                HttpListenerException webExc = exc as HttpListenerException;
+
+                if (webExc != null)
+                {
+                    if (webExc.ErrorCode == 404)
+                    {
+                        result = false;
+                        message = null;
+                        return true;
+                    }
+                }
+
+                result = false;
+                message = exc.Message;
+                return false;
+            }
+        }
+
+        public static bool TryFollowUser(string username, out string message)
+        {
+            try
+            {
+                var request = WebRequest.Create($"https://api.twitch.tv/kraken/users/{Username}/follows/channels/{username}?client_id=7ue61iz46fz11y3cugd0l3tawb4taal&oauth_token={oauth}");
+                request.Method = "PUT";
+
+                using (var response = request.GetResponse())
+                using (var stream = response.GetResponseStream())
+                {
+                    message = null;
+                    return true;
+                }
+            }
+            catch (Exception exc)
+            {
+                message = exc.Message;
+                return false;
+            }
+        }
+
+        public static bool TryUnfollowUser(string username, out string message)
+        {
+            try
+            {
+                var request = WebRequest.Create($"https://api.twitch.tv/kraken/users/{Username}/follows/channels/{username}?client_id=7ue61iz46fz11y3cugd0l3tawb4taal&oauth_token={oauth}");
+                request.Method = "DELETE";
+
+                using (var response = request.GetResponse())
+                using (var stream = response.GetResponseStream())
+                {
+                    message = null;
+                    return true;
+                }
+            }
+            catch (Exception exc)
+            {
+                message = exc.Message;
+                return false;
+            }
+        }
+
         // Messages
         public static event EventHandler LoggedIn;
         public static event EventHandler Disconnected;
@@ -352,17 +428,22 @@ namespace Chatterino.Common
                 {
                     if (msg.PrefixUser == "twitchnotify")
                     {
-                        c.AddMessage(new Message(msg.Params ?? "", HSLColor.Gray, true));
+                        c.AddMessage(new Message(msg.Params ?? "", HSLColor.Gray, true) { HighlightType = HighlightType.Resub });
                     }
                     else
                     {
-                        Message message = new Message(msg, c);
-
-                        if (!AppSettings.EnableTwitchUserIgnores || !IsIgnoredUser(message.Username))
+                        // check if ignore keyword is triggered
+                        if (AppSettings.IgnoredKeywordsRegex == null || !AppSettings.IgnoredKeywordsRegex.IsMatch(e.Message.Params))
                         {
-                            c.Users[message.Username.ToUpper()] = message.DisplayName;
+                            Message message = new Message(msg, c);
 
-                            c.AddMessage(message);
+                            // check if user is on the ignore list
+                            if (!AppSettings.EnableTwitchUserIgnores || !IsIgnoredUser(message.Username))
+                            {
+                                c.Users[message.Username.ToUpper()] = message.DisplayName;
+
+                                c.AddMessage(message);
+                            }
                         }
                     }
                 });
@@ -472,11 +553,14 @@ namespace Chatterino.Common
                         };
                         c.AddMessage(sysMessage);
 
-                        Message message = new Message(msg, c)
+                        if (!string.IsNullOrEmpty(msg.Params))
                         {
-                            HighlightType = HighlightType.Resub
-                        };
-                        c.AddMessage(message);
+                            Message message = new Message(msg, c)
+                            {
+                                HighlightType = HighlightType.Resub
+                            };
+                            c.AddMessage(message);
+                        }
                     }
                     catch { }
                 });

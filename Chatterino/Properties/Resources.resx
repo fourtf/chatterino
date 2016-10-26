@@ -193,4 +193,16 @@
   <data name="Message_16xLG" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Message_16xLG.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="Filter_16x" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Filter_16x.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="BrowserLink_16x" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\BrowserLink_16x.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="CopyLongTextToClipboard_16x" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\CopyLongTextToClipboard_16x.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="twitchprime_bg" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\twitchprime_bg.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>

@@ -33,12 +33,19 @@ namespace Chatterino
 
         public static void StartHttpServer()
         {
-            listener = new HttpListener();
+            //try
+            //{
+            //    listener = new HttpListener();
 
-            listener.Prefixes.Add("http://127.0.0.1:5012/");
+            //    listener.Prefixes.Add("http://127.0.0.1:5012/");
 
-            listener.Start();
-            new Thread(HandleRequests).Start();
+            //    listener.Start();
+            //    new Thread(HandleRequests).Start();
+            //}
+            //catch
+            //{
+
+            //}
         }
 
         static void HandleRequests()

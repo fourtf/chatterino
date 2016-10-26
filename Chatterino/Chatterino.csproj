@@ -283,6 +283,10 @@
   <ItemGroup>
     <Content Include="Controls\CustomFontDialog\LICENSE.txt" />
     <Content Include="icon2.ico" />
+    <None Include="Resources\twitchprime_bg.png" />
+    <None Include="Resources\CopyLongTextToClipboard_16x.png" />
+    <None Include="Resources\BrowserLink_16x.png" />
+    <None Include="Resources\Filter_16x.png" />
     <None Include="Resources\Message_16xLG.png" />
     <None Include="Resources\VSO_Link_blue_16x.png" />
     <None Include="Resources\StatusAnnotations_Blocked_16xLG_color.png" />

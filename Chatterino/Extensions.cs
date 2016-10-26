@@ -38,5 +38,18 @@ namespace Chatterino
         {
             return new Pen(ToColor(hsl));
         }
+
+        public static void SetTooltip(this System.Windows.Forms.Control c, string tooltip)
+        {
+            c.MouseMove += (s, e) =>
+            {
+                App.ShowToolTip(c.PointToScreen(new Point(e.X + 16, e.Y + 16)), tooltip, true);
+            };
+
+            c.MouseLeave += (s, e) =>
+            {
+                App.HideToolTip();
+            };
+        }
     }
 }

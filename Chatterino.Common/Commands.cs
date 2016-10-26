@@ -3,7 +3,9 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using TwitchIrc;
@@ -12,7 +14,7 @@ namespace Chatterino.Common
 {
     public static class Commands
     {
-        public static ConcurrentDictionary<string, Func<string, bool, string>> ChatCommands = new ConcurrentDictionary<string, Func<string, bool, string>>();
+        public static ConcurrentDictionary<string, Func<string, TwitchChannel, bool, string>> ChatCommands = new ConcurrentDictionary<string, Func<string, TwitchChannel, bool, string>>();
 
         public static readonly object CustomCommandsLock = new object();
         public static List<Command> CustomCommands = new List<Command>();
@@ -24,7 +26,7 @@ namespace Chatterino.Common
             //ChatCommands.TryAdd("shrug", (s, execute) => ". " + s + " ¯\\_(ツ)_/¯");
             //ChatCommands.TryAdd("brainpower", (s, execute) => ". " + s + " O-oooooooooo AAAAE-A-A-I-A-U- JO-oooooooooooo AAE-O-A-A-U-U-A- E-eee-ee-eee AAAAE-A-E-I-E-A- JO-ooo-oo-oo-oo EEEEO-A-AAA-AAAA " + s);
 
-            ChatCommands.TryAdd("ignore", (s, execute) =>
+            ChatCommands.TryAdd("ignore", (s, channel, execute) =>
             {
                 if (execute)
                 {
@@ -36,7 +38,7 @@ namespace Chatterino.Common
                 }
                 return null;
             });
-            ChatCommands.TryAdd("unignore", (s, execute) =>
+            ChatCommands.TryAdd("unignore", (s, channel, execute) =>
             {
                 if (execute)
                 {
@@ -49,7 +51,7 @@ namespace Chatterino.Common
                 return null;
             });
 
-            ChatCommands.TryAdd("cheertest312", (s, execute) =>
+            ChatCommands.TryAdd("cheertest312", (s, channel, execute) =>
             {
                 if (execute)
                 {
@@ -68,10 +70,53 @@ namespace Chatterino.Common
 
                 return null;
             });
+
+            ChatCommands.TryAdd("uptime", (s, channel, execute) =>
+            {
+                if (execute && channel != null)
+                {
+                    try
+                    {
+                        WebRequest request = WebRequest.Create($"https://api.twitch.tv/kraken/streams/{channel.Name}?client_id=7ue61iz46fz11y3cugd0l3tawb4taal");
+                        using (var resp = request.GetResponse())
+                        using (var stream = resp.GetResponseStream())
+                        {
+                            JsonParser parser = new JsonParser();
+
+                            dynamic json = parser.Parse(stream);
+
+                            dynamic root = json["stream"];
+
+                            string createdAt = root["created_at"];
+
+                            DateTime streamStart = DateTime.Parse(createdAt);
+
+                            TimeSpan uptime = DateTime.Now - streamStart;
+
+                            string text = "Stream uptime: ";
+
+                            if (uptime.TotalDays > 1)
+                            {
+                                text += (int)uptime.TotalDays + " days, " + uptime.ToString("hh\\h\\ mm\\m\\ ss\\s");
+                            }
+                            else
+                            {
+                                text += uptime.ToString("hh\\h\\ mm\\m\\ ss\\s");
+                            }
+
+                            channel.AddMessage(new Message(text));
+                        }
+                    }
+                    catch { }
+                }
+
+                return null;
+            });
+
         }
 
         // public
-        public static string ProcessMessage(string text, bool executeCommands)
+        public static string ProcessMessage(string text, TwitchChannel channel, bool executeCommands)
         {
             string _command = null;
             string args = null;
@@ -103,10 +148,10 @@ namespace Chatterino.Common
 
             if (_command != null)
             {
-                Func<string, bool, string> command;
+                Func<string, TwitchChannel, bool, string> command;
                 if (ChatCommands.TryGetValue(_command, out command))
                 {
-                    text = command(args, executeCommands);
+                    text = command(args, channel, executeCommands);
                 }
                 else
                 {

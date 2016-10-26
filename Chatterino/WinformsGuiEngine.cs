@@ -27,34 +27,37 @@ namespace Chatterino
         }
 
         // LINKS
-        public void HandleLink(string link)
+        public void HandleLink(Link _link)
         {
-            if (link != null && link.Length > 1)
+            switch (_link.Type)
             {
-                if (link[0] == '@')
-                {
-                    var S = link.Substring(1).Split('|');
+                case LinkType.Url:
+                    {
+                        string link = _link.Value as string;
+                        try
+                        {
+                            if (link.StartsWith("http://") || link.StartsWith("https://")
+                                || MessageBox.Show($"The link \"{link}\" will be opened in an external application.", "open link", MessageBoxButtons.OKCancel) == DialogResult.OK)
+                                Process.Start(link);
+                        }
+                        catch { }
+                    }
+                    break;
+                case LinkType.CloseCurrentSplit:
+                    App.MainForm.RemoveSelectedSplit();
+                    break;
+                case LinkType.InsertText:
+                    (App.MainForm.Selected as ChatControl)?.Input.Logic.InsertText(_link.Value as string);
+                    break;
+                case LinkType.UserInfo:
+                    UserInfoData data = (UserInfoData)_link.Value;
 
-                    switch (S[0])
-                    {
-                        case "closeCurrentSplit":
-                            App.MainForm.RemoveSelectedSplit();
-                            break;
-                        case "insertText":
-                            (App.MainForm.Selected as ChatControl)?.Input.Logic.InsertText(S[1]);
-                            break;
-                    }
-                }
-                else
-                {
-                    try
-                    {
-                        if (link.StartsWith("http://") || link.StartsWith("https://")
-                            || MessageBox.Show($"The link \"{link}\" will be opened in an external application.", "open link", MessageBoxButtons.OKCancel) == DialogResult.OK)
-                            Process.Start(link);
-                    }
-                    catch { }
-                }
+                    UserInfoPopup popup = new UserInfoPopup(data);
+
+                    popup.StartPosition = FormStartPosition.Manual;
+                    popup.Location = Cursor.Position;
+                    popup.Show();
+                    break;
             }
         }
 
@@ -205,6 +208,7 @@ namespace Chatterino
             [ImageType.BadgeModerator] = Properties.Resources.moderator_bg,
             [ImageType.BadgeStaff] = Properties.Resources.staff_bg,
             [ImageType.BadgeTurbo] = Properties.Resources.turbo_bg,
+            [ImageType.BadgeTwitchPrime] = Properties.Resources.twitchprime_bg,
 
             [ImageType.Cheer1] = Properties.Resources.cheer1,
             [ImageType.Cheer100] = Properties.Resources.cheer100,
@@ -213,7 +217,7 @@ namespace Chatterino
             [ImageType.Cheer10000] = Properties.Resources.cheer10000,
             [ImageType.Cheer100000] = Properties.Resources.cheer100000,
         };
-        
+
         public object GetImage(ImageType type)
         {
             lock (images)
@@ -346,6 +350,21 @@ namespace Chatterino
         public void FreezeImage(object img)
         {
 
+        }
+
+        public object DrawImageBackground(object image, HSLColor color)
+        {
+            Image img = (Image)image;
+
+            Bitmap bitmap = new Bitmap(img.Width, img.Height);
+
+            using (var g = Graphics.FromImage(bitmap))
+            {
+                g.Clear(color.ToColor());
+                g.DrawImage(img, 0, 0);
+            }
+
+            return bitmap;
         }
     }
 }

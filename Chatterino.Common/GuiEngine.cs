@@ -25,7 +25,7 @@ namespace Chatterino.Common
         bool IsDarkTheme { get; }
         void FreezeImage(object img);
 
-        void HandleLink(string link);
+        void HandleLink(Link link);
         void PlaySound(NotificationSound sound, bool forceCustom = false);
         object GetImage(ImageType type);
         void HandleAnimatedTwitchEmote(TwitchEmote emote);
@@ -33,6 +33,7 @@ namespace Chatterino.Common
 
         object ReadImageFromStream(Stream stream);
         object ScaleImage(object image, double scale);
+        object DrawImageBackground(object image, HSLColor color);
 
         CommonSize MeasureStringSize(object graphics, FontType font, string text);
         //void DrawMessage(object graphics, Message message, int xOffset, int yOffset, Selection selection, int currentLineIndex);

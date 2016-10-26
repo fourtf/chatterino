@@ -24,7 +24,7 @@ namespace Chatterino
 
             Graphics g = (Graphics)graphics;
 
-            int spaceWidth = TextRenderer.MeasureText(g, " ", Fonts.GdiMedium, Size.Empty, App.DefaultTextFormatFlags).Width;
+            int spaceWidth = TextRenderer.MeasureText(g, " ", Fonts.GetFont(Common.FontType.Medium), Size.Empty, App.DefaultTextFormatFlags).Width;
 
             g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
             g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.None;

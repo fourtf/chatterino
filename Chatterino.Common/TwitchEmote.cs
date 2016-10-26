@@ -12,6 +12,7 @@ namespace Chatterino.Common
         public string Name { get; set; } = null;
         public bool Animated { get; set; } = false;
         public Func<object> LoadAction { get; set; } = null;
+        public bool IsHat { get; set; } = false;
 
         public string Tooltip { get; set; } = null;
 

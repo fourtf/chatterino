@@ -79,6 +79,8 @@ namespace Chatterino.Common
             }
         }
 
+        public ConcurrentDictionary<int, string> SubscriberBadges = new ConcurrentDictionary<int, string>();
+
 
         // Moderator Badge
         public TwitchEmote ModeratorBadge { get; private set; } = null;
@@ -148,6 +150,13 @@ namespace Chatterino.Common
             }
         }
 
+        public bool IsBroadcaster
+        {
+            get
+            {
+                return Name.ToLower() == IrcManager.Username.ToLower();
+            }
+        }
 
         // ctor
         protected TwitchChannel(string channelName)
@@ -233,6 +242,28 @@ namespace Chatterino.Common
 
                     if (RoomID != -1)
                     {
+                        try
+                        {
+                            var request = WebRequest.Create($"https://badges.twitch.tv/v1/badges/channels/{RoomID}/display");
+                            using (var response = request.GetResponse())
+                            using (var stream = response.GetResponseStream())
+                            {
+                                JsonParser parser = new JsonParser();
+
+                                dynamic json = parser.Parse(stream);
+
+                                dynamic badgeSets = json["badge_sets"];
+                                dynamic subscriber = badgeSets["subscriber"];
+                                dynamic versions = badgeSets["versions"];
+
+                                foreach (dynamic version in versions)
+                                {
+                                    ;
+                                }
+                            }
+                        }
+                        catch { }
+
                         try
                         {
                             List<Message> messages = new List<Message>();
@@ -382,7 +413,37 @@ namespace Chatterino.Common
 
                                 if (room.TryGetValue("moderator_badge", out moderator))
                                 {
-                                    ModeratorBadge = new TwitchEmote { Url = "https:" + (moderator as string), Tooltip = "FFZ custom moderator badge" };
+                                    if (moderator != null && !string.IsNullOrWhiteSpace((string)moderator))
+                                    {
+                                        var url = "https:" + (moderator as string);
+                                        ModeratorBadge = new TwitchEmote
+                                        {
+                                            Url = url,
+                                            Tooltip = "custom moderator badge\nFFZ",
+                                            LoadAction = () =>
+                                            {
+                                                try
+                                                {
+                                                    object img;
+
+                                                    WebRequest request = WebRequest.Create(url);
+                                                    using (var response = request.GetResponse())
+                                                    using (var s = response.GetResponseStream())
+                                                    {
+                                                        img = GuiEngine.Current.ReadImageFromStream(s);
+                                                    }
+
+                                                    GuiEngine.Current.FreezeImage(img);
+
+                                                    return GuiEngine.Current.DrawImageBackground(img, HSLColor.FromRGB(0x45A41E));
+                                                }
+                                                catch
+                                                {
+                                                    return null;
+                                                }
+                                            }
+                                        };
+                                    }
                                 }
                             }
                             catch { }
@@ -585,11 +646,21 @@ namespace Chatterino.Common
             emoteNames = names;
         }
 
-        public IEnumerable<KeyValuePair<string, string>> GetCompletionItems()
+        public IEnumerable<KeyValuePair<string, string>> GetCompletionItems(bool firstWord, bool allowAt)
         {
             var names = new List<KeyValuePair<string, string>>(emoteNames);
 
-            names.AddRange(Users);
+            string commaAtEnd = firstWord ? "," : "";
+
+            if (AppSettings.ChatMentionUsersWithAt)
+            {
+                names.AddRange(Users.Select(x => new KeyValuePair<string, string>(x.Key, (allowAt ? "@" : "") + (!AppSettings.ChatTabLocalizedNames && !string.Equals(x.Value, x.Key, StringComparison.OrdinalIgnoreCase) ? x.Key : x.Value) + commaAtEnd)));
+                names.AddRange(Users.Select(x => new KeyValuePair<string, string>((allowAt ? "@" : "") + x.Key, (allowAt ? "@" : "") + (!AppSettings.ChatTabLocalizedNames && !string.Equals(x.Value, x.Key, StringComparison.OrdinalIgnoreCase) ? x.Key : x.Value) + commaAtEnd)));
+            }
+            else
+            {
+                names.AddRange(Users.Select(x => new KeyValuePair<string, string>(x.Key, (!AppSettings.ChatTabLocalizedNames && !string.Equals(x.Value, x.Key, StringComparison.OrdinalIgnoreCase) ? x.Key : x.Value) + commaAtEnd)));
+            }
             names.Sort((x1, x2) => x1.Key.CompareTo(x2.Key));
 
             return names;
@@ -607,10 +678,10 @@ namespace Chatterino.Common
 
         public void SendMessage(string text)
         {
-            if (Name == "/whispers")
-                IrcManager.SendMessage("jtv", text, IsModOrBroadcaster);
-            else
-                IrcManager.SendMessage(Name, text, IsModOrBroadcaster);
+            //if (Name == "/whispers")
+            //    IrcManager.SendMessage("jtv", text, IsModOrBroadcaster);
+            //else
+            IrcManager.SendMessage(this, text, IsModOrBroadcaster);
         }
 
 

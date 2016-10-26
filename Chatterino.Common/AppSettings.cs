@@ -49,8 +49,11 @@ namespace Chatterino.Common
         public static bool ChatHideInputIfEmpty { get; set; } = false;
         public static bool ChatInputShowMessageLength { get; set; } = false;
         public static bool ChatSeperateMessages { get; set; } = false;
+        public static bool ChatTabLocalizedNames { get; set; } = true;
 
-        public static bool ChatAllowCommandsAtEnd { get; set; } = true;
+        public static bool ChatAllowCommandsAtEnd { get; set; } = false;
+
+        public static bool ChatMentionUsersWithAt { get; set; } = true;
 
         public static event EventHandler MessageLimitChanged;
 
@@ -73,6 +76,10 @@ namespace Chatterino.Common
         public static bool ChatEnableHighlightTaskbar { get; set; } = true;
         public static bool ChatCustomHighlightSound { get; set; } = false;
 
+        public static ConcurrentDictionary<string, object> HighlightIgnoredUsers { get; private set; } = new ConcurrentDictionary<string, object>();
+        public static ConcurrentDictionary<string, object> ChatIgnoredEmotes { get; private set; } = new ConcurrentDictionary<string, object>();
+
+        // Custom Highlights
         private static string[] chatCustomHighlights = new string[0];
         public static string[] ChatCustomHighlights
         {
@@ -87,14 +94,39 @@ namespace Chatterino.Common
             }
         }
 
-        public static ConcurrentDictionary<string, object> HighlightIgnoredUsers { get; private set; } = new ConcurrentDictionary<string, object>();
-        public static ConcurrentDictionary<string, object> ChatIgnoredEmotes { get; private set; } = new ConcurrentDictionary<string, object>();
-
         public static void UpdateCustomHighlightRegex()
         {
             CustomHighlightRegex = new Regex($@"\b({(IrcManager.Username)}{(IrcManager.Username == null || chatCustomHighlights.Length == 0 ? "" : "|")}{string.Join("|", chatCustomHighlights.Select(x => Regex.Escape(x)))})\b".Log(), RegexOptions.IgnoreCase);
         }
         public static Regex CustomHighlightRegex { get; private set; } = null;
+
+        // Ignored words
+        private static string[] chatIgnoredKeywords = new string[0];
+        public static string[] ChatIgnoredKeywords
+        {
+            get
+            {
+                return chatIgnoredKeywords;
+            }
+            set
+            {
+                chatIgnoredKeywords = value;
+                UpdateIgnoredKeywordsRegex();
+            }
+        }
+
+        public static void UpdateIgnoredKeywordsRegex()
+        {
+            if (chatIgnoredKeywords.Length == 0)
+            {
+                IgnoredKeywordsRegex = null;
+            }
+            else
+            {
+                IgnoredKeywordsRegex = new Regex($@"\b({string.Join("|", chatIgnoredKeywords.Select(x => Regex.Escape(x)))})\b".Log(), RegexOptions.IgnoreCase);
+            }
+        }
+        public static Regex IgnoredKeywordsRegex { get; private set; } = null;
 
         public static bool EnableTwitchUserIgnores { get; set; } = true;
 
@@ -115,6 +147,25 @@ namespace Chatterino.Common
         public static int WindowY { get; set; } = 200;
         public static int WindowWidth { get; set; } = 600;
         public static int WindowHeight { get; set; } = 400;
+
+        public static event EventHandler<ValueEventArgs<bool>> WindowTopMostChanged;
+
+        private static bool windowTopMost;
+
+        public static bool WindowTopMost
+        {
+            get { return windowTopMost; }
+            set
+            {
+                if (windowTopMost != value)
+                {
+                    windowTopMost = value;
+
+                    WindowTopMostChanged?.Invoke(null, new ValueEventArgs<bool>(value));
+                }
+            }
+        }
+
 
         public static event EventHandler FontChanged;
 

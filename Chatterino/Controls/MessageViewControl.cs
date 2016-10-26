@@ -23,6 +23,16 @@ namespace Chatterino.Controls
             SmallChange = 4,
         };
 
+        static ContextMenu urlContextMenu;
+        static Link urlContextMenuLink;
+
+        static MessageContainerControl()
+        {
+            urlContextMenu = new ContextMenu();
+            urlContextMenu.MenuItems.Add(new MenuItem("Open in Brower", (s, e) => GuiEngine.Current.HandleLink(urlContextMenuLink)));
+            urlContextMenu.MenuItems.Add(new MenuItem("Copy link", (s, e) => Clipboard.SetText(urlContextMenuLink.Value as string ?? "")));
+        }
+
         protected bool scrollAtBottom = true;
 
         private object messageLock = new object();
@@ -53,7 +63,7 @@ namespace Chatterino.Controls
         // mouse
         protected double mouseScrollMultiplyer = 1;
 
-        protected string mouseDownLink = null;
+        protected Link mouseDownLink = null;
         protected Word mouseDownWord = null;
         protected Selection selection = null;
         protected bool mouseDown = false;
@@ -97,40 +107,46 @@ namespace Chatterino.Controls
 
         private void App_GifEmoteFramesUpdated(object s, EventArgs e)
         {
-            lock (bufferLock)
+            try
             {
-                if (buffer != null)
+                lock (bufferLock)
                 {
-                    bool hasUpdated = false;
-
-                    if (MessageLock != null)
+                    if (buffer != null)
                     {
-                        lock (MessageLock)
-                        {
-                            for (int i = 0; i < Messages.Length; i++)
-                            {
-                                var msg = Messages[i];
-                                if (msg.IsVisible)
-                                {
-                                    hasUpdated = true;
+                        bool hasUpdated = false;
 
-                                    MessageRenderer.DrawGifEmotes(buffer.Graphics, msg, selection, i);
+                        if (MessageLock != null)
+                        {
+                            lock (MessageLock)
+                            {
+                                for (int i = 0; i < Messages.Length; i++)
+                                {
+                                    var msg = Messages[i];
+                                    if (msg.IsVisible)
+                                    {
+                                        hasUpdated = true;
+
+                                        MessageRenderer.DrawGifEmotes(buffer.Graphics, msg, selection, i);
+                                    }
                                 }
                             }
                         }
-                    }
 
-                    if (hasUpdated)
-                    {
-                        var borderPen = Selected ? App.ColorScheme.ChatBorderFocused : App.ColorScheme.ChatBorder;
-                        buffer.Graphics.DrawRectangle(borderPen, 0, Height - 1, Width - 1, 1);
+                        if (hasUpdated)
+                        {
+                            var borderPen = Selected ? App.ColorScheme.ChatBorderFocused : App.ColorScheme.ChatBorder;
+                            buffer.Graphics.DrawRectangle(borderPen, 0, Height - 1, Width - 1, 1);
 
-                        var g = CreateGraphics();
+                            var g = CreateGraphics();
 
-                        buffer.Render(g);
+                            buffer.Render(g);
+
+                            g.Dispose();
+                        }
                     }
                 }
             }
+            catch { }
         }
 
         private void App_EmoteLoaded(object s, EventArgs e)
@@ -139,20 +155,146 @@ namespace Chatterino.Controls
             Invalidate();
         }
 
-        public void LeakXD()
-        {
-            using (var g = CreateGraphics())
-            {
-                OnPaint(new PaintEventArgs(g, new Rectangle(0, 0, 100, 100)));
-            }
-        }
-
         // overrides
         protected override void OnMouseWheel(MouseEventArgs e)
         {
             if (_scroll.Enabled)
             {
-                _scroll.Value -= ((double)e.Delta / 40 * mouseScrollMultiplyer * AppSettings.ScrollMultiplyer);
+                int scrollDistance = (int)(e.Delta * AppSettings.ScrollMultiplyer);
+
+                if (MessageLock != null)
+                {
+                    Graphics graphics = App.UseDirectX ? null : CreateGraphics();
+
+                    lock (MessageLock)
+                    {
+                        if (e.Delta > 0)
+                        {
+                            int i = (int)_scroll.Value;
+                            double val = _scroll.Value;
+
+                            double scrollFactor = _scroll.Value % 1;
+                            int currentScrollLeft = (int)(scrollFactor * Messages[i].Height);
+
+                            for (; i >= 0; i--)
+                            {
+                                if (scrollDistance < currentScrollLeft)
+                                {
+                                    val -= scrollFactor * ((double)scrollDistance / currentScrollLeft);
+                                    _scroll.Value = val;
+                                    break;
+                                }
+                                else
+                                {
+                                    scrollDistance -= currentScrollLeft;
+                                    val -= scrollFactor;
+                                }
+
+                                if (i == 0)
+                                {
+                                    _scroll.Value = 0;
+                                }
+                                else
+                                {
+                                    Messages[i - 1].CalculateBounds(graphics, Width - MessagePadding.Left - MessagePadding.Right);
+
+                                    scrollFactor = 1;
+                                    currentScrollLeft = Messages[i - 1].Height;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            scrollDistance = -scrollDistance;
+
+                            int i = (int)_scroll.Value;
+                            double val = _scroll.Value;
+
+                            double scrollFactor = 1 - (_scroll.Value % 1);
+                            int currentScrollLeft = (int)(scrollFactor * Messages[i].Height);
+
+                            for (; i < Messages.Length; i++)
+                            {
+                                if (scrollDistance < currentScrollLeft)
+                                {
+                                    val += scrollFactor * ((double)scrollDistance / currentScrollLeft);
+                                    _scroll.Value = val;
+                                    break;
+                                }
+                                else
+                                {
+                                    scrollDistance -= currentScrollLeft;
+                                    val += scrollFactor;
+                                }
+
+                                if (i == Messages.Length - 1)
+                                {
+                                    //_scroll.Value = 0;
+                                }
+                                else
+                                {
+                                    Messages[i + 1].CalculateBounds(graphics, Width - MessagePadding.Left - MessagePadding.Right);
+
+                                    scrollFactor = 1;
+                                    currentScrollLeft = Messages[i + 1].Height;
+                                }
+                            }
+
+                        }
+                    }
+
+                    graphics?.Dispose();
+                }
+
+
+
+                //int scrollDistance = (int)(e.Delta * AppSettings.ScrollMultiplyer);
+
+                //double value = _scroll.Value;
+                //int index = (int)_scroll.Value;
+
+                //if (MessageLock != null)
+                //{
+                //    Graphics graphics = App.UseDirectX ? null : CreateGraphics();
+
+                //    lock (MessageLock)
+                //    {
+                //        while (true)
+                //        {
+                //            Messages[index].CalculateBounds(graphics, Width - MessagePadding.Left - MessagePadding.Right);
+
+                //            if (scrollDistance - (Messages[index].Height * (value % 1)) < 0)
+                //            {
+
+
+                //                break;
+                //            }
+                //            else
+                //            {
+                //                scrollDistance -= Messages[index].Height;
+
+                //                value -= _scroll.Value % 1;
+                //            }
+
+                //            index--;
+                //        }
+
+                //        _scroll.Value = value;
+                //    }
+
+                //    graphics?.Dispose();
+                //}
+
+                //if (e.Delta > 0)
+                //    scrollAtBottom = false;
+                //else
+                //    checkScrollBarPosition();
+
+                //updateMessageBounds();
+
+                //Invalidate();
+
+                //_scroll.Value -= ((double)e.Delta / 40 * mouseScrollMultiplyer * AppSettings.ScrollMultiplyer);
 
                 if (e.Delta > 0)
                     scrollAtBottom = false;
@@ -171,14 +313,14 @@ namespace Chatterino.Controls
         {
             int index;
 
-            var graphics = CreateGraphics();
+            var graphics = App.UseDirectX ? null : CreateGraphics();
 
             var msg = MessageAtPoint(e.Location, out index);
             if (msg != null)
             {
                 var word = msg.WordAtPoint(new CommonPoint(e.X - MessagePadding.Left, e.Y - msg.Y));
 
-                var pos = msg.MessagePositionAtPoint(App.UseDirectX ? null : graphics, new CommonPoint(e.X - MessagePadding.Left, e.Y - msg.Y), index);
+                var pos = msg.MessagePositionAtPoint(graphics, new CommonPoint(e.X - MessagePadding.Left, e.Y - msg.Y), index);
                 //Console.WriteLine($"pos: {pos.MessageIndex} : {pos.WordIndex} : {pos.SplitIndex} : {pos.CharIndex}");
 
                 if (selection != null && mouseDown)
@@ -223,6 +365,8 @@ namespace Chatterino.Controls
                 }
             }
 
+            graphics?.Dispose();
+
             base.OnMouseMove(e);
         }
 
@@ -239,7 +383,7 @@ namespace Chatterino.Controls
         {
             base.OnMouseDown(e);
 
-            if (e.Button == MouseButtons.Left)
+            //if (e.Button == MouseButtons.Left)
             {
                 mouseDown = true;
 
@@ -248,8 +392,10 @@ namespace Chatterino.Controls
                 var msg = MessageAtPoint(e.Location, out index);
                 if (msg != null)
                 {
-                    var graphics = CreateGraphics();
+                    var graphics = App.UseDirectX ? null : CreateGraphics();
                     var position = msg.MessagePositionAtPoint(graphics, new CommonPoint(e.X - MessagePadding.Left, e.Y - msg.Y), index);
+                    graphics?.Dispose();
+
                     selection = new Selection(position, position);
 
                     var word = msg.WordAtPoint(new CommonPoint(e.X - MessagePadding.Left, e.Y - msg.Y));
@@ -281,9 +427,27 @@ namespace Chatterino.Controls
                 var word = msg.WordAtPoint(new CommonPoint(e.X - MessagePadding.Left, e.Y - msg.Y));
                 if (word != null)
                 {
-                    if (mouseDownLink != null && mouseDownWord == word && !AppSettings.ChatLinksDoubleClickOnly)
+                    if (mouseDownLink != null && mouseDownWord == word)
                     {
-                        GuiEngine.Current.HandleLink(mouseDownLink);
+                        if (e.Button == MouseButtons.Left)
+                        {
+                            if (!AppSettings.ChatLinksDoubleClickOnly)
+                            {
+                                GuiEngine.Current.HandleLink(mouseDownLink);
+                            }
+                        }
+                        else if (e.Button == MouseButtons.Right)
+                        {
+                            if (mouseDownLink.Type == LinkType.Url)
+                            {
+                                urlContextMenuLink = mouseDownLink;
+                                urlContextMenu.Show(this, e.Location);
+                            }
+                            else
+                            {
+                                GuiEngine.Current.HandleLink(mouseDownLink);
+                            }
+                        }
                     }
                 }
             }
@@ -300,7 +464,9 @@ namespace Chatterino.Controls
             if (AppSettings.ChatLinksDoubleClickOnly)
             {
                 if (mouseDownLink != null)
+                {
                     GuiEngine.Current.HandleLink(mouseDownLink);
+                }
             }
         }
 
@@ -787,20 +953,24 @@ namespace Chatterino.Controls
 
             this.Invoke(() =>
             {
-                if (enableScrollbar)
+                try
                 {
-                    _scroll.Enabled = true;
-                    _scroll.LargeChange = scrollbarThumbHeight;
-                    _scroll.Maximum = messageCount - 1;
+                    if (enableScrollbar)
+                    {
+                        _scroll.Enabled = true;
+                        _scroll.LargeChange = scrollbarThumbHeight;
+                        _scroll.Maximum = messageCount - 1;
 
-                    if (scrollAtBottom)
-                        _scroll.Value = messageCount - scrollbarThumbHeight;
+                        if (scrollAtBottom)
+                            _scroll.Value = messageCount - scrollbarThumbHeight;
+                    }
+                    else
+                    {
+                        _scroll.Enabled = false;
+                        _scroll.Value = 0;
+                    }
                 }
-                else
-                {
-                    _scroll.Enabled = false;
-                    _scroll.Value = 0;
-                }
+                catch { }
             });
         }
 

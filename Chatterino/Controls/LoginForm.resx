@@ -124,9 +124,6 @@ chat_login to send messages
 user_subscriptions to get all sub emotes that you can use
 user_blocks_read to get all the users you ignore
 user_blocks_edit to add/remove ignored users
-user_follows_edit to follow/unfollow other users
-
-
-NOTE: if you can't connect to 127.0.0.1 in your browser then you might need to run chatterino with administrator rights or add it to the firewall whitelist</value>
+user_follows_edit to follow/unfollow other users</value>
   </data>
 </root>

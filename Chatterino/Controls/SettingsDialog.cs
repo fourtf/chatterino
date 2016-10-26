@@ -26,6 +26,13 @@ namespace Chatterino.Controls
         {
             InitializeComponent();
 
+            TopMost = AppSettings.WindowTopMost;
+
+            AppSettings.WindowTopMostChanged += (s, e) =>
+            {
+                TopMost = AppSettings.WindowTopMost;
+            };
+
             Icon = App.Icon;
 
             try
@@ -55,7 +62,7 @@ namespace Chatterino.Controls
                 App.MainForm.Refresh();
             };
 
-            double defaultScrollSpeed = AppSettings.ScrollMultiplyer; 
+            double defaultScrollSpeed = AppSettings.ScrollMultiplyer;
 
             trackBar2.Value = Math.Min(400, Math.Max(100, (int)(AppSettings.ScrollMultiplyer * 200)));
 
@@ -100,6 +107,11 @@ namespace Chatterino.Controls
             BindCheckBox(chkHideInput, "ChatHideInputIfEmpty");
             BindCheckBox(chkMessageSeperators, "ChatSeperateMessages");
 
+            chkMessageSeperators.CheckedChanged += (s, e) =>
+            {
+                App.MainForm.Refresh();
+            };
+
             BindTextBox(txtMsgLimit, "ChatMessageLimit");
 
             BindCheckBox(chkHighlight, "ChatEnableHighlight");
@@ -108,6 +120,12 @@ namespace Chatterino.Controls
             BindCheckBox(chkCustomPingSound, "ChatCustomHighlightSound");
 
             BindCheckBox(chkInputShowMessageLength, "ChatInputShowMessageLength");
+
+            BindCheckBox(chkMentionUserWithAt, "ChatMentionUsersWithAt");
+
+            BindCheckBox(chkTabLocalizedNames, "ChatTabLocalizedNames");
+            BindCheckBox(chkTopMost, "WindowTopMost");
+
 
             // Commands
             lock (Commands.CustomCommandsLock)
@@ -275,6 +293,36 @@ namespace Chatterino.Controls
                 }
             };
 
+            // Ignored Messages
+            string ignoreKeywordsOriginal = rtbIgnoreKeywords.Text = string.Join(Environment.NewLine, AppSettings.ChatIgnoredKeywords);
+
+            rtbIgnoreKeywords.LostFocus += (s, e) =>
+            {
+                List<string> list = new List<string>();
+                StringReader reader = new StringReader(rtbIgnoreKeywords.Text);
+                string line;
+                while ((line = reader.ReadLine()) != null)
+                {
+                    list.Add(line.Trim());
+                }
+                AppSettings.ChatIgnoredKeywords = list.ToArray();
+            };
+
+            onCancel += (s, e) =>
+            {
+                // highlight keywords
+                {
+                    List<string> list = new List<string>();
+                    StringReader reader = new StringReader(ignoreKeywordsOriginal);
+                    string line;
+                    while ((line = reader.ReadLine()) != null)
+                    {
+                        list.Add(line.Trim());
+                    }
+                    AppSettings.ChatIgnoredKeywords = list.ToArray();
+                }
+            };
+
             // Links
 
             //RegistryKey browserKeys;
@@ -291,10 +339,10 @@ namespace Chatterino.Controls
             BindTextBox(textBox2, "ProxyUsername");
             BindTextBox(textBox3, "ProxyPassword");
 
+            // Highlights
             string customHighlightsOriginal = rtbHighlights.Text = string.Join(Environment.NewLine, AppSettings.ChatCustomHighlights);
             string highlightIgnoredUsersOriginal = rtbUserBlacklist.Text = string.Join(Environment.NewLine, AppSettings.HighlightIgnoredUsers.Keys);
 
-            // Highlights
             rtbHighlights.LostFocus += (s, e) =>
             {
                 List<string> list = new List<string>();

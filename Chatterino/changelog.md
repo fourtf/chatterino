@@ -1,8 +1,30 @@
 ﻿# changelog
 
+## 0.4
+- added manual way to log in
+- added option to make the window top-most
+- fixed cheers split up in multiple words
+- fixed backgrounds for custom mod badges
+- fixed spacing when switching fonts
+- improved mouse wheel scrolling very long messages
+
+## 0.3.0.3
+- fixed subscriber badges not showing up
+- fixed timeout button in the user popup
+
+## 0.3.0.2
+- disabled mentioning with @ in commands
+
 ## 0.3
-- added an option for the mouse scroll speed
+- added a slider for the mouse scroll speed
 - added option for a manual reconnect
+- added a popup when you click on a name
+- added an option to ignore messages
+- added a rightclick context menu for links
+- added an option to mention users with an @
+- added twitch prime badge
+- fixed emotes in sub messages
+- fixed the "gray thing"
 
 ## 0.2.6.4
 - fixed sub badges not showing up
@@ -21,12 +43,6 @@
 - fixed tabing localized names
 - removed 1 hour emote cache
 - tweaked global bad prevention
-
-## 0.2.5
-- fixed emote names not showing up that I broke in 0.2.4 like a true professional
-
-## 0.2.4
-- fixed an issue where it would not save custom commands for some users
 
 ## 0.2.3
 - added FFZ channel emotes

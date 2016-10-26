@@ -21,22 +21,11 @@ namespace Chatterino.Controls
             set { image = value; Invalidate(); }
         }
 
-        void calcSize()
-        {
-            if (Text != "")
-            {
-                int width = Width;
-                Width = 16 + TextRenderer.MeasureText(Text, Font).Width;
-                if ((Anchor & AnchorStyles.Right) == AnchorStyles.Right)
-                    Location = new Point(Location.X - (Width - width), Location.Y);
-                Invalidate();
-            }
-        }
-
         public FlatButton()
         {
             TextChanged += (s, e) => calcSize();
             SizeChanged += (s, e) => calcSize();
+            FontChanged += (s, e) => calcSize();
 
             MouseEnter += (s, e) =>
             {
@@ -69,11 +58,34 @@ namespace Chatterino.Controls
             };
         }
 
+        void calcSize()
+        {
+            if (Text != "")
+            {
+                int width = Width;
+                var size = TextRenderer.MeasureText(Text, Font);
+
+                Width = (int)(size.Height * 0.6f) + size.Width;
+
+                Height = (int)(size.Height * 1.4f);
+
+                if ((Anchor & AnchorStyles.Right) == AnchorStyles.Right)
+                {
+                    Location = new Point(Location.X - (Width - width), Location.Y);
+                }
+                Invalidate();
+            }
+        }
+
         Brush mouseOverBrush = new SolidBrush(Color.FromArgb(48, 255, 255, 255));
 
         protected override void OnPaintBackground(PaintEventArgs e)
         {
-            e.Graphics.FillRectangle(App.ColorScheme.Menu, e.ClipRectangle);
+            try
+            {
+                e.Graphics.FillRectangle(App.ColorScheme?.Menu ?? Brushes.Red, e.ClipRectangle);
+            }
+            catch { }
         }
 
         protected override void OnPaint(PaintEventArgs e)
@@ -93,7 +105,7 @@ namespace Chatterino.Controls
 
             if (Text != null)
             {
-                TextRenderer.DrawText(g, Text, Font, ClientRectangle, App.ColorScheme.Text, TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);
+                TextRenderer.DrawText(g, Text, Font, ClientRectangle, App.ColorScheme?.Text ?? Color.Black, App.DefaultTextFormatFlags | TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);
             }
         }
     }

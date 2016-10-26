@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Message = Chatterino.Common.Message;
 
@@ -101,11 +102,16 @@ namespace Chatterino.Controls
                 if (!string.IsNullOrWhiteSpace(value))
                 {
                     channel = TwitchChannel.AddChannel(value);
+                    Input.Logic.Channel = channel;
                     channel.MessageAdded += Channel_MessageAdded;
                     channel.MessagesAddedAtStart += Channel_MessagesAddedAtStart;
                     channel.MessagesRemovedAtStart += Channel_MessagesRemovedAtStart;
                     channel.ChatCleared += Channel_ChatCleared;
                     channel.RoomStateChanged += Channel_RoomStateChanged;
+                }
+                else
+                {
+                    Input.Logic.Channel = null;
                 }
 
                 this.Invoke(() =>
@@ -173,7 +179,7 @@ namespace Chatterino.Controls
             ChatControlHeader header = _header = new ChatControlHeader(this);
             header.Anchor = AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right;
             header.Width = Width - 2;
-            header.Location = new Point(1, 1);
+            header.Location = new Point(1, 0);
             Controls.Add(header);
 
             GotFocus += (s, e) =>
@@ -199,10 +205,14 @@ namespace Chatterino.Controls
 
         private void Fonts_FontChanged(object sender, EventArgs e)
         {
-            this.Invoke(() =>
+            Task.Delay(150).ContinueWith(task =>
             {
-                updateMessageBounds();
-                Invalidate();
+                this.Invoke(() =>
+                {
+                    OnSizeChanged(EventArgs.Empty);
+                    updateMessageBounds();
+                    Invalidate();
+                });
             });
         }
 
@@ -225,15 +235,18 @@ namespace Chatterino.Controls
                 _scroll.RemoveHighlightsWhere(h => h.Position < 0);
             }
 
-            if (e.Message.HighlightType == HighlightType.Highlighted)
+            if (e.Message.HighlightType == HighlightType.Highlighted || e.Message.HighlightType == HighlightType.Resub)
             {
-                _scroll.AddHighlight((channel?.MessageCount ?? 1) - 1, Color.Red);
+                _scroll.AddHighlight((channel?.MessageCount ?? 1) - 1, (e.Message.HighlightType == HighlightType.Highlighted ? Color.Red : Color.FromArgb(-16777216 | 0x3F6ABF)));
 
-                ColumnTabPage parent = Parent as ColumnTabPage;
-
-                if (parent != null)
+                if (e.Message.HighlightType == HighlightType.Highlighted)
                 {
-                    parent.Highlighted = true;
+                    ColumnTabPage parent = Parent as ColumnTabPage;
+
+                    if (parent != null)
+                    {
+                        parent.Highlighted = true;
+                    }
                 }
             }
 
@@ -247,9 +260,9 @@ namespace Chatterino.Controls
 
             for (int i = 0; i < e.Value.Length; i++)
             {
-                if (e.Value[i].HighlightType == HighlightType.Highlighted)
+                if (e.Value[i].HighlightType == HighlightType.Highlighted || e.Value[i].HighlightType == HighlightType.Resub)
                 {
-                    _scroll.AddHighlight(i, Color.Red);
+                    _scroll.AddHighlight(i, (e.Value[i].HighlightType == HighlightType.Highlighted ? Color.Red : Color.FromArgb(-16777216 | 0x3F6ABF)));
                 }
             }
 
@@ -338,12 +351,10 @@ namespace Chatterino.Controls
 
         protected override void OnMouseUp(MouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Left)
+            //if (e.Button == MouseButtons.Left)
             {
                 if (!scrollAtBottom && e.Y > Height - (Input.Visible ? Input.Height : 0) - ScrollToBottomBarHeight)
                 {
-                    App.ShowToolTip(PointToScreen(new Point(e.Location.X, e.Location.Y + 16)), "jump to bottom");
-
                     mouseDown = false;
                     mouseDownLink = null;
 
@@ -593,14 +604,14 @@ namespace Chatterino.Controls
 
             if (items == null)
             {
-                items = tabCompleteItems = channel.GetCompletionItems().Where(s => s.Key.StartsWith(word)).Select(x => x.Value).ToArray();
+                items = tabCompleteItems = channel.GetCompletionItems(wordStart == 0 || (wordStart == 1 && text[0] == '@'), (!text.Trim().StartsWith("!") && !text.Trim().StartsWith("/") && !text.Trim().StartsWith("."))).Where(s => s.Key.StartsWith(word)).Select(x => x.Value).ToArray();
             }
 
             currentTabIndex += forward ? 1 : -1;
 
             currentTabIndex = currentTabIndex < 0 ? 0 : (currentTabIndex >= items.Length ? items.Length - 1 : currentTabIndex);
 
-            if (currentTabIndex != -1)
+            if (currentTabIndex != -1 && items.Length != 0)
             {
                 Input.Logic.SelectionStart = wordStart;
                 Input.Logic.SelectionLength = word.Length;
@@ -707,8 +718,8 @@ namespace Chatterino.Controls
                 contextMenu.MenuItems.Add(new MenuItem("Change Channel", (s, e) => { App.MainForm?.RenameSelectedSplit(); }, Shortcut.CtrlR));
                 contextMenu.MenuItems.Add(new MenuItem("Clear Chat", (s, e) => { selected.Channel.ClearChat(); }));
                 contextMenu.MenuItems.Add("-");
-                contextMenu.MenuItems.Add(new MenuItem("Open Channel", (s, e) => { GuiEngine.Current.HandleLink(selected.Channel.ChannelLink); }));
-                contextMenu.MenuItems.Add(new MenuItem("Open Pop-out Player", (s, e) => { GuiEngine.Current.HandleLink(selected.Channel.PopoutPlayerLink); }));
+                contextMenu.MenuItems.Add(new MenuItem("Open Channel", (s, e) => { GuiEngine.Current.HandleLink(new Link(LinkType.Url, selected.Channel.ChannelLink)); }));
+                contextMenu.MenuItems.Add(new MenuItem("Open Pop-out Player", (s, e) => { GuiEngine.Current.HandleLink(new Link(LinkType.Url, selected.Channel.PopoutPlayerLink)); }));
                 contextMenu.MenuItems.Add("-");
                 contextMenu.MenuItems.Add(new MenuItem("Manual Reconnect", (s, e) =>
                 {
@@ -871,6 +882,7 @@ namespace Chatterino.Controls
                 {
                     Height = Height - 2,
                     Width = Height - 2,
+                    MinimumSize = new Size(Height - 2, Height - 2),
                     Location = new Point(Width - Height, 1),
                     Anchor = AnchorStyles.Top | AnchorStyles.Right
                 };

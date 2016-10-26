@@ -97,6 +97,7 @@ namespace TwitchIrc
 
                             while ((line = reader.ReadLine()) != null)
                             {
+                                Console.WriteLine(line);
                                 IrcMessage msg;
 
                                 if (IrcMessage.TryParse(line, out msg))
@@ -172,6 +173,6 @@ namespace TwitchIrc
         }
 
         // static
-        private static System.Timers.Timer pingTimer = new System.Timers.Timer { Enabled = true, Interval = 15000 };
+        private static System.Timers.Timer pingTimer = new System.Timers.Timer { Enabled = true, Interval = 7500 };
     }
 }

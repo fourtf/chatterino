@@ -11,6 +11,8 @@ namespace Chatterino.Common
         public event EventHandler Changed;
 
         // properties
+        public TwitchChannel Channel { get; set; }
+
         public Message Message { get; private set; } = null;
 
         public Selection Selection
@@ -30,7 +32,7 @@ namespace Chatterino.Common
                 text = value;
                 Message = new Message(value);
 
-                string sendmessage = Commands.ProcessMessage(value, false) ?? "";
+                string sendmessage = Commands.ProcessMessage(value, Channel, false) ?? "";
 
                 int messageLength = 0;
                 for (int j = 0; j < sendmessage.Length; j++)

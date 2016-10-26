@@ -46,6 +46,10 @@ namespace Chatterino.Controls
 
         public ToolTip()
         {
+            Font = Fonts.GetFont(Common.FontType.Small);
+
+            Fonts.FontChanged += (s, e) => Font = Fonts.GetFont(Common.FontType.Small);
+
             FormBorderStyle = FormBorderStyle.None;
             Opacity = 0.8;
 

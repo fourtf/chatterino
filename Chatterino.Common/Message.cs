@@ -53,7 +53,7 @@ namespace Chatterino.Common
         public List<Word> Words { get; set; }
         public TwitchChannel Channel { get; set; }
 
-        static Regex linkRegex = new Regex(@"^((?<Protocol>\w+):\/\/)?(?<Domain>[\w%@-][\w.%-:@]+\w)\/?[\w\.?=#%&=\+\-@/$,]*$", RegexOptions.Compiled);
+        static Regex linkRegex = new Regex(@"^((?<Protocol>\w+):\/\/)?(?<Domain>[\w%@-][\w.%-:@]+\w)\/?[\w\.?=#%&=\+\-@/$,\(\)]*$", RegexOptions.Compiled);
         static char[] linkIdentifiers = new char[] { '.', ':' };
 
         private Message()
@@ -72,6 +72,16 @@ namespace Chatterino.Common
             string text = data.Params ?? "";
 
             Username = data.PrefixNickname ?? "";
+
+            if (string.IsNullOrWhiteSpace(Username))
+            {
+                string login;
+
+                if (data.Tags.TryGetValue("login", out login))
+                {
+                    Username = login;
+                }
+            }
 
             bool slashMe = false;
 
@@ -125,51 +135,8 @@ namespace Chatterino.Common
 
             // Bits
             string bits = null;
-            string bitsLink = null;
-            HSLColor? bitsColor = null;
 
-            if (data.Tags.TryGetValue("bits", out bits))
-            {
-                int cheer;
-
-                if (int.TryParse(bits, out cheer))
-                {
-                    string color = null;
-
-                    if (cheer >= 10000)
-                    {
-                        color = "red";
-                        bitsColor = new HSLColor(0, 1f, 0.5f);
-                    }
-                    else if (cheer >= 5000)
-                    {
-                        color = "blue";
-                        bitsColor = new HSLColor(0.61f, 1f, 0.4f);
-                    }
-                    else if (cheer >= 1000)
-                    {
-                        color = "green";
-                        bitsColor = new HSLColor(0.5f, 1f, 0.5f);
-                    }
-                    else if (cheer >= 100)
-                    {
-                        color = "purple";
-                        bitsColor = new HSLColor(0.8f, 1f, 0.5f);
-                    }
-                    else
-                    {
-                        color = "gray";
-                        bitsColor = HSLColor.FromRGB(0.5f, 0.5f, 0.5f);
-                    }
-
-                    bits = "cheer" + bits;
-                    bitsLink = $"http://static-cdn.jtvnw.net/bits/{(GuiEngine.Current.IsDarkTheme ? "dark" : "light")}/animated/{color}/1";
-                }
-                else
-                {
-                    bits = null;
-                }
-            }
+            data.Tags.TryGetValue("bits", out bits);
 
             // Add timestamp
             string timestampTag;
@@ -215,6 +182,9 @@ namespace Chatterino.Common
                 });
             }
 
+            if (Username == "fourtf")
+                ;
+
             if (data.Tags.TryGetValue("badges", out value))
             {
                 var badges = value.Split(',');
@@ -256,6 +226,17 @@ namespace Chatterino.Common
                             words.Add(new Word { Type = SpanType.Image, Value = image, Tooltip = "Twitch Cheer " + cheer });
                         }
                     }
+                    else if (badge.StartsWith("subscriber/"))
+                    {
+                        try
+                        {
+                            int n = int.Parse(badge.Substring("subscriber/".Length));
+
+                            Badges |= MessageBadges.Sub;
+                            words.Add(new Word { Type = SpanType.Emote, Value = channel.SubscriberBadge, Link = new Link(LinkType.Url, Channel.SubLink), Tooltip = "Channel Subscriber" });
+                        }
+                        catch { }
+                    }
                     else
                     {
                         switch (badge)
@@ -280,12 +261,8 @@ namespace Chatterino.Common
                                 }
                                 else
                                 {
-                                    words.Add(new Word { Type = SpanType.Emote, Value = channel.ModeratorBadge, Tooltip = channel.ModeratorBadge.Name });
+                                    words.Add(new Word { Type = SpanType.Emote, Value = channel.ModeratorBadge, Tooltip = channel.ModeratorBadge.Tooltip });
                                 }
-                                break;
-                            case "subscriber/1":
-                                Badges |= MessageBadges.Sub;
-                                words.Add(new Word { Type = SpanType.Emote, Value = channel.SubscriberBadge, Link = Channel.SubLink, Tooltip = "Channel Subscriber" });
                                 break;
                             case "turbo/1":
                                 Badges |= MessageBadges.Turbo;
@@ -295,6 +272,10 @@ namespace Chatterino.Common
                                 Badges |= MessageBadges.Broadcaster;
                                 words.Add(new Word { Type = SpanType.Image, Value = GuiEngine.Current.GetImage(ImageType.BadgeBroadcaster), Tooltip = "Channel Broadcaster" });
                                 break;
+                            case "premium/1":
+                                Badges |= MessageBadges.Broadcaster;
+                                words.Add(new Word { Type = SpanType.Image, Value = GuiEngine.Current.GetImage(ImageType.BadgeTwitchPrime), Tooltip = "Twitch Prime" });
+                                break;
                         }
                     }
                 }
@@ -302,8 +283,9 @@ namespace Chatterino.Common
 
             TwitchEmote fourtfBadge;
             if (Common.Badges.FourtfGlobalBadges.TryGetValue(Username, out fourtfBadge))
+            {
                 words.Add(new Word { Type = SpanType.Emote, Value = fourtfBadge, Tooltip = fourtfBadge.Tooltip });
-
+            }
 
             // Username
             if (string.IsNullOrWhiteSpace(DisplayName))
@@ -318,8 +300,7 @@ namespace Chatterino.Common
                 Value = messageUser,
                 Color = UsernameColor,
                 Font = FontType.MediumBold,
-                Link = "https://twitch.tv/" + Username,
-                //Link = "@twitchuser:" + Username,
+                Link = new Link(LinkType.UserInfo, new UserInfoData { UserName = Username, Channel = channel }),
                 CopyText = messageUser
             });
 
@@ -387,7 +368,7 @@ namespace Chatterino.Common
                         {
                             Type = SpanType.Emote,
                             Value = currentTwitchEmote.Item2,
-                            Link = currentTwitchEmote.Item2.Url,
+                            Link = new Link(LinkType.Url, currentTwitchEmote.Item2.Url),
                             Tooltip = currentTwitchEmote.Item2.Tooltip,
                             CopyText = currentTwitchEmote.Item2.Name
                         });
@@ -422,12 +403,49 @@ namespace Chatterino.Common
                         //    }
                         //}
 
-                        if (bits != null && s == bits)
+                        if (bits != null && Regex.IsMatch(s, "cheer[1-9][0-9]*"))
                         {
-                            words.Add(new Word { Type = SpanType.Emote, Value = Emotes.MiscEmotesByUrl.GetOrAdd(bitsLink, url => new TwitchEmote { Name = "cheer", Url = url, Tooltip = "Twitch Bits Badge" }), Tooltip = "Twitch Bits Donation", CopyText = bits, Link = "https://blog.twitch.tv/introducing-cheering-celebrate-together-da62af41fac6" });
-                            words.Add(new Word { Type = SpanType.Text, Value = "x" + bits.Substring(5), Font = FontType.Small, Color = bitsColor });
+                            int cheer;
 
-                            continue;
+                            if (int.TryParse(s.Substring("cheer".Length), out cheer))
+                            {
+                                string color = null;
+
+                                HSLColor bitsColor;
+
+                                if (cheer >= 10000)
+                                {
+                                    color = "red";
+                                    bitsColor = new HSLColor(0, 1f, 0.5f);
+                                }
+                                else if (cheer >= 5000)
+                                {
+                                    color = "blue";
+                                    bitsColor = new HSLColor(0.61f, 1f, 0.4f);
+                                }
+                                else if (cheer >= 1000)
+                                {
+                                    color = "green";
+                                    bitsColor = new HSLColor(0.5f, 1f, 0.5f);
+                                }
+                                else if (cheer >= 100)
+                                {
+                                    color = "purple";
+                                    bitsColor = new HSLColor(0.8f, 1f, 0.5f);
+                                }
+                                else
+                                {
+                                    color = "gray";
+                                    bitsColor = HSLColor.FromRGB(0.5f, 0.5f, 0.5f);
+                                }
+
+                                var bitsLink = $"http://static-cdn.jtvnw.net/bits/{(GuiEngine.Current.IsDarkTheme ? "dark" : "light")}/animated/{color}/1";
+
+                                words.Add(new Word { Type = SpanType.Emote, Value = Emotes.MiscEmotesByUrl.GetOrAdd(bitsLink, url => new TwitchEmote { Name = "cheer", Url = url, Tooltip = "Twitch Bits Badge" }), Tooltip = "Twitch Bits Donation", CopyText = s, Link = new Link(LinkType.Url, "https://blog.twitch.tv/introducing-cheering-celebrate-together-da62af41fac6") });
+                                words.Add(new Word { Type = SpanType.Text, Value = "x" + s.Substring(5), Font = FontType.Small, Color = bitsColor });
+
+                                continue;
+                            }
                         }
 
                         TwitchEmote bttvEmote;
@@ -440,7 +458,7 @@ namespace Chatterino.Common
                                 Value = bttvEmote,
                                 Color = slashMe ? UsernameColor : new HSLColor?(),
                                 Tooltip = bttvEmote.Tooltip,
-                                Link = bttvEmote.Url,
+                                Link = new Link(LinkType.Url, bttvEmote.Url),
                                 CopyText = bttvEmote.Name
                             });
                         }
@@ -448,14 +466,12 @@ namespace Chatterino.Common
                         {
                             string link = matchLink(split);
 
-
-
                             words.Add(new Word
                             {
                                 Type = SpanType.Text,
                                 Value = s,
                                 Color = slashMe ? UsernameColor : (link == null ? new HSLColor?() : HSLColor.FromRGB(-8355712)),
-                                Link = link,
+                                Link = link == null ? null : new Link(LinkType.Url, link),
                                 CopyText = s
                             });
                         }
@@ -470,7 +486,7 @@ namespace Chatterino.Common
                             {
                                 Type = SpanType.Emote,
                                 Value = e,
-                                Link = e.Url,
+                                Link = new Link(LinkType.Url, e.Url),
                                 Tooltip = e.Tooltip,
                                 CopyText = e.Name
                             });
@@ -499,7 +515,7 @@ namespace Chatterino.Common
         }
 
         public Message(string text)
-            : this(text, null, false)
+                : this(text, null, false)
         {
 
         }
@@ -566,7 +582,12 @@ namespace Chatterino.Common
                     }
 
                     // Add words
-                    msg.Words = line.Split(' ').Select(x => new Word { Type = SpanType.Text, Font = font, Value = x, CopyText = x, Link = matchLink(x) }).ToList();
+                    msg.Words = line.Split(' ').Select(x =>
+                    {
+                        string link = matchLink(x);
+
+                        return new Word { Type = SpanType.Text, Font = font, Value = x, CopyText = x, Link = (link == null ? null : new Link(LinkType.Url, link)) };
+                    }).ToList();
 
                     list.Add(msg);
                 }
@@ -694,6 +715,12 @@ namespace Chatterino.Common
                     Word word = Words[i];
 
                     word.SplitSegments = null;
+
+                    if (word.Type == SpanType.Emote && ((TwitchEmote)word.Value).IsHat)
+                    {
+#warning emote size
+                        x -= word.Width + 2;
+                    }
 
                     // word wrapped text
                     if (word.Width > width && word.Type == SpanType.Text && ((string)word.Value).Length > 2)
