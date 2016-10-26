@@ -79,7 +79,19 @@ namespace Chatterino.Common
             }
         }
 
-        public ConcurrentDictionary<int, string> SubscriberBadges = new ConcurrentDictionary<int, string>();
+        public ConcurrentDictionary<int, TwitchEmote> SubscriberBadges = new ConcurrentDictionary<int, TwitchEmote>();
+
+        public TwitchEmote GetSubscriberBadge(int months)
+        {
+            TwitchEmote emote;
+
+            if (SubscriberBadges.TryGetValue(months, out emote))
+            {
+                return emote;
+            }
+
+            return SubscriberBadge;
+        }
 
 
         // Moderator Badge
@@ -254,11 +266,20 @@ namespace Chatterino.Common
 
                                 dynamic badgeSets = json["badge_sets"];
                                 dynamic subscriber = badgeSets["subscriber"];
-                                dynamic versions = badgeSets["versions"];
+                                dynamic versions = subscriber["versions"];
 
                                 foreach (dynamic version in versions)
                                 {
-                                    ;
+                                    int months = int.Parse(version.Key);
+
+                                    dynamic value = version.Value;
+
+                                    string imageUrl = value["image_url_1x"];
+                                    string title = value["title"];
+                                    string description = value["description"];
+                                    string clickUrl = value["click_url"];
+
+                                    SubscriberBadges[months] = new TwitchEmote { Name = title, Url = imageUrl, Tooltip = "Subscriber Badge" + (months == 0 ? "" : $" ({months} months)") };
                                 }
                             }
                         }

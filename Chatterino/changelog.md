@@ -1,8 +1,8 @@
 ﻿# changelog
 
-## 0.4
-- added manual way to log in
+## 0.3.1.0
 - added option to make the window top-most
+- added loyalty subscriber badges
 - fixed cheers split up in multiple words
 - fixed backgrounds for custom mod badges
 - fixed spacing when switching fonts

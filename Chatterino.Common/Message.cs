@@ -233,7 +233,8 @@ namespace Chatterino.Common
                             int n = int.Parse(badge.Substring("subscriber/".Length));
 
                             Badges |= MessageBadges.Sub;
-                            words.Add(new Word { Type = SpanType.Emote, Value = channel.SubscriberBadge, Link = new Link(LinkType.Url, Channel.SubLink), Tooltip = "Channel Subscriber" });
+                            var e = channel.GetSubscriberBadge(n);
+                            words.Add(new Word { Type = SpanType.Emote, Value = e, Link = new Link(LinkType.Url, Channel.SubLink), Tooltip = e.Tooltip });
                         }
                         catch { }
                     }
