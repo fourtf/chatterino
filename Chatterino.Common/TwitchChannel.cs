@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Drawing;
@@ -170,6 +171,53 @@ namespace Chatterino.Common
             }
         }
 
+        protected void loadData()
+        {
+            loadRoomID();
+        }
+
+        protected void loadRoomID()
+        {
+            // Try to load from cache
+            RoomID = Cache.roomIDCache.Get(Name);
+
+            if (RoomID == -1) {
+                // No room ID was saved in the cache
+
+                if (loadRoomIDFromTwitch()) {
+                    // Successfully got a room ID from twitch
+                    Cache.roomIDCache.Set(Name, RoomID);
+                }
+            }
+        }
+
+        protected bool loadRoomIDFromTwitch()
+        {
+            // call twitch kraken api
+            try
+            {
+                var request = WebRequest.Create($"https://api.twitch.tv/kraken/channels/{Name}?client_id=7ue61iz46fz11y3cugd0l3tawb4taal");
+                using (var response = request.GetResponse())
+                using (var stream = response.GetResponseStream())
+                {
+                    JsonParser parser = new JsonParser();
+
+                    dynamic json = parser.Parse(stream);
+
+                    int roomID;
+
+                    if (int.TryParse(json["_id"], out roomID))
+                    {
+                        RoomID = roomID;
+                        return true;
+                    }
+                }
+            }
+            catch { }
+
+            return false;
+        }
+
         // ctor
         protected TwitchChannel(string channelName)
         {
@@ -188,69 +236,7 @@ namespace Chatterino.Common
                 // recent chat
                 Task.Run(() =>
                 {
-                    //try
-                    //{
-                    //    List<Message> messages = new List<Message>();
-
-                    //    var request = WebRequest.Create($"http://fourtf.com:5005/lastmessages/{channelName}");
-                    //    using (var response = request.GetResponse())
-                    //    using (var stream = response.GetResponseStream())
-                    //    {
-                    //        StreamReader reader = new StreamReader(stream);
-                    //        string line;
-                    //        while ((line = reader.ReadLine()) != null)
-                    //        {
-                    //            IrcMessage msg;
-
-                    //            if (IrcMessage.TryParse(line, out msg))
-                    //            {
-                    //                if (msg.Params != null)
-                    //                    messages.Add(new Message(msg, this, false, false));
-                    //            }
-                    //        }
-                    //    }
-
-                    //    AddMessagesAtStart(messages.ToArray());
-                    //}
-                    //catch { }
-
-                    // call twitch kraken api
-                    try
-                    {
-                        List<Message> messages = new List<Message>();
-
-                        var request = WebRequest.Create($"https://api.twitch.tv/kraken/channels/{Name}?client_id=7ue61iz46fz11y3cugd0l3tawb4taal");
-                        using (var response = request.GetResponse())
-                        using (var stream = response.GetResponseStream())
-                        {
-                            JsonParser parser = new JsonParser();
-
-                            dynamic json = parser.Parse(stream);
-
-                            int roomID;
-
-                            if (int.TryParse(json["_id"], out roomID))
-                            {
-                                RoomID = roomID;
-                            }
-
-                            //StreamReader reader = new StreamReader(stream);
-                            //string line;
-                            //while ((line = reader.ReadLine()) != null)
-                            //{
-                            //    IrcMessage msg;
-
-                            //    if (IrcMessage.TryParse(line, out msg))
-                            //    {
-                            //        if (msg.Params != null)
-                            //            messages.Add(new Message(msg, this, false, false));
-                            //    }
-                            //}
-                        }
-
-                        AddMessagesAtStart(messages.ToArray());
-                    }
-                    catch { }
+                    loadData();
 
                     if (RoomID != -1)
                     {
