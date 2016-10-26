@@ -126,6 +126,7 @@ namespace Chatterino
             // Settings/Colors
             AppSettings.Load("./Settings.ini");
             Commands.LoadOrDefault("./Custom/Commands.txt");
+            Cache.Load();
 
             updateTheme();
 
@@ -202,6 +203,7 @@ namespace Chatterino
 
             // Save settings
             AppSettings.Save("./Settings.ini");
+            Cache.Save();
 
             if (!Directory.Exists("./Custom"))
                 Directory.CreateDirectory("./Custom");
