@@ -42,5 +42,7 @@ namespace Chatterino.Common
         void DisposeMessageGraphicsBuffer(Message message);
 
         CommonSize GetImageSize(object image);
+
+        void ExecuteHotkeyAction(HotkeyAction action);
     }
 }

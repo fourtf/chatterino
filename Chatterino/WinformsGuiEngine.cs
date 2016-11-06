@@ -366,5 +366,10 @@ namespace Chatterino
 
             return bitmap;
         }
+
+        public void ExecuteHotkeyAction(HotkeyAction action)
+        {
+
+        }
     }
 }

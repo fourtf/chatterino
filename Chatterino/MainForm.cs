@@ -22,6 +22,16 @@ namespace Chatterino
         {
             InitializeComponent();
 
+            // set window bounds
+            try
+            {
+                StartPosition = FormStartPosition.Manual;
+                Location = new Point(AppSettings.WindowX, AppSettings.WindowY);
+                Size = new Size(AppSettings.WindowWidth, AppSettings.WindowHeight);
+            }
+            catch { }
+
+            // top most
             TopMost = AppSettings.WindowTopMost;
 
             AppSettings.WindowTopMostChanged += (s, e) =>
@@ -29,8 +39,10 @@ namespace Chatterino
                 TopMost = AppSettings.WindowTopMost;
             };
 
+            // icon
             Icon = App.Icon;
 
+            // show login dialog
             if (!File.Exists("./login.ini"))
             {
                 using (var login = new LoginForm())
@@ -39,6 +51,7 @@ namespace Chatterino
                 }
             }
 
+            // load layout
             LoadLayout("./layout.xml");
 
 #if !DEBUG
@@ -50,11 +63,15 @@ namespace Chatterino
             }
 #endif
 
+            // set title
+            SetTitle();
+
+            IrcManager.LoggedIn += (s, e) => SetTitle();
+
+            // winforms specific
             BackColor = Color.Black;
 
             KeyPreview = true;
-
-            SetTitle();
 
             Activated += (s, e) =>
             {
@@ -66,12 +83,6 @@ namespace Chatterino
                 App.WindowFocused = false;
                 App.HideToolTip();
             };
-
-            IrcManager.LoggedIn += (s, e) => SetTitle();
-
-            StartPosition = FormStartPosition.Manual;
-            Location = new Point(AppSettings.WindowX, AppSettings.WindowY);
-            Size = new Size(AppSettings.WindowWidth, AppSettings.WindowHeight);
 
             tabControl.TabPageSelected += (s, e) =>
             {

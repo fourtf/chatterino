@@ -1,5 +1,8 @@
 ﻿# changelog
 
+## 0.3.1.1
+- added ffz event emotes
+
 ## 0.3.1.0
 - added option to make the window top-most
 - added loyalty subscriber badges

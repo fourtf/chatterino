@@ -25,7 +25,10 @@ namespace Chatterino.Controls
         {
             InitializeComponent();
 
+            //Height = 225;
+
             Icon = App.Icon;
+
 
             Task.Run(() =>
             {
@@ -132,6 +135,23 @@ namespace Chatterino.Controls
             IrcManager.Disconnect();
 
             Process.Start("https://api.twitch.tv/kraken/oauth2/authorize?response_type=token&client_id=7ue61iz46fz11y3cugd0l3tawb4taal&redirect_uri=http://127.0.0.1:5215/code&force_verify=true&scope=chat_login+user_subscriptions+user_blocks_edit+user_blocks_read+user_follows_edit");
+        }
+
+        private void btnManualLogin_Click(object sender, EventArgs e)
+        {
+            Process.Start("https://api.twitch.tv/kraken/oauth2/authorize?response_type=code&client_id=gkp8i0oxk7xua6pcxmg4w6u8vt8n4qw&redirect_uri=https%3A%2F%2Ffourtf.com%2Fchatterino%2Fauth&force_verify=true&scope=chat_login+user_subscriptions+user_blocks_edit+user_blocks_read+user_follows_edit");
+        }
+
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            //if (checkBox1.Checked)
+            //{
+            //    Height = 374;
+            //}
+            //else
+            //{
+            //    Height = 225;
+            //}
         }
     }
 }

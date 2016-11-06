@@ -25,6 +25,8 @@ namespace Chatterino.Common
         public bool EmoteBoundsChanged { get; set; } = true;
 
         public string Username { get; set; }
+        public Word UsernameWord { get; set; } = null;
+
         public string DisplayName { get; set; }
         public HSLColor UsernameColor { get; set; }
 

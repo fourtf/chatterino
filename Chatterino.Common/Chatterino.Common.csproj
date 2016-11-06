@@ -56,6 +56,7 @@
     <Compile Include="Commands.cs" />
     <Compile Include="CommonPoint.cs" />
     <Compile Include="HighlightType.cs" />
+    <Compile Include="HotkeyAction.cs" />
     <Compile Include="HSLColor.cs" />
     <Compile Include="Emojis.cs" />
     <Compile Include="Emotes.cs" />

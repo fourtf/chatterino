@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Xwt;
 
-namespace Chatterino.Desktop.Widgets
+namespace Chatterino
 {
-    public class ChatHeaderWidget : Canvas
+    public class HotkeyMapper
     {
+
     }
 }

@@ -147,7 +147,6 @@ namespace Chatterino.Common
                     Directory.CreateDirectory("./Cache");
                     System.Text.Json.JsonParser parser = new System.Text.Json.JsonParser();
 
-                    // better twitch tv emotes
                     //if (!File.Exists(ffzEmotesGlobalCache))
                     {
                         try
@@ -195,7 +194,52 @@ namespace Chatterino.Common
                     Console.WriteLine("error loading emotes: " + exc.Message);
                 }
             });
+
+            // ffz event emotes
+            Task.Run(() =>
+            {
+                try
+                {
+                    int set = 0;
+
+                    System.Text.Json.JsonParser parser = new System.Text.Json.JsonParser();
+                    using (var webClient = new WebClient())
+                    using (var readStream = webClient.OpenRead("http://cdn.frankerfacez.com/script/event.json"))
+                    {
+                        dynamic json = parser.Parse(readStream);
+
+                        string _set = json["set"];
+
+                        int.TryParse(_set, out set);
+                    }
+
+                    if (set != 0)
+                    {
+                        using (var webClient = new WebClient())
+                        using (var readStream = webClient.OpenRead("http://api.frankerfacez.com/v1/set/" + set))
+                        {
+                            dynamic json = parser.Parse(readStream);
+                            dynamic _set = json["set"];
+
+                            dynamic emoticons = _set["emoticons"];
+
+                            foreach (var emote in emoticons)
+                            {
+                                var name = emote["name"];
+                                var urlX1 = "http:" + emote["urls"]["1"];
+
+                                FfzGlobalEmotes[name] = new TwitchEmote { Name = name, Url = urlX1, Tooltip = name + "\nFrankerFaceZ Global Emote" };
+                            }
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    e.Message.Log("emotes");
+                }
+            });
         }
+
 
         internal static void TriggerEmotesLoaded()
         {
