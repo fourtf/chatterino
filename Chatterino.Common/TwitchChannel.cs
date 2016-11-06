@@ -582,20 +582,25 @@ namespace Chatterino.Common
         static TwitchChannel()
         {
             WhisperChannel?.AddMessage(new Message("Please note that chatterino can only read whispers while it is running!", null, true));
+            MentionsChannel?.AddMessage(new Message("Please note that chatterino can only read mentions while it is running!", null, true));
         }
 
         private static ConcurrentDictionary<string, TwitchChannel> channels = new ConcurrentDictionary<string, TwitchChannel>();
         public static IEnumerable<TwitchChannel> Channels { get { return channels.Values; } }
 
         public static TwitchChannel WhisperChannel { get; private set; } = new TwitchChannel("/whispers");
+        public static TwitchChannel MentionsChannel { get; private set; } = new TwitchChannel("/mentions");
 
         public static TwitchChannel AddChannel(string channelName)
         {
             if (channelName.StartsWith("/"))
             {
-                if (channelName == "/whispers")
-                {
-                    return WhisperChannel;
+                switch (channelName) {
+                    case "/whispers":
+                        return WhisperChannel;
+
+                    case "/mentions":
+                        return MentionsChannel;
                 }
             }
 

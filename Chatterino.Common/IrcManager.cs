@@ -442,6 +442,10 @@ namespace Chatterino.Common
                             {
                                 c.Users[message.Username.ToUpper()] = message.DisplayName;
 
+                                if (message.HighlightType == HighlightType.Highlighted) {
+                                    TwitchChannel.MentionsChannel.AddMessage(message);
+                                }
+
                                 c.AddMessage(message);
                             }
                         }
