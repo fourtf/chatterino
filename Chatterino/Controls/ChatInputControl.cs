@@ -31,20 +31,22 @@ namespace Chatterino.Controls
         {
             Size = new Size(100, 100);
 
-            caretBlinkTimer = new Timer { Interval = SystemInformation.CaretBlinkTime };
+            int caretBlinkInterval = SystemInformation.CaretBlinkTime;
 
-            caretBlinkTimer.Tick += (s, e) =>
-            {
-                if (caretRect != null)
+            if (caretBlinkInterval > 0) {
+                caretBlinkTimer = new Timer { Interval = SystemInformation.CaretBlinkTime };
+
+                caretBlinkTimer.Tick += (s, e) =>
                 {
-                    using (var g = CreateGraphics())
+                    if (caretRect != null)
                     {
-                        caretBlinkState = !caretBlinkState;
-
-
+                        using (var g = CreateGraphics())
+                        {
+                            caretBlinkState = !caretBlinkState;
+                        }
                     }
-                }
-            };
+                };
+            }
 
             Cursor = Cursors.IBeam;
 
@@ -65,16 +67,19 @@ namespace Chatterino.Controls
 
             Logic.Changed += (s, e) =>
             {
-                if (AppSettings.ChatHideInputIfEmpty && Logic.Text.Length == 0)
+                if (AppSettings.ChatHideInputIfEmpty && Logic.Text.Length == 0) {
                     Visible = false;
-                else
+                } else {
                     Visible = true;
+                }
 
                 if (Logic.SelectionLength != 0)
                     chatControl.ClearSelection();
 
-                caretBlinkTimer.Stop();
-                caretBlinkTimer.Start();
+                if (caretBlinkTimer != null) {
+                    caretBlinkTimer.Stop();
+                    caretBlinkTimer.Start();
+                }
 
                 caretBlinkState = true;
 
