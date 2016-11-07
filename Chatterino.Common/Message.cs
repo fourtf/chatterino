@@ -543,7 +543,7 @@ namespace Chatterino.Common
                 });
             }
 
-            Words.AddRange(text.Split(' ').Select(x => new Word { Type = SpanType.Text, Value = x, Color = color, CopyText = x }));
+            Words.AddRange(text.Split(' ').Select(x => createWord(SpanType.Text, x, color)));
         }
 
         public Message(List<Word> words)
@@ -1013,6 +1013,31 @@ namespace Chatterino.Common
         }
 
         // private
+        private static Word createWord(SpanType type, string text, HSLColor? color)
+        {
+            var link = createLink(text);
+
+            return new Word
+            {
+                Type = type,
+                Value = text,
+                Color = (link == null ? color : HSLColor.FromRGB(-8355712)),
+                CopyText = text,
+                Link = link,
+            };
+        }
+
+        // Try to create Link object from text, return null if no link was found, otherwise return new LinkType.Url Link
+        private static Link createLink(string text)
+        {
+            string url = matchLink(text);
+            if (url == null) {
+                return null;
+            }
+            return new Link(LinkType.Url, url);
+        }
+
+        // Try to parse link from text, return null if no link was found, otherwise return the url parsed as a string
         private static string matchLink(string text)
         {
             string link = null;
