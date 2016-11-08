@@ -31,6 +31,7 @@
             this.tabs = new Chatterino.Controls.SettingsTabControl();
             this.RightPanel = new System.Windows.Forms.Panel();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.chkTopMost = new System.Windows.Forms.CheckBox();
             this.chkTabLocalizedNames = new System.Windows.Forms.CheckBox();
             this.chkMentionUserWithAt = new System.Windows.Forms.CheckBox();
             this.lblScrollSpeed = new System.Windows.Forms.Label();
@@ -122,7 +123,6 @@
             this.spBrowserExtension = new Chatterino.Controls.SettingsTabPage();
             this.spWhispers = new Chatterino.Controls.SettingsTabPage();
             this.spConnection = new Chatterino.Controls.SettingsTabPage();
-            this.chkTopMost = new System.Windows.Forms.CheckBox();
             this.tabs.SuspendLayout();
             this.RightPanel.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -220,14 +220,25 @@
             this.panel1.Size = new System.Drawing.Size(448, 406);
             this.panel1.TabIndex = 0;
             // 
-            // checkTabLocalizedNames
+            // chkTopMost
+            // 
+            this.chkTopMost.AutoSize = true;
+            this.chkTopMost.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.chkTopMost.Location = new System.Drawing.Point(17, 347);
+            this.chkTopMost.Name = "chkTopMost";
+            this.chkTopMost.Size = new System.Drawing.Size(133, 17);
+            this.chkTopMost.TabIndex = 26;
+            this.chkTopMost.Text = "Window always on top\r\n";
+            this.chkTopMost.UseVisualStyleBackColor = true;
+            // 
+            // chkTabLocalizedNames
             // 
             this.chkTabLocalizedNames.AutoSize = true;
             this.chkTabLocalizedNames.Checked = true;
             this.chkTabLocalizedNames.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkTabLocalizedNames.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
             this.chkTabLocalizedNames.Location = new System.Drawing.Point(17, 324);
-            this.chkTabLocalizedNames.Name = "checkTabLocalizedNames";
+            this.chkTabLocalizedNames.Name = "chkTabLocalizedNames";
             this.chkTabLocalizedNames.Size = new System.Drawing.Size(190, 17);
             this.chkTabLocalizedNames.TabIndex = 25;
             this.chkTabLocalizedNames.Text = "Use localized names when tabbing";
@@ -354,7 +365,7 @@
             this.chkMessageSeperators.Name = "chkMessageSeperators";
             this.chkMessageSeperators.Size = new System.Drawing.Size(120, 17);
             this.chkMessageSeperators.TabIndex = 16;
-            this.chkMessageSeperators.Text = "Seperate Messages";
+            this.chkMessageSeperators.Text = "Separate Messages";
             this.chkMessageSeperators.UseVisualStyleBackColor = true;
             // 
             // lblFont
@@ -1235,17 +1246,6 @@
             this.spConnection.TabIndex = 2;
             this.spConnection.Text = "Connection";
             this.spConnection.Visible = false;
-            // 
-            // chkTopMost
-            // 
-            this.chkTopMost.AutoSize = true;
-            this.chkTopMost.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.chkTopMost.Location = new System.Drawing.Point(17, 347);
-            this.chkTopMost.Name = "chkTopMost";
-            this.chkTopMost.Size = new System.Drawing.Size(133, 17);
-            this.chkTopMost.TabIndex = 26;
-            this.chkTopMost.Text = "Window always on top\r\n";
-            this.chkTopMost.UseVisualStyleBackColor = true;
             // 
             // SettingsDialog
             // 

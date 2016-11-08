@@ -29,7 +29,7 @@ namespace Chatterino.Controls
         static MessageContainerControl()
         {
             urlContextMenu = new ContextMenu();
-            urlContextMenu.MenuItems.Add(new MenuItem("Open in Brower", (s, e) => GuiEngine.Current.HandleLink(urlContextMenuLink)));
+            urlContextMenu.MenuItems.Add(new MenuItem("Open in Browser", (s, e) => GuiEngine.Current.HandleLink(urlContextMenuLink)));
             urlContextMenu.MenuItems.Add(new MenuItem("Copy link", (s, e) => Clipboard.SetText(urlContextMenuLink.Value as string ?? "")));
         }
 
