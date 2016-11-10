@@ -10,6 +10,7 @@ namespace Chatterino.Common
     {
         None, 
         Highlighted,
-        Resub
+        Resub,
+        Whisper
     }
 }

@@ -543,6 +543,18 @@ namespace Chatterino.Common
                 var user = msg.PrefixNickname;
 
                 TwitchChannel.WhisperChannel.AddMessage(new Message(msg, TwitchChannel.WhisperChannel, true, false));
+
+                if (AppSettings.ChatEnableInlineWhispers)
+                {
+                    var inlineMessage = new Message(msg, TwitchChannel.WhisperChannel, true, false, true);
+
+                    inlineMessage.HighlightType = HighlightType.Whisper;
+
+                    foreach (var channel in TwitchChannel.Channels)
+                    {
+                        channel.AddMessage(inlineMessage);
+                    }
+                }
             }
             else if (msg.Command == "USERNOTICE")
             {

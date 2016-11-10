@@ -63,7 +63,7 @@ namespace Chatterino.Common
 
         }
 
-        public Message(IrcMessage data, TwitchChannel channel, bool enableTimestamp = true, bool enablePingSound = true)
+        public Message(IrcMessage data, TwitchChannel channel, bool enableTimestamp = true, bool enablePingSound = true, bool isWhisper = false)
         {
             //var w = Stopwatch.StartNew();
 
@@ -184,9 +184,6 @@ namespace Chatterino.Common
                 });
             }
 
-            if (Username == "fourtf")
-                ;
-
             if (data.Tags.TryGetValue("badges", out value))
             {
                 var badges = value.Split(',');
@@ -296,7 +293,7 @@ namespace Chatterino.Common
                 DisplayName = Username;
             }
 
-            var messageUser = DisplayName + (DisplayName.ToLower() != Username ? $" ({Username})" : "") + (slashMe ? "" : ":");
+            var messageUser = DisplayName + (isWhisper ? " > " + IrcManager.Username : "") + (DisplayName.ToLower() != Username ? $" ({Username})" : "") + (slashMe ? "" : ":");
             words.Add(new Word
             {
                 Type = SpanType.Text,

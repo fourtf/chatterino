@@ -42,6 +42,10 @@ namespace Chatterino
             {
                 highlightBrush = App.ColorScheme.ChatBackgroundResub;
             }
+            else if (message.HighlightType == HighlightType.Whisper)
+            {
+                highlightBrush = App.ColorScheme.ChatBackgroundWhisper;
+            }
 
             if (highlightBrush != null)
             {

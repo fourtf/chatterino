@@ -136,6 +136,8 @@ namespace Chatterino.Common
         public static bool ChatEnableEmojis { get; set; } = true;
         public static bool ChatEnableGifAnimations { get; set; } = true;
 
+        public static bool ChatEnableInlineWhispers { get; set; } = false;
+
         public static bool ProxyEnable { get; set; } = false;
         public static string ProxyType { get; set; } = "http";
         public static string ProxyHost { get; set; } = "";

@@ -419,6 +419,9 @@ namespace Chatterino.Controls
                 }
             };
 
+            // Whispers
+            BindCheckBox(chkEnableInlineWhispers, "ChatEnableInlineWhispers");
+
             //Buttons
             int x = 0;
 
