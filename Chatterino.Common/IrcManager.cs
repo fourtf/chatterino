@@ -128,7 +128,9 @@ namespace Chatterino.Common
 
                                     int.TryParse(emote["id"], out id);
 
-                                    Emotes.TwitchEmotes[emote["code"]] = new TwitchEmoteValue { ID = id, Set = setID, ChannelName = "<unknown>" };
+                                    string code = Emotes.GetTwitchEmoteCodeReplacement(emote["code"]);
+
+                                    Emotes.TwitchEmotes[code] = new TwitchEmoteValue { ID = id, Set = setID, ChannelName = "<unknown>" };
                                 }
                             }
                         }

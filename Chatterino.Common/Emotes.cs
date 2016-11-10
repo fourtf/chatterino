@@ -21,11 +21,37 @@ namespace Chatterino.Common
         public static ConcurrentDictionary<int, TwitchEmote> TwitchEmotesByIDCache = new ConcurrentDictionary<int, TwitchEmote>();
         public static ConcurrentDictionary<string, TwitchEmote> MiscEmotesByUrl = new ConcurrentDictionary<string, TwitchEmote>();
 
+        private static ConcurrentDictionary<string, string> twitchEmotesCodeReplacements = new ConcurrentDictionary<string, string>();
+
         public const string TwitchEmoteTemplate = "https://static-cdn.jtvnw.net/emoticons/v1/{id}/1.0";
 
         private const string twitchemotesGlobalCache = "./Cache/twitchemotes_global.json";
         private const string bttvEmotesGlobalCache = "./Cache/bttv_global.json";
         private const string ffzEmotesGlobalCache = "./Cache/ffz_global.json";
+
+        static Emotes()
+        {
+            twitchEmotesCodeReplacements[@"[oO](_|\.)[oO]"] = "o_O";
+            twitchEmotesCodeReplacements[@"\&gt\;\("] = ">(";
+            twitchEmotesCodeReplacements[@"\&lt\;3"] = "<3";
+            twitchEmotesCodeReplacements[@"\:-?(o|O)"] = ":O";
+            twitchEmotesCodeReplacements[@"\:-?(p|P)"] = ":P";
+            twitchEmotesCodeReplacements[@"\:-?[\\/]"] = ":/";
+            twitchEmotesCodeReplacements[@"\:-?[z|Z|\|]"] = ":z";
+            twitchEmotesCodeReplacements[@"\:-?\("] = ":(";
+            twitchEmotesCodeReplacements[@"\:-?\)"] = ":)";
+            twitchEmotesCodeReplacements[@"\:-?D"] = ":D";
+            twitchEmotesCodeReplacements[@"\;-?(p|P)"] = ";P";
+            twitchEmotesCodeReplacements[@"\;-?\)"] = ";)";
+            twitchEmotesCodeReplacements[@"R-?\)"] = "R-)";
+        }
+
+        public static string GetTwitchEmoteCodeReplacement(string emoteCode)
+        {
+            string code;
+
+            return twitchEmotesCodeReplacements.TryGetValue(emoteCode, out code) ? code : emoteCode;
+        }
 
         public static void LoadGlobalEmotes()
         {
@@ -239,7 +265,6 @@ namespace Chatterino.Common
                 }
             });
         }
-
 
         internal static void TriggerEmotesLoaded()
         {
