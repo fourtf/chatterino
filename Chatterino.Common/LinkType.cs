@@ -12,5 +12,6 @@ namespace Chatterino.Common
         CloseCurrentSplit,
         UserInfo,
         InsertText,
+        ShowChannel,
     }
 }

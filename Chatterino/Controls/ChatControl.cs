@@ -392,31 +392,7 @@ namespace Chatterino.Controls
                 }
                 else if (e.KeyChar == '\r' || e.KeyChar == '\n')
                 {
-                    var text = Input.Logic.Text;
-
-                    if (!string.IsNullOrWhiteSpace(text))
-                    {
-                        channel.SendMessage(text);
-
-                        lastMessages.RemoveAt(lastMessages.Count - 1);
-                        if (lastMessages.Count > LastMessagesLimit)
-                        {
-                            lastMessages.RemoveAt(0);
-                        }
-
-                        if (lastMessages.Count == 0 || lastMessages[lastMessages.Count - 1] != text)
-                        {
-                            lastMessages.Add(text);
-                        }
-                        lastMessages.Add("");
-
-                        currentLastMessageIndex = lastMessages.Count - 1;
-
-                        if ((ModifierKeys & Keys.Control) != Keys.Control)
-                            Input.Logic.Clear();
-                    }
-
-                    resetCompletion();
+                    SendMessage((ModifierKeys & Keys.Control) != Keys.Control);
                 }
                 else if (e.KeyChar >= ' ')
                 {
@@ -688,6 +664,35 @@ namespace Chatterino.Controls
 
             mouseDown = false;
             mouseDownLink = null;
+        }
+
+        public void SendMessage(bool clear)
+        {
+            var text = Input.Logic.Text;
+
+            if (!string.IsNullOrWhiteSpace(text))
+            {
+                channel.SendMessage(text);
+
+                lastMessages.RemoveAt(lastMessages.Count - 1);
+                if (lastMessages.Count > LastMessagesLimit)
+                {
+                    lastMessages.RemoveAt(0);
+                }
+
+                if (lastMessages.Count == 0 || lastMessages[lastMessages.Count - 1] != text)
+                {
+                    lastMessages.Add(text);
+                }
+                lastMessages.Add("");
+
+                currentLastMessageIndex = lastMessages.Count - 1;
+
+                if (clear)
+                    Input.Logic.Clear();
+            }
+
+            resetCompletion();
         }
 
         // header

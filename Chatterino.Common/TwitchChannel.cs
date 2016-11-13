@@ -673,7 +673,7 @@ namespace Chatterino.Common
             {
                 names.AddRange(Users.Select(x => new KeyValuePair<string, string>(x.Key, (!AppSettings.ChatTabLocalizedNames && !string.Equals(x.Value, x.Key, StringComparison.OrdinalIgnoreCase) ? x.Key : x.Value) + commaAtEnd)));
             }
-            names.Sort((x1, x2) => x1.Key.CompareTo(x2.Key));
+            names.Sort((x1, x2) => string.Compare(x1.Value, x2.Value));
 
             return names;
         }
@@ -749,9 +749,26 @@ namespace Chatterino.Common
                         msg.Disabled = true;
                     }
                 }
+
+                //for (int i = Messages.Length - 1; i >= 0; i--)
+                //{
+                //    var m = Messages[i];
+
+                //    if (m.ParseTime > DateTime.Now - TimeSpan.FromSeconds(30))
+                //    {
+                //        if (m.TimeoutUser == user)
+                //        {
+
+                //        }
+                //    }
+                //    else
+                //    {
+                //        break;
+                //    }
+                //}
             }
 
-            AddMessage(new Message($"{user} was timed out for {duration} second{(duration != 1 ? "s" : "")}: \"{reason}\""));
+            AddMessage(new Message($"{user} was timed out for {duration} second{(duration != 1 ? "s" : "")}: \"{reason}\"") { TimeoutUser = user });
 
             ChatCleared?.Invoke(this, new ChatClearedEventArgs(user, reason, duration));
         }

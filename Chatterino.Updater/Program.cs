@@ -26,14 +26,14 @@ namespace Chatterino.Updater
             Thread.Sleep(2000);
 
             bool locked = false;
-
+            
             try
             {
                 if (File.Exists("..\\Chatterino.exe"))
                 {
                     using (Stream stream = new FileStream("..\\Chatterino.exe", FileMode.Open))
                     {
-
+                        
                     }
                 }
             }

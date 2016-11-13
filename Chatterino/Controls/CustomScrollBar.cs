@@ -91,12 +91,14 @@ namespace Chatterino.Controls
             }
         }
 
-        public void AddHighlight(double position, Color color, double height = 1)
+        public void AddHighlight(double position, Color color, double height = 1, object tag = null)
         {
             lock (highlightLock)
             {
-                highlights.Add(new ScrollBarHighlight(position, color, height));
+                highlights.Add(new ScrollBarHighlight(position, color, height, tag));
             }
+
+            Invalidate();
         }
 
         static CustomScrollBar()

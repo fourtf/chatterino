@@ -82,11 +82,15 @@ namespace Chatterino
             {
                 App.WindowFocused = false;
                 App.HideToolTip();
+
+                setTabPageLastMessageThingy(tabControl.Selected as ColumnTabPage);
             };
 
             tabControl.TabPageSelected += (s, e) =>
             {
                 var tab = e.Value as ColumnTabPage;
+
+                setTabPageLastMessageThingy(tab);
 
                 if (lastTabPage != null)
                 {
@@ -107,6 +111,25 @@ namespace Chatterino
             };
 
             lastTabPage = tabControl.Selected as ColumnTabPage;
+        }
+
+        private void setTabPageLastMessageThingy(ColumnTabPage page)
+        {
+            if (page != null)
+            {
+                foreach (var col in page.Columns)
+                {
+                    foreach (var control in col.Widgets)
+                    {
+                        MessageContainerControl container = control as MessageContainerControl;
+
+                        if (container != null)
+                        {
+                            container.SetLastReadMessage();
+                        }
+                    }
+                }
+            }
         }
 
         protected override bool ProcessCmdKey(ref System.Windows.Forms.Message msg, Keys keyData)

@@ -68,8 +68,7 @@
             this.lblError.Name = "lblError";
             this.lblError.Size = new System.Drawing.Size(287, 41);
             this.lblError.TabIndex = 2;
-            this.lblError.Text = "Could not open tcp port 5215!\r\nManual login will be added in a future release!\r\n!" +
-    "";
+            this.lblError.Text = "Could not open tcp port 5215!\r\nTry the Login via fourtf.com instead!";
             this.lblError.Visible = false;
             // 
             // btnManualLogin
@@ -97,7 +96,7 @@
             this.groupBox1.Size = new System.Drawing.Size(299, 139);
             this.groupBox1.TabIndex = 4;
             this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Automatic Login";
+            this.groupBox1.Text = "Local Login";
             // 
             // label2
             // 
@@ -120,7 +119,7 @@
             this.groupBox2.Size = new System.Drawing.Size(299, 139);
             this.groupBox2.TabIndex = 5;
             this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Manual Login";
+            this.groupBox2.Text = "Login via fourtf.com";
             // 
             // label1
             // 
@@ -129,7 +128,7 @@
             this.label1.Font = new System.Drawing.Font("Segoe UI", 9.75F);
             this.label1.Location = new System.Drawing.Point(12, 22);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(287, 41);
+            this.label1.Size = new System.Drawing.Size(281, 41);
             this.label1.TabIndex = 3;
             this.label1.Text = "Login via chatterino server.";
             // 
@@ -143,6 +142,7 @@
             this.button1.TabIndex = 6;
             this.button1.Text = "Paste Code";
             this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // groupBox3
             // 
@@ -192,7 +192,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(318, 152);
+            this.ClientSize = new System.Drawing.Size(629, 160);
             this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);

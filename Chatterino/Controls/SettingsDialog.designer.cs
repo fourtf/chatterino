@@ -124,6 +124,7 @@
             this.spWhispers = new Chatterino.Controls.SettingsTabPage();
             this.spBrowserExtension = new Chatterino.Controls.SettingsTabPage();
             this.spConnection = new Chatterino.Controls.SettingsTabPage();
+            this.chkLastReadMessageIndicator = new System.Windows.Forms.CheckBox();
             this.tabs.SuspendLayout();
             this.RightPanel.SuspendLayout();
             this.panel8.SuspendLayout();
@@ -166,8 +167,8 @@
             this.tabs.Location = new System.Drawing.Point(0, 0);
             this.tabs.Name = "tabs";
             this.tabs.Panel = this.RightPanel;
-            this.tabs.SelectedIndex = 7;
-            this.tabs.SelectedTab = this.spWhispers;
+            this.tabs.SelectedIndex = 0;
+            this.tabs.SelectedTab = this.spAppearance;
             this.tabs.Size = new System.Drawing.Size(598, 448);
             this.tabs.TabIndex = 0;
             this.tabs.TabsWidth = 150;
@@ -177,11 +178,11 @@
             this.RightPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.RightPanel.Controls.Add(this.panel1);
+            this.RightPanel.Controls.Add(this.panel5);
             this.RightPanel.Controls.Add(this.panel8);
             this.RightPanel.Controls.Add(this.panel4);
-            this.RightPanel.Controls.Add(this.panel1);
             this.RightPanel.Controls.Add(this.panel10);
-            this.RightPanel.Controls.Add(this.panel5);
             this.RightPanel.Controls.Add(this.panel2);
             this.RightPanel.Controls.Add(this.panel9);
             this.RightPanel.Controls.Add(this.panel3);
@@ -339,6 +340,7 @@
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.chkLastReadMessageIndicator);
             this.panel1.Controls.Add(this.chkTopMost);
             this.panel1.Controls.Add(this.chkTabLocalizedNames);
             this.panel1.Controls.Add(this.chkMentionUserWithAt);
@@ -1148,7 +1150,6 @@
             this.spAppearance.Location = new System.Drawing.Point(0, 0);
             this.spAppearance.Name = "spAppearance";
             this.spAppearance.Panel = this.panel1;
-            this.spAppearance.Selected = false;
             this.spAppearance.Size = new System.Drawing.Size(150, 30);
             this.spAppearance.TabIndex = 1;
             this.spAppearance.Text = "Appearance";
@@ -1232,6 +1233,7 @@
             this.spWhispers.Location = new System.Drawing.Point(0, 210);
             this.spWhispers.Name = "spWhispers";
             this.spWhispers.Panel = this.panel8;
+            this.spWhispers.Selected = false;
             this.spWhispers.Size = new System.Drawing.Size(150, 30);
             this.spWhispers.TabIndex = 8;
             this.spWhispers.Text = "Whispers";
@@ -1261,6 +1263,17 @@
             this.spConnection.TabIndex = 2;
             this.spConnection.Text = "Connection";
             this.spConnection.Visible = false;
+            // 
+            // chkLastReadMessageIndicator
+            // 
+            this.chkLastReadMessageIndicator.AutoSize = true;
+            this.chkLastReadMessageIndicator.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.chkLastReadMessageIndicator.Location = new System.Drawing.Point(17, 370);
+            this.chkLastReadMessageIndicator.Name = "chkLastReadMessageIndicator";
+            this.chkLastReadMessageIndicator.Size = new System.Drawing.Size(184, 17);
+            this.chkLastReadMessageIndicator.TabIndex = 27;
+            this.chkLastReadMessageIndicator.Text = "Show last read message indicator";
+            this.chkLastReadMessageIndicator.UseVisualStyleBackColor = true;
             // 
             // SettingsDialog
             // 
@@ -1413,5 +1426,6 @@
         private System.Windows.Forms.CheckBox chkTabLocalizedNames;
         private System.Windows.Forms.CheckBox chkTopMost;
         private System.Windows.Forms.CheckBox chkEnableInlineWhispers;
+        private System.Windows.Forms.CheckBox chkLastReadMessageIndicator;
     }
 }

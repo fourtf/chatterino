@@ -30,6 +30,9 @@ namespace Chatterino.Common
         public string DisplayName { get; set; }
         public HSLColor UsernameColor { get; set; }
 
+        public string TimeoutUser { get; set; } = null;
+        public int TimeoutCount { get; set; } = 0;
+
         public MessageBadges Badges { get; set; }
 
         private bool isVisible = false;
@@ -58,14 +61,18 @@ namespace Chatterino.Common
         static Regex linkRegex = new Regex(@"^((?<Protocol>\w+):\/\/)?(?<Domain>[\w%@-][\w.%-:@]+\w)\/?[\w\.?=#%&=\+\-@/$,\(\)]*$", RegexOptions.Compiled);
         static char[] linkIdentifiers = new char[] { '.', ':' };
 
+        public DateTime ParseTime { get; set; }
+
         private Message()
         {
 
         }
 
-        public Message(IrcMessage data, TwitchChannel channel, bool enableTimestamp = true, bool enablePingSound = true, bool isWhisper = false)
+        public Message(IrcMessage data, TwitchChannel channel, bool enableTimestamp = true, bool enablePingSound = true, bool isWhisper = false, bool includeChannel = false)
         {
             //var w = Stopwatch.StartNew();
+
+            ParseTime = DateTime.Now;
 
             Channel = channel;
 
@@ -184,6 +191,21 @@ namespace Chatterino.Common
                 });
             }
 
+            // add channel name
+            if (includeChannel)
+            {
+                words.Add(new Word
+                {
+                    Type = SpanType.Text,
+                    Link = new Link(LinkType.ShowChannel, channel.Name),
+                    Value = "#" + channel.Name,
+                    Color = HSLColor.FromRGB(-8355712),
+                    Font = FontType.Medium,
+                    CopyText = "#" + channel.Name
+                });
+            }
+
+            // get badges from tags
             if (data.Tags.TryGetValue("badges", out value))
             {
                 var badges = value.Split(',');

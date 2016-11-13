@@ -60,6 +60,8 @@ namespace Chatterino.Controls
             return M;
         }
 
+        protected Message LastReadMessage { get; set; } = null;
+
         // mouse
         protected double mouseScrollMultiplyer = 1;
 
@@ -486,6 +488,8 @@ namespace Chatterino.Controls
             updateMessageBounds();
         }
 
+        Brush lastReadMessageBrush = Brushes.Red;
+
         protected override void OnPaint(PaintEventArgs e)
         {
             lock (bufferLock)
@@ -543,6 +547,11 @@ namespace Chatterino.Controls
                                     }
 
                                     y += msg.Height;
+
+                                    if (AppSettings.ChatShowLastReadMessageIndicator && LastReadMessage == msg)
+                                    {
+                                        g.FillRectangle(lastReadMessageBrush, 0, y, Width, 1);
+                                    }
                                 }
                             }
 
@@ -880,6 +889,22 @@ namespace Chatterino.Controls
                 selection = null;
 
                 Invalidate();
+            }
+        }
+
+        static object lastReadMessageTag = "LastReadMessage";
+
+        public void SetLastReadMessage()
+        {
+            lock (MessageLock)
+            {
+                if (Messages.Length != 0)
+                {
+                    LastReadMessage = Messages[Messages.Length - 1];
+
+                    _scroll.RemoveHighlightsWhere(highlight => highlight.Tag == lastReadMessageTag);
+                    _scroll.AddHighlight(Messages.Length - 1, Color.LimeGreen, 1, lastReadMessageTag);
+                }
             }
         }
 

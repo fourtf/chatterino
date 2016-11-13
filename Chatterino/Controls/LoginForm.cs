@@ -14,6 +14,7 @@ using System.IO;
 using Chatterino.Common;
 using System.Text.Json;
 using System.Net.NetworkInformation;
+using System.Text.RegularExpressions;
 
 namespace Chatterino.Controls
 {
@@ -133,7 +134,6 @@ namespace Chatterino.Controls
         private void buttonLogin_Click(object sender, EventArgs e)
         {
             IrcManager.Disconnect();
-
             Process.Start("https://api.twitch.tv/kraken/oauth2/authorize?response_type=token&client_id=7ue61iz46fz11y3cugd0l3tawb4taal&redirect_uri=http://127.0.0.1:5215/code&force_verify=true&scope=chat_login+user_subscriptions+user_blocks_edit+user_blocks_read+user_follows_edit");
         }
 
@@ -152,6 +152,96 @@ namespace Chatterino.Controls
             //{
             //    Height = 225;
             //}
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            string text = Clipboard.GetText();
+
+            string token = null;
+            string username = null;
+            string clientid = null;
+
+            // access token
+            {
+                var match = Regex.Match(text, @"oauth_token=(?<value>[0-9a-zA-Z]+)");
+
+                var group = match.Groups["value"];
+
+                if (group.Success)
+                {
+                    token = group.Value;
+                }
+            }
+
+            // username
+            {
+                var match = Regex.Match(text, @"username=(?<value>[0-9a-zA-Z]+)");
+
+                var group = match.Groups["value"];
+
+                if (group.Success)
+                {
+                    username = group.Value;
+                }
+            }
+
+            // client_id
+            {
+                var match = Regex.Match(text, @"client_id=(?<value>[0-9a-zA-Z]+)");
+
+                var group = match.Groups["value"];
+
+                if (group.Success)
+                {
+                    clientid = group.Value;
+                }
+            }
+
+            if (token == null || clientid == null)
+            {
+                MessageBox.Show("Login code doesn't contain an oauth token or client id!", "Invalid login code", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+            if (username == null)
+            {
+                try
+                {
+                    var req = WebRequest.Create($"https://api.twitch.tv/kraken?oauth_token={token}&client_id={clientid}");
+                    using (var res = req.GetResponse())
+                    using (var stream = res.GetResponseStream())
+                    {
+                        JsonParser parser = new JsonParser();
+
+                        dynamic json = parser.Parse(stream);
+
+                        if (json.ContainsKey("error"))
+                        {
+                            ;
+                        }
+
+                        dynamic token_ = json["token"];
+
+                        if (!(bool)token_["valid"])
+                        {
+                            MessageBox.Show("The oauth token is invalid!", "Invalid login code", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                        else
+                        {
+                            username = token_["user_name"];
+                        }
+                    }
+                }
+                catch (Exception exc)
+                {
+                     MessageBox.Show(exc.Message, "Login error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+
+            if (username != null)
+            {
+                // AppDomain.CurrentDomain.BaseDirectory
+            }
         }
     }
 }

@@ -27,13 +27,38 @@ namespace Chatterino.Controls
 
         FlatButton emoteListButton;
 
+        static ChatInputControl currentContext = null;
+        static ContextMenu contextMenu = new ContextMenu();
+
+        static ChatInputControl()
+        {
+            contextMenu.MenuItems.Add("Paste from Clipboard", (s, e) =>
+            {
+                try
+                {
+                    if (Clipboard.ContainsText())
+                    {
+                        (App.MainForm.Selected as ChatControl)?.PasteText(Clipboard.GetText());
+                    }
+                }
+                catch { }
+            });
+
+            contextMenu.MenuItems.Add("Copy Selection", (s, e) => { Clipboard.SetText(currentContext?.Logic?.Text ?? ""); });
+
+            contextMenu.MenuItems.Add("Send Message", (s, e) => { (App.MainForm.Selected as ChatControl)?.SendMessage(true); });
+
+            contextMenu.MenuItems.Add("Send and Keep Message", (s, e) => { (App.MainForm.Selected as ChatControl)?.SendMessage(false); });
+        }
+
         public ChatInputControl(ChatControl chatControl)
         {
             Size = new Size(100, 100);
 
             int caretBlinkInterval = SystemInformation.CaretBlinkTime;
 
-            if (caretBlinkInterval > 0) {
+            if (caretBlinkInterval > 0)
+            {
                 caretBlinkTimer = new Timer { Interval = SystemInformation.CaretBlinkTime };
 
                 caretBlinkTimer.Tick += (s, e) =>
@@ -67,16 +92,20 @@ namespace Chatterino.Controls
 
             Logic.Changed += (s, e) =>
             {
-                if (AppSettings.ChatHideInputIfEmpty && Logic.Text.Length == 0) {
+                if (AppSettings.ChatHideInputIfEmpty && Logic.Text.Length == 0)
+                {
                     Visible = false;
-                } else {
+                }
+                else
+                {
                     Visible = true;
                 }
 
                 if (Logic.SelectionLength != 0)
                     chatControl.ClearSelection();
 
-                if (caretBlinkTimer != null) {
+                if (caretBlinkTimer != null)
+                {
                     caretBlinkTimer.Stop();
                     caretBlinkTimer.Start();
                 }
@@ -185,6 +214,11 @@ namespace Chatterino.Controls
             if (e.Button == MouseButtons.Left)
             {
                 mdown = false;
+            }
+            else if (e.Button == MouseButtons.Right)
+            {
+                currentContext = this;
+                contextMenu.Show(this, e.Location);
             }
 
             base.OnMouseUp(e);

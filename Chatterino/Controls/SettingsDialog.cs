@@ -126,6 +126,12 @@ namespace Chatterino.Controls
             BindCheckBox(chkTabLocalizedNames, "ChatTabLocalizedNames");
             BindCheckBox(chkTopMost, "WindowTopMost");
 
+            BindCheckBox(chkLastReadMessageIndicator, "ChatShowLastReadMessageIndicator");
+            chkLastReadMessageIndicator.CheckedChanged += (s, e) =>
+            {
+                App.MainForm.Refresh();
+            };
+
 
             // Commands
             lock (Commands.CustomCommandsLock)
