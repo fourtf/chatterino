@@ -91,11 +91,11 @@ namespace Chatterino.Controls
             }
         }
 
-        public void AddHighlight(double position, Color color, double height = 1, object tag = null)
+        public void AddHighlight(double position, Color color, ScrollBarHighlightStyle style = ScrollBarHighlightStyle.Default, object tag = null)
         {
             lock (highlightLock)
             {
-                highlights.Add(new ScrollBarHighlight(position, color, height, tag));
+                highlights.Add(new ScrollBarHighlight(position, color, style, tag));
             }
 
             Invalidate();
@@ -355,7 +355,21 @@ namespace Chatterino.Controls
 
                                 y += buttonSize;
 
-                                g.FillRectangle(brush, Width / 2 - 2, y, 4, a + Math.Max(4, (int)(h * highlight.Height / Maximum)));
+                                int width;
+                                int height;
+
+                                if (highlight.Style == ScrollBarHighlightStyle.SingleLine)
+                                {
+                                    height = 1;
+                                    width = Width;
+                                }
+                                else
+                                {
+                                    height = a + Math.Max(4, (int)(h / Maximum));
+                                    width = (int)(4);
+                                }
+
+                                g.FillRectangle(brush, Width / 2 - (width / 2), y, width, height);
                             }
                         }
                     }

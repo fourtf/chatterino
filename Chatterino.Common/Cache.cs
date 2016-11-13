@@ -12,9 +12,11 @@ namespace Chatterino.Common
         // IO
         public static void Load()
         {
-            try {
+            try
+            {
                 Directory.CreateDirectory("./Cache");
-            } catch (Exception) { }
+            }
+            catch (Exception) { }
 
             roomIDCache.Load();
         }
@@ -40,27 +42,38 @@ namespace Chatterino.Common
 
         public void Load()
         {
-            if (File.Exists(cachePath)) {
-                try {
+            if (File.Exists(cachePath))
+            {
+                try
+                {
                     LoadData(File.ReadAllText(cachePath));
-                } catch (Exception exc) {
+                }
+                catch (Exception exc)
+                {
                     Console.WriteLine("error loading cache: " + exc.Message);
                 }
-            } else {
+            }
+            else
+            {
                 InitData();
             }
         }
 
         public void Save()
         {
-            try {
-                using (var stream = File.OpenWrite(cachePath)) {
+            try
+            {
+                using (var stream = File.OpenWrite(cachePath))
+                {
                     JsonSerializer serializer = new JsonSerializer();
-                    using (StreamWriter writer = new StreamWriter(stream)) {
+                    using (StreamWriter writer = new StreamWriter(stream))
+                    {
                         serializer.Serialize(writer, data);
                     }
                 }
-            } catch (Exception exc) {
+            }
+            catch (Exception exc)
+            {
                 Console.WriteLine("error saving cache: " + exc.Message);
             }
         }
@@ -71,16 +84,22 @@ namespace Chatterino.Common
         public RoomIDCache()
             : base("./Cache/room_ids.json")
         {
+
         }
 
         public int Get(string name)
         {
-            try {
+            try
+            {
                 return data[name];
-            } catch (KeyNotFoundException) {
+            }
+            catch (KeyNotFoundException)
+            {
                 // do nothing
                 return -1;
-            } catch (Exception exc) {
+            }
+            catch (Exception exc)
+            {
                 Console.WriteLine("error getting room id cache: " + exc.Message);
             }
 
@@ -100,9 +119,12 @@ namespace Chatterino.Common
 
         public override void LoadData(string inData)
         {
-            try {
+            try
+            {
                 data = JsonConvert.DeserializeObject<Dictionary<string, int>>(inData);
-            } catch (Exception exc) {
+            }
+            catch (Exception exc)
+            {
                 Console.WriteLine("error loading room id cache: " + exc.Message);
             }
         }

@@ -17,7 +17,9 @@ namespace Chatterino.Common
 {
     public class TwitchChannel
     {
-        const int maxMessages = 10000;
+        const int maxMessages = 1000;
+
+        static System.Timers.Timer refreshChatterListTimer = new System.Timers.Timer(30 * 1000 * 60);
 
         // properties
         public string Name { get; private set; }
@@ -29,6 +31,7 @@ namespace Chatterino.Common
         public string PopoutPlayerLink { get; private set; }
 
         protected int Uses { get; set; } = 0;
+
 
         // Channel Emotes
         public ConcurrentDictionary<string, TwitchEmote> BttvChannelEmotes { get; private set; }
@@ -53,7 +56,7 @@ namespace Chatterino.Common
                         {
                             string imageUrl = null;
 
-                            var request = WebRequest.Create($"https://api.twitch.tv/kraken/chat/{Name}/badges?client_id=7ue61iz46fz11y3cugd0l3tawb4taal");
+                            var request = WebRequest.Create($"https://api.twitch.tv/kraken/chat/{Name}/badges?client_id={IrcManager.DefaultClientID}");
                             using (var response = request.GetResponse())
                             using (var stream = response.GetResponseStream())
                             {
@@ -181,10 +184,12 @@ namespace Chatterino.Common
             // Try to load from cache
             RoomID = Cache.roomIDCache.Get(Name);
 
-            if (RoomID == -1) {
+            if (RoomID == -1)
+            {
                 // No room ID was saved in the cache
 
-                if (loadRoomIDFromTwitch()) {
+                if (loadRoomIDFromTwitch())
+                {
                     // Successfully got a room ID from twitch
                     Cache.roomIDCache.Set(Name, RoomID);
                 }
@@ -196,7 +201,7 @@ namespace Chatterino.Common
             // call twitch kraken api
             try
             {
-                var request = WebRequest.Create($"https://api.twitch.tv/kraken/channels/{Name}?client_id=7ue61iz46fz11y3cugd0l3tawb4taal");
+                var request = WebRequest.Create($"https://api.twitch.tv/kraken/channels/{Name}?client_id={IrcManager.DefaultClientID}");
                 using (var response = request.GetResponse())
                 using (var stream = response.GetResponseStream())
                 {
@@ -217,6 +222,7 @@ namespace Chatterino.Common
 
             return false;
         }
+
 
         // ctor
         protected TwitchChannel(string channelName)
@@ -275,7 +281,7 @@ namespace Chatterino.Common
                         {
                             List<Message> messages = new List<Message>();
 
-                            var request = WebRequest.Create($"https://tmi.twitch.tv/api/rooms/{RoomID}/recent_messages?client_id=7ue61iz46fz11y3cugd0l3tawb4taal");
+                            var request = WebRequest.Create($"https://tmi.twitch.tv/api/rooms/{RoomID}/recent_messages?client_id={IrcManager.DefaultClientID}");
                             using (var response = request.GetResponse())
                             using (var stream = response.GetResponseStream())
                             {
@@ -494,25 +500,7 @@ namespace Chatterino.Common
                 // get chatters
                 Task.Run(() =>
                 {
-                    try
-                    {
-                        var request = WebRequest.Create($"http://tmi.twitch.tv/group/user/{channelName}/chatters");
-                        using (var response = request.GetResponse())
-                        using (var stream = response.GetResponseStream())
-                        {
-                            JsonParser parser = new JsonParser();
-                            dynamic json = parser.Parse(stream);
-                            dynamic chatters = json["chatters"];
-                            foreach (dynamic group in chatters)
-                            {
-                                foreach (string user in group.Value)
-                                {
-                                    Users[user.ToUpper()] = user;
-                                }
-                            }
-                        }
-                    }
-                    catch { }
+                    fetchUsernames();
                 });
             }
 
@@ -583,6 +571,15 @@ namespace Chatterino.Common
         {
             WhisperChannel?.AddMessage(new Message("Please note that chatterino can only read whispers while it is running!", null, true));
             MentionsChannel?.AddMessage(new Message("Please note that chatterino can only read mentions while it is running!", null, true));
+
+            refreshChatterListTimer.Elapsed += (s, e) =>
+            {
+                foreach (var channel in Channels)
+                {
+                    channel.fetchUsernames();
+                }
+            };
+            refreshChatterListTimer.Start();
         }
 
         private static ConcurrentDictionary<string, TwitchChannel> channels = new ConcurrentDictionary<string, TwitchChannel>();
@@ -595,7 +592,8 @@ namespace Chatterino.Common
         {
             if (channelName.StartsWith("/"))
             {
-                switch (channelName) {
+                switch (channelName)
+                {
                     case "/whispers":
                         return WhisperChannel;
 
@@ -696,6 +694,31 @@ namespace Chatterino.Common
             IrcManager.SendMessage(this, text, IsModOrBroadcaster);
         }
 
+        void fetchUsernames()
+        {
+            try
+            {
+                var request = WebRequest.Create($"http://tmi.twitch.tv/group/user/{Name}/chatters");
+                using (var response = request.GetResponse())
+                using (var stream = response.GetResponseStream())
+                {
+                    JsonParser parser = new JsonParser();
+                    dynamic json = parser.Parse(stream);
+                    dynamic chatters = json["chatters"];
+
+                    Users.Clear();
+
+                    foreach (dynamic group in chatters)
+                    {
+                        foreach (string user in group.Value)
+                        {
+                            Users[user.ToUpper()] = user;
+                        }
+                    }
+                }
+            }
+            catch { }
+        }
 
         // Messages
         public event EventHandler<ChatClearedEventArgs> ChatCleared;

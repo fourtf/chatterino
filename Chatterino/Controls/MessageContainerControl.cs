@@ -903,7 +903,7 @@ namespace Chatterino.Controls
                     LastReadMessage = Messages[Messages.Length - 1];
 
                     _scroll.RemoveHighlightsWhere(highlight => highlight.Tag == lastReadMessageTag);
-                    _scroll.AddHighlight(Messages.Length - 1, Color.LimeGreen, 1, lastReadMessageTag);
+                    _scroll.AddHighlight(Messages.Length - 1, Color.Red, ScrollBarHighlightStyle.SingleLine, lastReadMessageTag);
                 }
             }
         }

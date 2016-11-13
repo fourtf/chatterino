@@ -239,14 +239,15 @@ namespace Chatterino.Controls
             {
                 _scroll.AddHighlight((channel?.MessageCount ?? 1) - 1, (e.Message.HighlightType == HighlightType.Highlighted ? Color.Red : Color.FromArgb(-16777216 | 0x3F6ABF)));
 
-                if (e.Message.HighlightType == HighlightType.Highlighted)
-                {
-                    ColumnTabPage parent = Parent as ColumnTabPage;
+            }
 
-                    if (parent != null)
-                    {
-                        parent.Highlighted = true;
-                    }
+            if (e.Message.HighlightType == HighlightType.Highlighted || e.Message.HighlightType == HighlightType.Whisper)
+            {
+                ColumnTabPage parent = Parent as ColumnTabPage;
+
+                if (parent != null)
+                {
+                    parent.Highlighted = true;
                 }
             }
 

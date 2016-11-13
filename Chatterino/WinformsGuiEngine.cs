@@ -58,6 +58,21 @@ namespace Chatterino
                     popup.Location = Cursor.Position;
                     popup.Show();
                     break;
+                case LinkType.ShowChannel:
+                    string channelName = (string)_link.Value;
+
+                    var widget = App.MainForm.TabControl.TabPages
+                        .Where(x => x is ColumnTabPage)
+                        .SelectMany(x => ((ColumnTabPage)x).Columns.SelectMany(y => y.Widgets))
+                        .FirstOrDefault(c => c is ChatControl && string.Equals(((ChatControl)c).ChannelName, channelName));
+
+                    if (widget != null)
+                    {
+                        App.MainForm.TabControl.Select(widget.Parent as Controls.TabPage);
+                        widget.Select();
+                    }
+
+                    break;
             }
         }
 

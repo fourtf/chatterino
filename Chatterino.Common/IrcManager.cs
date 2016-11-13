@@ -20,6 +20,9 @@ namespace Chatterino.Common
         // Properties
         public static string Username { get; private set; } = null;
 
+        public static string DefaultClientID { get; set; } = "7ue61iz46fz11y3cugd0l3tawb4taal";
+        public static string ClientID { get; set; } = null;
+
         public static IrcClient Client { get; set; }
 
 
@@ -55,8 +58,8 @@ namespace Chatterino.Common
 
             if (loginReader == null)
             {
-                settings.Load("./login.ini");
-                settings.Load("./Login.ini");
+                settings.Load(Path.Combine(Util.GetUserDataPath(), "login.ini"));
+                settings.Load(Path.Combine(Util.GetUserDataPath(), "Login.ini"));
             }
             else
             {
@@ -81,7 +84,7 @@ namespace Chatterino.Common
                     {
                         int limit = 100;
                         int count = 0;
-                        string nextLink = $"https://api.twitch.tv/kraken/users/{username}/blocks?limit={limit}&client_id=7ue61iz46fz11y3cugd0l3tawb4taal";
+                        string nextLink = $"https://api.twitch.tv/kraken/users/{username}/blocks?limit={limit}&client_id={ClientID}";
 
                         var request = WebRequest.Create(nextLink + $"&oauth_token={oauth}");
                         using (var response = request.GetResponse())
@@ -109,7 +112,7 @@ namespace Chatterino.Common
                 {
                     try
                     {
-                        var request = WebRequest.Create($"https://api.twitch.tv/kraken/users/{username}/emotes?oauth_token={oauth}&client_id=7ue61iz46fz11y3cugd0l3tawb4taal");
+                        var request = WebRequest.Create($"https://api.twitch.tv/kraken/users/{username}/emotes?oauth_token={oauth}&client_id={ClientID}");
                         using (var response = request.GetResponse())
                         using (var stream = response.GetResponseStream())
                         {
@@ -257,7 +260,7 @@ namespace Chatterino.Common
 
             try
             {
-                WebRequest request = WebRequest.Create($"https://api.twitch.tv/kraken/users/{Username}/blocks/{_username}?oauth_token={oauth}&client_id=7ue61iz46fz11y3cugd0l3tawb4taal");
+                WebRequest request = WebRequest.Create($"https://api.twitch.tv/kraken/users/{Username}/blocks/{_username}?oauth_token={oauth}&client_id={ClientID}");
                 request.Method = "PUT";
                 using (var response = (HttpWebResponse)request.GetResponse())
                 using (var stream = response.GetResponseStream())
@@ -304,7 +307,7 @@ namespace Chatterino.Common
 
             try
             {
-                WebRequest request = WebRequest.Create($"https://api.twitch.tv/kraken/users/{Username}/blocks/{username}?oauth_token={oauth}&client_id=7ue61iz46fz11y3cugd0l3tawb4taal");
+                WebRequest request = WebRequest.Create($"https://api.twitch.tv/kraken/users/{Username}/blocks/{username}?oauth_token={oauth}&client_id={ClientID}");
                 request.Method = "DELETE";
                 using (var response = (HttpWebResponse)request.GetResponse())
                 using (var stream = response.GetResponseStream())
@@ -339,7 +342,7 @@ namespace Chatterino.Common
         {
             try
             {
-                var request = WebRequest.Create($"https://api.twitch.tv/kraken/users/{Username}/follows/channels/{username}?client_id=7ue61iz46fz11y3cugd0l3tawb4taal&oauth_token={oauth}");
+                var request = WebRequest.Create($"https://api.twitch.tv/kraken/users/{Username}/follows/channels/{username}?client_id={ClientID}&oauth_token={oauth}");
                 using (var response = request.GetResponse())
                 using (var stream = response.GetResponseStream())
                 {
@@ -372,7 +375,7 @@ namespace Chatterino.Common
         {
             try
             {
-                var request = WebRequest.Create($"https://api.twitch.tv/kraken/users/{Username}/follows/channels/{username}?client_id=7ue61iz46fz11y3cugd0l3tawb4taal&oauth_token={oauth}");
+                var request = WebRequest.Create($"https://api.twitch.tv/kraken/users/{Username}/follows/channels/{username}?client_id={ClientID}&oauth_token={oauth}");
                 request.Method = "PUT";
 
                 using (var response = request.GetResponse())
@@ -393,7 +396,7 @@ namespace Chatterino.Common
         {
             try
             {
-                var request = WebRequest.Create($"https://api.twitch.tv/kraken/users/{Username}/follows/channels/{username}?client_id=7ue61iz46fz11y3cugd0l3tawb4taal&oauth_token={oauth}");
+                var request = WebRequest.Create($"https://api.twitch.tv/kraken/users/{Username}/follows/channels/{username}?client_id={ClientID}&oauth_token={oauth}");
                 request.Method = "DELETE";
 
                 using (var response = request.GetResponse())

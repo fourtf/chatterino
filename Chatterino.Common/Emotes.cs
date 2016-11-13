@@ -16,6 +16,7 @@ namespace Chatterino.Common
         public static ConcurrentDictionary<string, IrcManager.TwitchEmoteValue> TwitchEmotes = new ConcurrentDictionary<string, IrcManager.TwitchEmoteValue>();
         public static ConcurrentDictionary<string, TwitchEmote> BttvGlobalEmotes = new ConcurrentDictionary<string, TwitchEmote>();
         public static ConcurrentDictionary<string, TwitchEmote> FfzGlobalEmotes = new ConcurrentDictionary<string, TwitchEmote>();
+        public static ConcurrentDictionary<string, TwitchEmote> ChatterinoEmotes = new ConcurrentDictionary<string, TwitchEmote>();
         public static ConcurrentDictionary<string, TwitchEmote> BttvChannelEmotesCache = new ConcurrentDictionary<string, TwitchEmote>();
         public static ConcurrentDictionary<string, TwitchEmote> FfzChannelEmotesCache = new ConcurrentDictionary<string, TwitchEmote>();
         public static ConcurrentDictionary<int, TwitchEmote> TwitchEmotesByIDCache = new ConcurrentDictionary<int, TwitchEmote>();
@@ -44,6 +45,8 @@ namespace Chatterino.Common
             twitchEmotesCodeReplacements[@"\;-?(p|P)"] = ";P";
             twitchEmotesCodeReplacements[@"\;-?\)"] = ";)";
             twitchEmotesCodeReplacements[@"R-?\)"] = "R-)";
+
+            ChatterinoEmotes["WithAHat"] = new TwitchEmote { Name = "WithAHat", Tooltip = "WithAHat\nChatterino Emote", Url = "https://fourtf.com/chatterino/emotes/img/WithAHat_x1.png", IsHat = true };
         }
 
         public static string GetTwitchEmoteCodeReplacement(string emoteCode)

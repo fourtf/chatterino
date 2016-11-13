@@ -77,7 +77,7 @@ namespace Chatterino.Common
                 {
                     try
                     {
-                        WebRequest request = WebRequest.Create($"https://api.twitch.tv/kraken/streams/{channel.Name}?client_id=7ue61iz46fz11y3cugd0l3tawb4taal");
+                        WebRequest request = WebRequest.Create($"https://api.twitch.tv/kraken/streams/{channel.Name}?client_id={IrcManager.DefaultClientID}");
                         using (var resp = request.GetResponse())
                         using (var stream = resp.GetResponseStream())
                         {

@@ -11,15 +11,21 @@ namespace Chatterino.Controls
     {
         public double Position { get; set; }
         public Color Color { get; set; }
-        public double Height { get; set; }
+        public ScrollBarHighlightStyle Style { get; set; }
         public object Tag { get; set; }
 
-        public ScrollBarHighlight(double position, Color color, double height = 1, object tag = null)
+        public ScrollBarHighlight(double position, Color color, ScrollBarHighlightStyle style = ScrollBarHighlightStyle.Default, object tag = null)
         {
             Position = position;
             Color = color;
-            Height = height;
+            Style = style;
             Tag = tag;
         }
+    }
+
+    public enum ScrollBarHighlightStyle
+    {
+        Default,
+        SingleLine
     }
 }

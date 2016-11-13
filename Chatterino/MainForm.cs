@@ -43,7 +43,7 @@ namespace Chatterino
             Icon = App.Icon;
 
             // show login dialog
-            if (!File.Exists("./login.ini"))
+            if (!File.Exists(Path.Combine(Util.GetUserDataPath(), "login.ini")))
             {
                 using (var login = new LoginForm())
                 {
@@ -52,7 +52,7 @@ namespace Chatterino
             }
 
             // load layout
-            LoadLayout("./layout.xml");
+            LoadLayout(Path.Combine(Util.GetUserDataPath(), "layout.xml"));
 
 #if !DEBUG
             if (AppSettings.CurrentVersion != App.CurrentVersion.ToString())
@@ -90,11 +90,10 @@ namespace Chatterino
             {
                 var tab = e.Value as ColumnTabPage;
 
-                setTabPageLastMessageThingy(tab);
-
                 if (lastTabPage != null)
                 {
                     lastTabPage.LastSelected = Selected;
+                    setTabPageLastMessageThingy(lastTabPage);
                 }
 
                 if (tab != null)
@@ -496,7 +495,7 @@ namespace Chatterino
 
         protected override void OnClosing(CancelEventArgs e)
         {
-            SaveLayout("./layout.xml");
+            SaveLayout(Path.Combine(Util.GetUserDataPath(), "layout.xml"));
 
             AppSettings.WindowX = Location.X;
             AppSettings.WindowY = Location.Y;

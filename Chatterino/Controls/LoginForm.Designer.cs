@@ -96,7 +96,7 @@
             this.groupBox1.Size = new System.Drawing.Size(299, 139);
             this.groupBox1.TabIndex = 4;
             this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Local Login";
+            this.groupBox1.Text = "Automatic Login";
             // 
             // label2
             // 
@@ -119,7 +119,7 @@
             this.groupBox2.Size = new System.Drawing.Size(299, 139);
             this.groupBox2.TabIndex = 5;
             this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Login via fourtf.com";
+            this.groupBox2.Text = "Manual Login";
             // 
             // label1
             // 
@@ -192,7 +192,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(629, 160);
+            this.ClientSize = new System.Drawing.Size(629, 162);
             this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);

@@ -102,23 +102,26 @@ namespace Chatterino.Common
             }
 
             // Highlights
-            if ((AppSettings.ChatEnableHighlight || AppSettings.ChatEnableHighlightSound || AppSettings.ChatEnableHighlightTaskbar) && Username != IrcManager.Username.ToLower())
+            if (IrcManager.Username != null)
             {
-                if (!AppSettings.HighlightIgnoredUsers.ContainsKey(Username))
+                if ((AppSettings.ChatEnableHighlight || AppSettings.ChatEnableHighlightSound || AppSettings.ChatEnableHighlightTaskbar) && Username != IrcManager.Username.ToLower())
                 {
-                    if (AppSettings.CustomHighlightRegex != null && AppSettings.CustomHighlightRegex.IsMatch(text))
+                    if (!AppSettings.HighlightIgnoredUsers.ContainsKey(Username))
                     {
-                        if (AppSettings.ChatEnableHighlight)
+                        if (AppSettings.CustomHighlightRegex != null && AppSettings.CustomHighlightRegex.IsMatch(text))
                         {
-                            HighlightType = HighlightType.Highlighted;
-                        }
+                            if (AppSettings.ChatEnableHighlight)
+                            {
+                                HighlightType = HighlightType.Highlighted;
+                            }
 
-                        if (EnablePings && enablePingSound)
-                        {
-                            if (AppSettings.ChatEnableHighlightSound)
-                                GuiEngine.Current.PlaySound(NotificationSound.Ping);
-                            if (AppSettings.ChatEnableHighlightTaskbar)
-                                GuiEngine.Current.FlashTaskbar();
+                            if (EnablePings && enablePingSound)
+                            {
+                                if (AppSettings.ChatEnableHighlightSound)
+                                    GuiEngine.Current.PlaySound(NotificationSound.Ping);
+                                if (AppSettings.ChatEnableHighlightTaskbar)
+                                    GuiEngine.Current.FlashTaskbar();
+                            }
                         }
                     }
                 }
@@ -472,7 +475,8 @@ namespace Chatterino.Common
 
                         TwitchEmote bttvEmote;
                         if (!AppSettings.ChatIgnoredEmotes.ContainsKey(s) && (AppSettings.ChatEnableBttvEmotes && (Emotes.BttvGlobalEmotes.TryGetValue(s, out bttvEmote) || channel.BttvChannelEmotes.TryGetValue(s, out bttvEmote))
-                            || (AppSettings.ChatEnableFfzEmotes && (Emotes.FfzGlobalEmotes.TryGetValue(s, out bttvEmote) || channel.FfzChannelEmotes.TryGetValue(s, out bttvEmote)))))
+                            || (AppSettings.ChatEnableFfzEmotes && (Emotes.FfzGlobalEmotes.TryGetValue(s, out bttvEmote) || channel.FfzChannelEmotes.TryGetValue(s, out bttvEmote)))
+                            || Emotes.ChatterinoEmotes.TryGetValue(s, out bttvEmote)))
                         {
                             words.Add(new Word
                             {

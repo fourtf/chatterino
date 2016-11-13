@@ -124,8 +124,8 @@ namespace Chatterino
             };
 
             // Settings/Colors
-            AppSettings.Load("./Settings.ini");
-            Commands.LoadOrDefault("./Custom/Commands.txt");
+            AppSettings.Load(Path.Combine(Util.GetUserDataPath(), "Settings.ini"));
+            Commands.LoadOrDefault(Path.Combine(Util.GetUserDataPath(), "Custom", "Commands.txt"));
             Cache.Load();
 
             updateTheme();
@@ -135,13 +135,15 @@ namespace Chatterino
             // Check for updates
             try
             {
-                if (Directory.Exists("Updater.new"))
+                string updaterPath = Path.Combine(Util.GetUserDataPath(), "Updater");
+                string newUpdaterPath = Path.Combine(Util.GetUserDataPath(), "Updater.new");
+
+                if (Directory.Exists(newUpdaterPath))
                 {
-                    if (Directory.Exists("Updater"))
-                        Directory.Delete("Updater", true);
+                    if (Directory.Exists(updaterPath))
+                        Directory.Delete(updaterPath, true);
 
-                    Directory.Move("Updater.new", "Updater");
-
+                    Directory.Move(newUpdaterPath, updaterPath);
                 }
             }
             catch { }
@@ -152,7 +154,7 @@ namespace Chatterino
                 {
                     using (Controls.UpdateDialog dialog = new Controls.UpdateDialog())
                     {
-                        if (File.Exists("./Updater/Chatterino.Updater.exe"))
+                        if (File.Exists(Path.Combine(Util.GetUserDataPath(), "Updater", "Chatterino.Updater.exe")))
                         {
                             var result = dialog.ShowDialog();
 
@@ -162,7 +164,7 @@ namespace Chatterino
                             {
                                 using (WebClient client = new WebClient())
                                 {
-                                    client.DownloadFile(e.Url, "./Updater/update.zip");
+                                    client.DownloadFile(e.Url, Path.Combine(Util.GetUserDataPath(), "Updater", "update.zip"));
                                 }
 
                                 installUpdatesOnExit = true;
@@ -202,18 +204,18 @@ namespace Chatterino
             Application.Run(MainForm);
 
             // Save settings
-            AppSettings.Save("./Settings.ini");
+            AppSettings.Save(Path.Combine(Util.GetUserDataPath(), "Settings.ini"));
             Cache.Save();
 
-            if (!Directory.Exists("./Custom"))
-                Directory.CreateDirectory("./Custom");
+            if (!Directory.Exists(Path.Combine(Util.GetUserDataPath(), "Custom")))
+                Directory.CreateDirectory(Path.Combine(Util.GetUserDataPath(), "./Custom"));
 
-            Commands.Save("./Custom/Commands.txt");
+            Commands.Save(Path.Combine(Util.GetUserDataPath(), "Custom", "Commands.txt"));
 
             // Install updates
             if (installUpdatesOnExit)
             {
-                Process.Start(Path.Combine(new FileInfo(Assembly.GetEntryAssembly().Location).Directory.FullName, "Updater", "Chatterino.Updater.exe"), restartAfterUpdates ? "--restart" : "");
+                Process.Start(Path.Combine(Util.GetUserDataPath(), "Updater", "Chatterino.Updater.exe"), restartAfterUpdates ? "--restart" : "");
                 System.Threading.Thread.Sleep(1000);
             }
 

@@ -13,6 +13,11 @@ namespace Chatterino.Common
 {
     public static class Util
     {
+        public static string GetUserDataPath()
+        {
+            return Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+        }
+
         // log in file
         public static string LogBasePath { get; set; } = "./Log/";
         static bool checkedLogBase = false;

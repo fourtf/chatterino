@@ -71,7 +71,7 @@ namespace Chatterino.Controls
                             var access_token = context.Request.QueryString["access_token"];
                             var scope = context.Request.QueryString["scope"];
 
-                            WebRequest request = WebRequest.Create("https://api.twitch.tv/kraken?oauth_token=" + access_token + "&client_id=7ue61iz46fz11y3cugd0l3tawb4taal");
+                            WebRequest request = WebRequest.Create("https://api.twitch.tv/kraken?oauth_token=" + access_token + "&client_id=" + IrcManager.DefaultClientID);
                             using (var response = request.GetResponse())
                             using (var stream = response.GetResponseStream())
                             {
@@ -80,14 +80,10 @@ namespace Chatterino.Controls
                                 dynamic token = json["token"];
                                 string username = token["user_name"];
 
-                                using (var writer = File.CreateText("./login.ini"))
-                                {
-                                    writer.Write("username=");
-                                    writer.WriteLine(username);
-
-                                    writer.Write("oauth=");
-                                    writer.WriteLine(access_token);
-                                }
+                                File.WriteAllText(Path.Combine(Util.GetUserDataPath(), "login.ini"),
+$@"username={username}
+oauth={access_token}
+client_id={IrcManager.DefaultClientID}");
                             }
 
                             string answer = $@"<html>
@@ -134,12 +130,12 @@ namespace Chatterino.Controls
         private void buttonLogin_Click(object sender, EventArgs e)
         {
             IrcManager.Disconnect();
-            Process.Start("https://api.twitch.tv/kraken/oauth2/authorize?response_type=token&client_id=7ue61iz46fz11y3cugd0l3tawb4taal&redirect_uri=http://127.0.0.1:5215/code&force_verify=true&scope=chat_login+user_subscriptions+user_blocks_edit+user_blocks_read+user_follows_edit");
+            Process.Start($"https://api.twitch.tv/kraken/oauth2/authorize?response_type=token&client_id={IrcManager.DefaultClientID}&redirect_uri=http://127.0.0.1:5215/code&force_verify=true&scope=chat_login+user_subscriptions+user_blocks_edit+user_blocks_read+user_follows_edit");
         }
 
         private void btnManualLogin_Click(object sender, EventArgs e)
         {
-            Process.Start("https://api.twitch.tv/kraken/oauth2/authorize?response_type=code&client_id=gkp8i0oxk7xua6pcxmg4w6u8vt8n4qw&redirect_uri=https%3A%2F%2Ffourtf.com%2Fchatterino%2Fauth&force_verify=true&scope=chat_login+user_subscriptions+user_blocks_edit+user_blocks_read+user_follows_edit");
+            Process.Start($"https://api.twitch.tv/kraken/oauth2/authorize?response_type=code&client_id={IrcManager.DefaultClientID}&redirect_uri=https%3A%2F%2Ffourtf.com%2Fchatterino%2Fauth&force_verify=true&scope=chat_login+user_subscriptions+user_blocks_edit+user_blocks_read+user_follows_edit");
         }
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
@@ -158,7 +154,7 @@ namespace Chatterino.Controls
         {
             string text = Clipboard.GetText();
 
-            string token = null;
+            string oauthToken = null;
             string username = null;
             string clientid = null;
 
@@ -170,7 +166,7 @@ namespace Chatterino.Controls
 
                 if (group.Success)
                 {
-                    token = group.Value;
+                    oauthToken = group.Value;
                 }
             }
 
@@ -198,7 +194,7 @@ namespace Chatterino.Controls
                 }
             }
 
-            if (token == null || clientid == null)
+            if (oauthToken == null || clientid == null)
             {
                 MessageBox.Show("Login code doesn't contain an oauth token or client id!", "Invalid login code", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
@@ -207,7 +203,7 @@ namespace Chatterino.Controls
             {
                 try
                 {
-                    var req = WebRequest.Create($"https://api.twitch.tv/kraken?oauth_token={token}&client_id={clientid}");
+                    var req = WebRequest.Create($"https://api.twitch.tv/kraken?oauth_token={oauthToken}&client_id={clientid}");
                     using (var res = req.GetResponse())
                     using (var stream = res.GetResponseStream())
                     {
@@ -234,13 +230,16 @@ namespace Chatterino.Controls
                 }
                 catch (Exception exc)
                 {
-                     MessageBox.Show(exc.Message, "Login error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(exc.Message, "Login error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
 
             if (username != null)
             {
-                // AppDomain.CurrentDomain.BaseDirectory
+                File.WriteAllText(Path.Combine(Util.GetUserDataPath(), "login.ini"),
+                $@"username={username}
+oauth={oauthToken}
+client_id={clientid}");
             }
         }
     }
