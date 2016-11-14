@@ -185,7 +185,16 @@ namespace Chatterino
                         int frame = 0;
                         for (int i = 0; i < frameCount; i++)
                         {
-                            frameDuration[i] = BitConverter.ToInt32(times, 4 * frame);
+                            var num = BitConverter.ToInt32(times, 4 * frame);
+
+                            if (num == 0)
+                            {
+                                frameDuration[i] = 4;
+                            }
+                            else
+                            {
+                                frameDuration[i] = num;
+                            }
                         }
                         emote.Animated = true;
 
