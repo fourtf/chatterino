@@ -107,7 +107,7 @@ namespace Chatterino
                     {
                         try
                         {
-                            var fileInfo = new FileInfo("./Custom/Ping.wav");
+                            var fileInfo = new FileInfo(Path.Combine(Util.GetUserDataPath(), "Custom", "Ping.wav"));
                             if (fileInfo.Exists)
                             {
                                 if (fileInfo.LastWriteTime != highlightTimeStamp)
@@ -116,7 +116,7 @@ namespace Chatterino
 
                                     try
                                     {
-                                        using (FileStream stream = new FileStream("./Custom/Ping.wav", FileMode.Open))
+                                        using (FileStream stream = new FileStream(Path.Combine(Util.GetUserDataPath(), "Custom", "Ping.wav"), FileMode.Open))
                                         {
                                             HighlightSound = new SoundPlayer(stream);
                                             HighlightSound.Load();

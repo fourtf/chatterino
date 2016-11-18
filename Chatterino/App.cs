@@ -204,11 +204,10 @@ namespace Chatterino
             Application.Run(MainForm);
 
             // Save settings
-            AppSettings.Save(Path.Combine(Util.GetUserDataPath(), "Settings.ini"));
             Cache.Save();
 
             if (!Directory.Exists(Path.Combine(Util.GetUserDataPath(), "Custom")))
-                Directory.CreateDirectory(Path.Combine(Util.GetUserDataPath(), "./Custom"));
+                Directory.CreateDirectory(Path.Combine(Util.GetUserDataPath(), "Custom"));
 
             Commands.Save(Path.Combine(Util.GetUserDataPath(), "Custom", "Commands.txt"));
 

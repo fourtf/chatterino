@@ -548,7 +548,7 @@ namespace Chatterino.Controls
 
                                     y += msg.Height;
 
-                                    if (AppSettings.ChatShowLastReadMessageIndicator && LastReadMessage == msg)
+                                    if (AppSettings.ChatShowLastReadMessageIndicator && LastReadMessage == msg && i != M.Length - 1)
                                     {
                                         g.FillRectangle(lastReadMessageBrush, 0, y, Width, 1);
                                     }
@@ -567,7 +567,7 @@ namespace Chatterino.Controls
                                 renderTarget.BeginDraw();
 
                                 //renderTarget.TextRenderingParams = new SharpDX.DirectWrite.RenderingParams(Fonts.Factory, 1, 1, 1, SharpDX.DirectWrite.PixelGeometry.Flat, SharpDX.DirectWrite.RenderingMode.CleartypeGdiClassic);
-                                renderTarget.TextAntialiasMode = SharpDX.Direct2D1.TextAntialiasMode.Cleartype;
+                                renderTarget.TextAntialiasMode = SharpDX.Direct2D1.TextAntialiasMode.Grayscale;
 
                                 int y = yStart;
 

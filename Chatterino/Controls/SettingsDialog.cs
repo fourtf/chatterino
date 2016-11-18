@@ -412,10 +412,10 @@ namespace Chatterino.Controls
                         {
                             (GuiEngine.Current as WinformsGuiEngine).HighlightSound?.Dispose();
 
-                            if (!Directory.Exists("./Custom"))
-                                Directory.CreateDirectory("./Custom");
+                            if (!Directory.Exists(Path.Combine(Util.GetUserDataPath(), "Custom")))
+                                Directory.CreateDirectory(Path.Combine(Util.GetUserDataPath(), "Custom"));
 
-                            File.Copy(dialog.FileName, "./Custom/Ping.wav", true);
+                            File.Copy(dialog.FileName, Path.Combine(Util.GetUserDataPath(), "Custom", "Ping.wav"), true);
                         }
                         catch (Exception exc)
                         {

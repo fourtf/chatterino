@@ -68,7 +68,7 @@ namespace Chatterino.Common
 
         }
 
-        public Message(IrcMessage data, TwitchChannel channel, bool enableTimestamp = true, bool enablePingSound = true, bool isWhisper = false, bool includeChannel = false)
+        public Message(IrcMessage data, TwitchChannel channel, bool enableTimestamp = true, bool enablePingSound = true, bool isReceivedWhisper = false, bool isSentWhisper = false, bool includeChannel = false)
         {
             //var w = Stopwatch.StartNew();
 
@@ -318,7 +318,7 @@ namespace Chatterino.Common
                 DisplayName = Username;
             }
 
-            var messageUser = DisplayName + (isWhisper ? " > " + IrcManager.Username : "") + (DisplayName.ToLower() != Username ? $" ({Username})" : "") + (slashMe ? "" : ":");
+            var messageUser = (isSentWhisper ? IrcManager.Username + " > " : "") + DisplayName + (isReceivedWhisper ? " > " + IrcManager.Username : "") + (DisplayName.ToLower() != Username ? $" ({Username})" : "") + (slashMe ? "" : ":");
             words.Add(new Word
             {
                 Type = SpanType.Text,

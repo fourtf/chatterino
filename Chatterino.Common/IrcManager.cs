@@ -52,19 +52,27 @@ namespace Chatterino.Common
             Disconnect();
 
             // Login
-            string username, oauth;
+            string username, oauth, clientId;
 
             var settings = new IniSettings();
 
             if (loginReader == null)
             {
-                settings.Load(Path.Combine(Util.GetUserDataPath(), "login.ini"));
                 settings.Load(Path.Combine(Util.GetUserDataPath(), "Login.ini"));
             }
             else
             {
                 settings.Load(loginReader);
             }
+
+            settings.TryGetString("client_id", out clientId);
+
+            if (clientId == null)
+            {
+                clientId = DefaultClientID;
+            }
+
+            ClientID = clientId;
 
             if (settings.TryGetString("username", out username)
                 && settings.TryGetString("oauth", out oauth))

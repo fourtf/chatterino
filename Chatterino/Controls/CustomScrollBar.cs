@@ -25,7 +25,14 @@ namespace Chatterino.Controls
         public double Maximum
         {
             get { lock (maxLock) return max; }
-            set { lock (maxLock) max = value; Value = Value; updateScroll(); Invalidate(); }
+            set
+            {
+                lock (maxLock)
+                    max = value;
+                Value = Value;
+                updateScroll();
+                this.Invoke(Invalidate);
+            }
         }
 
         private double min;
@@ -34,7 +41,13 @@ namespace Chatterino.Controls
         public double Minimum
         {
             get { lock (minLock) return min; }
-            set { lock (minLock) min = value; updateScroll(); Invalidate(); }
+            set
+            {
+                lock (minLock)
+                    min = value;
+                updateScroll();
+                this.Invoke(Invalidate);
+            }
         }
 
         private double large;
@@ -43,7 +56,14 @@ namespace Chatterino.Controls
         public double LargeChange
         {
             get { lock (largeLock) return large; }
-            set { lock (largeLock) large = value; Value = Value; updateScroll(); Invalidate(); }
+            set
+            {
+                lock (largeLock)
+                    large = value;
+                Value = Value;
+                updateScroll();
+                this.Invoke(Invalidate);
+            }
         }
 
         private double small;
@@ -52,7 +72,13 @@ namespace Chatterino.Controls
         public double SmallChange
         {
             get { lock (smallLock) return small; }
-            set { lock (smallLock) small = value; updateScroll(); Invalidate(); }
+            set
+            {
+                lock (smallLock)
+                    small = value;
+                updateScroll();
+                this.Invoke(Invalidate);
+            }
         }
 
         private double value;
@@ -64,7 +90,8 @@ namespace Chatterino.Controls
             {
                 this.value = value < 0 ? 0 : (value > max - large ? max - large : value);
                 updateScroll();
-                Update();
+
+                this.Invoke(Update);
             }
         }
 

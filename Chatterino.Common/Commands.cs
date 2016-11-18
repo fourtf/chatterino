@@ -23,8 +23,25 @@ namespace Chatterino.Common
         static Commands()
         {
             // Chat Commands
-            //ChatCommands.TryAdd("shrug", (s, execute) => ". " + s + " ¯\\_(ツ)_/¯");
-            //ChatCommands.TryAdd("brainpower", (s, execute) => ". " + s + " O-oooooooooo AAAAE-A-A-I-A-U- JO-oooooooooooo AAE-O-A-A-U-U-A- E-eee-ee-eee AAAAE-A-E-I-E-A- JO-ooo-oo-oo-oo EEEEO-A-AAA-AAAA " + s);
+            ChatCommands.TryAdd("w", (s, channel, execute) =>
+            {
+                if (execute)
+                {
+                    var S = s.SplitWords();
+
+                    if (S.Length > 1)
+                    {
+                        string name = S[0];
+
+                        IrcMessage message;
+                        IrcMessage.TryParse($":{name}!{name}@{name}.tmi.twitch.tv PRIVMSG #whispers :" + s.SubstringFromWordIndex(1), out message);
+
+                        TwitchChannel.WhisperChannel.AddMessage(new Message(message, TwitchChannel.WhisperChannel, isSentWhisper: true));
+                    }
+                }
+
+                return "/w " + s;
+            });
 
             ChatCommands.TryAdd("ignore", (s, channel, execute) =>
             {
@@ -48,26 +65,6 @@ namespace Chatterino.Common
                         IrcManager.RemoveIgnoredUser(S[0]);
                     }
                 }
-                return null;
-            });
-
-            ChatCommands.TryAdd("cheertest312", (s, channel, execute) =>
-            {
-                if (execute)
-                {
-                    foreach (string x in new[] { "1", "100", "1000", "5000", "10000" })
-                    {
-                        IrcMessage msg;
-                        IrcMessage.TryParse($"@badges=subscriber/1;bits={x};color=;display-name=FOURTF;emotes=;mod=0;subscriber=1;turbo=0;user-type= :fourtf!fourtf@fourtf.tmi.twitch.tv PRIVMSG #fourtf :cheer{x} xD donation", out msg);
-
-                        foreach (TwitchChannel c in TwitchChannel.Channels)
-                        {
-                            Message message = new Message(msg, c);
-                            c.AddMessage(message);
-                        }
-                    }
-                }
-
                 return null;
             });
 
@@ -113,6 +110,31 @@ namespace Chatterino.Common
                 return null;
             });
 
+            ChatCommands.TryAdd("testcheering", (s, channel, execute) =>
+            {
+                if (execute)
+                {
+                    foreach (string x in new[] { "1", "100", "1000", "5000", "10000" })
+                    {
+                        IrcMessage msg;
+                        IrcMessage.TryParse($"@badges=subscriber/1;bits={x};color=;display-name=FOURTF;emotes=;mod=0;subscriber=1;turbo=0;user-type= :fourtf!fourtf@fourtf.tmi.twitch.tv PRIVMSG #fourtf :cheer{x} xD donation", out msg);
+
+                        foreach (TwitchChannel c in TwitchChannel.Channels)
+                        {
+                            Message message = new Message(msg, c);
+                            c.AddMessage(message);
+                        }
+                    }
+                }
+
+                return null;
+            });
+
+            ChatCommands.TryAdd("testchannels", (s, channel, execute) =>
+            {
+                return null;
+                //string.Join(", ", TwitchChannel.Channels.Select(x => x.Name));
+            });
         }
 
         // public

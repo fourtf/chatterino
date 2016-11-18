@@ -58,20 +58,20 @@ namespace Chatterino.Controls
                 }
 
                 // chatterino emotes
-                {
-                    List<Word> words = new List<Word>();
+                //{
+                //    List<Word> words = new List<Word>();
 
-                    foreach (var emote in Emotes.ChatterinoEmotes.Values)
-                    {
-                        words.Add(new Word { Type = SpanType.Emote, Value = emote, Tooltip = emote.Tooltip, CopyText = emote.Name, Link = new Link(LinkType.InsertText, emote.Name + " ") });
-                    }
+                //    foreach (var emote in Emotes.ChatterinoEmotes.Values)
+                //    {
+                //        words.Add(new Word { Type = SpanType.Emote, Value = emote, Tooltip = emote.Tooltip, CopyText = emote.Name, Link = new Link(LinkType.InsertText, emote.Name + " ") });
+                //    }
 
-                    if (words.Count != 0)
-                    {
-                        messages.Add(new Message("Chatterino Global Emotes"));
-                        messages.Add(new Message(words));
-                    }
-                }
+                //    if (words.Count != 0)
+                //    {
+                //        messages.Add(new Message("Chatterino Global Emotes"));
+                //        messages.Add(new Message(words));
+                //    }
+                //}
 
                 // bttv channel emotes
                 if (channel != null)

@@ -46,7 +46,7 @@ namespace Chatterino.Common
             twitchEmotesCodeReplacements[@"\;-?\)"] = ";)";
             twitchEmotesCodeReplacements[@"R-?\)"] = "R-)";
 
-            ChatterinoEmotes["WithAHat"] = new TwitchEmote { Name = "WithAHat", Tooltip = "WithAHat\nChatterino Emote", Url = "https://fourtf.com/chatterino/emotes/img/WithAHat_x1.png", IsHat = true };
+            //ChatterinoEmotes["WithAHat"] = new TwitchEmote { Name = "WithAHat", Tooltip = "WithAHat\nChatterino Emote", Url = "https://fourtf.com/chatterino/emotes/img/WithAHat_x1.png", IsHat = true };
         }
 
         public static string GetTwitchEmoteCodeReplacement(string emoteCode)

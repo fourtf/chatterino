@@ -135,7 +135,7 @@ client_id={IrcManager.DefaultClientID}");
 
         private void btnManualLogin_Click(object sender, EventArgs e)
         {
-            Process.Start($"https://api.twitch.tv/kraken/oauth2/authorize?response_type=code&client_id={IrcManager.DefaultClientID}&redirect_uri=https%3A%2F%2Ffourtf.com%2Fchatterino%2Fauth&force_verify=true&scope=chat_login+user_subscriptions+user_blocks_edit+user_blocks_read+user_follows_edit");
+            Process.Start($"https://api.twitch.tv/kraken/oauth2/authorize?response_type=code&client_id=gkp8i0oxk7xua6pcxmg4w6u8vt8n4qw&redirect_uri=https%3A%2F%2Ffourtf.com%2Fchatterino%2Fauth&force_verify=true&scope=chat_login+user_subscriptions+user_blocks_edit+user_blocks_read+user_follows_edit");
         }
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
@@ -197,6 +197,7 @@ client_id={IrcManager.DefaultClientID}");
             if (oauthToken == null || clientid == null)
             {
                 MessageBox.Show("Login code doesn't contain an oauth token or client id!", "Invalid login code", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
             }
 
             if (username == null)
@@ -221,6 +222,7 @@ client_id={IrcManager.DefaultClientID}");
                         if (!(bool)token_["valid"])
                         {
                             MessageBox.Show("The oauth token is invalid!", "Invalid login code", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            return;
                         }
                         else
                         {
@@ -231,6 +233,7 @@ client_id={IrcManager.DefaultClientID}");
                 catch (Exception exc)
                 {
                     MessageBox.Show(exc.Message, "Login error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
                 }
             }
 
@@ -240,6 +243,13 @@ client_id={IrcManager.DefaultClientID}");
                 $@"username={username}
 oauth={oauthToken}
 client_id={clientid}");
+
+                Close();
+            }
+            else
+            {
+                MessageBox.Show("Error while getting login token. Check your internet connection.", "Login error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
             }
         }
     }

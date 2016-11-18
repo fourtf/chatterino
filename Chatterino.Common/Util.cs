@@ -15,11 +15,11 @@ namespace Chatterino.Common
     {
         public static string GetUserDataPath()
         {
-            return Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Chatterino");
         }
 
         // log in file
-        public static string LogBasePath { get; set; } = "./Log/";
+        public static string LogBasePath { get; set; } = Path.Combine(GetUserDataPath(), "Log");
         static bool checkedLogBase = false;
 
         static ConcurrentDictionary<string, StreamWriter> logWriters = new ConcurrentDictionary<string, StreamWriter>();
