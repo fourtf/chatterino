@@ -238,16 +238,19 @@ namespace Chatterino.Controls
             if (e.Message.HighlightType == HighlightType.Highlighted || e.Message.HighlightType == HighlightType.Resub)
             {
                 _scroll.AddHighlight((channel?.MessageCount ?? 1) - 1, (e.Message.HighlightType == HighlightType.Highlighted ? Color.Red : Color.FromArgb(-16777216 | 0x3F6ABF)));
-
             }
 
-            if (e.Message.HighlightType == HighlightType.Highlighted || e.Message.HighlightType == HighlightType.Whisper)
-            {
-                ColumnTabPage parent = Parent as ColumnTabPage;
+            ColumnTabPage parent = Parent as ColumnTabPage;
 
-                if (parent != null)
+            if (parent != null)
+            {
+                if (e.Message.HighlightType == HighlightType.Highlighted || e.Message.HighlightType == HighlightType.Whisper)
                 {
-                    parent.Highlighted = true;
+                    parent.HighlightType = TabPageHighlightType.Highlighted;
+                }
+                else if (parent.HighlightType == TabPageHighlightType.None)
+                {
+                    parent.HighlightType = TabPageHighlightType.NewMessage;
                 }
             }
 
@@ -732,8 +735,8 @@ namespace Chatterino.Controls
                     IrcManager.Client.Reconnect();
                 }));
                 contextMenu.MenuItems.Add(new MenuItem("Show Changelog", (s, e) => App.MainForm.ShowChangelog()));
-                contextMenu.MenuItems.Add(LoginMenuItem = new MenuItem("Login", (s, e) => new LoginForm().ShowDialog(), Shortcut.CtrlL));
-                contextMenu.MenuItems.Add(new MenuItem("Preferences", (s, e) => App.ShowSettings(), Shortcut.CtrlP));
+                //contextMenu.MenuItems.Add(LoginMenuItem = new MenuItem("Login", (s, e) => new LoginForm().ShowDialog(), Shortcut.CtrlL));
+                //contextMenu.MenuItems.Add(new MenuItem("Preferences", (s, e) => App.ShowSettings(), Shortcut.CtrlP));
 #if DEBUG
                 contextMenu.MenuItems.Add(new MenuItem("Copy Version Number", (s, e) => { Clipboard.SetText(App.CurrentVersion.ToString()); }));
                 contextMenu.MenuItems.Add(new MenuItem("Force GC", (s, e) => { GC.Collect(); }));
@@ -801,10 +804,10 @@ namespace Chatterino.Controls
                         }
                     }));
 
-                if (IrcManager.Username != null)
-                    LoginMenuItem.Text = "Change User";
-                else
-                    IrcManager.LoggedIn += (s, e) => LoginMenuItem.Text = "Change User";
+                //if (IrcManager.Account.Username != null)
+                //    LoginMenuItem.Text = "Change User";
+                //else
+                //    IrcManager.LoggedIn += (s, e) => LoginMenuItem.Text = "Change User";
             }
 
             // local controls

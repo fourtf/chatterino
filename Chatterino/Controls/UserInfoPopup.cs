@@ -158,7 +158,7 @@ namespace Chatterino.Controls
                 Common.GuiEngine.Current.HandleLink(new Common.Link(Common.LinkType.Url, "https://www.twitch.tv/" + data.UserName));
             };
 
-            if (string.Equals(data.UserName, Common.IrcManager.Username, StringComparison.OrdinalIgnoreCase))
+            if (Common.IrcManager.Account.IsAnon || string.Equals(data.UserName, Common.IrcManager.Account.Username, StringComparison.OrdinalIgnoreCase))
             {
                 btnBan.Visible = false;
                 btnUnban.Visible = false;

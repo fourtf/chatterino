@@ -62,6 +62,8 @@ namespace Chatterino.Controls
 
         protected Message LastReadMessage { get; set; } = null;
 
+        protected List<GifEmoteState> GifEmotesOnScreen = new List<GifEmoteState>();
+
         // mouse
         protected double mouseScrollMultiplyer = 1;
 
@@ -121,16 +123,20 @@ namespace Chatterino.Controls
                         {
                             lock (MessageLock)
                             {
-                                for (int i = 0; i < Messages.Length; i++)
-                                {
-                                    var msg = Messages[i];
-                                    if (msg.IsVisible)
-                                    {
-                                        hasUpdated = true;
+                                //for (int i = 0; i < Messages.Length; i++)
+                                //{
+                                //    var msg = Messages[i];
+                                //    if (msg.IsVisible)
+                                //    {
+                                //        hasUpdated = true;
 
-                                        MessageRenderer.DrawGifEmotes(buffer.Graphics, msg, selection, i);
-                                    }
-                                }
+                                //        MessageRenderer.DrawGifEmotes(buffer.Graphics, msg, selection, i);
+                                //    }
+                                //}
+
+                                hasUpdated = true;
+
+                                MessageRenderer.DrawGifEmotes(buffer.Graphics, GifEmotesOnScreen, selection);
                             }
                         }
 
@@ -496,6 +502,8 @@ namespace Chatterino.Controls
             {
                 try
                 {
+                    List<GifEmoteState> gifEmotesOnScreen = new List<GifEmoteState>();
+
                     if (buffer == null)
                     {
                         buffer = context.Allocate(e.Graphics, ClientRectangle);
@@ -524,24 +532,24 @@ namespace Chatterino.Controls
                             {
                                 int y = yStart;
 
-                                for (int i = 0; i < startIndex; i++)
-                                {
-                                    M[i].IsVisible = false;
-                                }
+                                //for (int i = 0; i < startIndex; i++)
+                                //{
+                                //    M[i].IsVisible = false;
+                                //}
 
                                 for (int i = startIndex; i < M.Length; i++)
                                 {
                                     var msg = M[i];
-                                    msg.IsVisible = true;
+                                    //msg.IsVisible = true;
 
-                                    MessageRenderer.DrawMessage(g, msg, MessagePadding.Left, y, selection, i, !App.UseDirectX);
+                                    MessageRenderer.DrawMessage(g, msg, MessagePadding.Left, y, selection, i, !App.UseDirectX, gifEmotesOnScreen);
 
                                     if (y - msg.Height > h)
                                     {
-                                        for (; i < M.Length; i++)
-                                        {
-                                            M[i].IsVisible = false;
-                                        }
+                                        //for (; i < M.Length; i++)
+                                        //{
+                                        //    M[i].IsVisible = false;
+                                        //}
 
                                         break;
                                     }
@@ -553,6 +561,8 @@ namespace Chatterino.Controls
                                         g.FillRectangle(lastReadMessageBrush, 0, y, Width, 1);
                                     }
                                 }
+
+                                GifEmotesOnScreen = gifEmotesOnScreen;
                             }
 
                             if (App.UseDirectX)
@@ -896,14 +906,18 @@ namespace Chatterino.Controls
 
         public void SetLastReadMessage()
         {
-            lock (MessageLock)
+            if (MessageLock != null)
             {
-                if (Messages.Length != 0)
+                lock (MessageLock)
                 {
-                    LastReadMessage = Messages[Messages.Length - 1];
+                    if (Messages.Length != 0)
+                    {
+                        LastReadMessage = Messages[Messages.Length - 1];
 
-                    _scroll.RemoveHighlightsWhere(highlight => highlight.Tag == lastReadMessageTag);
-                    _scroll.AddHighlight(Messages.Length - 1, Color.Red, ScrollBarHighlightStyle.SingleLine, lastReadMessageTag);
+                        _scroll.RemoveHighlightsWhere(highlight => highlight.Tag == lastReadMessageTag);
+                        _scroll.AddHighlight(Messages.Length - 1, Color.Red, ScrollBarHighlightStyle.SingleLine,
+                            lastReadMessageTag);
+                    }
                 }
             }
         }

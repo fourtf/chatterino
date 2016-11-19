@@ -11,6 +11,7 @@ using System.Drawing;
 using System.Media;
 using System.Drawing.Imaging;
 using System.Collections.Concurrent;
+using System.Security.Cryptography;
 using Chatterino.Controls;
 
 namespace Chatterino
@@ -196,11 +197,15 @@ namespace Chatterino
                                 frameDuration[i] = num;
                             }
                         }
-                        emote.Animated = true;
+                        emote.IsAnimated = true;
+
+                        Console.WriteLine("new gif emote " + emote.Name);
 
                         App.GifEmoteFramesUpdating += (s, e) =>
                         {
-                            currentFrameOffset += 3;
+                            currentFrameOffset += 4;
+
+                            var oldCurrentFrame = currentFrame;
 
                             while (true)
                             {
@@ -213,8 +218,13 @@ namespace Chatterino
                                     break;
                             }
 
-                            lock (img)
-                                img.SelectActiveFrame(dimension, currentFrame);
+                            if (oldCurrentFrame != currentFrame)
+                            {
+                                lock (img)
+                                {
+                                    img.SelectActiveFrame(dimension, currentFrame);
+                                }
+                            }
                         };
                     }
                     catch { }

@@ -40,25 +40,46 @@ namespace Chatterino.Controls
             }
         }
 
-        public event EventHandler<ValueEventArgs<bool>> HighlightedChanged;
+        public event EventHandler<ValueEventArgs<TabPageHighlightType>> HighlightTypeChanged;
 
-        private bool highlighted = false;
+        private TabPageHighlightType highlightType;
 
-        public bool Highlighted
+        public TabPageHighlightType HighlightType
         {
-            get { return highlighted; }
+            get { return highlightType; }
             set
             {
-                if (!value || !Selected)
+                if (!Selected)
                 {
-                    if (highlighted != value)
+                    if (highlightType != value)
                     {
-                        highlighted = value;
-                        HighlightedChanged?.Invoke(this, new ValueEventArgs<bool>(value));
+                        highlightType = value;
+                        HighlightTypeChanged?.Invoke(this, new ValueEventArgs<TabPageHighlightType>(value));
                     }
                 }
+
+                highlightType = value;
             }
         }
+
+
+        //private bool highlighted = false;
+
+        //public bool Highlighted
+        //{
+        //    get { return highlighted; }
+        //    set
+        //    {
+        //        if (!value || !Selected)
+        //        {
+        //            if (highlighted != value)
+        //            {
+        //                highlighted = value;
+        //                HighlightTypeChanged?.Invoke(this, new ValueEventArgs<bool>(value));
+        //            }
+        //        }
+        //    }
+        //}
 
         public event EventHandler TitleChanged;
 

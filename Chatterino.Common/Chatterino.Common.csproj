@@ -48,6 +48,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Account.cs" />
+    <Compile Include="AccountManager.cs" />
     <Compile Include="AppSettings.cs" />
     <Compile Include="Badges.cs" />
     <Compile Include="Cache.cs" />

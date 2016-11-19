@@ -46,19 +46,19 @@ namespace Chatterino.Controls
 
         Button dropDownButton = new Button();
         MoreButton newTabButton = new MoreButton();
+        MoreButton settingsButton = new MoreButton();
+        MoreButton userButton = new MoreButton();
         static Image dropDownImage = null;
 
         static TabControl()
         {
             try
             {
-                var S = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceNames();
-
                 dropDownImage = Properties.Resources.ExpandChevronDown_16x;
             }
-            catch (Exception exc)
+            catch
             {
-                ;
+
             }
         }
 
@@ -92,6 +92,33 @@ namespace Chatterino.Controls
                 }
 
                 menu.Show(dropDownButton, new Point(dropDownButton.Width, dropDownButton.Height), LeftRightAlignment.Left);
+            };
+
+            // settings button
+            Controls.Add(settingsButton);
+            settingsButton.Size = new Size(24, 24);
+            settingsButton.Icon = MoreButtonIcon.Settings;
+
+            settingsButton.Click += (s, e) =>
+            {
+                App.ShowSettings();
+            };
+
+            // user button
+            Controls.Add(userButton);
+            userButton.Size = new Size(24, 24);
+            userButton.Location = new Point(24, 0);
+            userButton.Icon = MoreButtonIcon.User;
+
+            userButton.Click += (s, e) =>
+            {
+                var loc = userButton.PointToScreen(new Point(0, userButton.Height));
+
+                new UserSwitchPopup
+                {
+                    StartPosition = FormStartPosition.Manual,
+                    Location = loc
+                }.Show();
             };
 
             // add tab button
@@ -128,7 +155,7 @@ namespace Chatterino.Controls
                 int maxLines = int.MaxValue, currentLine = 0;
                 var lineHeight = Tab.GetHeight();
 
-                int x = 0, y = 0, w = Bounds.Width - dropDownButton.Width;
+                int x = 48, y = 0, w = Bounds.Width - dropDownButton.Width;
                 bool firstInline = true;
 
                 bool allTabsVisible = true;
@@ -173,17 +200,16 @@ namespace Chatterino.Controls
                     firstInline = false;
                 }
 
-                dropDownButton.Location = new Point(Width - dropDownButton.Width - newTabButton.Width, y);
-                newTabButton.Location = new Point(Width - newTabButton.Width, y);
+                newTabButton.Location = new Point(x, y);
+
+                //dropDownButton.Location = new Point(Width - dropDownButton.Width - newTabButton.Width, y);
+                //newTabButton.Location = new Point(Width - newTabButton.Width, y);
 
                 dropDownButton.Visible = !allTabsVisible;
 
                 y += Tab.GetHeight();
 
-                if (Selected != null)
-                {
-                    Selected.SetBounds(0, y, Bounds.Width, Math.Max(1, Bounds.Height - y));
-                }
+                Selected?.SetBounds(0, y, Bounds.Width, Math.Max(1, Bounds.Height - y));
             }
         }
 

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Reflection;
 
 namespace Chatterino
@@ -45,6 +46,7 @@ namespace Chatterino
         public Brush TabHoverBG { get; set; } = new SolidBrush(rgb(0xCCCCCC));
         public Brush TabSelectedBG { get; set; } = new SolidBrush(rgb(0x8E24AA));
         public Brush TabHighlightedBG { get; set; } = new SolidBrush(rgb(0xFF4444));
+        public Brush TabNewMessageBG { get; set; } = new SolidBrush(rgb(0xFF4444));
 
         public Color TabText { get; set; } = Color.Black;
         public Color TabHoverText { get; set; } = Color.Black;
@@ -119,6 +121,10 @@ namespace Chatterino
             // Highlights
             scheme.TabSelectedBG = highlight.WithLuminosity(0.5f).WithSaturation(0.5f).ToBrush();
             scheme.TabHighlightedBG = highlight.WithLuminosity(0.8f).WithSaturation(0.5f).ToBrush();
+            scheme.TabNewMessageBG = highlight.WithLuminosity(0.9f).WithSaturation(0.5f).ToBrush();
+            scheme.TabNewMessageBG = new HatchBrush(HatchStyle.LightUpwardDiagonal, highlight.WithLuminosity(0.85f).WithSaturation(0.5f).ToColor(),
+                highlight.WithLuminosity(0.95f).WithSaturation(0.5f).ToColor());
+
             scheme.TextFocused = getColor(highlight, 0.25f).ToColor();
 
             return scheme;

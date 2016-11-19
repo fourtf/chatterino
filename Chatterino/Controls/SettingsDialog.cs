@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -44,6 +45,79 @@ namespace Chatterino.Controls
             tabs.SelectedIndex = 0;
             tabs.PageSelected += tabs_PageSelected;
             tabs_PageSelected(this, EventArgs.Empty);
+
+            // Accounts
+            #region Accounts
+            var originalAccounts = AccountManager.Accounts.ToArray();
+
+            foreach (var account in originalAccounts)
+            {
+                dataGridViewAccounts.Rows.Add(account.Username);
+            }
+
+            LoginForm loginForm = null;
+
+            buttonAccountAdd.Click += delegate
+            {
+                if (loginForm == null)
+                {
+                    loginForm = new LoginForm();
+
+                    loginForm.FormClosed += (s, e) =>
+                    {
+                        if (loginForm.Account != null)
+                        {
+                            AccountManager.AddAccount(loginForm.Account);
+
+                            var username = loginForm.Account.Username.ToLowerInvariant();
+
+                            bool addGridViewItem = true;
+
+                            foreach (DataGridViewRow row in dataGridViewAccounts.Rows)
+                            {
+                                if (((string)row.Cells[0].Value).ToLowerInvariant() == username)
+                                {
+                                    addGridViewItem = false;
+                                    break;
+                                }
+                            }
+
+                            if (addGridViewItem)
+                            {
+                                dataGridViewAccounts.Rows.Add(loginForm.Account.Username);
+                            }
+                        }
+                        loginForm = null;
+                    };
+
+                    loginForm.Show();
+                }
+                else
+                {
+                    loginForm.BringToFront();
+                }
+            };
+
+            Closed += delegate
+            {
+                AccountManager.SaveToJson(Path.Combine(Util.GetUserDataPath(), "Login.json"));
+
+                loginForm?.Close();
+            };
+
+            buttonAccountRemove.Click += (s, e) =>
+            {
+                if (dataGridViewAccounts.SelectedCells.Count != 1) return;
+
+                var username = (string)dataGridViewAccounts.SelectedCells[0].Value;
+
+                AccountManager.RemoveAccount(username);
+
+                buttonAccountRemove.Enabled = dataGridViewAccounts.RowCount != 0;
+            };
+
+            buttonAccountRemove.Enabled = dataGridViewAccounts.RowCount != 0;
+            #endregion
 
             // Appearance
             string originalTheme = comboTheme.Text = AppSettings.Theme;

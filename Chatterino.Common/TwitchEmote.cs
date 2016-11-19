@@ -10,7 +10,7 @@ namespace Chatterino.Common
     {
         public string Url { get; set; } = null;
         public string Name { get; set; } = null;
-        public bool Animated { get; set; } = false;
+        public bool IsAnimated { get; set; } = false;
         public Func<object> LoadAction { get; set; } = null;
         public bool IsHat { get; set; } = false;
 

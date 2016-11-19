@@ -20,6 +20,8 @@ namespace Chatterino.Controls
 {
     public partial class LoginForm : Form
     {
+        public Account Account { get; private set; }
+
         HttpListener listener = new HttpListener();
 
         public LoginForm()
@@ -80,10 +82,7 @@ namespace Chatterino.Controls
                                 dynamic token = json["token"];
                                 string username = token["user_name"];
 
-                                File.WriteAllText(Path.Combine(Util.GetUserDataPath(), "login.ini"),
-$@"username={username}
-oauth={access_token}
-client_id={IrcManager.DefaultClientID}");
+                                Account = new Account(username, access_token, IrcManager.DefaultClientID);
                             }
 
                             string answer = $@"<html>
@@ -129,7 +128,6 @@ client_id={IrcManager.DefaultClientID}");
 
         private void buttonLogin_Click(object sender, EventArgs e)
         {
-            IrcManager.Disconnect();
             Process.Start($"https://api.twitch.tv/kraken/oauth2/authorize?response_type=token&client_id={IrcManager.DefaultClientID}&redirect_uri=http://127.0.0.1:5215/code&force_verify=true&scope=chat_login+user_subscriptions+user_blocks_edit+user_blocks_read+user_follows_edit");
         }
 
@@ -239,11 +237,7 @@ client_id={IrcManager.DefaultClientID}");
 
             if (username != null)
             {
-                File.WriteAllText(Path.Combine(Util.GetUserDataPath(), "login.ini"),
-                $@"username={username}
-oauth={oauthToken}
-client_id={clientid}");
-
+                Account = new Account(username, oauthToken, clientid);
                 Close();
             }
             else

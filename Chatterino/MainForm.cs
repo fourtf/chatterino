@@ -42,15 +42,6 @@ namespace Chatterino
             // icon
             Icon = App.Icon;
 
-            // show login dialog
-            if (!File.Exists(Path.Combine(Util.GetUserDataPath(), "Login.ini")))
-            {
-                using (var login = new LoginForm())
-                {
-                    login.ShowDialog();
-                }
-            }
-
             // load layout
             LoadLayout(Path.Combine(Util.GetUserDataPath(), "Layout.xml"));
 
@@ -286,7 +277,7 @@ namespace Chatterino
 
         public void SetTitle()
         {
-            this.Invoke(() => Text = $"{IrcManager.Username ?? "<not logged in>"} - Chatterino for Twitch (v" + App.CurrentVersion.ToString()
+            this.Invoke(() => Text = $"{(IrcManager.Account.IsAnon ? "<not logged in>" : IrcManager.Account.Username)} - Chatterino for Twitch (v" + App.CurrentVersion.ToString()
 #if DEBUG
             + " dev"
 #endif

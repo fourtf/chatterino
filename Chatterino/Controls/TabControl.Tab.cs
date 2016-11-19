@@ -23,7 +23,7 @@ namespace Chatterino.Controls
                     {
                         selected = value;
                         Invalidate();
-                        tabPage.Highlighted = false;
+                        tabPage.HighlightType = TabPageHighlightType.None;
                     }
                 }
             }
@@ -42,8 +42,8 @@ namespace Chatterino.Controls
 
             Rectangle xRectangle;
 
-            bool mouseOverX = false;
-            bool mouseDownX = false;
+            bool mouseOverX;
+            bool mouseDownX;
 
             // Constructor
             public Tab(TabControl tabControl, TabPage tabPage)
@@ -67,7 +67,7 @@ namespace Chatterino.Controls
                     Invalidate();
                 };
 
-                tabPage.HighlightedChanged += (s, e) =>
+                tabPage.HighlightTypeChanged += (s, e) =>
                 {
                     Invalidate();
                 };
@@ -259,9 +259,14 @@ namespace Chatterino.Controls
                     bg = App.ColorScheme.TabHoverBG;
                     text = App.ColorScheme.TabHoverText;
                 }
-                else if (tabPage.Highlighted)
+                else if (tabPage.HighlightType == TabPageHighlightType.Highlighted)
                 {
                     bg = App.ColorScheme.TabHighlightedBG;
+                    text = App.ColorScheme.TabHighlightedText;
+                }
+                else if (tabPage.HighlightType == TabPageHighlightType.NewMessage)
+                {
+                    bg = App.ColorScheme.TabNewMessageBG;
                     text = App.ColorScheme.TabHighlightedText;
                 }
                 else

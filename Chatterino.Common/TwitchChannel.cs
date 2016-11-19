@@ -162,7 +162,10 @@ namespace Chatterino.Common
         {
             get
             {
-                return IsMod || Name.ToLower() == IrcManager.Username.ToLower();
+                if (IrcManager.Account.IsAnon)
+                    return false;
+
+                return IsMod || string.Equals(Name, IrcManager.Account.Username, StringComparison.InvariantCultureIgnoreCase);
             }
         }
 
@@ -170,7 +173,10 @@ namespace Chatterino.Common
         {
             get
             {
-                return Name.ToLower() == IrcManager.Username.ToLower();
+                if (IrcManager.Account.IsAnon)
+                    return false;
+
+                return string.Equals(Name, IrcManager.Account.Username, StringComparison.InvariantCultureIgnoreCase);
             }
         }
 

@@ -35,22 +35,22 @@ namespace Chatterino.Common
 
         public MessageBadges Badges { get; set; }
 
-        private bool isVisible = false;
+        //private bool isVisible = false;
 
-        public bool IsVisible
-        {
-            get { return isVisible; }
-            set
-            {
-                isVisible = value;
-                if (!value && buffer != null)
-                {
-                    var b = buffer;
-                    buffer = null;
-                    GuiEngine.Current.DisposeMessageGraphicsBuffer(this);
-                }
-            }
-        }
+        //public bool IsVisible
+        //{
+        //    get { return isVisible; }
+        //    set
+        //    {
+        //        isVisible = value;
+        //        if (!value && buffer != null)
+        //        {
+        //            var b = buffer;
+        //            buffer = null;
+        //            GuiEngine.Current.DisposeMessageGraphicsBuffer(this);
+        //        }
+        //    }
+        //}
 
         public object buffer = null;
 
@@ -102,9 +102,9 @@ namespace Chatterino.Common
             }
 
             // Highlights
-            if (IrcManager.Username != null)
+            if (!IrcManager.Account.IsAnon)
             {
-                if ((AppSettings.ChatEnableHighlight || AppSettings.ChatEnableHighlightSound || AppSettings.ChatEnableHighlightTaskbar) && Username != IrcManager.Username.ToLower())
+                if ((AppSettings.ChatEnableHighlight || AppSettings.ChatEnableHighlightSound || AppSettings.ChatEnableHighlightTaskbar) && Username != IrcManager.Account.Username.ToLower())
                 {
                     if (!AppSettings.HighlightIgnoredUsers.ContainsKey(Username))
                     {
@@ -318,7 +318,7 @@ namespace Chatterino.Common
                 DisplayName = Username;
             }
 
-            var messageUser = (isSentWhisper ? IrcManager.Username + " > " : "") + DisplayName + (isReceivedWhisper ? " > " + IrcManager.Username : "") + (DisplayName.ToLower() != Username ? $" ({Username})" : "") + (slashMe ? "" : ":");
+            var messageUser = (isSentWhisper ? IrcManager.Account.Username + " > " : "") + DisplayName + (isReceivedWhisper ? " > " + IrcManager.Account.Username : "") + (DisplayName.ToLower() != Username ? $" ({Username})" : "") + (slashMe ? "" : ":");
             words.Add(new Word
             {
                 Type = SpanType.Text,

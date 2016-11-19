@@ -97,7 +97,7 @@ namespace TwitchIrc
 
                             while ((line = reader.ReadLine()) != null)
                             {
-                                Console.WriteLine(line);
+                                //Console.WriteLine(line);
                                 IrcMessage msg;
 
                                 if (IrcMessage.TryParse(line, out msg))

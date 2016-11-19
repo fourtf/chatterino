@@ -140,6 +140,7 @@
     <Compile Include="Controls\TabControl.MoreButton.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\TabPageHighlightType.cs" />
     <Compile Include="Controls\TabPage.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -178,6 +179,7 @@
     <Compile Include="Controls\InputDialogForm.Designer.cs">
       <DependentUpon>InputDialogForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="GifEmoteState.cs" />
     <Compile Include="HotkeyMapper.cs" />
     <Compile Include="Net.cs" />
     <Compile Include="MainForm.cs">
@@ -193,6 +195,9 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="UserSwitchPopup.cs">
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="Win32.cs" />
     <Compile Include="WinformsGuiEngine.cs" />
@@ -288,6 +293,7 @@
   <ItemGroup>
     <Content Include="Controls\CustomFontDialog\LICENSE.txt" />
     <Content Include="icon2.ico" />
+    <None Include="Resources\UserProfile_22x.png" />
     <None Include="Resources\twitchprime_bg.png" />
     <None Include="Resources\CopyLongTextToClipboard_16x.png" />
     <None Include="Resources\BrowserLink_16x.png" />

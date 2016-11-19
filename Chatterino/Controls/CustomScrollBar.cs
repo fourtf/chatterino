@@ -363,7 +363,12 @@ namespace Chatterino.Controls
                                     return new SolidBrush(n);
                                 });
 
-                                var y = (int)(h * highlight.Position / Maximum);
+                                var y = (int)(h * highlight.Position / (Maximum + 1));
+
+                                if (highlight.Style == ScrollBarHighlightStyle.SingleLine)
+                                {
+                                    y += (int)((h / Maximum) - 2);
+                                }
 
                                 int a = 0;
 
@@ -371,12 +376,12 @@ namespace Chatterino.Controls
                                 {
                                     if (y > thumbOffset + thumbHeight - minThumbHeight)
                                     {
-                                        y += minThumbHeight - 3;
+                                        y += minThumbHeight;
                                     }
                                     else
                                     {
                                         a += 2;
-                                        y = (int)((y - thumbOffset) * (thumbHeight / ((double)thumbHeight - (minThumbHeight - 3)))) + thumbOffset;
+                                        y = (int)((y - thumbOffset) * (thumbHeight / ((double)thumbHeight - (minThumbHeight)))) + thumbOffset;
                                     }
                                 }
 
@@ -392,7 +397,7 @@ namespace Chatterino.Controls
                                 }
                                 else
                                 {
-                                    height = a + Math.Max(4, (int)(h / Maximum));
+                                    height = a + Math.Max(4, (int)(h / (Maximum + 1)));
                                     width = (int)(4);
                                 }
 

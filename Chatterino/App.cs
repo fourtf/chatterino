@@ -93,6 +93,8 @@ namespace Chatterino
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
+            AccountManager.LoadFromJson(Path.Combine(Util.GetUserDataPath(), "Login.json"));
+
             //SetProcessDpiAwareness(_Process_DPI_Awareness.Process_Per_Monitor_DPI_Aware);
 
             Icon = Icon.ExtractAssociatedIcon(Assembly.GetExecutingAssembly().Location);
@@ -114,7 +116,7 @@ namespace Chatterino
             };
 
             // Update gif emotes
-            new Timer { Interval = 20, Enabled = true }.Tick += (s, e) =>
+            new Timer { Interval = 33, Enabled = true }.Tick += (s, e) =>
             {
                 if (AppSettings.ChatEnableGifAnimations)
                 {
@@ -232,7 +234,10 @@ namespace Chatterino
             if (SettingsDialog == null)
             {
                 SettingsDialog = new Controls.SettingsDialog();
-                SettingsDialog.Show();
+
+                SettingsDialog.StartPosition = FormStartPosition.Manual;
+                SettingsDialog.Location = new Point(MainForm.Location.X + 32, MainForm.Location.Y + 64);
+                SettingsDialog.Show(MainForm);
                 SettingsDialog.FormClosing += (s, e) =>
                 {
                     SettingsDialog = null;

@@ -342,6 +342,16 @@ namespace Chatterino.Properties {
         /// <summary>
         ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap UserProfile_22x {
+            get {
+                object obj = ResourceManager.GetObject("UserProfile_22x", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Ressource vom Typ System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap VSO_Link_blue_16x {
             get {
                 object obj = ResourceManager.GetObject("VSO_Link_blue_16x", resourceCulture);

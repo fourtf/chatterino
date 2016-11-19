@@ -72,7 +72,7 @@ namespace Chatterino.Gtk.Controls
 
         public void SetTitle()
         {
-            Application.Invoke((s, e) => Title = ($"{IrcManager.Username ?? "<not logged in>"} - Chatterino for Twitch (v?"
+            Application.Invoke((s, e) => Title = ($"{IrcManager.Account.Username ?? "<not logged in>"} - Chatterino for Twitch (v?"
 #if DEBUG
             + " dev"
 #endif

@@ -42,11 +42,13 @@ namespace Chatterino.Controls
                     }
                 }
                 catch { }
-            });
+            }).Shortcut = Shortcut.CtrlV;
 
-            contextMenu.MenuItems.Add("Copy Selection", (s, e) => { Clipboard.SetText(currentContext?.Logic?.Text ?? ""); });
+            contextMenu.MenuItems.Add("Copy Selection", (s, e) => { Clipboard.SetText(currentContext?.Logic?.Text ?? ""); })
+                .Shortcut = Shortcut.CtrlC;
 
-            contextMenu.MenuItems.Add("Send Message", (s, e) => { (App.MainForm.Selected as ChatControl)?.SendMessage(true); });
+            contextMenu.MenuItems.Add("Send Message",
+                (s, e) => { (App.MainForm.Selected as ChatControl)?.SendMessage(true); });
 
             contextMenu.MenuItems.Add("Send and Keep Message", (s, e) => { (App.MainForm.Selected as ChatControl)?.SendMessage(false); });
         }

@@ -18,13 +18,13 @@ namespace Chatterino.Common
         public const int MaxMessageLength = 500;
 
         // Properties
-        public static string Username { get; private set; } = null;
+        public static Account Account { get; set; } = Account.AnonAccount;
+        //public static string Username { get; private set; } = null;
 
         public static string DefaultClientID { get; set; } = "7ue61iz46fz11y3cugd0l3tawb4taal";
-        public static string ClientID { get; set; } = null;
+        //public static string ClientID { get; set; } = null;
 
         public static IrcClient Client { get; set; }
-
 
         static ConcurrentDictionary<string, object> twitchBlockedUsers = new ConcurrentDictionary<string, object>();
 
@@ -37,8 +37,6 @@ namespace Chatterino.Common
         }
 
         // Static Ctor
-        static string oauth = null;
-
         public struct TwitchEmoteValue
         {
             public int Set { get; set; }
@@ -47,52 +45,28 @@ namespace Chatterino.Common
         }
 
         // Connection
-        public static void Connect(TextReader loginReader = null)
+        public static void Connect()
         {
             Disconnect();
 
             // Login
-            string username, oauth, clientId;
+            string username = Account.Username, oauth = Account.OauthToken, clientId = Account.ClientId;
 
-            var settings = new IniSettings();
+            LoggedIn?.Invoke(null, EventArgs.Empty);
 
-            if (loginReader == null)
+            AppSettings.UpdateCustomHighlightRegex();
+
+            // fetch ignored users
+            if (!Account.IsAnon)
             {
-                settings.Load(Path.Combine(Util.GetUserDataPath(), "Login.ini"));
-            }
-            else
-            {
-                settings.Load(loginReader);
-            }
-
-            settings.TryGetString("client_id", out clientId);
-
-            if (clientId == null)
-            {
-                clientId = DefaultClientID;
-            }
-
-            ClientID = clientId;
-
-            if (settings.TryGetString("username", out username)
-                && settings.TryGetString("oauth", out oauth))
-            {
-                Username = username;
-
-                IrcManager.oauth = oauth;
-
-                LoggedIn?.Invoke(null, EventArgs.Empty);
-
-                AppSettings.UpdateCustomHighlightRegex();
-
-                // fetch ignored users
                 Task.Run(() =>
                 {
                     try
                     {
                         int limit = 100;
                         int count = 0;
-                        string nextLink = $"https://api.twitch.tv/kraken/users/{username}/blocks?limit={limit}&client_id={ClientID}";
+                        string nextLink =
+                            $"https://api.twitch.tv/kraken/users/{username}/blocks?limit={limit}&client_id={Account.ClientId}";
 
                         var request = WebRequest.Create(nextLink + $"&oauth_token={oauth}");
                         using (var response = request.GetResponse())
@@ -112,15 +86,22 @@ namespace Chatterino.Common
                             }
                         }
                     }
-                    catch { }
+                    catch
+                    {
+                    }
                 });
+            }
 
-                // fetch available twitch emotes
+            // fetch available twitch emotes
+            if (!Account.IsAnon)
+            {
                 Task.Run(() =>
                 {
                     try
                     {
-                        var request = WebRequest.Create($"https://api.twitch.tv/kraken/users/{username}/emotes?oauth_token={oauth}&client_id={ClientID}");
+                        var request =
+                            WebRequest.Create(
+                                $"https://api.twitch.tv/kraken/users/{username}/emotes?oauth_token={oauth}&client_id={Account.ClientId}");
                         using (var response = request.GetResponse())
                         using (var stream = response.GetResponseStream())
                         {
@@ -141,73 +122,81 @@ namespace Chatterino.Common
 
                                     string code = Emotes.GetTwitchEmoteCodeReplacement(emote["code"]);
 
-                                    Emotes.TwitchEmotes[code] = new TwitchEmoteValue { ID = id, Set = setID, ChannelName = "<unknown>" };
+                                    Emotes.TwitchEmotes[code] = new TwitchEmoteValue
+                                    {
+                                        ID = id,
+                                        Set = setID,
+                                        ChannelName = "<unknown>"
+                                    };
                                 }
                             }
                         }
                     }
-                    catch { }
+                    catch
+                    {
+                    }
                     Emotes.TriggerEmotesLoaded();
                 });
+            }
 
-                // connect read
-                Task.Run(() =>
+            // connect read
+            Task.Run(() =>
+            {
+                Client = new IrcClient(Account.IsAnon);
+
+                Client.ReadConnection.Connected += (s, e) =>
                 {
-                    if (Client == null)
+                    foreach (var channel in TwitchChannel.Channels)
                     {
-                        Client = new IrcClient();
-
-                        Client.ReadConnection.Connected += (s, e) =>
-                        {
-                            foreach (var channel in TwitchChannel.Channels)
-                            {
-                                Client.ReadConnection.WriteLine("JOIN #" + channel.Name);
-                            }
-
-                            Connected?.Invoke(null, EventArgs.Empty);
-                        };
-
-                        Client.ReadConnection.Disconnected += (s, e) =>
-                        {
-                            Disconnected?.Invoke(null, EventArgs.Empty);
-                        };
-
-                        Client.WriteConnection.Connected += (s, e) =>
-                        {
-                            foreach (var channel in TwitchChannel.Channels)
-                            {
-                                Client.WriteConnection.WriteLine("JOIN #" + channel.Name);
-                            }
-                        };
+                        Client.ReadConnection.WriteLine("JOIN #" + channel.Name);
                     }
 
-                    Client.Connect(username, (oauth.StartsWith("oauth:") ? oauth : "oauth:" + oauth));
+                    Connected?.Invoke(null, EventArgs.Empty);
+                };
 
-                    Client.ReadConnection.MessageReceived += ReadConnection_MessageReceived;
-                    Client.WriteConnection.MessageReceived += WriteConnection_MessageReceived;
-                });
+                Client.ReadConnection.Disconnected += (s, e) =>
+                {
+                    Disconnected?.Invoke(null, EventArgs.Empty);
+                };
 
-                // secret telemetry, please ignore :)
-                // anonymously count user on fourtf.com with the first 32 characters of a sha 256 hash of the username
+                if (!Account.IsAnon)
+                {
+                    Client.WriteConnection.Connected += (s, e) =>
+                    {
+                        foreach (var channel in TwitchChannel.Channels)
+                        {
+                            Client.WriteConnection.WriteLine("JOIN #" + channel.Name);
+                        }
+                    };
+                }
+
+                Client.Connect(username, (oauth.StartsWith("oauth:") ? oauth : "oauth:" + oauth));
+
+                Client.ReadConnection.MessageReceived += ReadConnection_MessageReceived;
+                Client.WriteConnection.MessageReceived += WriteConnection_MessageReceived;
+            });
+
+            // secret telemetry, please ignore :)
+            // anonymously count user on fourtf.com with the first 32 characters of a sha 256 hash of the username
+            if (!Account.IsAnon)
+            {
                 Task.Run(() =>
                 {
                     string hash;
                     using (SHA256 sha = SHA256.Create())
                     {
                         hash = string.Join("", sha
-                          .ComputeHash(Encoding.UTF8.GetBytes(username))
-                          .Select(item => item.ToString("x2")));
+                            .ComputeHash(Encoding.UTF8.GetBytes(username))
+                            .Select(item => item.ToString("x2")));
                     }
                     hash = hash.Remove(32);
 
                     var request = WebRequest.Create($"https://fourtf.com/chatterino/countuser.php?hash={hash}");
                     using (var response = request.GetResponse())
-                    using (var stream = response.GetResponseStream()) { }
+                    using (var stream = response.GetResponseStream())
+                    {
+                    }
                 });
-            }
-            else
-            {
-                ConnectionError?.Invoke(null, new ValueEventArgs<Exception>(new Exception("No login credentials found")));
             }
         }
 
@@ -215,7 +204,6 @@ namespace Chatterino.Common
         {
             bool disconnected = false;
 
-            oauth = null;
             twitchBlockedUsers.Clear();
 
             if (Client != null)
@@ -268,7 +256,7 @@ namespace Chatterino.Common
 
             try
             {
-                WebRequest request = WebRequest.Create($"https://api.twitch.tv/kraken/users/{Username}/blocks/{_username}?oauth_token={oauth}&client_id={ClientID}");
+                WebRequest request = WebRequest.Create($"https://api.twitch.tv/kraken/users/{Account.Username}/blocks/{_username}?oauth_token={Account.OauthToken}&client_id={Account.ClientId}");
                 request.Method = "PUT";
                 using (var response = (HttpWebResponse)request.GetResponse())
                 using (var stream = response.GetResponseStream())
@@ -315,7 +303,7 @@ namespace Chatterino.Common
 
             try
             {
-                WebRequest request = WebRequest.Create($"https://api.twitch.tv/kraken/users/{Username}/blocks/{username}?oauth_token={oauth}&client_id={ClientID}");
+                WebRequest request = WebRequest.Create($"https://api.twitch.tv/kraken/users/{Account.Username}/blocks/{username}?oauth_token={Account.OauthToken}&client_id={Account.ClientId}");
                 request.Method = "DELETE";
                 using (var response = (HttpWebResponse)request.GetResponse())
                 using (var stream = response.GetResponseStream())
@@ -350,7 +338,7 @@ namespace Chatterino.Common
         {
             try
             {
-                var request = WebRequest.Create($"https://api.twitch.tv/kraken/users/{Username}/follows/channels/{username}?client_id={ClientID}&oauth_token={oauth}");
+                var request = WebRequest.Create($"https://api.twitch.tv/kraken/users/{Account.Username}/follows/channels/{username}?client_id={Account.ClientId}&oauth_token={Account.OauthToken}");
                 using (var response = request.GetResponse())
                 using (var stream = response.GetResponseStream())
                 {
@@ -383,7 +371,7 @@ namespace Chatterino.Common
         {
             try
             {
-                var request = WebRequest.Create($"https://api.twitch.tv/kraken/users/{Username}/follows/channels/{username}?client_id={ClientID}&oauth_token={oauth}");
+                var request = WebRequest.Create($"https://api.twitch.tv/kraken/users/{Account.Username}/follows/channels/{username}?client_id={Account.ClientId}&oauth_token={Account.OauthToken}");
                 request.Method = "PUT";
 
                 using (var response = request.GetResponse())
@@ -404,7 +392,7 @@ namespace Chatterino.Common
         {
             try
             {
-                var request = WebRequest.Create($"https://api.twitch.tv/kraken/users/{Username}/follows/channels/{username}?client_id={ClientID}&oauth_token={oauth}");
+                var request = WebRequest.Create($"https://api.twitch.tv/kraken/users/{Account.Username}/follows/channels/{username}?client_id={Account.ClientId}&oauth_token={Account.OauthToken}");
                 request.Method = "DELETE";
 
                 using (var response = request.GetResponse())

@@ -98,7 +98,7 @@ namespace Chatterino.Common
 
         public static void UpdateCustomHighlightRegex()
         {
-            CustomHighlightRegex = new Regex($@"\b({(IrcManager.Username)}{(IrcManager.Username == null || chatCustomHighlights.Length == 0 ? "" : "|")}{string.Join("|", chatCustomHighlights.Select(x => Regex.Escape(x)))})\b".Log(), RegexOptions.IgnoreCase);
+            CustomHighlightRegex = new Regex($@"\b({(IrcManager.Account.Username)}{(IrcManager.Account.Username == null || chatCustomHighlights.Length == 0 ? "" : "|")}{string.Join("|", chatCustomHighlights.Select(x => Regex.Escape(x)))})\b".Log(), RegexOptions.IgnoreCase);
         }
         public static Regex CustomHighlightRegex { get; private set; } = null;
 
@@ -138,7 +138,7 @@ namespace Chatterino.Common
         public static bool ChatEnableEmojis { get; set; } = true;
         public static bool ChatEnableGifAnimations { get; set; } = true;
 
-        public static bool ChatEnableInlineWhispers { get; set; } = false;
+        public static bool ChatEnableInlineWhispers { get; set; } = true;
 
         public static bool ProxyEnable { get; set; } = false;
         public static string ProxyType { get; set; } = "http";

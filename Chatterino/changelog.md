@@ -1,6 +1,7 @@
 ﻿# changelog
 
-## 0.4
+## 1.0
+- added support for multiple accounts
 - added login via fourtf.com for users that can't open a tcp port
 - added /mentions tab (thanks to pajlada)
 - tab gets highlighted when you get a whispers
