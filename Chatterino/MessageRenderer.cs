@@ -27,6 +27,11 @@ namespace Chatterino
 
         static Brush selectionBrush = new SolidBrush(Color.FromArgb(127, Color.Orange));
 
+        static MessageRenderer()
+        {
+            RenderTargetProperties.Type = RenderTargetType.Software;
+        }
+
         public static void DrawMessage(object graphics, Common.Message message, int xOffset, int yOffset,
             Selection selection, int currentLine, bool drawText, List<GifEmoteState> gifEmotesOnScreen = null)
         {

@@ -26,9 +26,9 @@ namespace Chatterino.Common
 
         public const string TwitchEmoteTemplate = "https://static-cdn.jtvnw.net/emoticons/v1/{id}/1.0";
 
-        private const string twitchemotesGlobalCache = "./Cache/twitchemotes_global.json";
-        private const string bttvEmotesGlobalCache = "./Cache/bttv_global.json";
-        private const string ffzEmotesGlobalCache = "./Cache/ffz_global.json";
+        private static string twitchemotesGlobalCache = Path.Combine(Util.GetUserDataPath(), "Cache", "twitchemotes_global.json");
+        private static string bttvEmotesGlobalCache = Path.Combine(Util.GetUserDataPath(), "Cache", "bttv_global.json");
+        private static string ffzEmotesGlobalCache = Path.Combine(Util.GetUserDataPath(), "Cache", "ffz_global.json");
 
         static Emotes()
         {

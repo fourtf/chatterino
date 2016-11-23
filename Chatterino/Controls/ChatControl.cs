@@ -242,7 +242,7 @@ namespace Chatterino.Controls
 
             ColumnTabPage parent = Parent as ColumnTabPage;
 
-            if (parent != null)
+            if (e.Message.HighlightTab && parent != null)
             {
                 if (e.Message.HighlightType == HighlightType.Highlighted || e.Message.HighlightType == HighlightType.Whisper)
                 {
@@ -295,7 +295,11 @@ namespace Chatterino.Controls
 
         private void Channel_ChatCleared(object sender, ChatClearedEventArgs e)
         {
-            this.Invoke(() => Invalidate());
+            this.Invoke(() =>
+            {
+                updateMessageBounds();
+                Invalidate();
+            });
         }
 
         private void Channel_RoomStateChanged(object sender, EventArgs e)
@@ -730,6 +734,10 @@ namespace Chatterino.Controls
                 contextMenu.MenuItems.Add(new MenuItem("Open Channel", (s, e) => { GuiEngine.Current.HandleLink(new Link(LinkType.Url, selected.Channel.ChannelLink)); }));
                 contextMenu.MenuItems.Add(new MenuItem("Open Pop-out Player", (s, e) => { GuiEngine.Current.HandleLink(new Link(LinkType.Url, selected.Channel.PopoutPlayerLink)); }));
                 contextMenu.MenuItems.Add("-");
+                contextMenu.MenuItems.Add(new MenuItem("Reload Channel Emotes", (s, e) =>
+                {
+                    selected.Channel.ReloadEmotes();
+                }));
                 contextMenu.MenuItems.Add(new MenuItem("Manual Reconnect", (s, e) =>
                 {
                     IrcManager.Client.Reconnect();

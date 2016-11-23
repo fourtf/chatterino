@@ -60,7 +60,7 @@ namespace Chatterino
         public static Controls.SettingsDialog SettingsDialog { get; set; }
 
         static Controls.ToolTip ToolTip { get; set; } = null;
-        static Controls.EmoteListPopup EmoteList { get; set; } = null;
+        public static Controls.EmoteListPopup EmoteList { get; set; } = null;
 
         private static bool windowFocused = true;
 
@@ -94,9 +94,18 @@ namespace Chatterino
             CurrentVersion = VersionNumber.Parse(
                     AssemblyName.GetAssemblyName(Assembly.GetExecutingAssembly().Location).Version.ToString());
 
-            if (File.Exists("./update2"))
+            if (!File.Exists("./removeupdatenew") && Directory.Exists("./Updater.new"))
             {
-                UpdaterPath = Path.Combine(new FileInfo(Assembly.GetEntryAssembly().Location).Directory.FullName, "Updater2", "Chatterino.Updater.exe");
+                UpdaterPath = Path.Combine(new FileInfo(Assembly.GetEntryAssembly().Location).Directory.FullName,
+                    "Updater.new", "Chatterino.Updater.exe");
+            }
+            else
+            {
+                if (File.Exists("./update2"))
+                {
+                    UpdaterPath = Path.Combine(new FileInfo(Assembly.GetEntryAssembly().Location).Directory.FullName,
+                        "Updater2", "Chatterino.Updater.exe");
+                }
             }
 
             Directory.SetCurrentDirectory(new FileInfo(Assembly.GetEntryAssembly().Location).Directory.FullName);
@@ -130,7 +139,7 @@ namespace Chatterino
             };
 
             // Update gif emotes
-            new Timer { Interval = 33, Enabled = true }.Tick += (s, e) =>
+            new Timer { Interval = 30, Enabled = true }.Tick += (s, e) =>
                 {
                     if (AppSettings.ChatEnableGifAnimations)
                     {
@@ -256,8 +265,7 @@ namespace Chatterino
                             {
                                 using (WebClient client = new WebClient())
                                 {
-#warning asd
-                                    //client.DownloadFile(e.Url, Path.Combine(Util.GetUserDataPath(), "update.zip"));
+                                    client.DownloadFile(e.Url, Path.Combine(Util.GetUserDataPath(), "update.zip"));
                                 }
 
                                 installUpdatesOnExit = true;
@@ -317,14 +325,6 @@ namespace Chatterino
             // Install updates
             if (installUpdatesOnExit)
             {
-                //var info = new ProcessStartInfo(UpdaterPath)
-                //{
-                //    UseShellExecute = true,
-                //    Verb = "runas",
-                //    Arguments = restartAfterUpdates ? "--restart" : ""
-                //};
-                //Process.Start(info);
-
                 Process.Start(UpdaterPath, restartAfterUpdates ? "--restart" : "");
                 System.Threading.Thread.Sleep(1000);
             }

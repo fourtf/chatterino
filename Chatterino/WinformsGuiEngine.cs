@@ -203,7 +203,7 @@ namespace Chatterino
 
                         App.GifEmoteFramesUpdating += (s, e) =>
                         {
-                            currentFrameOffset += 4;
+                            currentFrameOffset += 3;
 
                             var oldCurrentFrame = currentFrame;
 

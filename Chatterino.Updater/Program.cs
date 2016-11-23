@@ -83,7 +83,26 @@ namespace Chatterino.Updater
                 catch
                 {
                 }
-                
+
+                if (new FileInfo(Assembly.GetEntryAssembly().Location).Directory.FullName.Contains("Updater.new"))
+                {
+                    File.WriteAllText("../removeupdatenew", "do not delete this file");
+                }
+                else
+                {
+                    if (File.Exists("../removeupdatenew"))
+                    {
+                        try
+                        {
+                            Directory.Delete("../Updater.new", true);
+                            File.Delete("../removeupdatenew");
+                        }
+                        catch
+                        {
+                        }
+                    }
+                }
+
                 if (options.RestartChatterino)
                 {
                     try

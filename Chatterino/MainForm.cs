@@ -595,7 +595,7 @@ namespace Chatterino
             //}
             //catch { }
 
-            if (tabControl.TabPages.Count() == 0)
+            if (!tabControl.TabPages.Any())
             {
                 tabControl.AddTab(new ColumnTabPage());
             }

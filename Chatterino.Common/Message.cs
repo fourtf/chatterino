@@ -14,6 +14,8 @@ namespace Chatterino.Common
     {
         public static bool EnablePings { get; set; } = true;
 
+        public bool HighlightTab { get; set; } = true;
+
         public int X { get; set; } = 0;
         public int Y { get; set; } = 0;
         public int TotalY { get; set; }
@@ -318,7 +320,25 @@ namespace Chatterino.Common
                 DisplayName = Username;
             }
 
-            var messageUser = (isSentWhisper ? IrcManager.Account.Username + " > " : "") + DisplayName + (isReceivedWhisper ? " > " + IrcManager.Account.Username : "") + (DisplayName.ToLower() != Username ? $" ({Username})" : "") + (slashMe ? "" : ":");
+            var messageUser = (isSentWhisper ? IrcManager.Account.Username + " -> " : "");
+
+            messageUser += DisplayName;
+
+            if (!isReceivedWhisper && !isSentWhisper)
+            {
+                messageUser += (DisplayName.ToLower() != Username ? $" ({Username})" : "");
+            }
+
+            if (isReceivedWhisper)
+            {
+                messageUser += " -> " + IrcManager.Account.Username;
+            }
+
+            if (!slashMe)
+            {
+                messageUser += ":";
+            }
+
             words.Add(new Word
             {
                 Type = SpanType.Text,
@@ -536,6 +556,11 @@ namespace Chatterino.Common
 
             RawMessage = text;
 
+            if (!isReceivedWhisper && AppSettings.HighlightIgnoredUsers.ContainsKey(Username))
+            {
+                HighlightTab = false;
+            }
+
             //w.Stop();
             //Console.WriteLine("Message parsed in " + w.Elapsed.TotalSeconds.ToString("0.000000") + " seconds");
         }
@@ -548,6 +573,8 @@ namespace Chatterino.Common
 
         public Message(string text, HSLColor? color, bool addTimeStamp)
         {
+            ParseTime = DateTime.Now;
+
             RawMessage = text;
             Words = new List<Word>();
 
@@ -571,6 +598,8 @@ namespace Chatterino.Common
 
         public Message(List<Word> words)
         {
+            ParseTime = DateTime.Now;
+
             RawMessage = "";
             Words = words;
         }
@@ -1054,7 +1083,8 @@ namespace Chatterino.Common
         private static Link createLink(string text)
         {
             string url = matchLink(text);
-            if (url == null) {
+            if (url == null)
+            {
                 return null;
             }
             return new Link(LinkType.Url, url);

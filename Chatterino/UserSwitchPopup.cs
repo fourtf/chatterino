@@ -17,6 +17,13 @@ namespace Chatterino
 
             KeyPreview = true;
 
+            TopMost = AppSettings.WindowTopMost;
+
+            AppSettings.WindowTopMostChanged += (s, e) =>
+            {
+                TopMost = AppSettings.WindowTopMost;
+            };
+
             // listview
             var listView = new ListView()
             {

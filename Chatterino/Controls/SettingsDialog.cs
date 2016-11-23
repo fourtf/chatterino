@@ -69,6 +69,9 @@ namespace Chatterino.Controls
                         {
                             AccountManager.AddAccount(loginForm.Account);
 
+                            IrcManager.Account = loginForm.Account;
+                            IrcManager.Connect();
+
                             var username = loginForm.Account.Username.ToLowerInvariant();
 
                             bool addGridViewItem = true;

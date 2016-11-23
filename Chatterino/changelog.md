@@ -1,5 +1,19 @@
 ﻿# changelog
 
+## 1.0.3
+- disabled hardware acceleration to take less performance when playing games
+- now also shows outgoing whispers in chat when inline whispers are enabled
+- some messages now don't highlight tabs anymore
+- emote list now gets brought to front when you click the button again
+- added option to reload channel emotes without restarting
+- timeout messages are now bundled
+
+## 1.0.2
+- fixed the broken updater, sorry for the inconvenience NotLikeThis
+
+## 1.0.1
+- fixed cache being saved to the wrong directory causing bttv emotes not to show
+
 ## 1.0
 - moved all the settings to %appdata%
 - added support for multiple accounts (aka the feature nobody asked for)

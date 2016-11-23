@@ -37,6 +37,18 @@ namespace Chatterino.Common
                         IrcMessage.TryParse($":{name}!{name}@{name}.tmi.twitch.tv PRIVMSG #whispers :" + s.SubstringFromWordIndex(1), out message);
 
                         TwitchChannel.WhisperChannel.AddMessage(new Message(message, TwitchChannel.WhisperChannel, isSentWhisper: true));
+
+                        if (AppSettings.ChatEnableInlineWhispers)
+                        {
+                            var inlineMessage = new Message(message, TwitchChannel.WhisperChannel, true, false, isSentWhisper: true) { HighlightTab = false };
+
+                            inlineMessage.HighlightType = HighlightType.Whisper;
+
+                            foreach (var c in TwitchChannel.Channels)
+                            {
+                                c.AddMessage(inlineMessage);
+                            }
+                        }
                     }
                 }
 

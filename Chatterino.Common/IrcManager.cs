@@ -437,8 +437,6 @@ namespace Chatterino.Common
 
         public static event EventHandler<ValueEventArgs<string>> NoticeAdded;
 
-        static ConcurrentDictionary<Tuple<string, string>, object> recentChatClears = new ConcurrentDictionary<Tuple<string, string>, object>();
-
         private static void ReadConnection_MessageReceived(object sender, MessageEventArgs e)
         {
             var msg = e.Message;
@@ -465,7 +463,7 @@ namespace Chatterino.Common
 
                                 if (message.HighlightType == HighlightType.Highlighted)
                                 {
-                                    Message mentionMessage = new Message(msg, c, includeChannel: true);
+                                    Message mentionMessage = new Message(msg, c, enablePingSound: false, includeChannel: true) { HighlightType = HighlightType.None };
 
                                     TwitchChannel.MentionsChannel.AddMessage(mentionMessage);
                                 }
@@ -562,13 +560,11 @@ namespace Chatterino.Common
             }
             else if (msg.Command == "WHISPER")
             {
-                var user = msg.PrefixNickname;
-
                 TwitchChannel.WhisperChannel.AddMessage(new Message(msg, TwitchChannel.WhisperChannel, true, false));
 
                 if (AppSettings.ChatEnableInlineWhispers)
                 {
-                    var inlineMessage = new Message(msg, TwitchChannel.WhisperChannel, true, false, true);
+                    var inlineMessage = new Message(msg, TwitchChannel.WhisperChannel, true, false, true) { HighlightTab = false };
 
                     inlineMessage.HighlightType = HighlightType.Whisper;
 
@@ -615,6 +611,10 @@ namespace Chatterino.Common
             {
                 TwitchChannel.GetChannel((msg.Middle ?? "").TrimStart('#')).Process(c =>
                 {
+                    string tmp;
+                    if (msg.Tags.TryGetValue("msg-id", out tmp) && tmp == "timeout_success")
+                        return;
+
                     Message message = new Message(msg.Params, null, true);
 
                     c.AddMessage(message);

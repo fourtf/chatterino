@@ -41,6 +41,8 @@ namespace Chatterino.Controls
                 if (loginForm.Account != null)
                 {
                     AccountManager.AddAccount(loginForm.Account);
+                    IrcManager.Account = loginForm.Account;
+                    IrcManager.Connect();
                 }
             }
         }

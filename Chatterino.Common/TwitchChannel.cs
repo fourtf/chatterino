@@ -242,8 +242,7 @@ namespace Chatterino.Common
 
                 Join();
 
-                string bttvChannelEmotesCache = $"./Cache/bttv_channel_{channelName}";
-                string ffzChannelEmotesCache = $"./Cache/ffz_channel_{channelName}";
+                ReloadEmotes();
 
                 // recent chat
                 Task.Run(() =>
@@ -303,11 +302,9 @@ namespace Chatterino.Common
 
                                     if (IrcMessage.TryParse(s, out msg))
                                     {
-                                        messages.Add(new Message(msg, this));
+                                        messages.Add(new Message(msg, this) { HighlightTab = false });
                                     }
                                 }
-
-                                ;
 
                                 //StreamReader reader = new StreamReader(stream);
                                 //string line;
@@ -327,180 +324,6 @@ namespace Chatterino.Common
                         }
                         catch { }
                     }
-                });
-
-                // bttv channel emotes
-                Task.Run(() =>
-                {
-                    try
-                    {
-                        JsonParser parser = new JsonParser();
-
-                        //if (!File.Exists(bttvChannelEmotesCache))
-                        {
-                            try
-                            {
-                                if (Util.IsLinux)
-                                {
-                                    Util.LinuxDownloadFile("https://api.betterttv.net/2/channels/" + channelName, bttvChannelEmotesCache);
-                                }
-                                else
-                                {
-                                    using (var webClient = new WebClient())
-                                    using (var readStream = webClient.OpenRead("https://api.betterttv.net/2/channels/" + channelName))
-                                    using (var writeStream = File.OpenWrite(bttvChannelEmotesCache))
-                                    {
-                                        readStream.CopyTo(writeStream);
-                                    }
-                                }
-                            }
-                            catch (Exception e)
-                            {
-                                e.Message.Log("emotes");
-                            }
-                        }
-
-                        using (var stream = File.OpenRead(bttvChannelEmotesCache))
-                        {
-                            dynamic json = parser.Parse(stream);
-                            var template = "https:" + json["urlTemplate"]; //{{id}} {{image}}
-
-                            foreach (dynamic e in json["emotes"])
-                            {
-                                string id = e["id"];
-                                string code = e["code"];
-                                string channel = e["channel"];
-
-                                TwitchEmote emote;
-                                if (Emotes.BttvChannelEmotesCache.TryGetValue(id, out emote))
-                                {
-                                    BttvChannelEmotes[code] = emote;
-                                }
-                                else
-                                {
-                                    string imageType = e["imageType"];
-                                    string url = template.Replace("{{id}}", id).Replace("{{image}}", "1x");
-                                    Emotes.BttvChannelEmotesCache[id] = BttvChannelEmotes[code] = new TwitchEmote { Name = code, Url = url, Tooltip = code + "\nBetterTTV Channel Emote\nChannel: " + channel };
-                                }
-                            }
-                        }
-                        updateEmoteNameList();
-                    }
-                    catch { }
-                });
-
-                // ffz channel emotes
-                Task.Run(() =>
-                {
-                    try
-                    {
-                        JsonParser parser = new JsonParser();
-
-                        //if (!File.Exists(ffzChannelEmotesCache))
-                        {
-                            try
-                            {
-                                if (Util.IsLinux)
-                                {
-                                    Util.LinuxDownloadFile("http://api.frankerfacez.com/v1/room/" + channelName, ffzChannelEmotesCache);
-                                }
-                                else
-                                {
-                                    using (var webClient = new WebClient())
-                                    using (var readStream = webClient.OpenRead("http://api.frankerfacez.com/v1/room/" + channelName))
-                                    using (var writeStream = File.OpenWrite(ffzChannelEmotesCache))
-                                    {
-                                        readStream.CopyTo(writeStream);
-                                    }
-                                }
-                            }
-                            catch (Exception e)
-                            {
-                                e.Message.Log("emotes");
-                            }
-                        }
-
-                        using (var stream = File.OpenRead(ffzChannelEmotesCache))
-                        {
-                            dynamic json = parser.Parse(stream);
-
-                            dynamic room = json["room"];
-
-                            try
-                            {
-                                object moderator;
-
-                                if (room.TryGetValue("moderator_badge", out moderator))
-                                {
-                                    if (moderator != null && !string.IsNullOrWhiteSpace((string)moderator))
-                                    {
-                                        var url = "https:" + (moderator as string);
-                                        ModeratorBadge = new TwitchEmote
-                                        {
-                                            Url = url,
-                                            Tooltip = "custom moderator badge\nFFZ",
-                                            LoadAction = () =>
-                                            {
-                                                try
-                                                {
-                                                    object img;
-
-                                                    WebRequest request = WebRequest.Create(url);
-                                                    using (var response = request.GetResponse())
-                                                    using (var s = response.GetResponseStream())
-                                                    {
-                                                        img = GuiEngine.Current.ReadImageFromStream(s);
-                                                    }
-
-                                                    GuiEngine.Current.FreezeImage(img);
-
-                                                    return GuiEngine.Current.DrawImageBackground(img, HSLColor.FromRGB(0x45A41E));
-                                                }
-                                                catch
-                                                {
-                                                    return null;
-                                                }
-                                            }
-                                        };
-                                    }
-                                }
-                            }
-                            catch { }
-
-                            dynamic sets = json["sets"];
-
-                            foreach (dynamic set in sets.Values)
-                            {
-                                string title = set["title"];
-
-                                dynamic emoticons = set["emoticons"];
-
-                                foreach (dynamic emoticon in emoticons)
-                                {
-                                    string code = emoticon["name"];
-                                    string id = emoticon["id"];
-                                    dynamic owner = emoticon["owner"];
-                                    string ownerName = owner["display_name"];
-
-                                    dynamic urls = emoticon["urls"];
-
-                                    string url = "http:" + urls["1"];
-
-                                    TwitchEmote emote;
-                                    if (Emotes.FfzChannelEmotesCache.TryGetValue(id, out emote))
-                                    {
-                                        FfzChannelEmotes[code] = emote;
-                                    }
-                                    else
-                                    {
-                                        Emotes.FfzChannelEmotesCache[id] = FfzChannelEmotes[code] = new TwitchEmote { Name = code, Url = url, Tooltip = code + "\nFFZ Channel Emote\nChannel: " + ownerName };
-                                    }
-                                }
-                            }
-                        }
-                        updateEmoteNameList();
-                    }
-                    catch { }
                 });
 
                 // get chatters
@@ -531,12 +354,12 @@ namespace Chatterino.Common
 
         private void IrcManager_Connected(object sender, EventArgs e)
         {
-            AddMessage(new Message("connected to chat", HSLColor.Gray, true));
+            AddMessage(new Message("connected to chat", HSLColor.Gray, true) { HighlightTab = false });
         }
 
         private void IrcManager_Disconnected(object sender, EventArgs e)
         {
-            AddMessage(new Message("disconnected from chat", HSLColor.Gray, true));
+            AddMessage(new Message("disconnected from chat", HSLColor.Gray, true) { HighlightTab = false });
         }
 
         private void IrcManager_NoticeAdded(object sender, ValueEventArgs<string> e)
@@ -770,33 +593,38 @@ namespace Chatterino.Common
 
         public void ClearChat(string user, string reason, int duration)
         {
-            lock (MessageLock)
+            Monitor.Enter(MessageLock);
+
+            foreach (Message msg in Messages)
             {
-                foreach (Message msg in Messages)
+                if (msg.HighlightType != HighlightType.Whisper && msg.Username == user)
                 {
-                    if (msg.Username == user)
+                    msg.Disabled = true;
+                }
+            }
+
+            for (int i = Messages.Length - 1; i >= 0; i--)
+            {
+                var m = Messages[i];
+
+                if (m.ParseTime > DateTime.Now - TimeSpan.FromSeconds(30))
+                {
+                    if (m.TimeoutUser == user)
                     {
-                        msg.Disabled = true;
+                        Messages[i] = new Message($"{user} was timed out for {duration} second{(duration != 1 ? "s" : "")}: \"{reason}\" (multiple times)") { TimeoutUser = user };
+                        Monitor.Exit(MessageLock);
+
+                        ChatCleared?.Invoke(this, new ChatClearedEventArgs(user, reason, duration));
+                        return;
                     }
                 }
-
-                //for (int i = Messages.Length - 1; i >= 0; i--)
-                //{
-                //    var m = Messages[i];
-
-                //    if (m.ParseTime > DateTime.Now - TimeSpan.FromSeconds(30))
-                //    {
-                //        if (m.TimeoutUser == user)
-                //        {
-
-                //        }
-                //    }
-                //    else
-                //    {
-                //        break;
-                //    }
-                //}
+                else
+                {
+                    break;
+                }
             }
+
+            Monitor.Exit(MessageLock);
 
             AddMessage(new Message($"{user} was timed out for {duration} second{(duration != 1 ? "s" : "")}: \"{reason}\"") { TimeoutUser = user });
 
@@ -873,6 +701,188 @@ namespace Chatterino.Common
             IrcManager.Disconnected -= IrcManager_Disconnected;
             IrcManager.NoticeAdded -= IrcManager_NoticeAdded;
             AppSettings.MessageLimitChanged -= AppSettings_MessageLimitChanged;
+        }
+
+        public void ReloadEmotes()
+        {
+            var channelName = Name;
+
+            string bttvChannelEmotesCache = Path.Combine(Util.GetUserDataPath(), "Cache", $"bttv_channel_{channelName}");
+            string ffzChannelEmotesCache = Path.Combine(Util.GetUserDataPath(), "Cache", $"ffz_channel_{channelName}");
+
+            // bttv channel emotes
+            Task.Run(() =>
+            {
+                try
+                {
+                    JsonParser parser = new JsonParser();
+
+                    //if (!File.Exists(bttvChannelEmotesCache))
+                    {
+                        try
+                        {
+                            if (Util.IsLinux)
+                            {
+                                Util.LinuxDownloadFile("https://api.betterttv.net/2/channels/" + channelName, bttvChannelEmotesCache);
+                            }
+                            else
+                            {
+                                using (var webClient = new WebClient())
+                                using (var readStream = webClient.OpenRead("https://api.betterttv.net/2/channels/" + channelName))
+                                using (var writeStream = File.OpenWrite(bttvChannelEmotesCache))
+                                {
+                                    readStream.CopyTo(writeStream);
+                                }
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            e.Message.Log("emotes");
+                        }
+                    }
+
+                    using (var stream = File.OpenRead(bttvChannelEmotesCache))
+                    {
+                        dynamic json = parser.Parse(stream);
+                        var template = "https:" + json["urlTemplate"]; //{{id}} {{image}}
+
+                        foreach (dynamic e in json["emotes"])
+                        {
+                            string id = e["id"];
+                            string code = e["code"];
+                            string channel = e["channel"];
+
+                            TwitchEmote emote;
+                            if (Emotes.BttvChannelEmotesCache.TryGetValue(id, out emote))
+                            {
+                                BttvChannelEmotes[code] = emote;
+                            }
+                            else
+                            {
+                                string imageType = e["imageType"];
+                                string url = template.Replace("{{id}}", id).Replace("{{image}}", "1x");
+                                Emotes.BttvChannelEmotesCache[id] = BttvChannelEmotes[code] = new TwitchEmote { Name = code, Url = url, Tooltip = code + "\nBetterTTV Channel Emote\nChannel: " + channel };
+                            }
+                        }
+                    }
+                    updateEmoteNameList();
+                }
+                catch { }
+            });
+
+            // ffz channel emotes
+            Task.Run(() =>
+            {
+                try
+                {
+                    JsonParser parser = new JsonParser();
+
+                    //if (!File.Exists(ffzChannelEmotesCache))
+                    {
+                        try
+                        {
+                            if (Util.IsLinux)
+                            {
+                                Util.LinuxDownloadFile("http://api.frankerfacez.com/v1/room/" + channelName, ffzChannelEmotesCache);
+                            }
+                            else
+                            {
+                                using (var webClient = new WebClient())
+                                using (var readStream = webClient.OpenRead("http://api.frankerfacez.com/v1/room/" + channelName))
+                                using (var writeStream = File.OpenWrite(ffzChannelEmotesCache))
+                                {
+                                    readStream.CopyTo(writeStream);
+                                }
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            e.Message.Log("emotes");
+                        }
+                    }
+
+                    using (var stream = File.OpenRead(ffzChannelEmotesCache))
+                    {
+                        dynamic json = parser.Parse(stream);
+
+                        dynamic room = json["room"];
+
+                        try
+                        {
+                            object moderator;
+
+                            if (room.TryGetValue("moderator_badge", out moderator))
+                            {
+                                if (moderator != null && !string.IsNullOrWhiteSpace((string)moderator))
+                                {
+                                    var url = "https:" + (moderator as string);
+                                    ModeratorBadge = new TwitchEmote
+                                    {
+                                        Url = url,
+                                        Tooltip = "custom moderator badge\nFFZ",
+                                        LoadAction = () =>
+                                        {
+                                            try
+                                            {
+                                                object img;
+
+                                                WebRequest request = WebRequest.Create(url);
+                                                using (var response = request.GetResponse())
+                                                using (var s = response.GetResponseStream())
+                                                {
+                                                    img = GuiEngine.Current.ReadImageFromStream(s);
+                                                }
+
+                                                GuiEngine.Current.FreezeImage(img);
+
+                                                return GuiEngine.Current.DrawImageBackground(img, HSLColor.FromRGB(0x45A41E));
+                                            }
+                                            catch
+                                            {
+                                                return null;
+                                            }
+                                        }
+                                    };
+                                }
+                            }
+                        }
+                        catch { }
+
+                        dynamic sets = json["sets"];
+
+                        foreach (dynamic set in sets.Values)
+                        {
+                            string title = set["title"];
+
+                            dynamic emoticons = set["emoticons"];
+
+                            foreach (dynamic emoticon in emoticons)
+                            {
+                                string code = emoticon["name"];
+                                string id = emoticon["id"];
+                                dynamic owner = emoticon["owner"];
+                                string ownerName = owner["display_name"];
+
+                                dynamic urls = emoticon["urls"];
+
+                                string url = "http:" + urls["1"];
+
+                                TwitchEmote emote;
+                                if (Emotes.FfzChannelEmotesCache.TryGetValue(id, out emote))
+                                {
+                                    FfzChannelEmotes[code] = emote;
+                                }
+                                else
+                                {
+                                    Emotes.FfzChannelEmotesCache[id] = FfzChannelEmotes[code] = new TwitchEmote { Name = code, Url = url, Tooltip = code + "\nFFZ Channel Emote\nChannel: " + ownerName };
+                                }
+                            }
+                        }
+                    }
+                    updateEmoteNameList();
+                }
+                catch { }
+            });
         }
     }
 }

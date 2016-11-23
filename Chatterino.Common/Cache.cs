@@ -14,7 +14,7 @@ namespace Chatterino.Common
         {
             try
             {
-                Directory.CreateDirectory("./Cache");
+                Directory.CreateDirectory(Path.Combine(Util.GetUserDataPath(), "Cache"));
             }
             catch (Exception) { }
 
@@ -82,7 +82,7 @@ namespace Chatterino.Common
     public class RoomIDCache : BaseCache
     {
         public RoomIDCache()
-            : base("./Cache/room_ids.json")
+            : base(Path.Combine(Util.GetUserDataPath(), "Cache", "room_ids.json"))
         {
 
         }

@@ -131,6 +131,7 @@ namespace Chatterino.Controls
             {
                 chatControl.Focus();
                 App.ShowEmoteList(chatControl.Channel);
+                App.EmoteList.BringToFront();
             };
 
             Controls.Add(emoteListButton);
