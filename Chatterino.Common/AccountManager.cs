@@ -62,8 +62,6 @@ namespace Chatterino.Common
             {
                 _accounts[account.Username.ToLowerInvariant()] = account;
             }
-
-            IrcManager.Account = account;
         }
 
         public static Account FromUsername(string username)

@@ -183,6 +183,7 @@ namespace Chatterino
                         File.Move("./Settings.ini", AppSettings.SavePath);
 
                         try
+
                         {
                             File.Delete("./Settings.ini");
                         }
@@ -197,6 +198,18 @@ namespace Chatterino
                         try
                         {
                             File.Delete("./Custom/Commands.txt");
+                        }
+                        catch { }
+                    }
+
+                    if (File.Exists("./Custom/Ping.wav") &&
+                        !File.Exists(Path.Combine(Util.GetUserDataPath(), "Custom", "Ping.wav")))
+                    {
+                        File.Move("./Custom/Ping.wav", Path.Combine(Util.GetUserDataPath(), "Custom", "Ping.wav"));
+
+                        try
+                        {
+                            File.Delete("./Custom/Ping.wav");
                         }
                         catch { }
                     }

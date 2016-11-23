@@ -38,12 +38,16 @@ namespace Chatterino.Controls
             {
                 loginForm.ShowDialog();
 
-                if (loginForm.Account != null)
+                loginForm.FormClosed += delegate
                 {
-                    AccountManager.AddAccount(loginForm.Account);
-                    IrcManager.Account = loginForm.Account;
-                    IrcManager.Connect();
-                }
+                    if (loginForm.Account != null)
+                    {
+                        AccountManager.AddAccount(loginForm.Account);
+
+                        IrcManager.Account = loginForm.Account;
+                        IrcManager.Connect();
+                    }
+                };
             }
         }
     }
