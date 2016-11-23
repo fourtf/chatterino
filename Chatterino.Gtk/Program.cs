@@ -3,6 +3,7 @@ using Chatterino.Gtk.Controls;
 using Gtk;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,7 +16,9 @@ namespace Chatterino.Gtk
         {
             Application.Init();
 
-            AppSettings.Load("./Settings.ini");
+            AppSettings.SavePath = Path.Combine(Util.GetUserDataPath(), "Settings.ini");
+
+            AppSettings.Load();
 
             MainWindow window = new MainWindow();
 
@@ -24,7 +27,7 @@ namespace Chatterino.Gtk
 
             Application.Run();
 
-            AppSettings.Save("./Settings.ini");
+            AppSettings.Save();
         }
     }
 }

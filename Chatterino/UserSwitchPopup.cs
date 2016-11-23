@@ -15,11 +15,14 @@ namespace Chatterino
         {
             FormBorderStyle = FormBorderStyle.None;
 
+            KeyPreview = true;
+
+            // listview
             var listView = new ListView()
             {
-                Dock = DockStyle.Fill,
                 Font = new Font("Segoe UI", 14f),
                 View = View.List,
+                Size = new Size(Width, Height - 32)
             };
 
             Controls.Add(listView);
@@ -38,6 +41,47 @@ namespace Chatterino
 
                 Close();
             };
+
+            // button
+            var manageAccountsButton = new Button()
+            {
+                AutoSize = true,
+                Text = "Manage Accounts",
+            };
+
+            manageAccountsButton.Location = new Point(8, Height - (manageAccountsButton.Height + 32) / 2);
+
+            manageAccountsButton.Click += (s, e) =>
+            {
+                Close();
+
+                App.ShowSettings();
+                App.SettingsDialog.Show("Accounts");
+            };
+
+            Controls.Add(manageAccountsButton);
+
+            // hotkey
+            var label = new Label
+            {
+                Text = "Hotkey: Ctrl+U",
+                AutoSize = true,
+            };
+
+            label.Location = new Point(Width - label.Width, manageAccountsButton.Location.Y + 5);
+
+            Controls.Add(label);
+        }
+
+        protected override void OnKeyDown(KeyEventArgs e)
+        {
+            base.OnKeyDown(e);
+
+            if (e.KeyCode == Keys.Escape)
+            {
+                DialogResult = DialogResult.Cancel;
+                Close();
+            }
         }
 
         protected override void OnDeactivate(EventArgs e)

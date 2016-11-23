@@ -50,7 +50,10 @@ namespace Chatterino
             {
                 AppSettings.CurrentVersion = App.CurrentVersion.ToString();
 
-                ShowChangelog();
+                if (App.CanShowChangelogs)
+                {
+                    ShowChangelog();
+                }
             }
 #endif
 
@@ -128,6 +131,9 @@ namespace Chatterino
         {
             switch (keyData)
             {
+                case Keys.Control | Keys.U:
+                    tabControl.ShowUserSwitchPopup();
+                    break;
                 case Keys.Control | Keys.T:
                     AddNewSplit();
                     break;
@@ -588,6 +594,11 @@ namespace Chatterino
             //    }
             //}
             //catch { }
+
+            if (tabControl.TabPages.Count() == 0)
+            {
+                tabControl.AddTab(new ColumnTabPage());
+            }
 
             //if (columnLayoutControl1.Columns.Count == 0)
             //    AddChannel("fourtf");

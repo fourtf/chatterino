@@ -13,6 +13,10 @@ namespace Chatterino.Common
     {
         public static string CurrentVersion { get; set; } = "0.0";
 
+        public static string SelectedUser { get; set; } = "";
+
+        public static string SavePath { get; set; }
+
         // Theme
         public static event EventHandler ThemeChanged;
 
@@ -195,16 +199,21 @@ namespace Chatterino.Common
 
             foreach (var property in T.GetProperties())
             {
-                if (property.CanRead && property.CanWrite)
-                    Properties[property.Name] = property;
+                if (property.Name != "SavePath")
+                {
+                    if (property.CanRead && property.CanWrite)
+                        Properties[property.Name] = property;
+                }
             }
         }
 
 
         // IO
-        public static void Load(string path)
+        public static void Load()
         {
-            IniSettings settings = new IniSettings();
+            var path = SavePath;
+
+            var settings = new IniSettings();
             settings.Load(path);
 
             foreach (var prop in Properties.Values)
@@ -239,9 +248,11 @@ namespace Chatterino.Common
             }
         }
 
-        public static void Save(string path)
+        public static void Save()
         {
-            IniSettings settings = new IniSettings();
+            var path = SavePath;
+
+            var settings = new IniSettings();
 
             foreach (var prop in Properties.Values)
             {

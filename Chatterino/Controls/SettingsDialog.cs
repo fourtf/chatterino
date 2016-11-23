@@ -548,6 +548,11 @@ namespace Chatterino.Controls
             //btnResetAll.Click += new EventHandler(btnResetAll_Click);
             //tabs.Panel.Controls.Add(btnResetAll);
             //x += 12 + btnResetAll.Width;
+
+            Closed += (s, e) =>
+            {
+                AppSettings.Save();
+            };
         }
 
         //event EventHandler onSave;

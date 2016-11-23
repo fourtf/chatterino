@@ -367,7 +367,7 @@ namespace Chatterino.Controls
 
                                 if (highlight.Style == ScrollBarHighlightStyle.SingleLine)
                                 {
-                                    y += (int)((h / Maximum) - 2);
+                                    y += (int)((h / Maximum) - 1);
                                 }
 
                                 int a = 0;

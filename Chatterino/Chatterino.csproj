@@ -156,6 +156,12 @@
     <Compile Include="Controls\UserInfoPopup.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Controls\WelcomeForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Controls\WelcomeForm.Designer.cs">
+      <DependentUpon>WelcomeForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Extensions.cs" />
     <Compile Include="Controls\ChatControl.cs">
       <SubType>Component</SubType>
@@ -221,6 +227,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\UserInfoPopup.resx">
       <DependentUpon>UserInfoPopup.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\WelcomeForm.resx">
+      <DependentUpon>WelcomeForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
@@ -293,6 +302,7 @@
   <ItemGroup>
     <Content Include="Controls\CustomFontDialog\LICENSE.txt" />
     <Content Include="icon2.ico" />
+    <None Include="Resources\screenshot_user.png" />
     <None Include="Resources\UserProfile_22x.png" />
     <None Include="Resources\twitchprime_bg.png" />
     <None Include="Resources\CopyLongTextToClipboard_16x.png" />

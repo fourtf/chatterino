@@ -576,6 +576,7 @@ namespace Chatterino.Common
         static TwitchChannel()
         {
             WhisperChannel?.AddMessage(new Message("Please note that chatterino can only read whispers while it is running!", null, true));
+            WhisperChannel?.AddMessage(new Message("You can send whispers using the \"/w user message\" command!", null, true));
             MentionsChannel?.AddMessage(new Message("Please note that chatterino can only read mentions while it is running!", null, true));
 
             refreshChatterListTimer.Elapsed += (s, e) =>

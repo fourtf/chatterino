@@ -30,10 +30,7 @@ namespace Chatterino.Common
 
         public static IEnumerable<string> IgnoredUsers
         {
-            get
-            {
-                return twitchBlockedUsers.Keys;
-            }
+            get { return twitchBlockedUsers.Keys; }
         }
 
         // Static Ctor
@@ -51,6 +48,29 @@ namespace Chatterino.Common
 
             // Login
             string username = Account.Username, oauth = Account.OauthToken, clientId = Account.ClientId;
+
+            try
+            {
+                if (Account.IsAnon)
+                {
+                    if (AppSettings.SelectedUser != "")
+                    {
+                        AppSettings.SelectedUser = "";
+                        AppSettings.Save();
+                    }
+                }
+                else
+                {
+                    if (!string.Equals(username, AppSettings.SelectedUser))
+                    {
+                        AppSettings.SelectedUser = username;
+                        AppSettings.Save();
+                    }
+                }
+            }
+            catch
+            {
+            }
 
             LoggedIn?.Invoke(null, EventArgs.Empty);
 

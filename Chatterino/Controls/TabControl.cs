@@ -112,13 +112,7 @@ namespace Chatterino.Controls
 
             userButton.Click += (s, e) =>
             {
-                var loc = userButton.PointToScreen(new Point(0, userButton.Height));
-
-                new UserSwitchPopup
-                {
-                    StartPosition = FormStartPosition.Manual,
-                    Location = loc
-                }.Show();
+                ShowUserSwitchPopup();
             };
 
             // add tab button
@@ -133,6 +127,17 @@ namespace Chatterino.Controls
             // colors
             App_ColorSchemeChanged(null, null);
             App.ColorSchemeChanged += App_ColorSchemeChanged;
+        }
+
+        public void ShowUserSwitchPopup()
+        {
+            var loc = userButton.PointToScreen(new Point(0, userButton.Height));
+
+            new UserSwitchPopup
+            {
+                StartPosition = FormStartPosition.Manual,
+                Location = loc
+            }.Show();
         }
 
         protected override void Dispose(bool disposing)

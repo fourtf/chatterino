@@ -10,7 +10,9 @@ using System.Net;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web.SessionState;
 using System.Windows.Forms;
+using Chatterino.Controls;
 
 namespace Chatterino
 {
@@ -20,6 +22,9 @@ namespace Chatterino
         public static VersionNumber CurrentVersion { get; private set; }
         private static bool installUpdatesOnExit = false;
         private static bool restartAfterUpdates = false;
+
+        public static bool CanShowChangelogs { get; private set; } = true;
+        public static string UpdaterPath { get; private set; } = Path.Combine(new FileInfo(Assembly.GetEntryAssembly().Location).Directory.FullName, "Updater", "Chatterino.Updater.exe");
 
         // Drawing
         public static bool UseDirectX { get; private set; } = false;
@@ -58,10 +63,15 @@ namespace Chatterino
         static Controls.EmoteListPopup EmoteList { get; set; } = null;
 
         private static bool windowFocused = true;
+
         public static bool WindowFocused
         {
             get { return windowFocused; }
-            set { windowFocused = value; Common.Message.EnablePings = !value; }
+            set
+            {
+                windowFocused = value;
+                Common.Message.EnablePings = !value;
+            }
         }
 
         // Emotes
@@ -81,7 +91,13 @@ namespace Chatterino
         [STAThread]
         static void Main()
         {
-            CurrentVersion = VersionNumber.Parse(AssemblyName.GetAssemblyName(Assembly.GetExecutingAssembly().Location).Version.ToString());
+            CurrentVersion = VersionNumber.Parse(
+                    AssemblyName.GetAssemblyName(Assembly.GetExecutingAssembly().Location).Version.ToString());
+
+            if (File.Exists("./update2"))
+            {
+                UpdaterPath = Path.Combine(new FileInfo(Assembly.GetEntryAssembly().Location).Directory.FullName, "Updater2", "Chatterino.Updater.exe");
+            }
 
             Directory.SetCurrentDirectory(new FileInfo(Assembly.GetEntryAssembly().Location).Directory.FullName);
 
@@ -92,8 +108,6 @@ namespace Chatterino
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-
-            AccountManager.LoadFromJson(Path.Combine(Util.GetUserDataPath(), "Login.json"));
 
             //SetProcessDpiAwareness(_Process_DPI_Awareness.Process_Per_Monitor_DPI_Aware);
 
@@ -117,16 +131,92 @@ namespace Chatterino
 
             // Update gif emotes
             new Timer { Interval = 33, Enabled = true }.Tick += (s, e) =>
-            {
-                if (AppSettings.ChatEnableGifAnimations)
                 {
-                    GifEmoteFramesUpdating?.Invoke(null, EventArgs.Empty);
-                    GifEmoteFramesUpdated?.Invoke(null, EventArgs.Empty);
-                }
-            };
+                    if (AppSettings.ChatEnableGifAnimations)
+                    {
+                        GifEmoteFramesUpdating?.Invoke(null, EventArgs.Empty);
+                        GifEmoteFramesUpdated?.Invoke(null, EventArgs.Empty);
+                    }
+                };
 
             // Settings/Colors
-            AppSettings.Load(Path.Combine(Util.GetUserDataPath(), "Settings.ini"));
+            try
+            {
+                if (!Directory.Exists(Util.GetUserDataPath()))
+                {
+                    Directory.CreateDirectory(Util.GetUserDataPath());
+                }
+
+                if (!Directory.Exists(Path.Combine(Util.GetUserDataPath(), "Custom")))
+                {
+                    Directory.CreateDirectory(Path.Combine(Util.GetUserDataPath(), "Custom"));
+                }
+            }
+            catch
+            {
+
+            }
+
+            AppSettings.SavePath = Path.Combine(Util.GetUserDataPath(), "Settings.ini");
+
+            bool showWelcomeForm = false;
+
+            try
+            {
+                if (!File.Exists(AppSettings.SavePath))
+                {
+                    CanShowChangelogs = false;
+
+                    showWelcomeForm = true;
+
+                    if (File.Exists("./Settings.ini") && !File.Exists(AppSettings.SavePath))
+                    {
+                        File.Move("./Settings.ini", AppSettings.SavePath);
+
+                        try
+                        {
+                            File.Delete("./Settings.ini");
+                        }
+                        catch { }
+                    }
+
+                    if (File.Exists("./Custom/Commands.txt") &&
+                        !File.Exists(Path.Combine(Util.GetUserDataPath(), "Custom", "Commands.txt")))
+                    {
+                        File.Move("./Custom/Commands.txt", Path.Combine(Util.GetUserDataPath(), "Custom", "Commands.txt"));
+
+                        try
+                        {
+                            File.Delete("./Custom/Commands.txt");
+                        }
+                        catch { }
+                    }
+
+                    if (File.Exists("./Layout.xml") &&
+                        !File.Exists(Path.Combine(Util.GetUserDataPath(), "Layout.xml")))
+                    {
+                        File.Move("./Layout.xml", Path.Combine(Util.GetUserDataPath(), "Layout.xml"));
+
+                        try
+                        {
+                            File.Delete("./Layout.xml");
+                        }
+                        catch { }
+                    }
+                }
+            }
+            catch
+            {
+
+            }
+
+            AppSettings.Load();
+
+            AccountManager.LoadFromJson(Path.Combine(Util.GetUserDataPath(), "Login.json"));
+
+            IrcManager.Account = AccountManager.FromUsername(AppSettings.SelectedUser) ?? Account.AnonAccount;
+            IrcManager.Connect();
+
             Commands.LoadOrDefault(Path.Combine(Util.GetUserDataPath(), "Custom", "Commands.txt"));
             Cache.Load();
 
@@ -135,28 +225,28 @@ namespace Chatterino
             AppSettings.ThemeChanged += (s, e) => updateTheme();
 
             // Check for updates
-            try
-            {
-                string updaterPath = Path.Combine(Util.GetUserDataPath(), "Updater");
-                string newUpdaterPath = Path.Combine(Util.GetUserDataPath(), "Updater.new");
+            //try
+            //{
+            //    string updaterPath = "./Updater";
+            //    string newUpdaterPath = "./Updater.new";
 
-                if (Directory.Exists(newUpdaterPath))
-                {
-                    if (Directory.Exists(updaterPath))
-                        Directory.Delete(updaterPath, true);
+            //    if (Directory.Exists(newUpdaterPath))
+            //    {
+            //        if (Directory.Exists(updaterPath))
+            //            Directory.Delete(updaterPath, true);
 
-                    Directory.Move(newUpdaterPath, updaterPath);
-                }
-            }
-            catch { }
+            //        Directory.Move(newUpdaterPath, updaterPath);
+            //    }
+            //}
+            //catch { }
 
             Updates.UpdateFound += (s, e) =>
             {
                 try
                 {
-                    using (Controls.UpdateDialog dialog = new Controls.UpdateDialog())
+                    using (UpdateDialog dialog = new UpdateDialog())
                     {
-                        if (File.Exists(Path.Combine(Util.GetUserDataPath(), "Updater", "Chatterino.Updater.exe")))
+                        if (File.Exists(UpdaterPath))
                         {
                             var result = dialog.ShowDialog();
 
@@ -166,7 +256,8 @@ namespace Chatterino
                             {
                                 using (WebClient client = new WebClient())
                                 {
-                                    client.DownloadFile(e.Url, Path.Combine(Util.GetUserDataPath(), "Updater", "update.zip"));
+#warning asd
+                                    //client.DownloadFile(e.Url, Path.Combine(Util.GetUserDataPath(), "update.zip"));
                                 }
 
                                 installUpdatesOnExit = true;
@@ -194,7 +285,6 @@ namespace Chatterino
 #endif
 
             // Start irc
-            IrcManager.Connect();
             Emotes.LoadGlobalEmotes();
             Badges.LoadGlobalBadges();
 
@@ -203,20 +293,39 @@ namespace Chatterino
             // Show form
             MainForm = new MainForm();
 
-            Application.Run(MainForm);
+            MainForm.Show();
+
+            if (showWelcomeForm)
+            {
+                new WelcomeForm().Show();
+            }
+
+            MainForm.Closed += (s, e) =>
+            {
+                Application.Exit();
+            };
+
+            Application.Run();
 
             // Save settings
-            Cache.Save();
+            AppSettings.Save();
 
-            if (!Directory.Exists(Path.Combine(Util.GetUserDataPath(), "Custom")))
-                Directory.CreateDirectory(Path.Combine(Util.GetUserDataPath(), "Custom"));
+            Cache.Save();
 
             Commands.Save(Path.Combine(Util.GetUserDataPath(), "Custom", "Commands.txt"));
 
             // Install updates
             if (installUpdatesOnExit)
             {
-                Process.Start(Path.Combine(Util.GetUserDataPath(), "Updater", "Chatterino.Updater.exe"), restartAfterUpdates ? "--restart" : "");
+                //var info = new ProcessStartInfo(UpdaterPath)
+                //{
+                //    UseShellExecute = true,
+                //    Verb = "runas",
+                //    Arguments = restartAfterUpdates ? "--restart" : ""
+                //};
+                //Process.Start(info);
+
+                Process.Start(UpdaterPath, restartAfterUpdates ? "--restart" : "");
                 System.Threading.Thread.Sleep(1000);
             }
 
@@ -233,10 +342,12 @@ namespace Chatterino
         {
             if (SettingsDialog == null)
             {
-                SettingsDialog = new Controls.SettingsDialog();
+                SettingsDialog = new Controls.SettingsDialog
+                {
+                    StartPosition = FormStartPosition.Manual,
+                    Location = new Point(MainForm.Location.X + 32, MainForm.Location.Y + 64)
+                };
 
-                SettingsDialog.StartPosition = FormStartPosition.Manual;
-                SettingsDialog.Location = new Point(MainForm.Location.X + 32, MainForm.Location.Y + 64);
                 SettingsDialog.Show(MainForm);
                 SettingsDialog.FormClosing += (s, e) =>
                 {

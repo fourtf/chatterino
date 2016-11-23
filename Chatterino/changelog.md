@@ -1,10 +1,12 @@
 ﻿# changelog
 
 ## 1.0
-- added support for multiple accounts
+- moved all the settings to %appdata%
+- added support for multiple accounts (aka the feature nobody asked for)
 - added login via fourtf.com for users that can't open a tcp port
 - added /mentions tab (thanks to pajlada)
-- tab gets highlighted when you get a whispers
+- fixed gif emotes with 0s frames crashing chatterino
+- /whispers got updated
 
 ## 0.3.1.1
 - added ffz event emotes

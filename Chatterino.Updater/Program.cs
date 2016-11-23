@@ -16,9 +16,16 @@ namespace Chatterino.Updater
 {
     class Program
     {
+        private static bool update2 = false;
+
         static void Main(string[] args)
         {
             Directory.SetCurrentDirectory(new FileInfo(Assembly.GetEntryAssembly().Location).Directory.FullName);
+
+            if (File.Exists("../update2"))
+            {
+                update2 = true;
+            }
 
             var options = new Options();
             CommandLine.Parser.Default.ParseArguments(args, options);
@@ -26,14 +33,14 @@ namespace Chatterino.Updater
             Thread.Sleep(2000);
 
             bool locked = false;
-            
+
             try
             {
                 if (File.Exists("..\\Chatterino.exe"))
                 {
                     using (Stream stream = new FileStream("..\\Chatterino.exe", FileMode.Open))
                     {
-                        
+
                     }
                 }
             }
@@ -49,7 +56,10 @@ namespace Chatterino.Updater
                 Console.ReadKey();
             }
 
-            var exc = ExtractZipFile("update.zip", null, "..");
+            var exc =
+                ExtractZipFile(
+                    Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "Chatterino",
+                        "update.zip"), null, "..");
 
             if (exc != null)
             {
@@ -59,6 +69,21 @@ namespace Chatterino.Updater
             }
             else
             {
+                try
+                {
+                    if (update2)
+                    {
+                        File.Delete("../update2");
+                    }
+                    else
+                    {
+                        File.WriteAllText("../update2", "Don't delete this file, it could break the updating process!");
+                    }
+                }
+                catch
+                {
+                }
+                
                 if (options.RestartChatterino)
                 {
                     try
@@ -89,7 +114,10 @@ namespace Chatterino.Updater
                     byte[] buffer = new byte[4096];
                     Stream zipStream = zf.GetInputStream(zipEntry);
 
-                    entryFileName = Regex.Replace(entryFileName, @"^Updater/", "Updater.new/");
+                    if (!update2)
+                    {
+                        entryFileName = Regex.Replace(entryFileName, @"^Updater/", "Updater2/");
+                    }
 
                     string fullZipToPath = Path.Combine(outFolder, entryFileName);
                     string directoryName = Path.GetDirectoryName(fullZipToPath);
