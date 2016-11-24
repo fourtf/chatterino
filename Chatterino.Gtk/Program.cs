@@ -18,7 +18,12 @@ namespace Chatterino.Gtk
 
             AppSettings.SavePath = Path.Combine(Util.GetUserDataPath(), "Settings.ini");
 
+            GuiEngine.Initialize(new GtkGuiEngine());
+
+            Cache.Load();
             AppSettings.Load();
+
+            IrcManager.Connect();
 
             MainWindow window = new MainWindow();
 

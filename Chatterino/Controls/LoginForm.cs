@@ -49,13 +49,23 @@ namespace Chatterino.Controls
                             string answer = $@"<html>
 <head>
     <title>chatterino login</title>
+    <style>
+    body {{
+        font-family: ""Helvetica Neue"",Helvetica,Arial,sans-serif;
+        font-size: 16px;
+        font-weight: 400;
+        line-height: 1.5em;
+        background-color: #FbFbFb;
+        color: #555;
+    }}
+    </style>
 </head>
 <body>
     <h1>Redirecting</h1>
     <p>If your webbrowser does not redirect you automatically, click <a id='link'>here</a>.</p>
     <script type='text/javascript'>
         var link = 'http://127.0.0.1:5215/token?' + location.hash.substring(1);
-        window.location = link;
+        //window.location = link;
         document.getElementById('link').href = link; 
     </script>
 </body>
@@ -88,6 +98,16 @@ namespace Chatterino.Controls
                             string answer = $@"<html>
 <head>
     <title>chatterino login</title>
+    <style>
+    body {{
+        font-family: ""Helvetica Neue"",Helvetica,Arial,sans-serif;
+        font-size: 16px;
+        font-weight: 400;
+        line-height: 1.5em;
+        background-color: #FbFbFb;
+        color: #555;
+    }}
+    </style>
 </head>
 <body>
     <h1>Login Successful</h1>

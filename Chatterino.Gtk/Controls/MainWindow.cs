@@ -51,6 +51,10 @@ namespace Chatterino.Gtk.Controls
             IrcManager.LoggedIn += (s, e) => SetTitle();
 
             // gtk specific
+            var widget = new ChatWidget();
+            var channel = TwitchChannel.AddChannel("forsenlol");
+            widget.TwitchChannel = channel;
+            Add(widget);
         }
 
         protected override void OnHidden()
