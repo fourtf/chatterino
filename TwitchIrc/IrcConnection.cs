@@ -55,6 +55,7 @@ namespace TwitchIrc
         public void Dispose()
         {
             pingTimer.Elapsed -= pingTimer_Elapsed;
+            pingTimer.Dispose();
 
             client?.Close();
         }

@@ -122,8 +122,6 @@ namespace Chatterino.Controls
                             context.Response.OutputStream.Flush();
                             context.Response.Close();
 
-                            IrcManager.Connect();
-
                             this.Invoke(() => Close());
                         }
                     }
