@@ -11,6 +11,7 @@ using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Timers;
 using TwitchIrc;
 
 namespace Chatterino.Common
@@ -32,13 +33,29 @@ namespace Chatterino.Common
 
         protected int Uses { get; set; } = 0;
 
+        private bool _isLive;
+
+        public bool IsLive
+        {
+            get { return _isLive; }
+            private set
+            {
+                if (_isLive != value)
+                {
+                    _isLive = value;
+                    IsLiveChanged?.Invoke(this, new ValueEventArgs<bool>(value));
+                }
+            }
+        }
+
+        public event EventHandler<ValueEventArgs<bool>> IsLiveChanged;
 
         // Channel Emotes
         public ConcurrentDictionary<string, TwitchEmote> BttvChannelEmotes { get; private set; }
-            = new ConcurrentDictionary<string, TwitchEmote>();
+        = new ConcurrentDictionary<string, TwitchEmote>();
 
         public ConcurrentDictionary<string, TwitchEmote> FfzChannelEmotes { get; private set; }
-            = new ConcurrentDictionary<string, TwitchEmote>();
+        = new ConcurrentDictionary<string, TwitchEmote>();
 
 
         // Sub Badge
@@ -56,13 +73,18 @@ namespace Chatterino.Common
                         {
                             string imageUrl = null;
 
-                            var request = WebRequest.Create($"https://api.twitch.tv/kraken/chat/{Name}/badges?client_id={IrcManager.DefaultClientID}");
+                            var request =
+                                WebRequest.Create(
+                                    $"https://api.twitch.tv/kraken/chat/{Name}/badges?client_id={IrcManager.DefaultClientID}");
                             using (var response = request.GetResponse())
                             using (var stream = response.GetResponseStream())
                             {
                                 var json = new JsonParser().Parse(stream);
 
-                                imageUrl = (string)(((Dictionary<string, object>)((Dictionary<string, object>)json)["subscriber"])["image"]);
+                                imageUrl =
+                                    (string)
+                                    (((Dictionary<string, object>)
+                                        ((Dictionary<string, object>)json)["subscriber"])["image"]);
                             }
 
                             request = WebRequest.Create(imageUrl);
@@ -143,10 +165,7 @@ namespace Chatterino.Common
 
         public bool IsMod
         {
-            get
-            {
-                return isMod;
-            }
+            get { return isMod; }
             set
             {
                 if (isMod != value)
@@ -165,7 +184,8 @@ namespace Chatterino.Common
                 if (IrcManager.Account.IsAnon)
                     return false;
 
-                return IsMod || string.Equals(Name, IrcManager.Account.Username, StringComparison.InvariantCultureIgnoreCase);
+                return IsMod ||
+                       string.Equals(Name, IrcManager.Account.Username, StringComparison.InvariantCultureIgnoreCase);
             }
         }
 
@@ -207,7 +227,9 @@ namespace Chatterino.Common
             // call twitch kraken api
             try
             {
-                var request = WebRequest.Create($"https://api.twitch.tv/kraken/channels/{Name}?client_id={IrcManager.DefaultClientID}");
+                var request =
+                    WebRequest.Create(
+                        $"https://api.twitch.tv/kraken/channels/{Name}?client_id={IrcManager.DefaultClientID}");
                 using (var response = request.GetResponse())
                 using (var stream = response.GetResponseStream())
                 {
@@ -224,7 +246,9 @@ namespace Chatterino.Common
                     }
                 }
             }
-            catch { }
+            catch
+            {
+            }
 
             return false;
         }
@@ -253,7 +277,8 @@ namespace Chatterino.Common
                     {
                         try
                         {
-                            var request = WebRequest.Create($"https://badges.twitch.tv/v1/badges/channels/{RoomID}/display");
+                            var request =
+                                WebRequest.Create($"https://badges.twitch.tv/v1/badges/channels/{RoomID}/display");
                             using (var response = request.GetResponse())
                             using (var stream = response.GetResponseStream())
                             {
@@ -276,17 +301,26 @@ namespace Chatterino.Common
                                     string description = value["description"];
                                     string clickUrl = value["click_url"];
 
-                                    SubscriberBadges[months] = new TwitchEmote { Name = title, Url = imageUrl, Tooltip = "Subscriber Badge" + (months == 0 ? "" : $" ({months} months)") };
+                                    SubscriberBadges[months] = new TwitchEmote
+                                    {
+                                        Name = title,
+                                        Url = imageUrl,
+                                        Tooltip = "Subscriber Badge" + (months == 0 ? "" : $" ({months} months)")
+                                    };
                                 }
                             }
                         }
-                        catch { }
+                        catch
+                        {
+                        }
 
                         try
                         {
                             List<Message> messages = new List<Message>();
 
-                            var request = WebRequest.Create($"https://tmi.twitch.tv/api/rooms/{RoomID}/recent_messages?client_id={IrcManager.DefaultClientID}");
+                            var request =
+                                WebRequest.Create(
+                                    $"https://tmi.twitch.tv/api/rooms/{RoomID}/recent_messages?client_id={IrcManager.DefaultClientID}");
                             using (var response = request.GetResponse())
                             using (var stream = response.GetResponseStream())
                             {
@@ -322,7 +356,9 @@ namespace Chatterino.Common
 
                             AddMessagesAtStart(messages.ToArray());
                         }
-                        catch { }
+                        catch
+                        {
+                        }
                     }
                 });
 
@@ -331,6 +367,8 @@ namespace Chatterino.Common
                 {
                     fetchUsernames();
                 });
+
+                checkIfIsLive();
             }
 
             Emotes.EmotesLoaded += Emotes_EmotesLoaded;
@@ -379,7 +417,8 @@ namespace Chatterino.Common
                     Array.Copy(Messages, _messages, _messages.Length);
 
                     Message[] M = new Message[AppSettings.ChatMessageLimit];
-                    Array.Copy(Messages, Messages.Length - AppSettings.ChatMessageLimit, M, 0, AppSettings.ChatMessageLimit);
+                    Array.Copy(Messages, Messages.Length - AppSettings.ChatMessageLimit, M, 0,
+                        AppSettings.ChatMessageLimit);
 
                     Messages = M;
                 }
@@ -398,9 +437,12 @@ namespace Chatterino.Common
         // Channels
         static TwitchChannel()
         {
-            WhisperChannel?.AddMessage(new Message("Please note that chatterino can only read whispers while it is running!", null, true));
-            WhisperChannel?.AddMessage(new Message("You can send whispers using the \"/w user message\" command!", null, true));
-            MentionsChannel?.AddMessage(new Message("Please note that chatterino can only read mentions while it is running!", null, true));
+            WhisperChannel?.AddMessage(
+                new Message("Please note that chatterino can only read whispers while it is running!", null, true));
+            WhisperChannel?.AddMessage(new Message("You can send whispers using the \"/w user message\" command!", null,
+                true));
+            MentionsChannel?.AddMessage(
+                new Message("Please note that chatterino can only read mentions while it is running!", null, true));
 
             refreshChatterListTimer.Elapsed += (s, e) =>
             {
@@ -410,7 +452,49 @@ namespace Chatterino.Common
                 }
             };
             refreshChatterListTimer.Start();
+
+            UpdateIsLiveTimer.Elapsed += UpdateIsLiveTimerElapsed;
+            UpdateIsLiveTimer.Start();
+            UpdateIsLiveTimerElapsed(null, null);
         }
+
+        private void checkIfIsLive()
+        {
+            Task.Run(() =>
+            {
+                try
+                {
+                    var req =
+                        WebRequest.Create(
+                            $"https://api.twitch.tv/kraken/streams/{Name}?client_id={IrcManager.DefaultClientID}");
+
+                    using (var res = req.GetResponse())
+                    using (var stream = res.GetResponseStream())
+                    {
+                        var parser = new JsonParser();
+
+                        dynamic json = parser.Parse(stream);
+
+                        IsLive = json["stream"] != null;
+                    }
+                }
+                catch
+                {
+
+                }
+            });
+        }
+
+        private static void UpdateIsLiveTimerElapsed(object sender, ElapsedEventArgs args)
+        {
+            foreach (var channel in Channels)
+            {
+                channel.checkIfIsLive();
+            }
+        }
+
+
+        private static System.Timers.Timer UpdateIsLiveTimer = new System.Timers.Timer(1000 * 60);
 
         private static ConcurrentDictionary<string, TwitchChannel> channels = new ConcurrentDictionary<string, TwitchChannel>();
         public static IEnumerable<TwitchChannel> Channels { get { return channels.Values; } }

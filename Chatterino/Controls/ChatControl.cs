@@ -93,6 +93,7 @@ namespace Chatterino.Controls
                     channel.MessagesRemovedAtStart -= Channel_MessagesRemovedAtStart;
                     channel.ChatCleared -= Channel_ChatCleared;
                     channel.RoomStateChanged -= Channel_RoomStateChanged;
+                    channel.IsLiveChanged -= Channel_IsLiveChanged;
                     channel = null;
                     TwitchChannel.RemoveChannel(actualChannelName);
                 }
@@ -108,6 +109,7 @@ namespace Chatterino.Controls
                     channel.MessagesRemovedAtStart += Channel_MessagesRemovedAtStart;
                     channel.ChatCleared += Channel_ChatCleared;
                     channel.RoomStateChanged += Channel_RoomStateChanged;
+                    channel.IsLiveChanged += Channel_IsLiveChanged;
                 }
                 else
                 {
@@ -127,9 +129,14 @@ namespace Chatterino.Controls
             }
         }
 
+        private void Channel_IsLiveChanged(object sender, ValueEventArgs<bool> e)
+        {
+            this.Invoke(() => _header.Invalidate());
+        }
+
         // last message
-        int currentLastMessageIndex = 0;
-        List<string> lastMessages = new List<string> { "" };
+        int _currentLastMessageIndex = 0;
+        List<string> _lastMessages = new List<string> { "" };
 
         // ctor
         public ChatControl()
@@ -460,24 +467,24 @@ namespace Chatterino.Controls
 
                 // up + down
                 case Keys.Up:
-                    if (lastMessages.Count != 0)
+                    if (_lastMessages.Count != 0)
                     {
-                        if (currentLastMessageIndex > 0)
+                        if (_currentLastMessageIndex > 0)
                         {
-                            lastMessages[currentLastMessageIndex] = Input.Logic.Text;
-                            currentLastMessageIndex--;
-                            Input.Logic.SetText(lastMessages[currentLastMessageIndex]);
+                            _lastMessages[_currentLastMessageIndex] = Input.Logic.Text;
+                            _currentLastMessageIndex--;
+                            Input.Logic.SetText(_lastMessages[_currentLastMessageIndex]);
                         }
                     }
                     break;
                 case Keys.Down:
-                    if (lastMessages.Count != 0)
+                    if (_lastMessages.Count != 0)
                     {
-                        if (currentLastMessageIndex < lastMessages.Count - 1)
+                        if (_currentLastMessageIndex < _lastMessages.Count - 1)
                         {
-                            lastMessages[currentLastMessageIndex] = Input.Logic.Text;
-                            currentLastMessageIndex++;
-                            Input.Logic.SetText(lastMessages[currentLastMessageIndex]);
+                            _lastMessages[_currentLastMessageIndex] = Input.Logic.Text;
+                            _currentLastMessageIndex++;
+                            Input.Logic.SetText(_lastMessages[_currentLastMessageIndex]);
                         }
                     }
                     break;
@@ -689,19 +696,19 @@ namespace Chatterino.Controls
             {
                 channel.SendMessage(text);
 
-                lastMessages.RemoveAt(lastMessages.Count - 1);
-                if (lastMessages.Count > LastMessagesLimit)
+                _lastMessages.RemoveAt(_lastMessages.Count - 1);
+                if (_lastMessages.Count > LastMessagesLimit)
                 {
-                    lastMessages.RemoveAt(0);
+                    _lastMessages.RemoveAt(0);
                 }
 
-                if (lastMessages.Count == 0 || lastMessages[lastMessages.Count - 1] != text)
+                if (_lastMessages.Count == 0 || _lastMessages[_lastMessages.Count - 1] != text)
                 {
-                    lastMessages.Add(text);
+                    _lastMessages.Add(text);
                 }
-                lastMessages.Add("");
+                _lastMessages.Add("");
 
-                currentLastMessageIndex = lastMessages.Count - 1;
+                _currentLastMessageIndex = _lastMessages.Count - 1;
 
                 if (clear)
                     Input.Logic.Clear();
@@ -714,48 +721,48 @@ namespace Chatterino.Controls
         class ChatControlHeader : Control
         {
             // static Menu Dropdown
-            static ContextMenu contextMenu;
-            static ContextMenu roomstateContextMenu;
-            static ChatControl selected = null;
+            static ContextMenu _contextMenu;
+            static ContextMenu _roomstateContextMenu;
+            static ChatControl _selected = null;
 
-            static MenuItem roomstateSlow;
-            static MenuItem roomstateSub;
-            static MenuItem roomstateEmoteonly;
-            static MenuItem roomstateR9K;
+            static MenuItem _roomstateSlow;
+            static MenuItem _roomstateSub;
+            static MenuItem _roomstateEmoteonly;
+            static MenuItem _roomstateR9K;
 
             public static MenuItem LoginMenuItem { get; set; }
 
             static ChatControlHeader()
             {
-                contextMenu = new ContextMenu();
-                contextMenu.MenuItems.Add(new MenuItem("Add new Split", (s, e) => { App.MainForm?.AddNewSplit(); }, Shortcut.CtrlT));
-                contextMenu.MenuItems.Add(new MenuItem("Close Split", (s, e) => { App.MainForm?.RemoveSelectedSplit(); }, Shortcut.CtrlW));
-                contextMenu.MenuItems.Add(new MenuItem("Move Split", (s, e) =>
+                _contextMenu = new ContextMenu();
+                _contextMenu.MenuItems.Add(new MenuItem("Add new Split", (s, e) => { App.MainForm?.AddNewSplit(); }, Shortcut.CtrlT));
+                _contextMenu.MenuItems.Add(new MenuItem("Close Split", (s, e) => { App.MainForm?.RemoveSelectedSplit(); }, Shortcut.CtrlW));
+                _contextMenu.MenuItems.Add(new MenuItem("Move Split", (s, e) =>
                     {
-                        Cursor.Position = selected._header.PointToScreen(new Point(selected._header.Width / 2, selected._header.Height / 2));
-                        selected.Cursor = Cursors.SizeAll;
+                        Cursor.Position = _selected._header.PointToScreen(new Point(_selected._header.Width / 2, _selected._header.Height / 2));
+                        _selected.Cursor = Cursors.SizeAll;
                     }));
-                contextMenu.MenuItems.Add(new MenuItem("Change Channel", (s, e) => { App.MainForm?.RenameSelectedSplit(); }, Shortcut.CtrlR));
-                contextMenu.MenuItems.Add(new MenuItem("Clear Chat", (s, e) => { selected.Channel.ClearChat(); }));
-                contextMenu.MenuItems.Add("-");
-                contextMenu.MenuItems.Add(new MenuItem("Open Channel", (s, e) => { GuiEngine.Current.HandleLink(new Link(LinkType.Url, selected.Channel.ChannelLink)); }));
-                contextMenu.MenuItems.Add(new MenuItem("Open Pop-out Player", (s, e) => { GuiEngine.Current.HandleLink(new Link(LinkType.Url, selected.Channel.PopoutPlayerLink)); }));
-                contextMenu.MenuItems.Add("-");
-                contextMenu.MenuItems.Add(new MenuItem("Reload Channel Emotes", (s, e) =>
+                _contextMenu.MenuItems.Add(new MenuItem("Change Channel", (s, e) => { App.MainForm?.RenameSelectedSplit(); }, Shortcut.CtrlR));
+                _contextMenu.MenuItems.Add(new MenuItem("Clear Chat", (s, e) => { _selected.Channel.ClearChat(); }));
+                _contextMenu.MenuItems.Add("-");
+                _contextMenu.MenuItems.Add(new MenuItem("Open Channel", (s, e) => { GuiEngine.Current.HandleLink(new Link(LinkType.Url, _selected.Channel.ChannelLink)); }));
+                _contextMenu.MenuItems.Add(new MenuItem("Open Pop-out Player", (s, e) => { GuiEngine.Current.HandleLink(new Link(LinkType.Url, _selected.Channel.PopoutPlayerLink)); }));
+                _contextMenu.MenuItems.Add("-");
+                _contextMenu.MenuItems.Add(new MenuItem("Reload Channel Emotes", (s, e) =>
                 {
-                    selected.Channel.ReloadEmotes();
+                    _selected.Channel.ReloadEmotes();
                 }));
-                contextMenu.MenuItems.Add(new MenuItem("Manual Reconnect", (s, e) =>
+                _contextMenu.MenuItems.Add(new MenuItem("Manual Reconnect", (s, e) =>
                 {
                     IrcManager.Client.Reconnect();
                 }));
-                contextMenu.MenuItems.Add(new MenuItem("Show Changelog", (s, e) => App.MainForm.ShowChangelog()));
+                _contextMenu.MenuItems.Add(new MenuItem("Show Changelog", (s, e) => App.MainForm.ShowChangelog()));
                 //contextMenu.MenuItems.Add(LoginMenuItem = new MenuItem("Login", (s, e) => new LoginForm().ShowDialog(), Shortcut.CtrlL));
                 //contextMenu.MenuItems.Add(new MenuItem("Preferences", (s, e) => App.ShowSettings(), Shortcut.CtrlP));
 #if DEBUG
-                contextMenu.MenuItems.Add(new MenuItem("Copy Version Number", (s, e) => { Clipboard.SetText(App.CurrentVersion.ToString()); }));
-                contextMenu.MenuItems.Add(new MenuItem("Force GC", (s, e) => { GC.Collect(); }));
-                contextMenu.MenuItems.Add(new MenuItem("test", (s, e) =>
+                _contextMenu.MenuItems.Add(new MenuItem("Copy Version Number", (s, e) => { Clipboard.SetText(App.CurrentVersion.ToString()); }));
+                _contextMenu.MenuItems.Add(new MenuItem("Force GC", (s, e) => { GC.Collect(); }));
+                _contextMenu.MenuItems.Add(new MenuItem("test", (s, e) =>
                 {
                     for (int i = 0; i < 1000000; i++)
                     {
@@ -769,53 +776,53 @@ namespace Chatterino.Controls
                 }));
 #endif
 
-                roomstateContextMenu = new ContextMenu();
-                roomstateContextMenu.Popup += (s, e) =>
+                _roomstateContextMenu = new ContextMenu();
+                _roomstateContextMenu.Popup += (s, e) =>
                     {
-                        roomstateR9K.Checked = (selected.Channel?.RoomState ?? RoomState.None).HasFlag(RoomState.R9k);
-                        roomstateSlow.Checked = (selected.Channel?.RoomState ?? RoomState.None).HasFlag(RoomState.SlowMode);
-                        roomstateSub.Checked = (selected.Channel?.RoomState ?? RoomState.None).HasFlag(RoomState.SubOnly);
-                        roomstateEmoteonly.Checked = (selected.Channel?.RoomState ?? RoomState.None).HasFlag(RoomState.EmoteOnly);
+                        _roomstateR9K.Checked = (_selected.Channel?.RoomState ?? RoomState.None).HasFlag(RoomState.R9k);
+                        _roomstateSlow.Checked = (_selected.Channel?.RoomState ?? RoomState.None).HasFlag(RoomState.SlowMode);
+                        _roomstateSub.Checked = (_selected.Channel?.RoomState ?? RoomState.None).HasFlag(RoomState.SubOnly);
+                        _roomstateEmoteonly.Checked = (_selected.Channel?.RoomState ?? RoomState.None).HasFlag(RoomState.EmoteOnly);
                     };
 
-                roomstateContextMenu.MenuItems.Add(roomstateSlow = new MenuItem("Slowmode", (s, e) =>
+                _roomstateContextMenu.MenuItems.Add(_roomstateSlow = new MenuItem("Slowmode", (s, e) =>
                     {
-                        if (selected.Channel != null)
+                        if (_selected.Channel != null)
                         {
-                            if (selected.Channel.RoomState.HasFlag(RoomState.SlowMode))
-                                selected.Channel.SendMessage("/Slowoff");
+                            if (_selected.Channel.RoomState.HasFlag(RoomState.SlowMode))
+                                _selected.Channel.SendMessage("/Slowoff");
                             else
-                                selected.Channel.SendMessage("/Slow");
+                                _selected.Channel.SendMessage("/Slow");
                         }
                     }));
-                roomstateContextMenu.MenuItems.Add(roomstateSub = new MenuItem("Subscribers Only", (s, e) =>
+                _roomstateContextMenu.MenuItems.Add(_roomstateSub = new MenuItem("Subscribers Only", (s, e) =>
                     {
-                        if (selected.Channel != null)
+                        if (_selected.Channel != null)
                         {
-                            if (selected.Channel.RoomState.HasFlag(RoomState.SubOnly))
-                                selected.Channel.SendMessage("/Subscribersoff");
+                            if (_selected.Channel.RoomState.HasFlag(RoomState.SubOnly))
+                                _selected.Channel.SendMessage("/Subscribersoff");
                             else
-                                selected.Channel.SendMessage("/Subscribers");
+                                _selected.Channel.SendMessage("/Subscribers");
                         }
                     }));
-                roomstateContextMenu.MenuItems.Add(roomstateR9K = new MenuItem("R9K", (s, e) =>
+                _roomstateContextMenu.MenuItems.Add(_roomstateR9K = new MenuItem("R9K", (s, e) =>
                     {
-                        if (selected.Channel != null)
+                        if (_selected.Channel != null)
                         {
-                            if (selected.Channel.RoomState.HasFlag(RoomState.R9k))
-                                selected.Channel.SendMessage("/R9KBetaOff");
+                            if (_selected.Channel.RoomState.HasFlag(RoomState.R9k))
+                                _selected.Channel.SendMessage("/R9KBetaOff");
                             else
-                                selected.Channel.SendMessage("/R9KBeta");
+                                _selected.Channel.SendMessage("/R9KBeta");
                         }
                     }));
-                roomstateContextMenu.MenuItems.Add(roomstateEmoteonly = new MenuItem("Emote Only", (s, e) =>
+                _roomstateContextMenu.MenuItems.Add(_roomstateEmoteonly = new MenuItem("Emote Only", (s, e) =>
                     {
-                        if (selected.Channel != null)
+                        if (_selected.Channel != null)
                         {
-                            if (selected.Channel.RoomState.HasFlag(RoomState.EmoteOnly))
-                                selected.Channel.SendMessage("/Emoteonlyoff");
+                            if (_selected.Channel.RoomState.HasFlag(RoomState.EmoteOnly))
+                                _selected.Channel.SendMessage("/Emoteonlyoff");
                             else
-                                selected.Channel.SendMessage("/emoteonly ");
+                                _selected.Channel.SendMessage("/emoteonly ");
                         }
                     }));
 
@@ -826,7 +833,7 @@ namespace Chatterino.Controls
             }
 
             // local controls
-            private ChatControl chatControl;
+            private ChatControl _chatControl;
 
             public FlatButton RoomstateButton { get; private set; }
             public FlatButton DropDownButton { get; private set; }
@@ -834,7 +841,7 @@ namespace Chatterino.Controls
             // Constructor
             public ChatControlHeader(ChatControl chatControl)
             {
-                this.chatControl = chatControl;
+                this._chatControl = chatControl;
 
                 SetStyle(ControlStyles.ResizeRedraw, true);
                 SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
@@ -896,8 +903,8 @@ namespace Chatterino.Controls
                 };
                 button.Click += (s, e) =>
                 {
-                    selected = chatControl;
-                    contextMenu.Show(this, new Point(Location.X, Location.Y + Height));
+                    _selected = chatControl;
+                    _contextMenu.Show(this, new Point(Location.X, Location.Y + Height));
                 };
 
                 Controls.Add(button);
@@ -918,8 +925,8 @@ namespace Chatterino.Controls
                 };
                 button.Click += (s, e) =>
                 {
-                    selected = chatControl;
-                    roomstateContextMenu.Show(this, new Point(Location.X + Width, Location.Y + Height), LeftRightAlignment.Left);
+                    _selected = chatControl;
+                    _roomstateContextMenu.Show(this, new Point(Location.X + Width, Location.Y + Height), LeftRightAlignment.Left);
                 };
 
                 Controls.Add(button);
@@ -929,11 +936,11 @@ namespace Chatterino.Controls
             {
                 base.OnDoubleClick(e);
 
-                using (InputDialogForm dialog = new InputDialogForm("channel name") { Value = chatControl.ChannelName })
+                using (InputDialogForm dialog = new InputDialogForm("channel name") { Value = _chatControl.ChannelName })
                 {
                     if (dialog.ShowDialog() == DialogResult.OK)
                     {
-                        chatControl.ChannelName = dialog.Value;
+                        _chatControl.ChannelName = dialog.Value;
                     }
                 }
             }
@@ -947,14 +954,19 @@ namespace Chatterino.Controls
                 //e.Graphics.DrawRectangle(Focused ? App.ColorScheme.ChatBorderFocused : App.ColorScheme.ChatBorder, 0, 1, Width - 1, Height - 1);
                 e.Graphics.DrawRectangle(App.ColorScheme.MenuBorder, 0, 0, Width - 1, Height - 1);
 
-                string title = string.IsNullOrWhiteSpace(chatControl.ActualChannelName) ? "<no channel>" : chatControl.ActualChannelName;
+                string title = string.IsNullOrWhiteSpace(_chatControl.ActualChannelName) ? "<no channel>" : _chatControl.ActualChannelName;
 
-                if (chatControl.IsNetCurrent)
+                if (_chatControl.IsNetCurrent)
                 {
                     title += " (current)";
                 }
 
-                TextRenderer.DrawText(e.Graphics, title, chatControl.Font, new Rectangle(DropDownButton.Width, 0, Width - DropDownButton.Width - RoomstateButton.Width, Height), chatControl.Selected ? App.ColorScheme.TextFocused : App.ColorScheme.Text, App.DefaultTextFormatFlags | TextFormatFlags.VerticalCenter | TextFormatFlags.HorizontalCenter);
+                if (_chatControl.Channel?.IsLive ?? false)
+                {
+                    title += " (live)";
+                }
+
+                TextRenderer.DrawText(e.Graphics, title, _chatControl.Font, new Rectangle(DropDownButton.Width, 0, Width - DropDownButton.Width - RoomstateButton.Width, Height), _chatControl.Selected ? App.ColorScheme.TextFocused : App.ColorScheme.Text, App.DefaultTextFormatFlags | TextFormatFlags.VerticalCenter | TextFormatFlags.HorizontalCenter);
             }
         }
     }
