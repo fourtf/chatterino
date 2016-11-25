@@ -47,7 +47,7 @@ namespace Chatterino.Common
             Disconnect();
 
             // Login
-            string username = Account.Username, oauth = Account.OauthToken, clientId = Account.ClientId;
+            string username = Account.Username, oauth = Account.OauthToken;
 
             try
             {
@@ -233,6 +233,8 @@ namespace Chatterino.Common
                 Client.Disconnect();
                 Client.ReadConnection.MessageReceived -= ReadConnection_MessageReceived;
                 Client.WriteConnection.MessageReceived -= WriteConnection_MessageReceived;
+
+                Client = null;
             }
 
             if (disconnected)

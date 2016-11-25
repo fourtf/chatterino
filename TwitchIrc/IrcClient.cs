@@ -109,7 +109,10 @@ namespace TwitchIrc
 
         public void Disconnect()
         {
+            ReadConnection.Dispose();
 
+            if (!SingleConnection)
+                WriteConnection.Dispose();
         }
 
         public void Join(string channel)

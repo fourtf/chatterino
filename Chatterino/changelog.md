@@ -1,5 +1,8 @@
 ﻿# changelog
 
+## 1.0.4
+- fixed the messages appearing multiple times after switching accounts
+
 ## 1.0.3
 - disabled hardware acceleration to take less performance when playing games
 - now also shows outgoing whispers in chat when inline whispers are enabled
