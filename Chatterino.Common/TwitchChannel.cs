@@ -503,6 +503,17 @@ namespace Chatterino.Common
                 if (allowAt)
                     names.AddRange(Users.Select(x => new KeyValuePair<string, string>("@" + x.Key, "@" + (!AppSettings.ChatTabLocalizedNames && !string.Equals(x.Value, x.Key, StringComparison.OrdinalIgnoreCase) ? x.Key : x.Value) + commaAtEnd)));
             }
+
+            lock (Commands.CustomCommandsLock)
+            {
+                names.AddRange(Commands.CustomCommands.Select(x => new KeyValuePair<string, string>("/" + x.Name.ToUpper(), "/" + x.Name)));
+            }
+
+            lock (Util.TwitchChatCommandNames)
+            {
+                names.AddRange(Util.TwitchChatCommandNames.Select(x => new KeyValuePair<string, string>(x.ToUpper(), x)));
+            }
+
             names.Sort((x1, x2) => string.Compare(x1.Value, x2.Value));
 
             return names;

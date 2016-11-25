@@ -588,7 +588,14 @@ namespace Chatterino.Controls
 
             if (items == null)
             {
-                items = tabCompleteItems = channel.GetCompletionItems(wordStart == 0 || (wordStart == 1 && text[0] == '@'), (!text.Trim().StartsWith("!") && !text.Trim().StartsWith("/") && !text.Trim().StartsWith("."))).Where(s => s.Key.StartsWith(word)).Select(x => x.Value).ToArray();
+                items =
+                    tabCompleteItems =
+                        channel.GetCompletionItems(wordStart == 0 || (wordStart == 1 && text[0] == '@'),
+                            (!text.Trim().StartsWith("!") && !text.Trim().StartsWith("/") &&
+                             !text.Trim().StartsWith(".")))
+                            .Where(s => s.Key.StartsWith(word))
+                            .Select(x => x.Value)
+                            .ToArray();
             }
 
             currentTabIndex += forward ? 1 : -1;
