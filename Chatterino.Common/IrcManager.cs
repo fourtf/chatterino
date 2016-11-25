@@ -435,7 +435,6 @@ namespace Chatterino.Common
         public static event EventHandler LoggedIn;
         public static event EventHandler Disconnected;
         public static event EventHandler Connected;
-        public static event EventHandler<ValueEventArgs<Exception>> ConnectionError;
 
         public static event EventHandler<ValueEventArgs<string>> NoticeAdded;
 

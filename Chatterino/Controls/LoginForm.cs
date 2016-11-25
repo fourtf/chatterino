@@ -28,7 +28,7 @@ namespace Chatterino.Controls
         {
             InitializeComponent();
 
-            //Height = 225;
+            //Height = 283;
 
             Icon = App.Icon;
 
@@ -156,14 +156,7 @@ namespace Chatterino.Controls
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
-            //if (checkBox1.Checked)
-            //{
-            //    Height = 374;
-            //}
-            //else
-            //{
-            //    Height = 225;
-            //}
+            //Height = checkBox1.Checked ? 432 : 283;
         }
 
         private void button1_Click(object sender, EventArgs e)

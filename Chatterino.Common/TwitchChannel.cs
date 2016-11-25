@@ -74,7 +74,7 @@ namespace Chatterino.Common
                                 return img;
                             }
                         }
-                        catch (Exception exc)
+                        catch
                         {
                             return null;
                         }
@@ -500,6 +500,8 @@ namespace Chatterino.Common
             else
             {
                 names.AddRange(Users.Select(x => new KeyValuePair<string, string>(x.Key, (!AppSettings.ChatTabLocalizedNames && !string.Equals(x.Value, x.Key, StringComparison.OrdinalIgnoreCase) ? x.Key : x.Value) + commaAtEnd)));
+                if (allowAt)
+                    names.AddRange(Users.Select(x => new KeyValuePair<string, string>("@" + x.Key, "@" + (!AppSettings.ChatTabLocalizedNames && !string.Equals(x.Value, x.Key, StringComparison.OrdinalIgnoreCase) ? x.Key : x.Value) + commaAtEnd)));
             }
             names.Sort((x1, x2) => string.Compare(x1.Value, x2.Value));
 

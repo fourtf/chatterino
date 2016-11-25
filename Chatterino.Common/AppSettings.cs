@@ -59,7 +59,7 @@ namespace Chatterino.Common
 
         public static bool ChatAllowCommandsAtEnd { get; set; } = false;
 
-        public static bool ChatMentionUsersWithAt { get; set; } = true;
+        public static bool ChatMentionUsersWithAt { get; set; } = false;
 
         public static event EventHandler MessageLimitChanged;
 

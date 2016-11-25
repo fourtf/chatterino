@@ -38,10 +38,15 @@
             this.button1 = new System.Windows.Forms.Button();
             this.pageSetupDialog1 = new System.Windows.Forms.PageSetupDialog();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.label3 = new System.Windows.Forms.Label();
             this.button2 = new System.Windows.Forms.Button();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.label4 = new System.Windows.Forms.Label();
+            this.textBoxByHand1 = new System.Windows.Forms.TextBox();
+            this.textBoxByHand2 = new System.Windows.Forms.TextBox();
+            this.textBoxByHand3 = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -147,35 +152,29 @@
             // 
             // groupBox3
             // 
+            this.groupBox3.Controls.Add(this.label6);
+            this.groupBox3.Controls.Add(this.label5);
             this.groupBox3.Controls.Add(this.label3);
+            this.groupBox3.Controls.Add(this.textBoxByHand3);
+            this.groupBox3.Controls.Add(this.textBoxByHand2);
+            this.groupBox3.Controls.Add(this.textBoxByHand1);
             this.groupBox3.Controls.Add(this.button2);
             this.groupBox3.Location = new System.Drawing.Point(12, 243);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(299, 139);
+            this.groupBox3.Size = new System.Drawing.Size(299, 160);
             this.groupBox3.TabIndex = 6;
             this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "Same account on multiple pcs";
-            // 
-            // label3
-            // 
-            this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.label3.Font = new System.Drawing.Font("Segoe UI", 9.75F);
-            this.label3.Location = new System.Drawing.Point(6, 21);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(287, 41);
-            this.label3.TabIndex = 4;
-            this.label3.Text = "Click the \"Copy Code\" button, ";
+            this.groupBox3.Text = "Fill in data by hand";
             // 
             // button2
             // 
             this.button2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.button2.Location = new System.Drawing.Point(167, 102);
+            this.button2.Location = new System.Drawing.Point(206, 123);
             this.button2.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(126, 30);
+            this.button2.Size = new System.Drawing.Size(87, 30);
             this.button2.TabIndex = 7;
-            this.button2.Text = "Copy Code";
+            this.button2.Text = "Login";
             this.button2.UseVisualStyleBackColor = true;
             // 
             // checkBox1
@@ -199,11 +198,61 @@
             this.label4.TabIndex = 8;
             this.label4.Text = "Use one of the two options below to log in.";
             // 
+            // textBoxByHand1
+            // 
+            this.textBoxByHand1.Location = new System.Drawing.Point(98, 24);
+            this.textBoxByHand1.Name = "textBoxByHand1";
+            this.textBoxByHand1.Size = new System.Drawing.Size(195, 25);
+            this.textBoxByHand1.TabIndex = 8;
+            // 
+            // textBoxByHand2
+            // 
+            this.textBoxByHand2.Location = new System.Drawing.Point(98, 57);
+            this.textBoxByHand2.Name = "textBoxByHand2";
+            this.textBoxByHand2.Size = new System.Drawing.Size(195, 25);
+            this.textBoxByHand2.TabIndex = 9;
+            this.textBoxByHand2.UseSystemPasswordChar = true;
+            // 
+            // textBoxByHand3
+            // 
+            this.textBoxByHand3.Location = new System.Drawing.Point(98, 88);
+            this.textBoxByHand3.Name = "textBoxByHand3";
+            this.textBoxByHand3.Size = new System.Drawing.Size(195, 25);
+            this.textBoxByHand3.TabIndex = 10;
+            this.textBoxByHand3.UseSystemPasswordChar = true;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(7, 27);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(70, 17);
+            this.label3.TabIndex = 11;
+            this.label3.Text = "Username:";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(7, 60);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(84, 17);
+            this.label5.TabIndex = 12;
+            this.label5.Text = "Oauth Token:";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(7, 91);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(58, 17);
+            this.label6.TabIndex = 13;
+            this.label6.Text = "Client Id:";
+            // 
             // LoginForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 17F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(629, 209);
+            this.ClientSize = new System.Drawing.Size(629, 212);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.groupBox3);
@@ -217,6 +266,7 @@
             this.groupBox1.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);
+            this.groupBox3.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -235,7 +285,12 @@
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.CheckBox checkBox1;
         private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.TextBox textBoxByHand3;
+        private System.Windows.Forms.TextBox textBoxByHand2;
+        private System.Windows.Forms.TextBox textBoxByHand1;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label label3;
     }
 }
