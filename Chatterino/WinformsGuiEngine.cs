@@ -51,28 +51,58 @@ namespace Chatterino
                     (App.MainForm.Selected as ChatControl)?.Input.Logic.InsertText(_link.Value as string);
                     break;
                 case LinkType.UserInfo:
-                    UserInfoData data = (UserInfoData)_link.Value;
+                    {
+                        var data = (UserInfoData)_link.Value;
 
-                    UserInfoPopup popup = new UserInfoPopup(data);
+                        var popup = new UserInfoPopup(data)
+                        {
+                            StartPosition = FormStartPosition.Manual,
+                            Location = Cursor.Position
+                        };
 
-                    popup.StartPosition = FormStartPosition.Manual;
-                    popup.Location = Cursor.Position;
-                    popup.Show();
+                        popup.Show();
+
+                        var screen = Screen.FromPoint(Cursor.Position);
+
+                        int x = popup.Location.X, y = popup.Location.Y;
+
+                        if (popup.Location.X < screen.WorkingArea.X)
+                        {
+                            x = screen.WorkingArea.X;
+                        }
+                        else if (popup.Location.X + popup.Width > screen.WorkingArea.Right)
+                        {
+                            x = screen.WorkingArea.Right - popup.Width;
+                        }
+
+                        if (popup.Location.Y < screen.WorkingArea.Y)
+                        {
+                            y = screen.WorkingArea.Y;
+                        }
+                        else if (popup.Location.Y + popup.Height > screen.WorkingArea.Bottom)
+                        {
+                            y = screen.WorkingArea.Bottom - popup.Height;
+                        }
+
+                        popup.Location = new Point(x, y);
+                    }
                     break;
                 case LinkType.ShowChannel:
-                    string channelName = (string)_link.Value;
-
-                    var widget = App.MainForm.TabControl.TabPages
-                        .Where(x => x is ColumnTabPage)
-                        .SelectMany(x => ((ColumnTabPage)x).Columns.SelectMany(y => y.Widgets))
-                        .FirstOrDefault(c => c is ChatControl && string.Equals(((ChatControl)c).ChannelName, channelName));
-
-                    if (widget != null)
                     {
-                        App.MainForm.TabControl.Select(widget.Parent as Controls.TabPage);
-                        widget.Select();
-                    }
+                        string channelName = (string)_link.Value;
 
+                        var widget = App.MainForm.TabControl.TabPages
+                            .Where(x => x is ColumnTabPage)
+                            .SelectMany(x => ((ColumnTabPage)x).Columns.SelectMany(y => y.Widgets))
+                            .FirstOrDefault(
+                                c => c is ChatControl && string.Equals(((ChatControl)c).ChannelName, channelName));
+
+                        if (widget != null)
+                        {
+                            App.MainForm.TabControl.Select(widget.Parent as Controls.TabPage);
+                            widget.Select();
+                        }
+                    }
                     break;
             }
         }

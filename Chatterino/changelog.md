@@ -1,5 +1,8 @@
 ﻿# changelog
 
+##
+- the user info popup now doesn't go over the screen workspace anymore
+
 ## 1.0.4
 - fixed the messages appearing multiple times after switching accounts
 
