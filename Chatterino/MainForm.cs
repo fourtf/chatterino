@@ -266,6 +266,10 @@ namespace Chatterino
                 case Keys.Right:
                 case Keys.Up:
                 case Keys.Down:
+                case Keys.Shift | Keys.Left:
+                case Keys.Shift | Keys.Right:
+                case Keys.Shift | Keys.Up:
+                case Keys.Shift | Keys.Down:
                     selected?.HandleKeys(keyData);
                     break;
                 default:
