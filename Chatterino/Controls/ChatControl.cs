@@ -743,7 +743,7 @@ namespace Chatterino.Controls
                         _selected.Cursor = Cursors.SizeAll;
                     }));
                 _contextMenu.MenuItems.Add(new MenuItem("Change Channel", (s, e) => { App.MainForm?.RenameSelectedSplit(); }, Shortcut.CtrlR));
-                _contextMenu.MenuItems.Add(new MenuItem("Clear Chat", (s, e) => { _selected.Channel.ClearChat(); }));
+                _contextMenu.MenuItems.Add(new MenuItem("Clear Chat", (s, e) => { _selected.Channel.ClearChat(true); }));
                 _contextMenu.MenuItems.Add("-");
                 _contextMenu.MenuItems.Add(new MenuItem("Open Channel", (s, e) => { GuiEngine.Current.HandleLink(new Link(LinkType.Url, _selected.Channel.ChannelLink)); }));
                 _contextMenu.MenuItems.Add(new MenuItem("Open Pop-out Player", (s, e) => { GuiEngine.Current.HandleLink(new Link(LinkType.Url, _selected.Channel.PopoutPlayerLink)); }));

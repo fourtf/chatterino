@@ -676,20 +676,41 @@ namespace Chatterino.Common
 
         public object MessageLock { get; private set; } = new object();
 
-        public void ClearChat()
+        public void ClearChat(bool removeMessages)
         {
-            Message[] _messages = Messages;
-
-            lock (MessageLock)
+            if (removeMessages)
             {
-                Messages = new Message[0];
-            }
+                Message[] _messages = Messages;
 
-            MessagesRemovedAtStart?.Invoke(this, new ValueEventArgs<Message[]>(_messages));
+                lock (MessageLock)
+                {
+                    Messages = new Message[0];
+                }
+
+                MessagesRemovedAtStart?.Invoke(this, new ValueEventArgs<Message[]>(_messages));
+            }
+            else
+            {
+                lock (MessageLock)
+                {
+                    foreach (var message in Messages)
+                    {
+                        message.Disabled = true;
+                    }
+                }
+
+                AddMessage(new Message("Chat has been cleared by a moderator.", HSLColor.Gray, true));
+            }
         }
 
         public void ClearChat(string user, string reason, int duration)
         {
+            if (string.IsNullOrWhiteSpace(user))
+            {
+                ClearChat(false);
+                return;
+            }
+
             Monitor.Enter(MessageLock);
 
             foreach (Message msg in Messages)
