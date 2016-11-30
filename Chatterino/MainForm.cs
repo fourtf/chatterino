@@ -478,6 +478,8 @@ namespace Chatterino
                     if (column.WidgetCount == 0)
                         _page.RemoveColumn(column);
                 }
+
+                selected.Dispose();
             }
         }
 
