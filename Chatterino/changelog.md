@@ -2,6 +2,7 @@
 
 ##
 - the user info popup now doesn't go over the screen workspace anymore
+- fixed shift + arrow keys not selecting text by characters
 
 ## 1.0.4
 - fixed the messages appearing multiple times after switching accounts

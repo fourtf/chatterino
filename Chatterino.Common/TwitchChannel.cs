@@ -843,6 +843,8 @@ namespace Chatterino.Common
                         dynamic json = parser.Parse(stream);
                         var template = "https:" + json["urlTemplate"]; //{{id}} {{image}}
 
+                        BttvChannelEmotes.Clear();
+
                         foreach (dynamic e in json["emotes"])
                         {
                             string id = e["id"];
@@ -946,6 +948,8 @@ namespace Chatterino.Common
                         catch { }
 
                         dynamic sets = json["sets"];
+
+                        FfzChannelEmotes.Clear();
 
                         foreach (dynamic set in sets.Values)
                         {

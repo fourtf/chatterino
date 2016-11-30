@@ -168,6 +168,9 @@ namespace Chatterino.Controls
                 btnFollow.Visible = false;
                 btnPurge.Visible = false;
 
+                btnMod.Visible = false;
+                btnUnmod.Visible = false;
+
                 btnTimeout1Day.Visible = false;
                 btnTimeout1Month.Visible = false;
                 btnTimeout2Hours.Visible = false;
