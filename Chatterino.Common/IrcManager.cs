@@ -561,7 +561,7 @@ namespace Chatterino.Common
             }
             else if (msg.Command == "WHISPER")
             {
-                TwitchChannel.WhisperChannel.AddMessage(new Message(msg, TwitchChannel.WhisperChannel, true, false));
+                TwitchChannel.WhisperChannel.AddMessage(new Message(msg, TwitchChannel.WhisperChannel, true, false, isReceivedWhisper: true));
 
                 if (AppSettings.ChatEnableInlineWhispers)
                 {

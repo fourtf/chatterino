@@ -90,23 +90,28 @@ namespace Chatterino.Controls
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            var g = e.Graphics;
-
-            if (mouseDown)
-                g.FillRectangle(mouseOverBrush, 0, 0, Width, Height);
-
-            if (mouseOver)
-                g.FillRectangle(mouseOverBrush, 0, 0, Width, Height);
-
-            if (image != null)
+            try
             {
-                g.DrawImage(image, Width / 2 - image.Width / 2, Height / 2 - image.Height / 2);
-            }
+                var g = e.Graphics;
 
-            if (Text != null)
-            {
-                TextRenderer.DrawText(g, Text, Font, ClientRectangle, App.ColorScheme?.Text ?? Color.Black, App.DefaultTextFormatFlags | TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);
+                if (mouseDown)
+                    g.FillRectangle(mouseOverBrush, 0, 0, Width, Height);
+
+                if (mouseOver)
+                    g.FillRectangle(mouseOverBrush, 0, 0, Width, Height);
+
+                if (image != null)
+                {
+                    g.DrawImage(image, Width / 2 - image.Width / 2, Height / 2 - image.Height / 2);
+                }
+
+                if (Text != null)
+                {
+                    TextRenderer.DrawText(g, Text, Font, ClientRectangle, App.ColorScheme?.Text ?? Color.Black,
+                        App.DefaultTextFormatFlags | TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter);
+                }
             }
+            catch { }
         }
     }
 }

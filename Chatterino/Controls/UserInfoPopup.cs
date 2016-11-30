@@ -7,6 +7,8 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Chatterino.Common;
+using Message = System.Windows.Forms.Message;
 
 namespace Chatterino.Controls
 {
@@ -135,21 +137,21 @@ namespace Chatterino.Controls
             btnWhisper.SetTooltip("Whisper User");
             btnPurge.SetTooltip("Timeout User for 1 Second");
 
-            btnTimeout2Hours   .SetTooltip("Timeout User for 2 Hours");
-            btnTimeout30Mins   .SetTooltip("Timeout User for 30 Minutes");
-            btnTimeout5Min     .SetTooltip("Timeout User for 5 Minutes");
-            btnTimeout1Day     .SetTooltip("Timeout User for 1 Day");
-            btnTimeout3Days    .SetTooltip("Timeout User for 3 Days");
-            btnTimeout7Days    .SetTooltip("Timeout User for 7 Days");
-            btnTimeout1Month   .SetTooltip("Timeout User for 1 Month");
+            btnTimeout2Hours.SetTooltip("Timeout User for 2 Hours");
+            btnTimeout30Mins.SetTooltip("Timeout User for 30 Minutes");
+            btnTimeout5Min.SetTooltip("Timeout User for 5 Minutes");
+            btnTimeout1Day.SetTooltip("Timeout User for 1 Day");
+            btnTimeout3Days.SetTooltip("Timeout User for 3 Days");
+            btnTimeout7Days.SetTooltip("Timeout User for 7 Days");
+            btnTimeout1Month.SetTooltip("Timeout User for 1 Month");
 
-            btnPurge.Click += (s, e) =>         data.Channel.SendMessage($"/timeout {data.UserName} 1");
-            btnTimeout5Min.Click += (s, e) =>   data.Channel.SendMessage($"/timeout {data.UserName} 300");
+            btnPurge.Click += (s, e) => data.Channel.SendMessage($"/timeout {data.UserName} 1");
+            btnTimeout5Min.Click += (s, e) => data.Channel.SendMessage($"/timeout {data.UserName} 300");
             btnTimeout30Mins.Click += (s, e) => data.Channel.SendMessage($"/timeout {data.UserName} 1800");
             btnTimeout2Hours.Click += (s, e) => data.Channel.SendMessage($"/timeout {data.UserName} 7200");
-            btnTimeout1Day.Click += (s, e) =>   data.Channel.SendMessage($"/timeout {data.UserName} 86400");
-            btnTimeout3Days.Click += (s, e) =>  data.Channel.SendMessage($"/timeout {data.UserName} 259200");
-            btnTimeout7Days.Click += (s, e) =>  data.Channel.SendMessage($"/timeout {data.UserName} 604800");
+            btnTimeout1Day.Click += (s, e) => data.Channel.SendMessage($"/timeout {data.UserName} 86400");
+            btnTimeout3Days.Click += (s, e) => data.Channel.SendMessage($"/timeout {data.UserName} 259200");
+            btnTimeout7Days.Click += (s, e) => data.Channel.SendMessage($"/timeout {data.UserName} 604800");
             btnTimeout1Month.Click += (s, e) => data.Channel.SendMessage($"/timeout {data.UserName} 2592000");
 
             // show profile
@@ -170,6 +172,7 @@ namespace Chatterino.Controls
 
                 btnMod.Visible = false;
                 btnUnmod.Visible = false;
+                btnIgnoreHighlights.Visible = false;
 
                 btnTimeout1Day.Visible = false;
                 btnTimeout1Month.Visible = false;
@@ -229,8 +232,6 @@ namespace Chatterino.Controls
                     data.Channel.SendMessage("/unban " + data.UserName);
                 };
 
-                // timeout user
-
                 // purge user
                 btnPurge.Click += (s, e) =>
                 {
@@ -269,6 +270,27 @@ namespace Chatterino.Controls
                 {
                     Common.GuiEngine.Current.HandleLink(new Common.Link(Common.LinkType.Url, "https://www.twitch.tv/message/compose?to=" + data.UserName));
                 };
+
+                // highlight ignore
+                btnIgnoreHighlights.Click += (s, e) =>
+                {
+                    if (AppSettings.HighlightIgnoredUsers.ContainsKey(data.UserName))
+                    {
+                        object tmp;
+
+                        AppSettings.HighlightIgnoredUsers.TryRemove(data.UserName, out tmp);
+
+                        btnIgnoreHighlights.Text = "Disable Highlights";
+                    }
+                    else
+                    {
+                        AppSettings.HighlightIgnoredUsers[data.UserName] = null;
+
+                        btnIgnoreHighlights.Text = "Enable Highlights";
+                    }
+                };
+
+                btnIgnoreHighlights.Text = AppSettings.HighlightIgnoredUsers.ContainsKey(data.UserName) ? "Enable Highlights" : "Disable Highlights";
 
                 // follow user
                 bool isFollowing = false;
@@ -340,6 +362,7 @@ namespace Chatterino.Controls
             this.btnUnmod = new Chatterino.Controls.FlatButton();
             this.btnBan = new Chatterino.Controls.FlatButton();
             this.btnUnban = new Chatterino.Controls.FlatButton();
+            this.btnPurge = new Chatterino.Controls.FlatButton();
             this.btnTimeout5Min = new Chatterino.Controls.FlatButton();
             this.btnTimeout30Mins = new Chatterino.Controls.FlatButton();
             this.btnTimeout2Hours = new Chatterino.Controls.FlatButton();
@@ -347,11 +370,11 @@ namespace Chatterino.Controls
             this.btnTimeout3Days = new Chatterino.Controls.FlatButton();
             this.btnTimeout7Days = new Chatterino.Controls.FlatButton();
             this.btnTimeout1Month = new Chatterino.Controls.FlatButton();
-            this.btnPurge = new Chatterino.Controls.FlatButton();
             this.btnCopyUsername = new Chatterino.Controls.FlatButton();
             this.btnProfile = new Chatterino.Controls.FlatButton();
             this.btnFollow = new Chatterino.Controls.FlatButton();
             this.btnIgnore = new Chatterino.Controls.FlatButton();
+            this.btnIgnoreHighlights = new Chatterino.Controls.FlatButton();
             this.btnWhisper = new Chatterino.Controls.FlatButton();
             this.btnMessage = new Chatterino.Controls.FlatButton();
             this.flowLayoutPanel1.SuspendLayout();
@@ -381,6 +404,7 @@ namespace Chatterino.Controls
             this.flowLayoutPanel1.Controls.Add(this.btnProfile);
             this.flowLayoutPanel1.Controls.Add(this.btnFollow);
             this.flowLayoutPanel1.Controls.Add(this.btnIgnore);
+            this.flowLayoutPanel1.Controls.Add(this.btnIgnoreHighlights);
             this.flowLayoutPanel1.Controls.Add(this.btnWhisper);
             this.flowLayoutPanel1.Controls.Add(this.btnMessage);
             this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -477,6 +501,15 @@ namespace Chatterino.Controls
             this.btnUnban.TabIndex = 5;
             this.btnUnban.Text = "Unban";
             // 
+            // btnPurge
+            // 
+            this.btnPurge.Image = null;
+            this.btnPurge.Location = new System.Drawing.Point(11, 105);
+            this.btnPurge.Name = "btnPurge";
+            this.btnPurge.Size = new System.Drawing.Size(42, 18);
+            this.btnPurge.TabIndex = 10;
+            this.btnPurge.Text = "Purge";
+            // 
             // btnTimeout5Min
             // 
             this.btnTimeout5Min.Image = null;
@@ -541,15 +574,6 @@ namespace Chatterino.Controls
             this.btnTimeout1Month.TabIndex = 19;
             this.btnTimeout1Month.Text = "1 month";
             // 
-            // btnPurge
-            // 
-            this.btnPurge.Image = null;
-            this.btnPurge.Location = new System.Drawing.Point(11, 105);
-            this.btnPurge.Name = "btnPurge";
-            this.btnPurge.Size = new System.Drawing.Size(42, 18);
-            this.btnPurge.TabIndex = 10;
-            this.btnPurge.Text = "Purge";
-            // 
             // btnCopyUsername
             // 
             this.btnCopyUsername.Image = global::Chatterino.Properties.Resources.CopyLongTextToClipboard_16x;
@@ -585,10 +609,19 @@ namespace Chatterino.Controls
             this.btnIgnore.TabIndex = 2;
             this.btnIgnore.Text = "Ignore";
             // 
+            // btnIgnoreHighlights
+            // 
+            this.btnIgnoreHighlights.Image = null;
+            this.btnIgnoreHighlights.Location = new System.Drawing.Point(11, 182);
+            this.btnIgnoreHighlights.Name = "btnIgnoreHighlights";
+            this.btnIgnoreHighlights.Size = new System.Drawing.Size(98, 18);
+            this.btnIgnoreHighlights.TabIndex = 21;
+            this.btnIgnoreHighlights.Text = "Disable Highlights";
+            // 
             // btnWhisper
             // 
             this.btnWhisper.Image = null;
-            this.btnWhisper.Location = new System.Drawing.Point(190, 153);
+            this.btnWhisper.Location = new System.Drawing.Point(115, 182);
             this.btnWhisper.Name = "btnWhisper";
             this.btnWhisper.Size = new System.Drawing.Size(53, 18);
             this.btnWhisper.TabIndex = 6;
@@ -598,7 +631,7 @@ namespace Chatterino.Controls
             // btnMessage
             // 
             this.btnMessage.Image = null;
-            this.btnMessage.Location = new System.Drawing.Point(11, 182);
+            this.btnMessage.Location = new System.Drawing.Point(174, 182);
             this.btnMessage.Name = "btnMessage";
             this.btnMessage.Size = new System.Drawing.Size(57, 18);
             this.btnMessage.TabIndex = 7;
@@ -658,6 +691,7 @@ namespace Chatterino.Controls
         private FlatButton btnTimeout7Days;
         private FlatButton btnTimeout1Month;
         private FlatButton btnTimeout2Hours;
+        private FlatButton btnIgnoreHighlights;
         private const int HT_CAPTION = 0x2;
     }
 }
