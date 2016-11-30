@@ -382,12 +382,42 @@ namespace Chatterino
                     ToolTip = new Controls.ToolTip() { Enabled = false };
                 }
 
+                Screen.FromPoint(point);
+
+                var screen = Screen.FromPoint(Cursor.Position);
+
                 ToolTip.TooltipText = text;
-                ToolTip.Location = point;
 
                 if (!ToolTip.Visible)
                 {
                     ToolTip.Show();
+                }
+
+                int x = point.X, y = point.Y;
+
+                if (point.X < screen.WorkingArea.X)
+                {
+                    x = screen.WorkingArea.X;
+                }
+                else if (point.X + ToolTip.Width > screen.WorkingArea.Right)
+                {
+                    x = screen.WorkingArea.Right - ToolTip.Width;
+                }
+
+                if (point.Y < screen.WorkingArea.Y)
+                {
+                    y = screen.WorkingArea.Y;
+                }
+                else if (point.Y + ToolTip.Height > screen.WorkingArea.Bottom)
+                {
+                    y = y - 24 - ToolTip.Height;
+                }
+
+                point = new Point(x, y);
+
+                if (ToolTip.Location != point)
+                {
+                    ToolTip.Location = point;
                 }
             }
         }

@@ -255,7 +255,7 @@ namespace Chatterino.Common
 
 
         // ctor
-        protected TwitchChannel(string channelName)
+        private TwitchChannel(string channelName)
         {
             if (!channelName.StartsWith("/"))
             {
