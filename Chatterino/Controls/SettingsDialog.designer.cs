@@ -30,19 +30,15 @@
         {
             this.tabs = new Chatterino.Controls.SettingsTabControl();
             this.RightPanel = new System.Windows.Forms.Panel();
-            this.panel11 = new System.Windows.Forms.Panel();
-            this.label14 = new System.Windows.Forms.Label();
-            this.buttonAccountRemove = new System.Windows.Forms.Button();
-            this.buttonAccountAdd = new System.Windows.Forms.Button();
-            this.dataGridViewAccounts = new System.Windows.Forms.DataGridView();
-            this.Username = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.panel5 = new System.Windows.Forms.Panel();
-            this.chkAllowCommandAtEnd = new System.Windows.Forms.CheckBox();
-            this.lblCommands = new System.Windows.Forms.Label();
-            this.btnCommandRemove = new System.Windows.Forms.Button();
-            this.btnCommandAdd = new System.Windows.Forms.Button();
-            this.dgvCommands = new System.Windows.Forms.DataGridView();
-            this.Command = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.panel6 = new System.Windows.Forms.Panel();
+            this.comboShowIgnoredUsersMessagesIf = new System.Windows.Forms.ComboBox();
+            this.label15 = new System.Windows.Forms.Label();
+            this.chkTwitchIgnores = new System.Windows.Forms.CheckBox();
+            this.btnIgnoredUserRemove = new System.Windows.Forms.Button();
+            this.btnIgnoredUserAdd = new System.Windows.Forms.Button();
+            this.dgvIgnoredUsers = new System.Windows.Forms.DataGridView();
+            this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.label9 = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
             this.chkLastReadMessageIndicator = new System.Windows.Forms.CheckBox();
             this.chkTopMost = new System.Windows.Forms.CheckBox();
@@ -66,19 +62,35 @@
             this.chkAllowSameMessages = new System.Windows.Forms.CheckBox();
             this.chkTimestampSeconds = new System.Windows.Forms.CheckBox();
             this.chkTimestamps = new System.Windows.Forms.CheckBox();
+            this.panel11 = new System.Windows.Forms.Panel();
+            this.label14 = new System.Windows.Forms.Label();
+            this.buttonAccountRemove = new System.Windows.Forms.Button();
+            this.buttonAccountAdd = new System.Windows.Forms.Button();
+            this.dataGridViewAccounts = new System.Windows.Forms.DataGridView();
+            this.Username = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.panel4 = new System.Windows.Forms.Panel();
+            this.chkTwitchEmotes = new System.Windows.Forms.CheckBox();
+            this.tabControl2 = new System.Windows.Forms.TabControl();
+            this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.label8 = new System.Windows.Forms.Label();
+            this.rtbIngoredEmotes = new System.Windows.Forms.RichTextBox();
+            this.chkEmojis = new System.Windows.Forms.CheckBox();
+            this.chkGifEmotes = new System.Windows.Forms.CheckBox();
+            this.chkBttvEmotes = new System.Windows.Forms.CheckBox();
+            this.chkFFzEmotes = new System.Windows.Forms.CheckBox();
+            this.panel5 = new System.Windows.Forms.Panel();
+            this.chkAllowCommandAtEnd = new System.Windows.Forms.CheckBox();
+            this.lblCommands = new System.Windows.Forms.Label();
+            this.btnCommandRemove = new System.Windows.Forms.Button();
+            this.btnCommandAdd = new System.Windows.Forms.Button();
+            this.dgvCommands = new System.Windows.Forms.DataGridView();
+            this.Command = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.panel8 = new System.Windows.Forms.Panel();
             this.label13 = new System.Windows.Forms.Label();
             this.chkEnableInlineWhispers = new System.Windows.Forms.CheckBox();
             this.panel7 = new System.Windows.Forms.Panel();
             this.chkDoubleClickLinks = new System.Windows.Forms.CheckBox();
             this.chkUseDefaultBrowser = new System.Windows.Forms.CheckBox();
-            this.panel6 = new System.Windows.Forms.Panel();
-            this.chkTwitchIgnores = new System.Windows.Forms.CheckBox();
-            this.btnIgnoredUserRemove = new System.Windows.Forms.Button();
-            this.btnIgnoredUserAdd = new System.Windows.Forms.Button();
-            this.dgvIgnoredUsers = new System.Windows.Forms.DataGridView();
-            this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.label9 = new System.Windows.Forms.Label();
             this.panel3 = new System.Windows.Forms.Panel();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
@@ -107,16 +119,6 @@
             this.lblProxyType = new System.Windows.Forms.Label();
             this.lblProxy = new System.Windows.Forms.Label();
             this.chkProxyEnabled = new System.Windows.Forms.CheckBox();
-            this.panel4 = new System.Windows.Forms.Panel();
-            this.chkTwitchEmotes = new System.Windows.Forms.CheckBox();
-            this.tabControl2 = new System.Windows.Forms.TabControl();
-            this.tabPage3 = new System.Windows.Forms.TabPage();
-            this.label8 = new System.Windows.Forms.Label();
-            this.rtbIngoredEmotes = new System.Windows.Forms.RichTextBox();
-            this.chkEmojis = new System.Windows.Forms.CheckBox();
-            this.chkGifEmotes = new System.Windows.Forms.CheckBox();
-            this.chkBttvEmotes = new System.Windows.Forms.CheckBox();
-            this.chkFFzEmotes = new System.Windows.Forms.CheckBox();
             this.panel9 = new System.Windows.Forms.Panel();
             this.tabControl3 = new System.Windows.Forms.TabControl();
             this.tabPage4 = new System.Windows.Forms.TabPage();
@@ -135,25 +137,25 @@
             this.spConnection = new Chatterino.Controls.SettingsTabPage();
             this.tabs.SuspendLayout();
             this.RightPanel.SuspendLayout();
-            this.panel11.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewAccounts)).BeginInit();
-            this.panel5.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvCommands)).BeginInit();
+            this.panel6.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvIgnoredUsers)).BeginInit();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
+            this.panel11.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewAccounts)).BeginInit();
+            this.panel4.SuspendLayout();
+            this.tabControl2.SuspendLayout();
+            this.tabPage3.SuspendLayout();
+            this.panel5.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvCommands)).BeginInit();
             this.panel8.SuspendLayout();
             this.panel7.SuspendLayout();
-            this.panel6.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvIgnoredUsers)).BeginInit();
             this.panel3.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.panel2.SuspendLayout();
-            this.panel4.SuspendLayout();
-            this.tabControl2.SuspendLayout();
-            this.tabPage3.SuspendLayout();
             this.panel9.SuspendLayout();
             this.tabControl3.SuspendLayout();
             this.tabPage4.SuspendLayout();
@@ -178,8 +180,8 @@
             this.tabs.Location = new System.Drawing.Point(0, 0);
             this.tabs.Name = "tabs";
             this.tabs.Panel = this.RightPanel;
-            this.tabs.SelectedIndex = 1;
-            this.tabs.SelectedTab = this.spAppearance;
+            this.tabs.SelectedIndex = 4;
+            this.tabs.SelectedTab = this.spIgnoredUsers;
             this.tabs.Size = new System.Drawing.Size(614, 484);
             this.tabs.TabIndex = 0;
             this.tabs.TabsWidth = 150;
@@ -189,16 +191,16 @@
             this.RightPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.RightPanel.Controls.Add(this.panel6);
             this.RightPanel.Controls.Add(this.panel1);
             this.RightPanel.Controls.Add(this.panel11);
+            this.RightPanel.Controls.Add(this.panel4);
             this.RightPanel.Controls.Add(this.panel5);
             this.RightPanel.Controls.Add(this.panel8);
             this.RightPanel.Controls.Add(this.panel7);
-            this.RightPanel.Controls.Add(this.panel6);
             this.RightPanel.Controls.Add(this.panel3);
             this.RightPanel.Controls.Add(this.panel10);
             this.RightPanel.Controls.Add(this.panel2);
-            this.RightPanel.Controls.Add(this.panel4);
             this.RightPanel.Controls.Add(this.panel9);
             this.RightPanel.Location = new System.Drawing.Point(150, 0);
             this.RightPanel.Name = "RightPanel";
@@ -206,148 +208,109 @@
             this.RightPanel.Size = new System.Drawing.Size(464, 484);
             this.RightPanel.TabIndex = 0;
             // 
-            // panel11
+            // panel6
             // 
-            this.panel11.Controls.Add(this.label14);
-            this.panel11.Controls.Add(this.buttonAccountRemove);
-            this.panel11.Controls.Add(this.buttonAccountAdd);
-            this.panel11.Controls.Add(this.dataGridViewAccounts);
-            this.panel11.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel11.Location = new System.Drawing.Point(0, 0);
-            this.panel11.Name = "panel11";
-            this.panel11.Size = new System.Drawing.Size(464, 442);
-            this.panel11.TabIndex = 9;
+            this.panel6.Controls.Add(this.comboShowIgnoredUsersMessagesIf);
+            this.panel6.Controls.Add(this.label15);
+            this.panel6.Controls.Add(this.chkTwitchIgnores);
+            this.panel6.Controls.Add(this.btnIgnoredUserRemove);
+            this.panel6.Controls.Add(this.btnIgnoredUserAdd);
+            this.panel6.Controls.Add(this.dgvIgnoredUsers);
+            this.panel6.Controls.Add(this.label9);
+            this.panel6.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel6.Location = new System.Drawing.Point(0, 0);
+            this.panel6.Name = "panel6";
+            this.panel6.Size = new System.Drawing.Size(464, 442);
+            this.panel6.TabIndex = 4;
             // 
-            // label14
+            // comboShowIgnoredUsersMessagesIf
             // 
-            this.label14.AutoSize = true;
-            this.label14.ForeColor = System.Drawing.Color.White;
-            this.label14.Location = new System.Drawing.Point(18, 12);
-            this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(401, 26);
-            this.label14.TabIndex = 5;
-            this.label14.Text = "Note: Using too many accounts from the same IP can get you suspended on twitch!\r\n" +
-    "Be careful and don\'t try to abuse the system!";
+            this.comboShowIgnoredUsersMessagesIf.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboShowIgnoredUsersMessagesIf.FormattingEnabled = true;
+            this.comboShowIgnoredUsersMessagesIf.Items.AddRange(new object[] {
+            "You are moderator",
+            "You are broadcaster",
+            "Never"});
+            this.comboShowIgnoredUsersMessagesIf.Location = new System.Drawing.Point(322, 36);
+            this.comboShowIgnoredUsersMessagesIf.Name = "comboShowIgnoredUsersMessagesIf";
+            this.comboShowIgnoredUsersMessagesIf.Size = new System.Drawing.Size(109, 21);
+            this.comboShowIgnoredUsersMessagesIf.TabIndex = 25;
             // 
-            // buttonAccountRemove
+            // label15
             // 
-            this.buttonAccountRemove.Location = new System.Drawing.Point(99, 52);
-            this.buttonAccountRemove.Name = "buttonAccountRemove";
-            this.buttonAccountRemove.Size = new System.Drawing.Size(75, 23);
-            this.buttonAccountRemove.TabIndex = 2;
-            this.buttonAccountRemove.Text = "Remove";
-            this.buttonAccountRemove.UseVisualStyleBackColor = true;
+            this.label15.AutoSize = true;
+            this.label15.ForeColor = System.Drawing.Color.White;
+            this.label15.Location = new System.Drawing.Point(177, 41);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(139, 13);
+            this.label15.TabIndex = 6;
+            this.label15.Text = "Show messages anyways if:";
             // 
-            // buttonAccountAdd
+            // chkTwitchIgnores
             // 
-            this.buttonAccountAdd.Location = new System.Drawing.Point(21, 52);
-            this.buttonAccountAdd.Name = "buttonAccountAdd";
-            this.buttonAccountAdd.Size = new System.Drawing.Size(75, 23);
-            this.buttonAccountAdd.TabIndex = 1;
-            this.buttonAccountAdd.Text = "Add";
-            this.buttonAccountAdd.UseVisualStyleBackColor = true;
+            this.chkTwitchIgnores.AutoSize = true;
+            this.chkTwitchIgnores.Checked = true;
+            this.chkTwitchIgnores.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkTwitchIgnores.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.chkTwitchIgnores.Location = new System.Drawing.Point(16, 13);
+            this.chkTwitchIgnores.Name = "chkTwitchIgnores";
+            this.chkTwitchIgnores.Size = new System.Drawing.Size(163, 17);
+            this.chkTwitchIgnores.TabIndex = 24;
+            this.chkTwitchIgnores.Text = "Enable Twitch Ignored Users";
+            this.chkTwitchIgnores.UseVisualStyleBackColor = true;
             // 
-            // dataGridViewAccounts
+            // btnIgnoredUserRemove
             // 
-            this.dataGridViewAccounts.AllowUserToAddRows = false;
-            this.dataGridViewAccounts.AllowUserToDeleteRows = false;
-            this.dataGridViewAccounts.AllowUserToResizeColumns = false;
-            this.dataGridViewAccounts.AllowUserToResizeRows = false;
-            this.dataGridViewAccounts.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridViewAccounts.ColumnHeadersVisible = false;
-            this.dataGridViewAccounts.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.Username});
-            this.dataGridViewAccounts.Location = new System.Drawing.Point(19, 85);
-            this.dataGridViewAccounts.Name = "dataGridViewAccounts";
-            this.dataGridViewAccounts.RowHeadersVisible = false;
-            this.dataGridViewAccounts.Size = new System.Drawing.Size(417, 307);
-            this.dataGridViewAccounts.TabIndex = 0;
+            this.btnIgnoredUserRemove.Location = new System.Drawing.Point(96, 36);
+            this.btnIgnoredUserRemove.Name = "btnIgnoredUserRemove";
+            this.btnIgnoredUserRemove.Size = new System.Drawing.Size(75, 23);
+            this.btnIgnoredUserRemove.TabIndex = 8;
+            this.btnIgnoredUserRemove.Text = "Remove";
+            this.btnIgnoredUserRemove.UseVisualStyleBackColor = true;
             // 
-            // Username
+            // btnIgnoredUserAdd
             // 
-            this.Username.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.Username.HeaderText = "Username";
-            this.Username.Name = "Username";
-            this.Username.ReadOnly = true;
+            this.btnIgnoredUserAdd.Location = new System.Drawing.Point(16, 36);
+            this.btnIgnoredUserAdd.Name = "btnIgnoredUserAdd";
+            this.btnIgnoredUserAdd.Size = new System.Drawing.Size(75, 23);
+            this.btnIgnoredUserAdd.TabIndex = 7;
+            this.btnIgnoredUserAdd.Text = "Add";
+            this.btnIgnoredUserAdd.UseVisualStyleBackColor = true;
             // 
-            // panel5
+            // dgvIgnoredUsers
             // 
-            this.panel5.Controls.Add(this.chkAllowCommandAtEnd);
-            this.panel5.Controls.Add(this.lblCommands);
-            this.panel5.Controls.Add(this.btnCommandRemove);
-            this.panel5.Controls.Add(this.btnCommandAdd);
-            this.panel5.Controls.Add(this.dgvCommands);
-            this.panel5.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel5.Location = new System.Drawing.Point(0, 0);
-            this.panel5.Name = "panel5";
-            this.panel5.Size = new System.Drawing.Size(464, 442);
-            this.panel5.TabIndex = 3;
+            this.dgvIgnoredUsers.AllowUserToAddRows = false;
+            this.dgvIgnoredUsers.AllowUserToDeleteRows = false;
+            this.dgvIgnoredUsers.AllowUserToResizeColumns = false;
+            this.dgvIgnoredUsers.AllowUserToResizeRows = false;
+            this.dgvIgnoredUsers.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvIgnoredUsers.ColumnHeadersVisible = false;
+            this.dgvIgnoredUsers.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.dataGridViewTextBoxColumn1});
+            this.dgvIgnoredUsers.Location = new System.Drawing.Point(16, 63);
+            this.dgvIgnoredUsers.Name = "dgvIgnoredUsers";
+            this.dgvIgnoredUsers.RowHeadersVisible = false;
+            this.dgvIgnoredUsers.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dgvIgnoredUsers.Size = new System.Drawing.Size(415, 268);
+            this.dgvIgnoredUsers.TabIndex = 6;
             // 
-            // chkAllowCommandAtEnd
+            // dataGridViewTextBoxColumn1
             // 
-            this.chkAllowCommandAtEnd.AutoSize = true;
-            this.chkAllowCommandAtEnd.Checked = true;
-            this.chkAllowCommandAtEnd.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkAllowCommandAtEnd.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.chkAllowCommandAtEnd.Location = new System.Drawing.Point(176, 17);
-            this.chkAllowCommandAtEnd.Name = "chkAllowCommandAtEnd";
-            this.chkAllowCommandAtEnd.Size = new System.Drawing.Size(205, 17);
-            this.chkAllowCommandAtEnd.TabIndex = 1;
-            this.chkAllowCommandAtEnd.Text = "Allow commands at the end of the line";
-            this.chkAllowCommandAtEnd.UseVisualStyleBackColor = true;
+            this.dataGridViewTextBoxColumn1.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.dataGridViewTextBoxColumn1.HeaderText = "Command";
+            this.dataGridViewTextBoxColumn1.Name = "dataGridViewTextBoxColumn1";
             // 
-            // lblCommands
+            // label9
             // 
-            this.lblCommands.AutoSize = true;
-            this.lblCommands.ForeColor = System.Drawing.Color.White;
-            this.lblCommands.Location = new System.Drawing.Point(13, 321);
-            this.lblCommands.Name = "lblCommands";
-            this.lblCommands.Size = new System.Drawing.Size(270, 78);
-            this.lblCommands.TabIndex = 4;
-            this.lblCommands.Text = "/name command\r\n\r\n{1} = first word, {2} = seconds word, ...\r\n{1+} = first word and" +
-    " after, {2+} = second word and after\r\n\r\nwarning: you could override important tw" +
-    "itch commands";
-            // 
-            // btnCommandRemove
-            // 
-            this.btnCommandRemove.Location = new System.Drawing.Point(95, 13);
-            this.btnCommandRemove.Name = "btnCommandRemove";
-            this.btnCommandRemove.Size = new System.Drawing.Size(75, 23);
-            this.btnCommandRemove.TabIndex = 2;
-            this.btnCommandRemove.Text = "Remove";
-            this.btnCommandRemove.UseVisualStyleBackColor = true;
-            // 
-            // btnCommandAdd
-            // 
-            this.btnCommandAdd.Location = new System.Drawing.Point(15, 13);
-            this.btnCommandAdd.Name = "btnCommandAdd";
-            this.btnCommandAdd.Size = new System.Drawing.Size(75, 23);
-            this.btnCommandAdd.TabIndex = 1;
-            this.btnCommandAdd.Text = "Add";
-            this.btnCommandAdd.UseVisualStyleBackColor = true;
-            // 
-            // dgvCommands
-            // 
-            this.dgvCommands.AllowUserToAddRows = false;
-            this.dgvCommands.AllowUserToDeleteRows = false;
-            this.dgvCommands.AllowUserToResizeColumns = false;
-            this.dgvCommands.AllowUserToResizeRows = false;
-            this.dgvCommands.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvCommands.ColumnHeadersVisible = false;
-            this.dgvCommands.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.Command});
-            this.dgvCommands.Location = new System.Drawing.Point(16, 48);
-            this.dgvCommands.Name = "dgvCommands";
-            this.dgvCommands.RowHeadersVisible = false;
-            this.dgvCommands.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvCommands.Size = new System.Drawing.Size(415, 270);
-            this.dgvCommands.TabIndex = 0;
-            // 
-            // Command
-            // 
-            this.Command.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.Command.HeaderText = "Command";
-            this.Command.Name = "Command";
+            this.label9.AutoSize = true;
+            this.label9.ForeColor = System.Drawing.Color.White;
+            this.label9.Location = new System.Drawing.Point(13, 334);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(361, 65);
+            this.label9.TabIndex = 5;
+            this.label9.Text = "/ignore in chat to ignore someone\r\n/unignore in chat to unignore someone\r\n\r\nChatt" +
+    "erino uses the twitch ignore api.\r\nIf you use your own oauth key make sure that " +
+    "it has the proper permissions.";
             // 
             // panel1
             // 
@@ -628,6 +591,271 @@
             this.chkTimestamps.Text = "Show Timestamps";
             this.chkTimestamps.UseVisualStyleBackColor = true;
             // 
+            // panel11
+            // 
+            this.panel11.Controls.Add(this.label14);
+            this.panel11.Controls.Add(this.buttonAccountRemove);
+            this.panel11.Controls.Add(this.buttonAccountAdd);
+            this.panel11.Controls.Add(this.dataGridViewAccounts);
+            this.panel11.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel11.Location = new System.Drawing.Point(0, 0);
+            this.panel11.Name = "panel11";
+            this.panel11.Size = new System.Drawing.Size(464, 442);
+            this.panel11.TabIndex = 9;
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.ForeColor = System.Drawing.Color.White;
+            this.label14.Location = new System.Drawing.Point(18, 12);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(401, 26);
+            this.label14.TabIndex = 5;
+            this.label14.Text = "Note: Using too many accounts from the same IP can get you suspended on twitch!\r\n" +
+    "Be careful and don\'t try to abuse the system!";
+            // 
+            // buttonAccountRemove
+            // 
+            this.buttonAccountRemove.Location = new System.Drawing.Point(99, 52);
+            this.buttonAccountRemove.Name = "buttonAccountRemove";
+            this.buttonAccountRemove.Size = new System.Drawing.Size(75, 23);
+            this.buttonAccountRemove.TabIndex = 2;
+            this.buttonAccountRemove.Text = "Remove";
+            this.buttonAccountRemove.UseVisualStyleBackColor = true;
+            // 
+            // buttonAccountAdd
+            // 
+            this.buttonAccountAdd.Location = new System.Drawing.Point(21, 52);
+            this.buttonAccountAdd.Name = "buttonAccountAdd";
+            this.buttonAccountAdd.Size = new System.Drawing.Size(75, 23);
+            this.buttonAccountAdd.TabIndex = 1;
+            this.buttonAccountAdd.Text = "Add";
+            this.buttonAccountAdd.UseVisualStyleBackColor = true;
+            // 
+            // dataGridViewAccounts
+            // 
+            this.dataGridViewAccounts.AllowUserToAddRows = false;
+            this.dataGridViewAccounts.AllowUserToDeleteRows = false;
+            this.dataGridViewAccounts.AllowUserToResizeColumns = false;
+            this.dataGridViewAccounts.AllowUserToResizeRows = false;
+            this.dataGridViewAccounts.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridViewAccounts.ColumnHeadersVisible = false;
+            this.dataGridViewAccounts.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.Username});
+            this.dataGridViewAccounts.Location = new System.Drawing.Point(19, 85);
+            this.dataGridViewAccounts.Name = "dataGridViewAccounts";
+            this.dataGridViewAccounts.RowHeadersVisible = false;
+            this.dataGridViewAccounts.Size = new System.Drawing.Size(417, 307);
+            this.dataGridViewAccounts.TabIndex = 0;
+            // 
+            // Username
+            // 
+            this.Username.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.Username.HeaderText = "Username";
+            this.Username.Name = "Username";
+            this.Username.ReadOnly = true;
+            // 
+            // panel4
+            // 
+            this.panel4.Controls.Add(this.chkTwitchEmotes);
+            this.panel4.Controls.Add(this.tabControl2);
+            this.panel4.Controls.Add(this.chkEmojis);
+            this.panel4.Controls.Add(this.chkGifEmotes);
+            this.panel4.Controls.Add(this.chkBttvEmotes);
+            this.panel4.Controls.Add(this.chkFFzEmotes);
+            this.panel4.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel4.Location = new System.Drawing.Point(0, 0);
+            this.panel4.Name = "panel4";
+            this.panel4.Size = new System.Drawing.Size(464, 442);
+            this.panel4.TabIndex = 2;
+            // 
+            // chkTwitchEmotes
+            // 
+            this.chkTwitchEmotes.AutoSize = true;
+            this.chkTwitchEmotes.Checked = true;
+            this.chkTwitchEmotes.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkTwitchEmotes.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.chkTwitchEmotes.Location = new System.Drawing.Point(16, 13);
+            this.chkTwitchEmotes.Name = "chkTwitchEmotes";
+            this.chkTwitchEmotes.Size = new System.Drawing.Size(132, 17);
+            this.chkTwitchEmotes.TabIndex = 23;
+            this.chkTwitchEmotes.Text = "Enable Twitch Emotes";
+            this.chkTwitchEmotes.UseVisualStyleBackColor = true;
+            // 
+            // tabControl2
+            // 
+            this.tabControl2.Controls.Add(this.tabPage3);
+            this.tabControl2.Location = new System.Drawing.Point(17, 131);
+            this.tabControl2.Name = "tabControl2";
+            this.tabControl2.SelectedIndex = 0;
+            this.tabControl2.Size = new System.Drawing.Size(415, 268);
+            this.tabControl2.TabIndex = 22;
+            // 
+            // tabPage3
+            // 
+            this.tabPage3.Controls.Add(this.label8);
+            this.tabPage3.Controls.Add(this.rtbIngoredEmotes);
+            this.tabPage3.Location = new System.Drawing.Point(4, 22);
+            this.tabPage3.Name = "tabPage3";
+            this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage3.Size = new System.Drawing.Size(407, 242);
+            this.tabPage3.TabIndex = 0;
+            this.tabPage3.Text = "Ignored Emotes";
+            this.tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.label8.ForeColor = System.Drawing.Color.Black;
+            this.label8.Location = new System.Drawing.Point(3, 5);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(230, 13);
+            this.label8.TabIndex = 22;
+            this.label8.Text = "Emotes that will be shown as text (one per line):";
+            // 
+            // rtbIngoredEmotes
+            // 
+            this.rtbIngoredEmotes.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.rtbIngoredEmotes.Location = new System.Drawing.Point(6, 21);
+            this.rtbIngoredEmotes.Name = "rtbIngoredEmotes";
+            this.rtbIngoredEmotes.Size = new System.Drawing.Size(395, 215);
+            this.rtbIngoredEmotes.TabIndex = 17;
+            this.rtbIngoredEmotes.Text = "";
+            // 
+            // chkEmojis
+            // 
+            this.chkEmojis.AutoSize = true;
+            this.chkEmojis.Checked = true;
+            this.chkEmojis.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkEmojis.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.chkEmojis.Location = new System.Drawing.Point(16, 105);
+            this.chkEmojis.Name = "chkEmojis";
+            this.chkEmojis.Size = new System.Drawing.Size(92, 17);
+            this.chkEmojis.TabIndex = 13;
+            this.chkEmojis.Text = "Enable Emojis";
+            this.chkEmojis.UseVisualStyleBackColor = true;
+            // 
+            // chkGifEmotes
+            // 
+            this.chkGifEmotes.AutoSize = true;
+            this.chkGifEmotes.Checked = true;
+            this.chkGifEmotes.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkGifEmotes.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.chkGifEmotes.Location = new System.Drawing.Point(16, 82);
+            this.chkGifEmotes.Name = "chkGifEmotes";
+            this.chkGifEmotes.Size = new System.Drawing.Size(133, 17);
+            this.chkGifEmotes.TabIndex = 12;
+            this.chkGifEmotes.Text = "Enable GIF Animations";
+            this.chkGifEmotes.UseVisualStyleBackColor = true;
+            // 
+            // chkBttvEmotes
+            // 
+            this.chkBttvEmotes.AutoSize = true;
+            this.chkBttvEmotes.Checked = true;
+            this.chkBttvEmotes.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkBttvEmotes.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.chkBttvEmotes.Location = new System.Drawing.Point(16, 36);
+            this.chkBttvEmotes.Name = "chkBttvEmotes";
+            this.chkBttvEmotes.Size = new System.Drawing.Size(149, 17);
+            this.chkBttvEmotes.TabIndex = 11;
+            this.chkBttvEmotes.Text = "Enable BetterTTV Emotes";
+            this.chkBttvEmotes.UseVisualStyleBackColor = true;
+            // 
+            // chkFFzEmotes
+            // 
+            this.chkFFzEmotes.AutoSize = true;
+            this.chkFFzEmotes.Checked = true;
+            this.chkFFzEmotes.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkFFzEmotes.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.chkFFzEmotes.Location = new System.Drawing.Point(16, 59);
+            this.chkFFzEmotes.Name = "chkFFzEmotes";
+            this.chkFFzEmotes.Size = new System.Drawing.Size(167, 17);
+            this.chkFFzEmotes.TabIndex = 10;
+            this.chkFFzEmotes.Text = "Enable FrankerFaceZ Emotes";
+            this.chkFFzEmotes.UseVisualStyleBackColor = true;
+            // 
+            // panel5
+            // 
+            this.panel5.Controls.Add(this.chkAllowCommandAtEnd);
+            this.panel5.Controls.Add(this.lblCommands);
+            this.panel5.Controls.Add(this.btnCommandRemove);
+            this.panel5.Controls.Add(this.btnCommandAdd);
+            this.panel5.Controls.Add(this.dgvCommands);
+            this.panel5.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel5.Location = new System.Drawing.Point(0, 0);
+            this.panel5.Name = "panel5";
+            this.panel5.Size = new System.Drawing.Size(464, 442);
+            this.panel5.TabIndex = 3;
+            // 
+            // chkAllowCommandAtEnd
+            // 
+            this.chkAllowCommandAtEnd.AutoSize = true;
+            this.chkAllowCommandAtEnd.Checked = true;
+            this.chkAllowCommandAtEnd.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkAllowCommandAtEnd.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.chkAllowCommandAtEnd.Location = new System.Drawing.Point(176, 17);
+            this.chkAllowCommandAtEnd.Name = "chkAllowCommandAtEnd";
+            this.chkAllowCommandAtEnd.Size = new System.Drawing.Size(205, 17);
+            this.chkAllowCommandAtEnd.TabIndex = 1;
+            this.chkAllowCommandAtEnd.Text = "Allow commands at the end of the line";
+            this.chkAllowCommandAtEnd.UseVisualStyleBackColor = true;
+            // 
+            // lblCommands
+            // 
+            this.lblCommands.AutoSize = true;
+            this.lblCommands.ForeColor = System.Drawing.Color.White;
+            this.lblCommands.Location = new System.Drawing.Point(13, 321);
+            this.lblCommands.Name = "lblCommands";
+            this.lblCommands.Size = new System.Drawing.Size(270, 78);
+            this.lblCommands.TabIndex = 4;
+            this.lblCommands.Text = "/name command\r\n\r\n{1} = first word, {2} = seconds word, ...\r\n{1+} = first word and" +
+    " after, {2+} = second word and after\r\n\r\nwarning: you could override important tw" +
+    "itch commands";
+            // 
+            // btnCommandRemove
+            // 
+            this.btnCommandRemove.Location = new System.Drawing.Point(95, 13);
+            this.btnCommandRemove.Name = "btnCommandRemove";
+            this.btnCommandRemove.Size = new System.Drawing.Size(75, 23);
+            this.btnCommandRemove.TabIndex = 2;
+            this.btnCommandRemove.Text = "Remove";
+            this.btnCommandRemove.UseVisualStyleBackColor = true;
+            // 
+            // btnCommandAdd
+            // 
+            this.btnCommandAdd.Location = new System.Drawing.Point(15, 13);
+            this.btnCommandAdd.Name = "btnCommandAdd";
+            this.btnCommandAdd.Size = new System.Drawing.Size(75, 23);
+            this.btnCommandAdd.TabIndex = 1;
+            this.btnCommandAdd.Text = "Add";
+            this.btnCommandAdd.UseVisualStyleBackColor = true;
+            // 
+            // dgvCommands
+            // 
+            this.dgvCommands.AllowUserToAddRows = false;
+            this.dgvCommands.AllowUserToDeleteRows = false;
+            this.dgvCommands.AllowUserToResizeColumns = false;
+            this.dgvCommands.AllowUserToResizeRows = false;
+            this.dgvCommands.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvCommands.ColumnHeadersVisible = false;
+            this.dgvCommands.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.Command});
+            this.dgvCommands.Location = new System.Drawing.Point(16, 48);
+            this.dgvCommands.Name = "dgvCommands";
+            this.dgvCommands.RowHeadersVisible = false;
+            this.dgvCommands.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dgvCommands.Size = new System.Drawing.Size(415, 270);
+            this.dgvCommands.TabIndex = 0;
+            // 
+            // Command
+            // 
+            this.Command.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.Command.HeaderText = "Command";
+            this.Command.Name = "Command";
+            // 
             // panel8
             // 
             this.panel8.Controls.Add(this.label13);
@@ -696,85 +924,6 @@
             this.chkUseDefaultBrowser.Text = "Use the system\'s Default Browser";
             this.chkUseDefaultBrowser.UseVisualStyleBackColor = true;
             this.chkUseDefaultBrowser.Visible = false;
-            // 
-            // panel6
-            // 
-            this.panel6.Controls.Add(this.chkTwitchIgnores);
-            this.panel6.Controls.Add(this.btnIgnoredUserRemove);
-            this.panel6.Controls.Add(this.btnIgnoredUserAdd);
-            this.panel6.Controls.Add(this.dgvIgnoredUsers);
-            this.panel6.Controls.Add(this.label9);
-            this.panel6.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel6.Location = new System.Drawing.Point(0, 0);
-            this.panel6.Name = "panel6";
-            this.panel6.Size = new System.Drawing.Size(464, 442);
-            this.panel6.TabIndex = 4;
-            // 
-            // chkTwitchIgnores
-            // 
-            this.chkTwitchIgnores.AutoSize = true;
-            this.chkTwitchIgnores.Checked = true;
-            this.chkTwitchIgnores.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkTwitchIgnores.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.chkTwitchIgnores.Location = new System.Drawing.Point(16, 13);
-            this.chkTwitchIgnores.Name = "chkTwitchIgnores";
-            this.chkTwitchIgnores.Size = new System.Drawing.Size(163, 17);
-            this.chkTwitchIgnores.TabIndex = 24;
-            this.chkTwitchIgnores.Text = "Enable Twitch Ignored Users";
-            this.chkTwitchIgnores.UseVisualStyleBackColor = true;
-            // 
-            // btnIgnoredUserRemove
-            // 
-            this.btnIgnoredUserRemove.Location = new System.Drawing.Point(96, 36);
-            this.btnIgnoredUserRemove.Name = "btnIgnoredUserRemove";
-            this.btnIgnoredUserRemove.Size = new System.Drawing.Size(75, 23);
-            this.btnIgnoredUserRemove.TabIndex = 8;
-            this.btnIgnoredUserRemove.Text = "Remove";
-            this.btnIgnoredUserRemove.UseVisualStyleBackColor = true;
-            // 
-            // btnIgnoredUserAdd
-            // 
-            this.btnIgnoredUserAdd.Location = new System.Drawing.Point(16, 36);
-            this.btnIgnoredUserAdd.Name = "btnIgnoredUserAdd";
-            this.btnIgnoredUserAdd.Size = new System.Drawing.Size(75, 23);
-            this.btnIgnoredUserAdd.TabIndex = 7;
-            this.btnIgnoredUserAdd.Text = "Add";
-            this.btnIgnoredUserAdd.UseVisualStyleBackColor = true;
-            // 
-            // dgvIgnoredUsers
-            // 
-            this.dgvIgnoredUsers.AllowUserToAddRows = false;
-            this.dgvIgnoredUsers.AllowUserToDeleteRows = false;
-            this.dgvIgnoredUsers.AllowUserToResizeColumns = false;
-            this.dgvIgnoredUsers.AllowUserToResizeRows = false;
-            this.dgvIgnoredUsers.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvIgnoredUsers.ColumnHeadersVisible = false;
-            this.dgvIgnoredUsers.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.dataGridViewTextBoxColumn1});
-            this.dgvIgnoredUsers.Location = new System.Drawing.Point(16, 63);
-            this.dgvIgnoredUsers.Name = "dgvIgnoredUsers";
-            this.dgvIgnoredUsers.RowHeadersVisible = false;
-            this.dgvIgnoredUsers.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvIgnoredUsers.Size = new System.Drawing.Size(415, 268);
-            this.dgvIgnoredUsers.TabIndex = 6;
-            // 
-            // dataGridViewTextBoxColumn1
-            // 
-            this.dataGridViewTextBoxColumn1.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.dataGridViewTextBoxColumn1.HeaderText = "Command";
-            this.dataGridViewTextBoxColumn1.Name = "dataGridViewTextBoxColumn1";
-            // 
-            // label9
-            // 
-            this.label9.AutoSize = true;
-            this.label9.ForeColor = System.Drawing.Color.White;
-            this.label9.Location = new System.Drawing.Point(13, 334);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(361, 65);
-            this.label9.TabIndex = 5;
-            this.label9.Text = "/ignore in chat to ignore someone\r\n/unignore in chat to unignore someone\r\n\r\nChatt" +
-    "erino uses the twitch ignore api.\r\nIf you use your own oauth key make sure that " +
-    "it has the proper permissions.";
             // 
             // panel3
             // 
@@ -1070,128 +1219,6 @@
             this.chkProxyEnabled.Text = "Enable Proxy";
             this.chkProxyEnabled.UseVisualStyleBackColor = true;
             // 
-            // panel4
-            // 
-            this.panel4.Controls.Add(this.chkTwitchEmotes);
-            this.panel4.Controls.Add(this.tabControl2);
-            this.panel4.Controls.Add(this.chkEmojis);
-            this.panel4.Controls.Add(this.chkGifEmotes);
-            this.panel4.Controls.Add(this.chkBttvEmotes);
-            this.panel4.Controls.Add(this.chkFFzEmotes);
-            this.panel4.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel4.Location = new System.Drawing.Point(0, 0);
-            this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(464, 442);
-            this.panel4.TabIndex = 2;
-            // 
-            // chkTwitchEmotes
-            // 
-            this.chkTwitchEmotes.AutoSize = true;
-            this.chkTwitchEmotes.Checked = true;
-            this.chkTwitchEmotes.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkTwitchEmotes.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.chkTwitchEmotes.Location = new System.Drawing.Point(16, 13);
-            this.chkTwitchEmotes.Name = "chkTwitchEmotes";
-            this.chkTwitchEmotes.Size = new System.Drawing.Size(132, 17);
-            this.chkTwitchEmotes.TabIndex = 23;
-            this.chkTwitchEmotes.Text = "Enable Twitch Emotes";
-            this.chkTwitchEmotes.UseVisualStyleBackColor = true;
-            // 
-            // tabControl2
-            // 
-            this.tabControl2.Controls.Add(this.tabPage3);
-            this.tabControl2.Location = new System.Drawing.Point(17, 131);
-            this.tabControl2.Name = "tabControl2";
-            this.tabControl2.SelectedIndex = 0;
-            this.tabControl2.Size = new System.Drawing.Size(415, 268);
-            this.tabControl2.TabIndex = 22;
-            // 
-            // tabPage3
-            // 
-            this.tabPage3.Controls.Add(this.label8);
-            this.tabPage3.Controls.Add(this.rtbIngoredEmotes);
-            this.tabPage3.Location = new System.Drawing.Point(4, 22);
-            this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(407, 242);
-            this.tabPage3.TabIndex = 0;
-            this.tabPage3.Text = "Ignored Emotes";
-            this.tabPage3.UseVisualStyleBackColor = true;
-            // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.label8.ForeColor = System.Drawing.Color.Black;
-            this.label8.Location = new System.Drawing.Point(3, 5);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(230, 13);
-            this.label8.TabIndex = 22;
-            this.label8.Text = "Emotes that will be shown as text (one per line):";
-            // 
-            // rtbIngoredEmotes
-            // 
-            this.rtbIngoredEmotes.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.rtbIngoredEmotes.Location = new System.Drawing.Point(6, 21);
-            this.rtbIngoredEmotes.Name = "rtbIngoredEmotes";
-            this.rtbIngoredEmotes.Size = new System.Drawing.Size(395, 215);
-            this.rtbIngoredEmotes.TabIndex = 17;
-            this.rtbIngoredEmotes.Text = "";
-            // 
-            // chkEmojis
-            // 
-            this.chkEmojis.AutoSize = true;
-            this.chkEmojis.Checked = true;
-            this.chkEmojis.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkEmojis.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.chkEmojis.Location = new System.Drawing.Point(16, 105);
-            this.chkEmojis.Name = "chkEmojis";
-            this.chkEmojis.Size = new System.Drawing.Size(92, 17);
-            this.chkEmojis.TabIndex = 13;
-            this.chkEmojis.Text = "Enable Emojis";
-            this.chkEmojis.UseVisualStyleBackColor = true;
-            // 
-            // chkGifEmotes
-            // 
-            this.chkGifEmotes.AutoSize = true;
-            this.chkGifEmotes.Checked = true;
-            this.chkGifEmotes.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkGifEmotes.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.chkGifEmotes.Location = new System.Drawing.Point(16, 82);
-            this.chkGifEmotes.Name = "chkGifEmotes";
-            this.chkGifEmotes.Size = new System.Drawing.Size(133, 17);
-            this.chkGifEmotes.TabIndex = 12;
-            this.chkGifEmotes.Text = "Enable GIF Animations";
-            this.chkGifEmotes.UseVisualStyleBackColor = true;
-            // 
-            // chkBttvEmotes
-            // 
-            this.chkBttvEmotes.AutoSize = true;
-            this.chkBttvEmotes.Checked = true;
-            this.chkBttvEmotes.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkBttvEmotes.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.chkBttvEmotes.Location = new System.Drawing.Point(16, 36);
-            this.chkBttvEmotes.Name = "chkBttvEmotes";
-            this.chkBttvEmotes.Size = new System.Drawing.Size(149, 17);
-            this.chkBttvEmotes.TabIndex = 11;
-            this.chkBttvEmotes.Text = "Enable BetterTTV Emotes";
-            this.chkBttvEmotes.UseVisualStyleBackColor = true;
-            // 
-            // chkFFzEmotes
-            // 
-            this.chkFFzEmotes.AutoSize = true;
-            this.chkFFzEmotes.Checked = true;
-            this.chkFFzEmotes.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkFFzEmotes.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.chkFFzEmotes.Location = new System.Drawing.Point(16, 59);
-            this.chkFFzEmotes.Name = "chkFFzEmotes";
-            this.chkFFzEmotes.Size = new System.Drawing.Size(167, 17);
-            this.chkFFzEmotes.TabIndex = 10;
-            this.chkFFzEmotes.Text = "Enable FrankerFaceZ Emotes";
-            this.chkFFzEmotes.UseVisualStyleBackColor = true;
-            // 
             // panel9
             // 
             this.panel9.Controls.Add(this.tabControl3);
@@ -1263,6 +1290,7 @@
             this.spAppearance.Location = new System.Drawing.Point(0, 30);
             this.spAppearance.Name = "spAppearance";
             this.spAppearance.Panel = this.panel1;
+            this.spAppearance.Selected = false;
             this.spAppearance.Size = new System.Drawing.Size(150, 30);
             this.spAppearance.TabIndex = 1;
             this.spAppearance.Text = "Appearance";
@@ -1298,7 +1326,6 @@
             this.spIgnoredUsers.Location = new System.Drawing.Point(0, 120);
             this.spIgnoredUsers.Name = "spIgnoredUsers";
             this.spIgnoredUsers.Panel = this.panel6;
-            this.spIgnoredUsers.Selected = false;
             this.spIgnoredUsers.Size = new System.Drawing.Size(150, 30);
             this.spIgnoredUsers.TabIndex = 6;
             this.spIgnoredUsers.Text = "Ignored Users";
@@ -1394,23 +1421,28 @@
             this.Text = "Preferences";
             this.tabs.ResumeLayout(false);
             this.RightPanel.ResumeLayout(false);
-            this.panel11.ResumeLayout(false);
-            this.panel11.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewAccounts)).EndInit();
-            this.panel5.ResumeLayout(false);
-            this.panel5.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvCommands)).EndInit();
+            this.panel6.ResumeLayout(false);
+            this.panel6.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvIgnoredUsers)).EndInit();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).EndInit();
+            this.panel11.ResumeLayout(false);
+            this.panel11.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewAccounts)).EndInit();
+            this.panel4.ResumeLayout(false);
+            this.panel4.PerformLayout();
+            this.tabControl2.ResumeLayout(false);
+            this.tabPage3.ResumeLayout(false);
+            this.tabPage3.PerformLayout();
+            this.panel5.ResumeLayout(false);
+            this.panel5.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvCommands)).EndInit();
             this.panel8.ResumeLayout(false);
             this.panel8.PerformLayout();
             this.panel7.ResumeLayout(false);
             this.panel7.PerformLayout();
-            this.panel6.ResumeLayout(false);
-            this.panel6.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvIgnoredUsers)).EndInit();
             this.panel3.ResumeLayout(false);
             this.panel3.PerformLayout();
             this.tabControl1.ResumeLayout(false);
@@ -1420,11 +1452,6 @@
             this.tabPage2.PerformLayout();
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
-            this.panel4.ResumeLayout(false);
-            this.panel4.PerformLayout();
-            this.tabControl2.ResumeLayout(false);
-            this.tabPage3.ResumeLayout(false);
-            this.tabPage3.PerformLayout();
             this.panel9.ResumeLayout(false);
             this.tabControl3.ResumeLayout(false);
             this.tabPage4.ResumeLayout(false);
@@ -1540,5 +1567,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Username;
         private System.Windows.Forms.Label label13;
         private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.ComboBox comboShowIgnoredUsersMessagesIf;
     }
 }

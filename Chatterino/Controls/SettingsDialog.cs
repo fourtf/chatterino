@@ -333,6 +333,35 @@ namespace Chatterino.Controls
                 dgvIgnoredUsers.Rows.Add(user);
             }
 
+            switch (AppSettings.ChatShowIgnoredUsersMessages)
+            {
+                case 1:
+                    comboShowIgnoredUsersMessagesIf.Text = "You are moderator";
+                    break;
+                case 2:
+                    comboShowIgnoredUsersMessagesIf.Text = "You are broadcaster";
+                    break;
+                default:
+                    comboShowIgnoredUsersMessagesIf.Text = "Never";
+                    break;
+            }
+
+            comboShowIgnoredUsersMessagesIf.SelectedIndexChanged += (s, e) =>
+            {
+                if (comboShowIgnoredUsersMessagesIf.Text.Contains("moderator"))
+                {
+                    AppSettings.ChatShowIgnoredUsersMessages = 1;
+                }
+                else if (comboShowIgnoredUsersMessagesIf.Text.Contains("broadcaster"))
+                {
+                    AppSettings.ChatShowIgnoredUsersMessages = 2;
+                }
+                else
+                {
+                    AppSettings.ChatShowIgnoredUsersMessages = 0;
+                }
+            };
+
             dgvIgnoredUsers.MultiSelect = false;
             dgvIgnoredUsers.ReadOnly = true;
             dgvIgnoredUsers.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;

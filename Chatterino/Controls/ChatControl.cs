@@ -761,19 +761,6 @@ namespace Chatterino.Controls
                 //contextMenu.MenuItems.Add(new MenuItem("Preferences", (s, e) => App.ShowSettings(), Shortcut.CtrlP));
 #if DEBUG
                 _contextMenu.MenuItems.Add(new MenuItem("Copy Version Number", (s, e) => { Clipboard.SetText(App.CurrentVersion.ToString()); }));
-                _contextMenu.MenuItems.Add(new MenuItem("Force GC", (s, e) => { GC.Collect(); }));
-                _contextMenu.MenuItems.Add(new MenuItem("test", (s, e) =>
-                {
-                    for (int i = 0; i < 1000000; i++)
-                    {
-                        //var a = new SharpDX.DirectWrite.TextLayout(Fonts.Factory, "X", Fonts.GetTextFormat(FontType.Medium), 1000000, 1000000).Metrics;
-
-                        //(App.MainForm.Selected as ChatControl).Process(x =>
-                        //{
-                        //    x.Channel.AddMessage(new Message("testtesttest"));
-                        //});
-                    }
-                }));
 #endif
 
                 _roomstateContextMenu = new ContextMenu();

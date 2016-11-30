@@ -402,7 +402,7 @@ namespace Chatterino.Common
 
         private void IrcManager_NoticeAdded(object sender, ValueEventArgs<string> e)
         {
-            AddMessage(new Message(e.Value, HSLColor.Gray, true));
+            AddMessage(new Message(e.Value, HSLColor.Gray, true) { HighlightTab = false });
         }
 
         private void AppSettings_MessageLimitChanged(object sender, EventArgs e)

@@ -458,7 +458,23 @@ namespace Chatterino.Common
                             Message message = new Message(msg, c);
 
                             // check if user is on the ignore list
-                            if (!AppSettings.EnableTwitchUserIgnores || !IsIgnoredUser(message.Username))
+                            if (AppSettings.EnableTwitchUserIgnores && IsIgnoredUser(message.Username))
+                            {
+                                switch (AppSettings.ChatShowIgnoredUsersMessages)
+                                {
+                                    case 1:
+                                        if (!c.IsModOrBroadcaster)
+                                            return;
+                                        break;
+                                    case 2:
+                                        if (!c.IsBroadcaster)
+                                            return;
+                                        break;
+                                    default:
+                                        return;
+                                }
+                            }
+
                             {
                                 c.Users[message.Username.ToUpper()] = message.DisplayName;
 
@@ -547,7 +563,6 @@ namespace Chatterino.Common
                     //if (e.Data.Tags.TryGetValue("broadcaster-lang", out value))
 
                     c.RoomState = state;
-                    Console.WriteLine(c.RoomState);
                 });
             }
             else if (msg.Command == "USERSTATE")
@@ -616,7 +631,7 @@ namespace Chatterino.Common
                     if (msg.Tags.TryGetValue("msg-id", out tmp) && tmp == "timeout_success")
                         return;
 
-                    Message message = new Message(msg.Params, null, true);
+                    Message message = new Message(msg.Params, null, true) { HighlightTab = false };
 
                     c.AddMessage(message);
                 });

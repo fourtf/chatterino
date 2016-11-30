@@ -144,8 +144,8 @@ namespace Chatterino.Common
 
             ChatCommands.TryAdd("testchannels", (s, channel, execute) =>
             {
+                TwitchChannel.WhisperChannel.AddMessage(new Message(string.Join(", ", TwitchChannel.Channels.Select(x => x.Name))));
                 return null;
-                //string.Join(", ", TwitchChannel.Channels.Select(x => x.Name));
             });
         }
 

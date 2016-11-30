@@ -46,6 +46,9 @@ namespace Chatterino.Common
         // Chat
         public static double ScrollMultiplyer { get; set; } = 1;
 
+        // 0 = no, 1 = if mod, 2 = if broadcaster
+        public static int ChatShowIgnoredUsersMessages { get; set; } = 1;
+
         public static bool ChatShowLastReadMessageIndicator { get; set; } = false;
 
         public static bool ChatShowTimestamps { get; set; } = true;
