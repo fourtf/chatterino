@@ -33,22 +33,14 @@ namespace Chatterino.Common
 
         protected int Uses { get; set; } = 0;
 
-        private bool _isLive;
+        public bool IsLive { get; private set; }
 
-        public bool IsLive
-        {
-            get { return _isLive; }
-            private set
-            {
-                if (_isLive != value)
-                {
-                    _isLive = value;
-                    IsLiveChanged?.Invoke(this, new ValueEventArgs<bool>(value));
-                }
-            }
-        }
+        public int StreamViewerCount { get; private set; }
+        public string StreamStatus { get; private set; }
+        public string StreamGame { get; private set; }
+        public DateTime StreamStart { get; set; }
 
-        public event EventHandler<ValueEventArgs<bool>> IsLiveChanged;
+        public event EventHandler LiveStatusUpdated;
 
         // Channel Emotes
         public ConcurrentDictionary<string, TwitchEmote> BttvChannelEmotes { get; private set; }
@@ -469,13 +461,39 @@ namespace Chatterino.Common
                             $"https://api.twitch.tv/kraken/streams/{Name}?client_id={IrcManager.DefaultClientID}");
 
                     using (var res = req.GetResponse())
-                    using (var stream = res.GetResponseStream())
+                    using (var resStream = res.GetResponseStream())
                     {
                         var parser = new JsonParser();
 
-                        dynamic json = parser.Parse(stream);
+                        dynamic json = parser.Parse(resStream);
+
+                        var tmpIsLive = IsLive;
 
                         IsLive = json["stream"] != null;
+
+                        if (!IsLive)
+                        {
+                            StreamViewerCount = 0;
+                            StreamStatus = null;
+                            StreamGame = null;
+
+                            if (tmpIsLive)
+                            {
+                                LiveStatusUpdated?.Invoke(this, EventArgs.Empty);
+                            }
+                        }
+                        else
+                        {
+                            dynamic stream = json["stream"];
+                            dynamic channel = stream["channel"];
+
+                            StreamViewerCount = int.Parse(stream["viewers"]);
+                            StreamStatus = channel["status"];
+                            StreamGame = channel["game"];
+                            StreamStart = DateTime.Parse(stream["created_at"]);
+
+                            LiveStatusUpdated?.Invoke(this, EventArgs.Empty);
+                        }
                     }
                 }
                 catch
@@ -578,14 +596,14 @@ namespace Chatterino.Common
 
             if (AppSettings.ChatMentionUsersWithAt)
             {
-                names.AddRange(Users.Select(x => new KeyValuePair<string, string>(x.Key, (allowAt ? "@" : "") + (!AppSettings.ChatTabLocalizedNames && !string.Equals(x.Value, x.Key, StringComparison.OrdinalIgnoreCase) ? x.Key : x.Value) + commaAtEnd)));
-                names.AddRange(Users.Select(x => new KeyValuePair<string, string>((allowAt ? "@" : "") + x.Key, (allowAt ? "@" : "") + (!AppSettings.ChatTabLocalizedNames && !string.Equals(x.Value, x.Key, StringComparison.OrdinalIgnoreCase) ? x.Key : x.Value) + commaAtEnd)));
+                names.AddRange(Users.Select(x => new KeyValuePair<string, string>(x.Key, (allowAt ? "@" : "") + (!AppSettings.ChatTabLocalizedNames && !string.Equals(x.Value, x.Key, StringComparison.OrdinalIgnoreCase) ? x.Key.ToLower() : x.Value) + commaAtEnd)));
+                names.AddRange(Users.Select(x => new KeyValuePair<string, string>((allowAt ? "@" : "") + x.Key, (allowAt ? "@" : "") + (!AppSettings.ChatTabLocalizedNames && !string.Equals(x.Value, x.Key, StringComparison.OrdinalIgnoreCase) ? x.Key.ToLower() : x.Value) + commaAtEnd)));
             }
             else
             {
-                names.AddRange(Users.Select(x => new KeyValuePair<string, string>(x.Key, (!AppSettings.ChatTabLocalizedNames && !string.Equals(x.Value, x.Key, StringComparison.OrdinalIgnoreCase) ? x.Key : x.Value) + commaAtEnd)));
+                names.AddRange(Users.Select(x => new KeyValuePair<string, string>(x.Key, (!AppSettings.ChatTabLocalizedNames && !string.Equals(x.Value, x.Key, StringComparison.OrdinalIgnoreCase) ? x.Key.ToLower() : x.Value) + commaAtEnd)));
                 if (allowAt)
-                    names.AddRange(Users.Select(x => new KeyValuePair<string, string>("@" + x.Key, "@" + (!AppSettings.ChatTabLocalizedNames && !string.Equals(x.Value, x.Key, StringComparison.OrdinalIgnoreCase) ? x.Key : x.Value) + commaAtEnd)));
+                    names.AddRange(Users.Select(x => new KeyValuePair<string, string>("@" + x.Key, "@" + (!AppSettings.ChatTabLocalizedNames && !string.Equals(x.Value, x.Key, StringComparison.OrdinalIgnoreCase) ? x.Key.ToLower() : x.Value) + commaAtEnd)));
             }
 
             lock (Commands.CustomCommandsLock)

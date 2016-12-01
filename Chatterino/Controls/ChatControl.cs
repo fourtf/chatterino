@@ -93,7 +93,7 @@ namespace Chatterino.Controls
                     channel.MessagesRemovedAtStart -= Channel_MessagesRemovedAtStart;
                     channel.ChatCleared -= Channel_ChatCleared;
                     channel.RoomStateChanged -= Channel_RoomStateChanged;
-                    channel.IsLiveChanged -= Channel_IsLiveChanged;
+                    channel.LiveStatusUpdated -= Channel_LiveStatusUpdated;
                     channel = null;
                     TwitchChannel.RemoveChannel(actualChannelName);
                 }
@@ -109,7 +109,7 @@ namespace Chatterino.Controls
                     channel.MessagesRemovedAtStart += Channel_MessagesRemovedAtStart;
                     channel.ChatCleared += Channel_ChatCleared;
                     channel.RoomStateChanged += Channel_RoomStateChanged;
-                    channel.IsLiveChanged += Channel_IsLiveChanged;
+                    channel.LiveStatusUpdated += Channel_LiveStatusUpdated;
                 }
                 else
                 {
@@ -129,7 +129,7 @@ namespace Chatterino.Controls
             }
         }
 
-        private void Channel_IsLiveChanged(object sender, ValueEventArgs<bool> e)
+        private void Channel_LiveStatusUpdated(object sender, EventArgs e)
         {
             this.Invoke(() => _header.Invalidate());
         }
@@ -718,7 +718,7 @@ namespace Chatterino.Controls
         }
 
         // header
-        class ChatControlHeader : Control
+        private class ChatControlHeader : Control
         {
             // static Menu Dropdown
             static ContextMenu _contextMenu;
@@ -825,10 +825,14 @@ namespace Chatterino.Controls
             public FlatButton RoomstateButton { get; private set; }
             public FlatButton DropDownButton { get; private set; }
 
+            TooltipValue tooltipValue = new TooltipValue();
+
             // Constructor
             public ChatControlHeader(ChatControl chatControl)
             {
                 this._chatControl = chatControl;
+
+                this.SetTooltip(tooltipValue);
 
                 SetStyle(ControlStyles.ResizeRedraw, true);
                 SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
@@ -941,19 +945,77 @@ namespace Chatterino.Controls
                 //e.Graphics.DrawRectangle(Focused ? App.ColorScheme.ChatBorderFocused : App.ColorScheme.ChatBorder, 0, 1, Width - 1, Height - 1);
                 e.Graphics.DrawRectangle(App.ColorScheme.MenuBorder, 0, 0, Width - 1, Height - 1);
 
-                string title = string.IsNullOrWhiteSpace(_chatControl.ActualChannelName) ? "<no channel>" : _chatControl.ActualChannelName;
+                string title1 = string.IsNullOrWhiteSpace(_chatControl.ActualChannelName) ? "<no channel>" : _chatControl.ActualChannelName;
+                string title2 = null;
 
                 if (_chatControl.IsNetCurrent)
                 {
-                    title += " (current)";
+                    title1 += " (current)";
                 }
 
-                if (_chatControl.Channel?.IsLive ?? false)
+                var channel = _chatControl.Channel;
+
+                if (_chatControl?.Channel?.IsLive ?? false)
                 {
-                    title += " (live)";
+                    title1 += " (live)";
+
+                    //title2 = _chatControl.Channel.StreamStatus + "";
+
+                    string text =
+                        _chatControl.Channel.StreamStatus + "\n\n" +
+                        _chatControl.Channel.StreamGame + "\n" +
+                        "Live for ";
+
+                    var uptime = DateTime.Now - channel.StreamStart;
+
+                    if (uptime.TotalDays > 1)
+                    {
+                        text += (int)uptime.TotalDays + " days, " + uptime.ToString("h\\h\\ m\\m");
+                    }
+                    else
+                    {
+                        text += uptime.ToString("h\\h\\ m\\m");
+                    }
+
+                    text += " with " + channel.StreamViewerCount + " viewers";
+
+                    tooltipValue.Value = text;
+                }
+                else
+                {
+                    tooltipValue.Value = null;
                 }
 
-                TextRenderer.DrawText(e.Graphics, title, _chatControl.Font, new Rectangle(DropDownButton.Width, 0, Width - DropDownButton.Width - RoomstateButton.Width, Height), _chatControl.Selected ? App.ColorScheme.TextFocused : App.ColorScheme.Text, App.DefaultTextFormatFlags | TextFormatFlags.VerticalCenter | TextFormatFlags.HorizontalCenter);
+                TextFormatFlags flags = App.DefaultTextFormatFlags | TextFormatFlags.VerticalCenter;
+
+                if (TextRenderer.MeasureText(e.Graphics, title1, _chatControl.Font).Width <=
+                    Width - DropDownButton.Width - RoomstateButton.Width)
+                {
+                    flags |= TextFormatFlags.HorizontalCenter;
+                }
+
+                TextRenderer.DrawText(e.Graphics, title1, _chatControl.Font,
+                    new Rectangle(DropDownButton.Width, 0, Width - DropDownButton.Width - RoomstateButton.Width,
+                        (title2 == null ? Height : Height / 2)),
+                    _chatControl.Selected ? App.ColorScheme.TextFocused : App.ColorScheme.Text,
+                    flags);
+
+                if (title2 != null)
+                {
+                    flags = App.DefaultTextFormatFlags | TextFormatFlags.VerticalCenter;
+
+                    if (TextRenderer.MeasureText(e.Graphics, title2, _chatControl.Font).Width <=
+                    Width - DropDownButton.Width - RoomstateButton.Width)
+                    {
+                        flags |= TextFormatFlags.HorizontalCenter;
+                    }
+
+                    TextRenderer.DrawText(e.Graphics, title2, _chatControl.Font,
+                        new Rectangle(DropDownButton.Width, Height / 2, Width - DropDownButton.Width - RoomstateButton.Width,
+                            Height / 2),
+                        App.ColorScheme.Text,
+                        flags);
+                }
             }
         }
     }

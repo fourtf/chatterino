@@ -110,19 +110,23 @@ namespace Chatterino.Common
                 {
                     if (!AppSettings.HighlightIgnoredUsers.ContainsKey(Username))
                     {
-                        if (AppSettings.CustomHighlightRegex != null && AppSettings.CustomHighlightRegex.IsMatch(text))
+                        if (!IrcManager.IgnoredUsers.Contains(Username))
                         {
-                            if (AppSettings.ChatEnableHighlight)
+                            if (AppSettings.CustomHighlightRegex != null &&
+                                AppSettings.CustomHighlightRegex.IsMatch(text))
                             {
-                                HighlightType = HighlightType.Highlighted;
-                            }
+                                if (AppSettings.ChatEnableHighlight)
+                                {
+                                    HighlightType = HighlightType.Highlighted;
+                                }
 
-                            if (EnablePings && enablePingSound)
-                            {
-                                if (AppSettings.ChatEnableHighlightSound)
-                                    GuiEngine.Current.PlaySound(NotificationSound.Ping);
-                                if (AppSettings.ChatEnableHighlightTaskbar)
-                                    GuiEngine.Current.FlashTaskbar();
+                                if (EnablePings && enablePingSound)
+                                {
+                                    if (AppSettings.ChatEnableHighlightSound)
+                                        GuiEngine.Current.PlaySound(NotificationSound.Ping);
+                                    if (AppSettings.ChatEnableHighlightTaskbar)
+                                        GuiEngine.Current.FlashTaskbar();
+                                }
                             }
                         }
                     }

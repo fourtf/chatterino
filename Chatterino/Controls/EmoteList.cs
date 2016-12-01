@@ -63,7 +63,7 @@ namespace Chatterino.Controls
 
                 //    foreach (var emote in Emotes.ChatterinoEmotes.Values)
                 //    {
-                //        words.Add(new Word { Type = SpanType.Emote, Value = emote, Tooltip = emote.Tooltip, CopyText = emote.Name, Link = new Link(LinkType.InsertText, emote.Name + " ") });
+                //        words.Add(new Word { Type = SpanType.Emote, Value = emote, Value = emote.Value, CopyText = emote.Name, Link = new Link(LinkType.InsertText, emote.Name + " ") });
                 //    }
 
                 //    if (words.Count != 0)

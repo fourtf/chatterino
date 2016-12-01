@@ -51,5 +51,22 @@ namespace Chatterino
                 App.HideToolTip();
             };
         }
+
+        public static void SetTooltip(this System.Windows.Forms.Control c, TooltipValue tooltip)
+        {
+            c.MouseMove += (s, e) =>
+            {
+                var val = tooltip.Value;
+                if (val != null)
+                {
+                    App.ShowToolTip(c.PointToScreen(new Point(e.X + 16, e.Y + 16)), val, true);
+                }
+            };
+
+            c.MouseLeave += (s, e) =>
+            {
+                App.HideToolTip();
+            };
+        }
     }
 }

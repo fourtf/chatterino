@@ -375,7 +375,7 @@ namespace Chatterino
 
         public static void ShowToolTip(Point point, string text, bool force = false)
         {
-            if (force || WindowFocused || (EmoteList?.ContainsFocus ?? false))
+            //if (force || WindowFocused || (EmoteList?.ContainsFocus ?? false))
             {
                 if (ToolTip == null)
                 {
