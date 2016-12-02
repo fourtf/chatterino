@@ -200,7 +200,7 @@ namespace Chatterino.Common
         protected void loadRoomID()
         {
             // Try to load from cache
-            RoomID = Cache.roomIDCache.Get(Name);
+            RoomID = Cache.RoomIdCache.Get(Name);
 
             if (RoomID == -1)
             {
@@ -209,7 +209,7 @@ namespace Chatterino.Common
                 if (loadRoomIDFromTwitch())
                 {
                     // Successfully got a room ID from twitch
-                    Cache.roomIDCache.Set(Name, RoomID);
+                    Cache.RoomIdCache.Set(Name, RoomID);
                 }
             }
         }

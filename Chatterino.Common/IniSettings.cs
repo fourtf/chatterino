@@ -121,7 +121,7 @@ namespace Chatterino.Common
             return false;
         }
 
-        public bool TryGetInt(string key, out double value)
+        public bool TryGetDouble(string key, out double value)
         {
             string v;
             if (map.TryGetValue(key, out v))

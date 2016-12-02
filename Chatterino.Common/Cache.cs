@@ -1,13 +1,15 @@
 ﻿using Newtonsoft.Json;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using System.Text.Json;
 
 namespace Chatterino.Common
 {
     public static class Cache
     {
-        public static RoomIDCache roomIDCache = new RoomIDCache();
+        public static RoomIdCache RoomIdCache = new RoomIdCache();
 
         // IO
         public static void Load()
@@ -18,44 +20,39 @@ namespace Chatterino.Common
             }
             catch (Exception) { }
 
-            roomIDCache.Load();
+            RoomIdCache.Load();
         }
 
         public static void Save()
         {
-            roomIDCache.Save();
+            RoomIdCache.Save();
         }
     }
 
     public abstract class BaseCache
     {
-        private string cachePath;
-        protected dynamic data;
+        private string _cachePath;
 
-        public BaseCache(string _cachePath)
+        protected BaseCache(string cachePath)
         {
-            cachePath = _cachePath;
+            _cachePath = cachePath;
         }
 
-        public abstract void InitData();
         public abstract void LoadData(string inData);
+        public abstract string SaveData();
 
         public void Load()
         {
-            if (File.Exists(cachePath))
+            if (File.Exists(_cachePath))
             {
                 try
                 {
-                    LoadData(File.ReadAllText(cachePath));
+                    LoadData(File.ReadAllText(_cachePath));
                 }
                 catch (Exception exc)
                 {
                     Console.WriteLine("error loading cache: " + exc.Message);
                 }
-            }
-            else
-            {
-                InitData();
             }
         }
 
@@ -63,14 +60,7 @@ namespace Chatterino.Common
         {
             try
             {
-                using (var stream = File.OpenWrite(cachePath))
-                {
-                    JsonSerializer serializer = new JsonSerializer();
-                    using (StreamWriter writer = new StreamWriter(stream))
-                    {
-                        serializer.Serialize(writer, data);
-                    }
-                }
+                File.WriteAllText(_cachePath, SaveData());
             }
             catch (Exception exc)
             {
@@ -79,9 +69,13 @@ namespace Chatterino.Common
         }
     }
 
-    public class RoomIDCache : BaseCache
+    public class RoomIdCache : BaseCache
     {
-        public RoomIDCache()
+        private Dictionary<string, int> _data = new Dictionary<string, int>();
+        private object _dataLock = new object();
+
+
+        public RoomIdCache()
             : base(Path.Combine(Util.GetUserDataPath(), "Cache", "room_ids.json"))
         {
 
@@ -89,43 +83,49 @@ namespace Chatterino.Common
 
         public int Get(string name)
         {
-            try
+            lock (_dataLock)
             {
-                return data[name];
-            }
-            catch (KeyNotFoundException)
-            {
-                // do nothing
+                int d;
+
+                if (_data.TryGetValue(name, out d))
+                {
+                    return d;
+                }
+
                 return -1;
             }
-            catch (Exception exc)
-            {
-                Console.WriteLine("error getting room id cache: " + exc.Message);
-            }
-
-            return -1;
         }
 
         public void Set(string name, int roomID)
         {
-            // XXX(pajlada): We really shouldn't need to do a try-catch here
-            data[name] = roomID;
-        }
-
-        public override void InitData()
-        {
-            data = new Dictionary<string, int>();
+            lock (_dataLock)
+            {
+                _data[name] = roomID;
+            }
         }
 
         public override void LoadData(string inData)
         {
-            try
+            lock (_dataLock)
             {
-                data = JsonConvert.DeserializeObject<Dictionary<string, int>>(inData);
+                try
+                {
+                    _data = JsonConvert.DeserializeObject<Dictionary<string, int>>(inData);
+                }
+                catch (Exception exc)
+                {
+                    Console.WriteLine("error loading room id cache: " + exc.Message);
+
+                    _data.Clear();
+                }
             }
-            catch (Exception exc)
+        }
+
+        public override string SaveData()
+        {
+            lock (_dataLock)
             {
-                Console.WriteLine("error loading room id cache: " + exc.Message);
+                return JsonConvert.SerializeObject(_data);
             }
         }
     }
