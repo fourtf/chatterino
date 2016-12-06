@@ -59,7 +59,7 @@ namespace Chatterino
         {
             Func<HSLColor, float, HSLColor> getColor = (hsl, luminosity) => hsl.WithLuminosity(((luminosity - 0.5f) * multiplier) + 0.5f);
 
-            ColorScheme scheme = new ColorScheme();
+            var scheme = new ColorScheme();
 
             HSLColor gray;
             if (multiplier > 0.9f || multiplier < -0.9f)
@@ -71,7 +71,7 @@ namespace Chatterino
                 gray = HSLColor.FromRGB(0.5f, 0.5f, 0.515f);
             }
 
-            HSLColor highlight = new HSLColor(hue, 1f, 0.5f);
+            var highlight = new HSLColor(hue, 1f, 0.5f);
 
             // Light scheme
             scheme.IsLightTheme = multiplier > 0;
@@ -132,7 +132,7 @@ namespace Chatterino
 
         static ColorScheme()
         {
-            Type T = typeof(ColorScheme);
+            var T = typeof(ColorScheme);
 
             foreach (var property in T.GetProperties())
             {
@@ -144,7 +144,7 @@ namespace Chatterino
         // IO
         public void Load(string path)
         {
-            IniSettings settings = new IniSettings();
+            var settings = new IniSettings();
             settings.Load(path);
 
             foreach (var prop in properties.Values)
@@ -183,14 +183,14 @@ namespace Chatterino
                 catch { }
             }
 
-            Color c = (ChatBackground as SolidBrush)?.Color ?? Color.White;
+            var c = (ChatBackground as SolidBrush)?.Color ?? Color.White;
 
             IsLightTheme = HSLColor.FromRGB(c.R / 255f, c.G / 255f, c.B / 255f).Luminosity > 0.5f;
         }
 
         public void Save(string path)
         {
-            IniSettings settings = new IniSettings();
+            var settings = new IniSettings();
 
             foreach (var prop in properties.Values)
             {

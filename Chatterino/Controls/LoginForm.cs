@@ -71,7 +71,7 @@ namespace Chatterino.Controls
 </body>
 </html>";
 
-                            byte[] bytes = Encoding.UTF8.GetBytes(answer);
+                            var bytes = Encoding.UTF8.GetBytes(answer);
 
                             context.Response.ContentLength64 = bytes.Length;
                             context.Response.OutputStream.Write(bytes, 0, bytes.Length);
@@ -83,11 +83,11 @@ namespace Chatterino.Controls
                             var access_token = context.Request.QueryString["access_token"];
                             var scope = context.Request.QueryString["scope"];
 
-                            WebRequest request = WebRequest.Create("https://api.twitch.tv/kraken?oauth_token=" + access_token + "&client_id=" + IrcManager.DefaultClientID);
+                            var request = WebRequest.Create("https://api.twitch.tv/kraken?oauth_token=" + access_token + "&client_id=" + IrcManager.DefaultClientID);
                             using (var response = request.GetResponse())
                             using (var stream = response.GetResponseStream())
                             {
-                                JsonParser parser = new JsonParser();
+                                var parser = new JsonParser();
                                 dynamic json = parser.Parse(stream);
                                 dynamic token = json["token"];
                                 string username = token["user_name"];
@@ -115,7 +115,7 @@ namespace Chatterino.Controls
 </body>
 </html>";
 
-                            byte[] bytes = Encoding.UTF8.GetBytes(answer);
+                            var bytes = Encoding.UTF8.GetBytes(answer);
 
                             context.Response.ContentLength64 = bytes.Length;
                             context.Response.OutputStream.Write(bytes, 0, bytes.Length);
@@ -161,7 +161,7 @@ namespace Chatterino.Controls
 
         private void button1_Click(object sender, EventArgs e)
         {
-            string text = Clipboard.GetText();
+            var text = Clipboard.GetText();
 
             string oauthToken = null;
             string username = null;
@@ -217,7 +217,7 @@ namespace Chatterino.Controls
                     using (var res = req.GetResponse())
                     using (var stream = res.GetResponseStream())
                     {
-                        JsonParser parser = new JsonParser();
+                        var parser = new JsonParser();
 
                         dynamic json = parser.Parse(stream);
 

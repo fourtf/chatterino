@@ -26,7 +26,7 @@ namespace Chatterino.Controls
             }
             set
             {
-                int tmp = selectedIndex;
+                var tmp = selectedIndex;
                 if (selectedTab != null)
                 {
                     Controls.Remove(selectedTab.Panel);
@@ -54,7 +54,7 @@ namespace Chatterino.Controls
                 value = value + 1;
                 if (value > 0 && value < Controls.Count)
                 {
-                    int tmp = selectedIndex;
+                    var tmp = selectedIndex;
                     if (selectedTab != null)
                         selectedTab.Selected = false;
                     if (Controls.Count > value)
@@ -191,8 +191,8 @@ namespace Chatterino.Controls
 
         protected override void OnLayout(LayoutEventArgs e)
         {
-            int y = Padding.Top;
-            for (int i = 1; i < Controls.Count; i++)
+            var y = Padding.Top;
+            for (var i = 1; i < Controls.Count; i++)
             {
                 var c = Controls[i];
                 if (c.Visible)

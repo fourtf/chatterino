@@ -32,6 +32,65 @@ namespace Chatterino.Common
 
         static Emotes()
         {
+            Func<int, string, TwitchEmote> getEmoteReplacement = (code, url) =>
+            {
+                var emote = new TwitchEmote()
+                {
+                    Url = url,
+                };
+                emote.LoadAction = () =>
+                {
+                    object img;
+
+                    try
+                    {
+                        var request = WebRequest.Create(url);
+                        using (var response = request.GetResponse())
+                        using (var stream = response.GetResponseStream())
+                        {
+                            img = GuiEngine.Current.ReadImageFromStream(stream);
+                        }
+
+                        GuiEngine.Current.FreezeImage(img);
+                    }
+                    catch
+                    {
+                        img = null;
+                    }
+
+                    if (img == null)
+                    {
+                        url = TwitchEmoteTemplate.Replace("{id}", code.ToString());
+                        emote.Url = url;
+
+                        try
+                        {
+                            var request = WebRequest.Create(url);
+                            using (var response = request.GetResponse())
+                            using (var stream = response.GetResponseStream())
+                            {
+                                img = GuiEngine.Current.ReadImageFromStream(stream);
+                            }
+
+                            GuiEngine.Current.FreezeImage(img);
+                        }
+                        catch
+                        {
+                            img = null;
+                        }
+                    }
+
+                    return img;
+                };
+                return emote;
+            };
+
+            TwitchEmotesByIDCache.TryAdd(17, getEmoteReplacement(17, "https://fourtf.com/chatterino/emotes/replacements/StoneLightning.png"));
+            TwitchEmotesByIDCache.TryAdd(18, getEmoteReplacement(18, "https://fourtf.com/chatterino/emotes/replacements/TheRinger.png"));
+            TwitchEmotesByIDCache.TryAdd(20, getEmoteReplacement(20, "https://fourtf.com/chatterino/emotes/replacements/EagleEye.png"));
+            TwitchEmotesByIDCache.TryAdd(22, getEmoteReplacement(22, "https://fourtf.com/chatterino/emotes/replacements/RedCoat.png"));
+            TwitchEmotesByIDCache.TryAdd(33, getEmoteReplacement(33, "https://fourtf.com/chatterino/emotes/replacements/DansGame.png"));
+
             twitchEmotesCodeReplacements[@"[oO](_|\.)[oO]"] = "o_O";
             twitchEmotesCodeReplacements[@"\&gt\;\("] = ">(";
             twitchEmotesCodeReplacements[@"\&lt\;3"] = "<3";
@@ -118,7 +177,7 @@ namespace Chatterino.Common
                 try
                 {
                     Directory.CreateDirectory("./Cache");
-                    System.Text.Json.JsonParser parser = new System.Text.Json.JsonParser();
+                    var parser = new System.Text.Json.JsonParser();
 
                     // better twitch tv emotes
                     //if (!File.Exists(bttvEmotesGlobalCache))
@@ -150,7 +209,7 @@ namespace Chatterino.Common
                         dynamic json = parser.Parse(stream);
                         var template = "https:" + json["urlTemplate"]; //{{id}} {{image}}
 
-                        foreach (dynamic e in json["emotes"])
+                        foreach (var e in json["emotes"])
                         {
                             string id = e["id"];
                             string code = e["code"];
@@ -174,7 +233,7 @@ namespace Chatterino.Common
                 try
                 {
                     Directory.CreateDirectory("./Cache");
-                    System.Text.Json.JsonParser parser = new System.Text.Json.JsonParser();
+                    var parser = new System.Text.Json.JsonParser();
 
                     //if (!File.Exists(ffzEmotesGlobalCache))
                     {
@@ -229,9 +288,9 @@ namespace Chatterino.Common
             {
                 try
                 {
-                    int set = 0;
+                    var set = 0;
 
-                    System.Text.Json.JsonParser parser = new System.Text.Json.JsonParser();
+                    var parser = new System.Text.Json.JsonParser();
                     using (var webClient = new WebClient())
                     using (var readStream = webClient.OpenRead("http://cdn.frankerfacez.com/script/event.json"))
                     {

@@ -83,8 +83,8 @@ namespace Chatterino.Common
                 {
                     try
                     {
-                        int limit = 100;
-                        int count = 0;
+                        var limit = 100;
+                        var count = 0;
                         string nextLink =
                             $"https://api.twitch.tv/kraken/users/{username}/blocks?limit={limit}&client_id={Account.ClientId}";
 
@@ -97,7 +97,7 @@ namespace Chatterino.Common
                             nextLink = _links["next"];
                             dynamic blocks = json["blocks"];
                             count = blocks.Count;
-                            foreach (dynamic block in blocks)
+                            foreach (var block in blocks)
                             {
                                 dynamic user = block["user"];
                                 string name = user["name"];
@@ -128,13 +128,13 @@ namespace Chatterino.Common
                             dynamic json = new JsonParser().Parse(stream);
                             Emotes.TwitchEmotes.Clear();
 
-                            foreach (dynamic set in json["emoticon_sets"])
+                            foreach (var set in json["emoticon_sets"])
                             {
                                 int setID;
 
                                 int.TryParse(set.Key, out setID);
 
-                                foreach (dynamic emote in set.Value)
+                                foreach (var emote in set.Value)
                                 {
                                     int id;
 
@@ -203,7 +203,7 @@ namespace Chatterino.Common
                 Task.Run(() =>
                 {
                     string hash;
-                    using (SHA256 sha = SHA256.Create())
+                    using (var sha = SHA256.Create())
                     {
                         hash = string.Join("", sha
                             .ComputeHash(Encoding.UTF8.GetBytes(username))
@@ -222,7 +222,7 @@ namespace Chatterino.Common
 
         public static void Disconnect()
         {
-            bool disconnected = false;
+            var disconnected = false;
 
             twitchBlockedUsers.Clear();
 
@@ -273,12 +273,12 @@ namespace Chatterino.Common
         {
             var _username = username.ToLower();
 
-            bool success = false;
+            var success = false;
             HttpStatusCode statusCode;
 
             try
             {
-                WebRequest request = WebRequest.Create($"https://api.twitch.tv/kraken/users/{Account.Username}/blocks/{_username}?oauth_token={Account.OauthToken}&client_id={Account.ClientId}");
+                var request = WebRequest.Create($"https://api.twitch.tv/kraken/users/{Account.Username}/blocks/{_username}?oauth_token={Account.OauthToken}&client_id={Account.ClientId}");
                 request.Method = "PUT";
                 using (var response = (HttpWebResponse)request.GetResponse())
                 using (var stream = response.GetResponseStream())
@@ -320,12 +320,12 @@ namespace Chatterino.Common
             object value;
             username = username.ToLower();
 
-            bool success = false;
+            var success = false;
             HttpStatusCode statusCode;
 
             try
             {
-                WebRequest request = WebRequest.Create($"https://api.twitch.tv/kraken/users/{Account.Username}/blocks/{username}?oauth_token={Account.OauthToken}&client_id={Account.ClientId}");
+                var request = WebRequest.Create($"https://api.twitch.tv/kraken/users/{Account.Username}/blocks/{username}?oauth_token={Account.OauthToken}&client_id={Account.ClientId}");
                 request.Method = "DELETE";
                 using (var response = (HttpWebResponse)request.GetResponse())
                 using (var stream = response.GetResponseStream())
@@ -371,7 +371,7 @@ namespace Chatterino.Common
             }
             catch (Exception exc)
             {
-                HttpListenerException webExc = exc as HttpListenerException;
+                var webExc = exc as HttpListenerException;
 
                 if (webExc != null)
                 {
@@ -455,7 +455,7 @@ namespace Chatterino.Common
                         // check if ignore keyword is triggered
                         if (AppSettings.IgnoredKeywordsRegex == null || !AppSettings.IgnoredKeywordsRegex.IsMatch(e.Message.Params))
                         {
-                            Message message = new Message(msg, c);
+                            var message = new Message(msg, c);
 
                             // check if user is on the ignore list
                             if (AppSettings.EnableTwitchUserIgnores && IsIgnoredUser(message.Username))
@@ -478,9 +478,12 @@ namespace Chatterino.Common
                             {
                                 c.Users[message.Username.ToUpper()] = message.DisplayName;
 
-                                if (message.HighlightType == HighlightType.Highlighted)
+                                if (message.HasAnyHighlightType(HighlightType.Highlighted))
                                 {
-                                    Message mentionMessage = new Message(msg, c, enablePingSound: false, includeChannel: true) { HighlightType = HighlightType.None };
+                                    var mentionMessage = new Message(msg, c, enablePingSound: false, includeChannel: true)
+                                    {
+                                        HighlightType = HighlightType.None
+                                    };
 
                                     TwitchChannel.MentionsChannel.AddMessage(mentionMessage);
                                 }
@@ -509,7 +512,7 @@ namespace Chatterino.Common
                 string reason;
                 msg.Tags.TryGetValue("ban-reason", out reason);
                 string _duration;
-                int duration = 0;
+                var duration = 0;
 
                 if (msg.Tags.TryGetValue("ban-duration", out _duration))
                 {
@@ -523,7 +526,7 @@ namespace Chatterino.Common
             {
                 TwitchChannel.GetChannel((msg.Middle ?? "").TrimStart('#')).Process(c =>
                 {
-                    RoomState state = c.RoomState;
+                    var state = c.RoomState;
 
                     string value;
                     if (msg.Tags.TryGetValue("emote-only", out value))
@@ -599,7 +602,7 @@ namespace Chatterino.Common
                 {
                     try
                     {
-                        Message sysMessage = new Message(sysMsg, HSLColor.Gray, true)
+                        var sysMessage = new Message(sysMsg, HSLColor.Gray, true)
                         {
                             HighlightType = HighlightType.Resub
                         };
@@ -607,7 +610,7 @@ namespace Chatterino.Common
 
                         if (!string.IsNullOrEmpty(msg.Params))
                         {
-                            Message message = new Message(msg, c)
+                            var message = new Message(msg, c)
                             {
                                 HighlightType = HighlightType.Resub
                             };
@@ -631,7 +634,7 @@ namespace Chatterino.Common
                     if (msg.Tags.TryGetValue("msg-id", out tmp) && tmp == "timeout_success")
                         return;
 
-                    Message message = new Message(msg.Params, null, true) { HighlightTab = false };
+                    var message = new Message(msg.Params, null, true) { HighlightTab = false };
 
                     c.AddMessage(message);
                 });

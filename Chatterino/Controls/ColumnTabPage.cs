@@ -84,7 +84,7 @@ namespace Chatterino.Controls
 
         public void RemoveColumn(ChatColumn column)
         {
-            int index = columns.FindIndex(x => x == column);
+            var index = columns.FindIndex(x => x == column);
 
             if (index == -1)
             {
@@ -233,7 +233,7 @@ namespace Chatterino.Controls
             // layout on item added/removed/bounds changed
             ColumnAdded += (s, e) =>
             {
-                foreach (ColumnLayoutItem w in e.Value.Widgets)
+                foreach (var w in e.Value.Widgets)
                 {
                     Controls.Add(w);
 
@@ -248,7 +248,7 @@ namespace Chatterino.Controls
 
             ColumnRemoved += (s, e) =>
             {
-                foreach (ColumnLayoutItem w in e.Value.Widgets)
+                foreach (var w in e.Value.Widgets)
                 {
                     Controls.Remove(w);
 
@@ -269,13 +269,13 @@ namespace Chatterino.Controls
             };
 
             // Drag drop
-            Point lastDragPoint = new Point(10000, 10000);
+            var lastDragPoint = new Point(10000, 10000);
 
-            int dragColumn = -1;
-            int dragRow = -1;
+            var dragColumn = -1;
+            var dragRow = -1;
 
-            int MaxColumns = 10;
-            int MaxRows = 10;
+            var MaxColumns = 10;
+            var MaxRows = 10;
 
             DragEnter += (s, e) =>
             {
@@ -343,7 +343,7 @@ namespace Chatterino.Controls
                     if (lastDragPoint != mouse)
                     {
                         lastDragPoint = mouse;
-                        int totalWidth = Width;
+                        var totalWidth = Width;
 
                         if (ColumnCount == 0)
                         {
@@ -358,20 +358,20 @@ namespace Chatterino.Controls
                         }
                         else
                         {
-                            double columnWidth = (double)totalWidth / ColumnCount;
+                            var columnWidth = (double)totalWidth / ColumnCount;
 
                             dragColumn = -1;
                             dragRow = -1;
 
                             // insert new column
-                            for (int i = (ColumnCount >= MaxColumns ? 1 : 0); i < (ColumnCount >= MaxColumns ? ColumnCount : ColumnCount + 1); i++)
+                            for (var i = (ColumnCount >= MaxColumns ? 1 : 0); i < (ColumnCount >= MaxColumns ? ColumnCount : ColumnCount + 1); i++)
                             {
                                 if (mouse.X > i * columnWidth - columnWidth / 4 &&
                                     mouse.X < i * columnWidth + columnWidth / 4)
                                 {
                                     dragColumn = i;
 
-                                    Rectangle bounds = new Rectangle((int)(i * columnWidth - columnWidth / 4), 0, (int)(columnWidth / 2), Height);
+                                    var bounds = new Rectangle((int)(i * columnWidth - columnWidth / 4), 0, (int)(columnWidth / 2), Height);
 
                                     if (LayoutPreviewItem.Bounds != bounds)
                                     {
@@ -385,14 +385,14 @@ namespace Chatterino.Controls
                             // insert new row
                             if (dragColumn == -1)
                             {
-                                for (int i = 0; i < ColumnCount; i++)
+                                for (var i = 0; i < ColumnCount; i++)
                                 {
                                     if (mouse.X < (i + 1) * columnWidth)
                                     {
                                         var rows = Columns.ElementAt(i);
-                                        double rowHeight = (double)Height / rows.WidgetCount;
+                                        var rowHeight = (double)Height / rows.WidgetCount;
 
-                                        for (int j = 0; j < rows.WidgetCount + 1; j++)
+                                        for (var j = 0; j < rows.WidgetCount + 1; j++)
                                         {
                                             if (mouse.Y > j * rowHeight - rowHeight / 2 &&
                                                 mouse.Y < j * rowHeight + rowHeight / 2)
@@ -403,7 +403,7 @@ namespace Chatterino.Controls
                                                     dragRow = j;
                                                 }
 
-                                                Rectangle bounds = new Rectangle((int)(i * columnWidth), (int)(j * rowHeight - rowHeight / 2), (int)columnWidth, (int)(rowHeight));
+                                                var bounds = new Rectangle((int)(i * columnWidth), (int)(j * rowHeight - rowHeight / 2), (int)columnWidth, (int)(rowHeight));
                                                 if (LayoutPreviewItem.Bounds != bounds)
                                                 {
                                                     LayoutPreviewItem.Bounds = bounds;
@@ -428,9 +428,9 @@ namespace Chatterino.Controls
 
             addChatControl.Click += (s, e) =>
             {
-                ChatControl chatControl = new ChatControl();
+                var chatControl = new ChatControl();
 
-                using (InputDialogForm dialog = new InputDialogForm("channel name") { Value = "" })
+                using (var dialog = new InputDialogForm("channel name") { Value = "" })
                 {
                     if (dialog.ShowDialog() == DialogResult.OK)
                     {
@@ -460,14 +460,14 @@ namespace Chatterino.Controls
 
         public void UpdateDefaultTitle()
         {
-            string title = "";
-            bool any = false;
+            var title = "";
+            var any = false;
 
-            foreach (ChatColumn c in columns)
+            foreach (var c in columns)
             {
                 foreach (var w in c.Widgets)
                 {
-                    ChatControl chat = w as ChatControl;
+                    var chat = w as ChatControl;
                     if (chat != null)
                     {
                         if (!string.IsNullOrWhiteSpace(chat.ChannelName))
@@ -542,20 +542,20 @@ namespace Chatterino.Controls
         {
             if (Bounds.Width > 0 && Bounds.Height > 0 && ColumnCount != 0)
             {
-                int columnHeight = (Bounds.Height - Padding.Top - Padding.Bottom - 1);
+                var columnHeight = (Bounds.Height - Padding.Top - Padding.Bottom - 1);
                 double columnWidth = (Bounds.Width - Padding.Left - Padding.Right - 1) / ColumnCount;
                 double x = 0;
 
-                for (int i = 0; i < ColumnCount; i++)
+                for (var i = 0; i < ColumnCount; i++)
                 {
-                    ChatColumn col = columns[i];
+                    var col = columns[i];
                     if (col.WidgetCount > 0)
                     {
                         double rowHeight = columnHeight / col.WidgetCount;
 
                         double y = 0;
 
-                        foreach (ColumnLayoutItem w in col.Widgets)
+                        foreach (var w in col.Widgets)
                         {
                             w.SetBounds((int)(Padding.Left + x), (int)(Padding.Top + y), (int)columnWidth, (int)rowHeight);
 

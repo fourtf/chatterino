@@ -38,7 +38,7 @@ namespace Chatterino.Controls
 
             if ((Parent != null))
             {
-                using (Bitmap behind = new Bitmap(Parent.Width, Parent.Height))
+                using (var behind = new Bitmap(Parent.Width, Parent.Height))
                 {
                     foreach (Control c in Parent.Controls)
                     {

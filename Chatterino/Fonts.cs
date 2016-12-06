@@ -39,8 +39,8 @@ namespace Chatterino
         {
             if (!gdiInitialized)
             {
-                string family = AppSettings.FontFamily;
-                float size = (float)AppSettings.FontBaseSize;
+                var family = AppSettings.FontFamily;
+                var size = (float)AppSettings.FontBaseSize;
 
                 try
                 {

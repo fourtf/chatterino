@@ -62,8 +62,8 @@ namespace Chatterino.Controls
         {
             Brush plusBrush;
             Brush backgroundBrush;
-            bool disposePlusBrush = false;
-            bool disposeBackgroundBrush = false;
+            var disposePlusBrush = false;
+            var disposeBackgroundBrush = false;
 
 
             if (mdown)

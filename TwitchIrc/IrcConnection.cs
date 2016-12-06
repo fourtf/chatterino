@@ -88,7 +88,7 @@ namespace TwitchIrc
 
                     stream = client.GetStream();
 
-                    StreamReader reader = new StreamReader(stream);
+                    var reader = new StreamReader(stream);
 
                     new Task(() =>
                     {
@@ -147,7 +147,7 @@ namespace TwitchIrc
         {
             if (stream != null)
             {
-                byte[] bytes = Encoding.UTF8.GetBytes(value);
+                var bytes = Encoding.UTF8.GetBytes(value);
 
                 stream.Write(bytes, 0, bytes.Length);
                 stream.WriteByte((byte)'\r');

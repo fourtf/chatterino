@@ -53,9 +53,9 @@ namespace Chatterino.Common
 
         public static HSLColor FromRGB(float red, float green, float blue)
         {
-            float r = red;
-            float g = green;
-            float b = blue;
+            var r = red;
+            var g = green;
+            var b = blue;
             float v;
             float m;
             float vm;

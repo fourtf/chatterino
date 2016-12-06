@@ -198,7 +198,7 @@ namespace Chatterino.Common
 
         static AppSettings()
         {
-            Type T = typeof(AppSettings);
+            var T = typeof(AppSettings);
 
             foreach (var property in T.GetProperties())
             {
@@ -244,7 +244,7 @@ namespace Chatterino.Common
                     string[] vals;
                     if (settings.TryGetStrings(prop.Name, out vals))
                     {
-                        foreach (string s in vals)
+                        foreach (var s in vals)
                             dict[s] = null;
                     }
                 }

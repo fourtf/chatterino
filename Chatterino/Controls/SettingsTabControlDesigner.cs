@@ -44,7 +44,7 @@ namespace Chatterino.Controls
 
         void OnAdd(object sender, EventArgs e)
         {
-            SettingsTabPage newPage = (SettingsTabPage)((IDesignerHost)GetService(typeof(IDesignerHost))).CreateComponent(typeof(SettingsTabPage));
+            var newPage = (SettingsTabPage)((IDesignerHost)GetService(typeof(IDesignerHost))).CreateComponent(typeof(SettingsTabPage));
 
             newPage.Panel = (Panel)((IDesignerHost)GetService(typeof(IDesignerHost))).CreateComponent(typeof(Panel));
             newPage.Text = newPage.Name;
@@ -54,12 +54,12 @@ namespace Chatterino.Controls
 
         void OnMoveDown(object sender, EventArgs e)
         {
-            int index = ((SettingsTabControl)Component).SelectedIndex + 1;
-            SettingsTabPage p = ((SettingsTabControl)Component).SelectedTab;
+            var index = ((SettingsTabControl)Component).SelectedIndex + 1;
+            var p = ((SettingsTabControl)Component).SelectedTab;
             ((SettingsTabControl)Component).Controls.Remove(p);
 
-            List<Control> C = new List<Control>();
-            for (int i = ((SettingsTabControl)Component).Controls.Count - 1; i >= index; i--)
+            var C = new List<Control>();
+            for (var i = ((SettingsTabControl)Component).Controls.Count - 1; i >= index; i--)
             {
                 C.Add(((SettingsTabControl)Component).Controls[i]);
                 ((SettingsTabControl)Component).Controls.RemoveAt(i);
@@ -71,7 +71,7 @@ namespace Chatterino.Controls
                 C.RemoveAt(C.Count - 1);
             }
             ((SettingsTabControl)Component).Controls.Add(p);
-            for (int i = C.Count - 1; i >= 0; i--)
+            for (var i = C.Count - 1; i >= 0; i--)
             {
                 ((SettingsTabControl)Component).Controls.Add(C[i]);
             }
@@ -84,19 +84,19 @@ namespace Chatterino.Controls
             if (((SettingsTabControl)Component).Controls.Count > 1)
                 if (((SettingsTabControl)Component).Controls.Count > ((SettingsTabControl)Component).SelectedIndex + 2)
                 {
-                    int index = ((SettingsTabControl)Component).SelectedIndex + 1;
-                    SettingsTabPage p = ((SettingsTabControl)Component).SelectedTab;
+                    var index = ((SettingsTabControl)Component).SelectedIndex + 1;
+                    var p = ((SettingsTabControl)Component).SelectedTab;
                     ((SettingsTabControl)Component).Controls.Remove(p);
 
-                    List<Control> C = new List<Control>();
-                    for (int i = ((SettingsTabControl)Component).Controls.Count - 1; i >= index - 1; i--)
+                    var C = new List<Control>();
+                    for (var i = ((SettingsTabControl)Component).Controls.Count - 1; i >= index - 1; i--)
                     {
                         C.Add(((SettingsTabControl)Component).Controls[i]);
                         ((SettingsTabControl)Component).Controls.RemoveAt(i);
                     }
 
                     ((SettingsTabControl)Component).Controls.Add(p);
-                    for (int i = C.Count - 1; i >= 0; i--)
+                    for (var i = C.Count - 1; i >= 0; i--)
                     {
                         ((SettingsTabControl)Component).Controls.Add(C[i]);
                     }
@@ -130,7 +130,7 @@ namespace Chatterino.Controls
 
         protected override void Dispose(bool disposing)
         {
-            for (int i = 0; i < ((SettingsTabControl)Component).Controls.Count; )
+            for (var i = 0; i < ((SettingsTabControl)Component).Controls.Count; )
             {
                 ((SettingsTabControl)Component).Controls[0].Dispose();
             }
@@ -238,8 +238,8 @@ namespace Chatterino.Controls
 
             if (m.Msg == 0x201) //WM_LBUTTONDOWN
             {
-                int lParam = m.LParam.ToInt32();
-                Point hitPoint = new Point(lParam & 0xffff, lParam >> 0x10);
+                var lParam = m.LParam.ToInt32();
+                var hitPoint = new Point(lParam & 0xffff, lParam >> 0x10);
                 ((SettingsTabControl)((SettingsTabPage)Component).Parent).SelectedTab = ((SettingsTabPage)Component);
             }
         }

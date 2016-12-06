@@ -36,7 +36,7 @@ namespace Chatterino.Common
                 throw new ArgumentNullException("str");
 
             var codePoints = new List<int>(str.Length);
-            for (int i = 0; i < str.Length; i++)
+            for (var i = 0; i < str.Length; i++)
             {
                 codePoints.Add(char.ConvertToUtf32(str, i));
                 if (char.IsHighSurrogate(str[i]))
@@ -48,11 +48,11 @@ namespace Chatterino.Common
 
         public static object[] ParseEmojis(string text)
         {
-            List<object> objects = new List<object>();
+            var objects = new List<object>();
 
-            int lastSlice = 0;
+            var lastSlice = 0;
 
-            for (int i = 0; i < text.Length; i++)
+            for (var i = 0; i < text.Length; i++)
             {
                 if (!char.IsLowSurrogate(text, i))
                 {
@@ -60,14 +60,14 @@ namespace Chatterino.Common
                     if (FirstEmojiChars.TryGetValue(text[i], out _emojis))
                     {
                         TwitchEmote emote;
-                        for (int j = Math.Min(8, text.Length - i); j > 0; j--)
+                        for (var j = Math.Min(8, text.Length - i); j > 0; j--)
                         {
-                            string emoji = text.Substring(i, j);
+                            var emoji = text.Substring(i, j);
                             if (_emojis.TryGetValue(emoji, out emote))
                             {
                                 if (emote == null)
                                 {
-                                    string codepoints = string.Join("-", ToCodePoints(emoji).Select(n => n.ToString("X").ToLower()));
+                                    var codepoints = string.Join("-", ToCodePoints(emoji).Select(n => n.ToString("X").ToLower()));
 
                                     var url = $"https://cdnjs.cloudflare.com/ajax/libs/emojione/2.2.6/assets/png/{codepoints}.png";
 
@@ -81,7 +81,7 @@ namespace Chatterino.Common
                                             object img;
                                             try
                                             {
-                                                WebRequest request = WebRequest.Create(url);
+                                                var request = WebRequest.Create(url);
                                                 using (var response = request.GetResponse())
                                                 using (var stream = response.GetResponseStream())
                                                 {

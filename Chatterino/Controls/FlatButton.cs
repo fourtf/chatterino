@@ -62,7 +62,7 @@ namespace Chatterino.Controls
         {
             if (Text != "")
             {
-                int width = Width;
+                var width = Width;
                 var size = TextRenderer.MeasureText(Text, Font);
 
                 Width = (int)(size.Height * 0.6f) + size.Width;

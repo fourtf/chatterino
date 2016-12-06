@@ -25,7 +25,7 @@ namespace Chatterino
                 Usage = SharpDX.Direct2D1.RenderTargetUsage.GdiCompatible
             };
 
-        static Brush selectionBrush = new SolidBrush(Color.FromArgb(127, Color.Orange));
+        static Brush _selectionBrush = new SolidBrush(Color.FromArgb(127, Color.Orange));
 
         static MessageRenderer()
         {
@@ -33,14 +33,15 @@ namespace Chatterino
         }
 
         public static void DrawMessage(object graphics, Common.Message message, int xOffset, int yOffset,
-            Selection selection, int currentLine, bool drawText, List<GifEmoteState> gifEmotesOnScreen = null)
+            Selection selection, int currentLine, bool drawText, List<GifEmoteState> gifEmotesOnScreen = null,
+            bool allowMessageSeperator = true)
         {
             message.X = xOffset;
             message.Y = yOffset;
 
-            Graphics g = (Graphics)graphics;
+            var g = (Graphics)graphics;
 
-            int spaceWidth =
+            var spaceWidth =
                 GuiEngine.Current.MeasureStringSize(g, FontType.Medium, " ").Width;
 
             g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
@@ -51,15 +52,15 @@ namespace Chatterino
 
             Brush highlightBrush = null;
 
-            if (message.HighlightType == HighlightType.Highlighted)
+            if (message.HasAnyHighlightType(HighlightType.Highlighted))
             {
                 highlightBrush = App.ColorScheme.ChatBackgroundHighlighted;
             }
-            else if (message.HighlightType == HighlightType.Resub)
+            else if (message.HasAnyHighlightType(HighlightType.Resub))
             {
                 highlightBrush = App.ColorScheme.ChatBackgroundResub;
             }
-            else if (message.HighlightType == HighlightType.Whisper)
+            else if (message.HasAnyHighlightType(HighlightType.Whisper))
             {
                 highlightBrush = App.ColorScheme.ChatBackgroundWhisper;
             }
@@ -71,7 +72,7 @@ namespace Chatterino
 
             g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.Default;
 
-            for (int i = 0; i < message.Words.Count; i++)
+            for (var i = 0; i < message.Words.Count; i++)
             {
                 var word = message.Words[i];
 
@@ -79,13 +80,13 @@ namespace Chatterino
                 {
                     if (drawText)
                     {
-                        Font font = Fonts.GetFont(word.Font);
+                        var font = Fonts.GetFont(word.Font);
 
-                        Color color = textColor;
+                        var color = textColor;
 
                         if (word.Color.HasValue)
                         {
-                            HSLColor hsl = word.Color.Value;
+                            var hsl = word.Color.Value;
 
                             if (App.ColorScheme.IsLightTheme)
                             {
@@ -113,7 +114,7 @@ namespace Chatterino
                         else
                         {
                             var segments = word.SplitSegments;
-                            for (int x = 0; x < segments.Length; x++)
+                            for (var x = 0; x < segments.Length; x++)
                             {
                                 TextRenderer.DrawText(g, segments[x].Item1, font,
                                     new Point(xOffset + segments[x].Item2.X, yOffset + segments[x].Item2.Y), color,
@@ -154,7 +155,7 @@ namespace Chatterino
                 var first = selection.First;
                 var last = selection.Last;
 
-                for (int i = 0; i < message.Words.Count; i++)
+                for (var i = 0; i < message.Words.Count; i++)
                 {
                     var word = message.Words[i];
                     if ((currentLine != first.MessageIndex || i >= first.WordIndex) &&
@@ -163,37 +164,37 @@ namespace Chatterino
 
                         if (word.Type == SpanType.Text)
                         {
-                            for (int j = 0; j < (word.SplitSegments?.Length ?? 1); j++)
+                            for (var j = 0; j < (word.SplitSegments?.Length ?? 1); j++)
                             {
                                 if ((first.MessageIndex == currentLine && first.WordIndex == i && first.SplitIndex > j) ||
                                     (last.MessageIndex == currentLine && last.WordIndex == i && last.SplitIndex < j))
                                     continue;
 
                                 var split = word.SplitSegments?[j];
-                                string text = split?.Item1 ?? (string)word.Value;
-                                CommonRectangle rect = split?.Item2 ??
+                                var text = split?.Item1 ?? (string)word.Value;
+                                var rect = split?.Item2 ??
                                                        new CommonRectangle(word.X, word.Y, word.Width, word.Height);
 
-                                int textLength = text.Length;
+                                var textLength = text.Length;
 
-                                int offset = (first.MessageIndex == currentLine && first.SplitIndex == j &&
+                                var offset = (first.MessageIndex == currentLine && first.SplitIndex == j &&
                                               first.WordIndex == i)
                                     ? first.CharIndex
                                     : 0;
-                                int length = ((last.MessageIndex == currentLine && last.SplitIndex == j &&
+                                var length = ((last.MessageIndex == currentLine && last.SplitIndex == j &&
                                                last.WordIndex == i)
                                                  ? last.CharIndex
                                                  : textLength) - offset;
 
                                 if (offset == 0 && length == text.Length)
-                                    g.FillRectangle(selectionBrush, rect.X + xOffset, rect.Y + yOffset,
+                                    g.FillRectangle(_selectionBrush, rect.X + xOffset, rect.Y + yOffset,
                                         GuiEngine.Current.MeasureStringSize(App.UseDirectX ? null : g, word.Font, text)
                                             .Width + spaceWidth - 1, rect.Height);
                                 else if (offset == text.Length)
-                                    g.FillRectangle(selectionBrush, rect.X + xOffset + rect.Width, rect.Y + yOffset,
+                                    g.FillRectangle(_selectionBrush, rect.X + xOffset + rect.Width, rect.Y + yOffset,
                                         spaceWidth, rect.Height);
                                 else
-                                    g.FillRectangle(selectionBrush,
+                                    g.FillRectangle(_selectionBrush,
                                         rect.X + xOffset +
                                         (offset == 0
                                             ? 0
@@ -210,28 +211,28 @@ namespace Chatterino
                         }
                         else if (word.Type == SpanType.Image)
                         {
-                            int textLength = 2;
+                            var textLength = 2;
 
-                            int offset = (first.MessageIndex == currentLine && first.WordIndex == i)
+                            var offset = (first.MessageIndex == currentLine && first.WordIndex == i)
                                 ? first.CharIndex
                                 : 0;
-                            int length = ((last.MessageIndex == currentLine && last.WordIndex == i)
+                            var length = ((last.MessageIndex == currentLine && last.WordIndex == i)
                                              ? last.CharIndex
                                              : textLength) - offset;
 
-                            g.FillRectangle(selectionBrush, word.X + xOffset + (offset == 0 ? 0 : word.Width),
+                            g.FillRectangle(_selectionBrush, word.X + xOffset + (offset == 0 ? 0 : word.Width),
                                 word.Y + yOffset,
                                 (offset == 0 ? word.Width : 0) + (offset + length == 2 ? spaceWidth : 0) - 1,
                                 word.Height);
                         }
                         else if (word.Type == SpanType.Emote)
                         {
-                            int textLength = 2;
+                            var textLength = 2;
 
-                            int offset = (first.MessageIndex == currentLine && first.WordIndex == i)
+                            var offset = (first.MessageIndex == currentLine && first.WordIndex == i)
                                 ? first.CharIndex
                                 : 0;
-                            int length = ((last.MessageIndex == currentLine && last.WordIndex == i)
+                            var length = ((last.MessageIndex == currentLine && last.WordIndex == i)
                                              ? last.CharIndex
                                              : textLength) - offset;
 
@@ -243,7 +244,7 @@ namespace Chatterino
                             }
                             else
                             {
-                                g.FillRectangle(selectionBrush, word.X + xOffset, word.Y + yOffset,
+                                g.FillRectangle(_selectionBrush, word.X + xOffset, word.Y + yOffset,
                                     word.Width + spaceWidth - 1, word.Height);
                             }
                         }
@@ -272,30 +273,35 @@ namespace Chatterino
                 }
             }
 
-            if (AppSettings.ChatSeperateMessages)
+            if (allowMessageSeperator && AppSettings.ChatSeperateMessages)
             {
                 g.DrawLine(App.ColorScheme.ChatMessageSeperatorBorder, 0, yOffset + 1, message.Width + 128, yOffset + 1);
                 g.DrawLine(App.ColorScheme.ChatMessageSeperatorBorderInner, 0, yOffset, message.Width + 128, yOffset);
+            }
+
+            if (message.HasAnyHighlightType(HighlightType.SearchResult))
+            {
+                g.FillRectangle(Brushes.GreenYellow, 1, yOffset, 1, message.Height - 1);
             }
         }
 
         //public static void DrawGifEmotes(object graphics, Common.Message message, Selection selection, int currentLine)
         public static void DrawGifEmotes(object graphics, List<GifEmoteState> gifEmotes, Selection selection)
         {
-            Graphics g = (Graphics)graphics;
+            var g = (Graphics)graphics;
 
-            int spaceWidth =
+            var spaceWidth =
                 GuiEngine.Current.MeasureStringSize(App.UseDirectX ? null : g, FontType.Medium, " ").Width;
 
             foreach (var state in gifEmotes)
             {
                 Brush backgroundBrush;
 
-                if (state.HighlightType == HighlightType.Highlighted)
+                if ((state.HighlightType & HighlightType.Highlighted) == HighlightType.Highlighted)
                 {
                     backgroundBrush = App.ColorScheme.ChatBackgroundHighlighted;
                 }
-                else if (state.HighlightType == HighlightType.Resub)
+                else if ((state.HighlightType & HighlightType.Resub) == HighlightType.Resub)
                 {
                     backgroundBrush = App.ColorScheme.ChatBackgroundResub;
                 }
@@ -320,7 +326,7 @@ namespace Chatterino
 
                 if (state.Selected)
                 {
-                    g.FillRectangle(selectionBrush, state.X, state.Y,
+                    g.FillRectangle(_selectionBrush, state.X, state.Y,
                         state.Width, state.Height);
                 }
             }

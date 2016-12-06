@@ -50,7 +50,7 @@ namespace Chatterino.Controls
             };
 
             // Mousedown
-            bool mouseDown = false;
+            var mouseDown = false;
 
             MouseDown += (s, e) =>
             {

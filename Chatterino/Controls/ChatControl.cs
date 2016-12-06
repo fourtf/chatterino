@@ -183,7 +183,7 @@ namespace Chatterino.Controls
             //Font = Fonts.GdiMedium;
             Font = new Font("Segoe UI", 9.5f);
 
-            ChatControlHeader header = _header = new ChatControlHeader(this);
+            var header = _header = new ChatControlHeader(this);
             header.Anchor = AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right;
             header.Width = Width - 2;
             header.Location = new Point(1, 0);
@@ -242,16 +242,17 @@ namespace Chatterino.Controls
                 _scroll.RemoveHighlightsWhere(h => h.Position < 0);
             }
 
-            if (e.Message.HighlightType == HighlightType.Highlighted || e.Message.HighlightType == HighlightType.Resub)
+            if ((e.Message.HighlightType & (HighlightType.Highlighted | HighlightType.Resub)) != HighlightType.None)
             {
-                _scroll.AddHighlight((channel?.MessageCount ?? 1) - 1, (e.Message.HighlightType == HighlightType.Highlighted ? Color.Red : Color.FromArgb(-16777216 | 0x3F6ABF)));
+                _scroll.AddHighlight((channel?.MessageCount ?? 1) - 1,
+                    e.Message.HasAnyHighlightType(HighlightType.Highlighted) ? Color.Red : Color.FromArgb(-16777216 | 0x3F6ABF));
             }
 
-            ColumnTabPage parent = Parent as ColumnTabPage;
+            var parent = Parent as ColumnTabPage;
 
             if (e.Message.HighlightTab && parent != null)
             {
-                if (e.Message.HighlightType == HighlightType.Highlighted || e.Message.HighlightType == HighlightType.Whisper)
+                if (e.Message.HasAnyHighlightType(HighlightType.Highlighted | HighlightType.Whisper))
                 {
                     parent.HighlightType = TabPageHighlightType.Highlighted;
                 }
@@ -269,11 +270,11 @@ namespace Chatterino.Controls
         {
             _scroll.UpdateHighlights(h => h.Position += e.Value.Length);
 
-            for (int i = 0; i < e.Value.Length; i++)
+            for (var i = 0; i < e.Value.Length; i++)
             {
-                if (e.Value[i].HighlightType == HighlightType.Highlighted || e.Value[i].HighlightType == HighlightType.Resub)
+                if (e.Value[i].HasAnyHighlightType(HighlightType.Highlighted | HighlightType.Resub))
                 {
-                    _scroll.AddHighlight(i, (e.Value[i].HighlightType == HighlightType.Highlighted ? Color.Red : Color.FromArgb(-16777216 | 0x3F6ABF)));
+                    _scroll.AddHighlight(i, e.Value[i].HasAnyHighlightType(HighlightType.Highlighted) ? Color.Red : Color.FromArgb(-16777216 | 0x3F6ABF));
                 }
             }
 
@@ -316,10 +317,10 @@ namespace Chatterino.Controls
                 var c = channel;
                 if (c != null)
                 {
-                    string text = "";
+                    var text = "";
 
-                    RoomState state = c.RoomState;
-                    int count = 0;
+                    var state = c.RoomState;
+                    var count = 0;
                     if (state.HasFlag(RoomState.SlowMode))
                     {
                         text += "slow(" + c.SlowModeTime + "), ";
@@ -425,7 +426,7 @@ namespace Chatterino.Controls
         {
             if (!scrollAtBottom)
             {
-                int start = Height - (Input.Visible ? Input.Height : 0) - ScrollToBottomBarHeight;
+                var start = Height - (Input.Visible ? Input.Height : 0) - ScrollToBottomBarHeight;
 
                 Brush scrollToBottomBg = new LinearGradientBrush(new Point(0, start), new Point(0, start + ScrollToBottomBarHeight), Color.Transparent, Color.FromArgb(48, 0, 0, 0));
 
@@ -533,7 +534,7 @@ namespace Chatterino.Controls
 
                 // rename split
                 case Keys.Control | Keys.R:
-                    using (InputDialogForm dialog = new InputDialogForm("channel name") { Value = ChannelName })
+                    using (var dialog = new InputDialogForm("channel name") { Value = ChannelName })
                     {
                         if (dialog.ShowDialog() == DialogResult.OK)
                         {
@@ -556,14 +557,14 @@ namespace Chatterino.Controls
 
         public void HandleTabCompletion(bool forward)
         {
-            string[] items = tabCompleteItems;
+            var items = tabCompleteItems;
             string word = null;
 
-            string text = Input.Logic.Text;
-            int caretPositon = Input.Logic.CaretPosition;
+            var text = Input.Logic.Text;
+            var caretPositon = Input.Logic.CaretPosition;
 
-            int wordStart = caretPositon - 1;
-            int wordEnd = caretPositon;
+            var wordStart = caretPositon - 1;
+            var wordEnd = caretPositon;
 
             for (; wordStart >= 0; wordStart--)
             {
@@ -662,7 +663,7 @@ namespace Chatterino.Controls
         {
             if (selection?.IsEmpty ?? true)
             {
-                string text = Input.Logic.SelectedText;
+                var text = Input.Logic.SelectedText;
 
                 if (clear && text.Length > 0)
                     Input.Logic.InsertText("");
@@ -715,6 +716,28 @@ namespace Chatterino.Controls
             }
 
             resetCompletion();
+        }
+
+        public void SearchFor(string term)
+        {
+            var messages = Channel.CloneMessages();
+
+            //var results = new List<Message>();
+
+            for (var i = messages.Length - 1; i >= 0; i--)
+            {
+                var message = messages[i];
+
+                if ((message.Username != null && message.Username.IndexOf(term, StringComparison.OrdinalIgnoreCase) != -1) ||
+                    message.RawMessage.IndexOf(term, StringComparison.OrdinalIgnoreCase) != -1)
+                {
+                    message.HighlightType |= HighlightType.SearchResult;
+
+                    //results.Add(message);
+                }
+            }
+
+            this.Invoke(Invalidate);
         }
 
         // header
@@ -840,7 +863,7 @@ namespace Chatterino.Controls
                 Height = TopMenuBarHeight + 1;
 
                 // Mousedown
-                bool mouseDown = false;
+                var mouseDown = false;
 
                 MouseDown += (s, e) =>
                 {
@@ -865,7 +888,7 @@ namespace Chatterino.Controls
                     {
                         if (e.X < 0 || e.Y < 0 || e.X > Width || e.Y > Height)
                         {
-                            ColumnTabPage layout = chatControl.Parent as ColumnTabPage;
+                            var layout = chatControl.Parent as ColumnTabPage;
                             if (layout != null)
                             {
                                 var position = layout.RemoveWidget(chatControl);
@@ -879,7 +902,7 @@ namespace Chatterino.Controls
                 };
 
                 // Buttons
-                FlatButton button = DropDownButton = new FlatButton
+                var button = DropDownButton = new FlatButton
                 {
                     Height = Height - 2,
                     Width = Height - 2,
@@ -927,7 +950,7 @@ namespace Chatterino.Controls
             {
                 base.OnDoubleClick(e);
 
-                using (InputDialogForm dialog = new InputDialogForm("channel name") { Value = _chatControl.ChannelName })
+                using (var dialog = new InputDialogForm("channel name") { Value = _chatControl.ChannelName })
                 {
                     if (dialog.ShowDialog() == DialogResult.OK)
                     {
@@ -945,7 +968,7 @@ namespace Chatterino.Controls
                 //e.Graphics.DrawRectangle(Focused ? App.ColorScheme.ChatBorderFocused : App.ColorScheme.ChatBorder, 0, 1, Width - 1, Height - 1);
                 e.Graphics.DrawRectangle(App.ColorScheme.MenuBorder, 0, 0, Width - 1, Height - 1);
 
-                string title1 = string.IsNullOrWhiteSpace(_chatControl.ActualChannelName) ? "<no channel>" : _chatControl.ActualChannelName;
+                var title1 = string.IsNullOrWhiteSpace(_chatControl.ActualChannelName) ? "<no channel>" : _chatControl.ActualChannelName;
                 string title2 = null;
 
                 if (_chatControl.IsNetCurrent)
@@ -961,7 +984,7 @@ namespace Chatterino.Controls
 
                     //title2 = _chatControl.Channel.StreamStatus + "";
 
-                    string text =
+                    var text =
                         _chatControl.Channel.StreamStatus + "\n\n" +
                         _chatControl.Channel.StreamGame + "\n" +
                         "Live for ";
@@ -986,7 +1009,7 @@ namespace Chatterino.Controls
                     tooltipValue.Value = null;
                 }
 
-                TextFormatFlags flags = App.DefaultTextFormatFlags | TextFormatFlags.VerticalCenter;
+                var flags = App.DefaultTextFormatFlags | TextFormatFlags.VerticalCenter;
 
                 if (TextRenderer.MeasureText(e.Graphics, title1, _chatControl.Font).Width <=
                     Width - DropDownButton.Width - RoomstateButton.Width)

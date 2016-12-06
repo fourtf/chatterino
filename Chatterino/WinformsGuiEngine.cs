@@ -34,7 +34,7 @@ namespace Chatterino
             {
                 case LinkType.Url:
                     {
-                        string link = _link.Value as string;
+                        var link = _link.Value as string;
                         try
                         {
                             if (link.StartsWith("http://") || link.StartsWith("https://")
@@ -89,7 +89,7 @@ namespace Chatterino
                     break;
                 case LinkType.ShowChannel:
                     {
-                        string channelName = (string)_link.Value;
+                        var channelName = (string)_link.Value;
 
                         var widget = App.MainForm.TabControl.TabPages
                             .Where(x => x is ColumnTabPage)
@@ -126,7 +126,7 @@ namespace Chatterino
         {
             try
             {
-                bool focused = false;
+                var focused = false;
 
                 App.MainForm.Invoke(() => focused = App.MainForm.ContainsFocus);
 
@@ -147,7 +147,7 @@ namespace Chatterino
 
                                     try
                                     {
-                                        using (FileStream stream = new FileStream(Path.Combine(Util.GetUserDataPath(), "Custom", "Ping.wav"), FileMode.Open))
+                                        using (var stream = new FileStream(Path.Combine(Util.GetUserDataPath(), "Custom", "Ping.wav"), FileMode.Open))
                                         {
                                             HighlightSound = new SoundPlayer(stream);
                                             HighlightSound.Load();
@@ -198,9 +198,9 @@ namespace Chatterino
         {
             if (emote.Image != null)
             {
-                Image img = (Image)emote.Image;
+                var img = (Image)emote.Image;
 
-                bool animated = ImageAnimator.CanAnimate(img);
+                var animated = ImageAnimator.CanAnimate(img);
 
                 if (animated)
                 {
@@ -208,13 +208,13 @@ namespace Chatterino
                     {
                         var dimension = new FrameDimension(img.FrameDimensionsList[0]);
                         var frameCount = img.GetFrameCount(dimension);
-                        int[] frameDuration = new int[frameCount];
-                        int currentFrame = 0;
-                        int currentFrameOffset = 0;
+                        var frameDuration = new int[frameCount];
+                        var currentFrame = 0;
+                        var currentFrameOffset = 0;
 
-                        byte[] times = img.GetPropertyItem(0x5100).Value;
-                        int frame = 0;
-                        for (int i = 0; i < frameCount; i++)
+                        var times = img.GetPropertyItem(0x5100).Value;
+                        var frame = 0;
+                        for (var i = 0; i < frameCount; i++)
                         {
                             var num = BitConverter.ToInt32(times, 4 * frame);
 
@@ -301,7 +301,7 @@ namespace Chatterino
             {
                 try
                 {
-                    Image img = (Image)image;
+                    var img = (Image)image;
                     lock (img)
                         return new CommonSize(img.Width, img.Height);
                 }
@@ -320,7 +320,7 @@ namespace Chatterino
 
         public CommonSize MeasureStringSize(object graphics, FontType font, string text)
         {
-            bool isGdi = graphics is Graphics;
+            var isGdi = graphics is Graphics;
 
             var sizeCache = (isGdi ? gdiSizeCaches : dwSizeCaches).GetOrAdd(font, f =>
             {
@@ -359,7 +359,7 @@ namespace Chatterino
 
                 if (isGdi)
                 {
-                    Size size = TextRenderer.MeasureText((IDeviceContext)graphics, text, Fonts.GetFont(font), Size.Empty, App.DefaultTextFormatFlags);
+                    var size = TextRenderer.MeasureText((IDeviceContext)graphics, text, Fonts.GetFont(font), Size.Empty, App.DefaultTextFormatFlags);
                     return new CommonSize(size.Width, sizeCache.Item3);
                 }
                 else
@@ -396,7 +396,7 @@ namespace Chatterino
 
         public object ScaleImage(object image, double scale)
         {
-            Image img = (Image)image;
+            var img = (Image)image;
 
             int w = (int)(img.Width * scale), h = (int)(img.Height * scale);
 
@@ -418,9 +418,9 @@ namespace Chatterino
 
         public object DrawImageBackground(object image, HSLColor color)
         {
-            Image img = (Image)image;
+            var img = (Image)image;
 
-            Bitmap bitmap = new Bitmap(img.Width, img.Height);
+            var bitmap = new Bitmap(img.Width, img.Height);
 
             using (var g = Graphics.FromImage(bitmap))
             {

@@ -21,12 +21,12 @@ namespace TwitchIrc
 
                     if (_tags != null)
                     {
-                        StringBuilder keyBuilder = new StringBuilder();
-                        StringBuilder valueBuilder = new StringBuilder();
+                        var keyBuilder = new StringBuilder();
+                        var valueBuilder = new StringBuilder();
 
-                        string text = _tags;
+                        var text = _tags;
 
-                        for (int i = 0; i < text.Length; i++)
+                        for (var i = 0; i < text.Length; i++)
                         {
                             var c = text[i];
 
@@ -124,7 +124,7 @@ namespace TwitchIrc
             // servername / ( nickname [ [ "!" user ] "@" host ] )
             if (prefix != null)
             {
-                int at = prefix.IndexOf('@');
+                var at = prefix.IndexOf('@');
 
                 // servername
                 if (at == -1 && prefix.IndexOf('.') != -1)
@@ -142,7 +142,7 @@ namespace TwitchIrc
                     // nickname ["!" user] "@" host
                     else
                     {
-                        int exclamation = prefix.IndexOf('!');
+                        var exclamation = prefix.IndexOf('!');
 
                         // nickname "@" host
                         if (exclamation == -1)

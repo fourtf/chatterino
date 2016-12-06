@@ -225,7 +225,7 @@ namespace Chatterino.Common
                 using (var response = request.GetResponse())
                 using (var stream = response.GetResponseStream())
                 {
-                    JsonParser parser = new JsonParser();
+                    var parser = new JsonParser();
 
                     dynamic json = parser.Parse(stream);
 
@@ -274,7 +274,7 @@ namespace Chatterino.Common
                             using (var response = request.GetResponse())
                             using (var stream = response.GetResponseStream())
                             {
-                                JsonParser parser = new JsonParser();
+                                var parser = new JsonParser();
 
                                 dynamic json = parser.Parse(stream);
 
@@ -282,7 +282,7 @@ namespace Chatterino.Common
                                 dynamic subscriber = badgeSets["subscriber"];
                                 dynamic versions = subscriber["versions"];
 
-                                foreach (dynamic version in versions)
+                                foreach (var version in versions)
                                 {
                                     int months = int.Parse(version.Key);
 
@@ -308,7 +308,7 @@ namespace Chatterino.Common
 
                         try
                         {
-                            List<Message> messages = new List<Message>();
+                            var messages = new List<Message>();
 
                             var request =
                                 WebRequest.Create(
@@ -316,7 +316,7 @@ namespace Chatterino.Common
                             using (var response = request.GetResponse())
                             using (var stream = response.GetResponseStream())
                             {
-                                JsonParser parser = new JsonParser();
+                                var parser = new JsonParser();
 
                                 dynamic json = parser.Parse(stream);
 
@@ -375,7 +375,7 @@ namespace Chatterino.Common
         {
             lock (MessageLock)
             {
-                foreach (Message msg in Messages)
+                foreach (var msg in Messages)
                 {
                     msg.InvalidateTextMeasurements();
                 }
@@ -408,7 +408,7 @@ namespace Chatterino.Common
                     _messages = new Message[Messages.Length - AppSettings.ChatMessageLimit];
                     Array.Copy(Messages, _messages, _messages.Length);
 
-                    Message[] M = new Message[AppSettings.ChatMessageLimit];
+                    var M = new Message[AppSettings.ChatMessageLimit];
                     Array.Copy(Messages, Messages.Length - AppSettings.ChatMessageLimit, M, 0,
                         AppSettings.ChatMessageLimit);
 
@@ -576,7 +576,7 @@ namespace Chatterino.Common
 
         void updateEmoteNameList()
         {
-            List<KeyValuePair<string, string>> names = new List<KeyValuePair<string, string>>();
+            var names = new List<KeyValuePair<string, string>>();
 
             names.AddRange(Emotes.TwitchEmotes.Keys.Select(x => new KeyValuePair<string, string>(x.ToUpper(), x)));
             names.AddRange(Emotes.BttvGlobalEmotes.Keys.Select(x => new KeyValuePair<string, string>(x.ToUpper(), x)));
@@ -592,7 +592,7 @@ namespace Chatterino.Common
         {
             var names = new List<KeyValuePair<string, string>>(emoteNames);
 
-            string commaAtEnd = firstWord ? "," : "";
+            var commaAtEnd = firstWord ? "," : "";
 
             if (AppSettings.ChatMentionUsersWithAt)
             {
@@ -647,13 +647,13 @@ namespace Chatterino.Common
                 using (var response = request.GetResponse())
                 using (var stream = response.GetResponseStream())
                 {
-                    JsonParser parser = new JsonParser();
+                    var parser = new JsonParser();
                     dynamic json = parser.Parse(stream);
                     dynamic chatters = json["chatters"];
 
                     Users.Clear();
 
-                    foreach (dynamic group in chatters)
+                    foreach (var group in chatters)
                     {
                         foreach (string user in group.Value)
                         {
@@ -698,7 +698,7 @@ namespace Chatterino.Common
         {
             if (removeMessages)
             {
-                Message[] _messages = Messages;
+                var _messages = Messages;
 
                 lock (MessageLock)
                 {
@@ -731,33 +731,30 @@ namespace Chatterino.Common
 
             Monitor.Enter(MessageLock);
 
-            foreach (Message msg in Messages)
+            foreach (var msg in Messages)
             {
-                if (msg.HighlightType != HighlightType.Whisper && msg.Username == user)
+                if (!msg.HasAnyHighlightType(HighlightType.Whisper) && msg.Username == user)
                 {
                     msg.Disabled = true;
                 }
             }
 
-            for (int i = Messages.Length - 1; i >= 0; i--)
+            for (var i = Messages.Length - 1; i >= 0; i--)
             {
                 var m = Messages[i];
 
                 if (m.ParseTime > DateTime.Now - TimeSpan.FromSeconds(30))
                 {
-                    if (m.TimeoutUser == user)
-                    {
-                        Messages[i] = new Message($"{user} was timed out for {duration} second{(duration != 1 ? "s" : "")}: \"{reason}\" (multiple times)") { TimeoutUser = user };
-                        Monitor.Exit(MessageLock);
+                    if (m.TimeoutUser != user) continue;
 
-                        ChatCleared?.Invoke(this, new ChatClearedEventArgs(user, reason, duration));
-                        return;
-                    }
+                    Messages[i] = new Message($"{user} was timed out for {duration} second{(duration != 1 ? "s" : "")}: \"{reason}\" (multiple times)") { TimeoutUser = user };
+                    Monitor.Exit(MessageLock);
+
+                    ChatCleared?.Invoke(this, new ChatClearedEventArgs(user, reason, duration));
+                    return;
                 }
-                else
-                {
-                    break;
-                }
+
+                break;
             }
 
             Monitor.Exit(MessageLock);
@@ -816,7 +813,7 @@ namespace Chatterino.Common
 
                     Array.Copy(Messages, 0, M, maxMessages - Messages.Length, Messages.Length);
 
-                    Message[] _messages = new Message[maxMessages - Messages.Length];
+                    var _messages = new Message[maxMessages - Messages.Length];
 
                     Array.Copy(messages, messages.Length - maxMessages + Messages.Length, M, 0, maxMessages - Messages.Length);
                     Array.Copy(messages, messages.Length - maxMessages + Messages.Length, _messages, 0, maxMessages - Messages.Length);
@@ -843,15 +840,15 @@ namespace Chatterino.Common
         {
             var channelName = Name;
 
-            string bttvChannelEmotesCache = Path.Combine(Util.GetUserDataPath(), "Cache", $"bttv_channel_{channelName}");
-            string ffzChannelEmotesCache = Path.Combine(Util.GetUserDataPath(), "Cache", $"ffz_channel_{channelName}");
+            var bttvChannelEmotesCache = Path.Combine(Util.GetUserDataPath(), "Cache", $"bttv_channel_{channelName}");
+            var ffzChannelEmotesCache = Path.Combine(Util.GetUserDataPath(), "Cache", $"ffz_channel_{channelName}");
 
             // bttv channel emotes
             Task.Run(() =>
             {
                 try
                 {
-                    JsonParser parser = new JsonParser();
+                    var parser = new JsonParser();
 
                     //if (!File.Exists(bttvChannelEmotesCache))
                     {
@@ -884,7 +881,7 @@ namespace Chatterino.Common
 
                         BttvChannelEmotes.Clear();
 
-                        foreach (dynamic e in json["emotes"])
+                        foreach (var e in json["emotes"])
                         {
                             string id = e["id"];
                             string code = e["code"];
@@ -913,7 +910,7 @@ namespace Chatterino.Common
             {
                 try
                 {
-                    JsonParser parser = new JsonParser();
+                    var parser = new JsonParser();
 
                     //if (!File.Exists(ffzChannelEmotesCache))
                     {
@@ -964,7 +961,7 @@ namespace Chatterino.Common
                                             {
                                                 object img;
 
-                                                WebRequest request = WebRequest.Create(url);
+                                                var request = WebRequest.Create(url);
                                                 using (var response = request.GetResponse())
                                                 using (var s = response.GetResponseStream())
                                                 {
@@ -990,13 +987,13 @@ namespace Chatterino.Common
 
                         FfzChannelEmotes.Clear();
 
-                        foreach (dynamic set in sets.Values)
+                        foreach (var set in sets.Values)
                         {
                             string title = set["title"];
 
                             dynamic emoticons = set["emoticons"];
 
-                            foreach (dynamic emoticon in emoticons)
+                            foreach (var emoticon in emoticons)
                             {
                                 string code = emoticon["name"];
                                 string id = emoticon["id"];

@@ -95,7 +95,7 @@ namespace Chatterino.Common
                 Console.WriteLine(intend > 0 ? new string(' ', intend) + obj.ToString() : obj.ToString());
                 if (((IEnumerable)obj).GetEnumerator().MoveNext())
                 {
-                    foreach (object o in (IEnumerable)obj)
+                    foreach (var o in (IEnumerable)obj)
                         Log(o, intend + 2);
                 }
             }
@@ -115,7 +115,7 @@ namespace Chatterino.Common
         public static void LogEach<T>(this IEnumerable<T> obj, Func<T, object> func)
         {
             Console.WriteLine(obj);
-            foreach (T t in obj)
+            foreach (var t in obj)
                 Console.WriteLine("  " + func(t));
         }
 
@@ -137,7 +137,7 @@ namespace Chatterino.Common
 
         public static void Do<T>(this IEnumerable<T> source, Action<T> action)
         {
-            foreach (T element in source)
+            foreach (var element in source)
                 action(element);
         }
 
@@ -151,7 +151,7 @@ namespace Chatterino.Common
 
         public static bool GetRandom(double percent)
         {
-            byte[] bytes = new byte[4];
+            var bytes = new byte[4];
             random2.GetBytes(bytes);
 
             return ((BitConverter.ToUInt32(bytes, 0) / (double)uint.MaxValue) * 100) < percent;
@@ -160,7 +160,7 @@ namespace Chatterino.Common
         //  Logs a message in a specific color if not in quiet mode
         public static void Log(object message, ConsoleColor? color = null)
         {
-            ConsoleColor defaultColor = Console.ForegroundColor;
+            var defaultColor = Console.ForegroundColor;
 
             if (color != null)
                 Console.ForegroundColor = color.Value;
@@ -185,7 +185,7 @@ namespace Chatterino.Common
 
         public static string SubstringFromWordIndex(this string s, int index)
         {
-            int i = 0;
+            var i = 0;
 
             for (; i < s.Length; i++)
             {
@@ -193,7 +193,7 @@ namespace Chatterino.Common
                     break;
             }
 
-            for (int j = 0; j < index; j++)
+            for (var j = 0; j < index; j++)
             {
                 for (; i < s.Length; i++)
                 {
@@ -218,7 +218,7 @@ namespace Chatterino.Common
         {
             get
             {
-                int p = (int)Environment.OSVersion.Platform;
+                var p = (int)Environment.OSVersion.Platform;
                 return (p == 4) || (p == 6) || (p == 128);
             }
         }

@@ -128,14 +128,14 @@ namespace Chatterino.Controls
                     if (mouseDown)
                     {
                         var t = ((TabControl)Parent);
-                        Point p = t.PointToClient(PointToScreen(e.Location));
+                        var p = t.PointToClient(PointToScreen(e.Location));
 
                         if (p != lastP)
                         {
-                            int originalIndex = t._tabPages.FindIndex(x => x.Item1 == this);
-                            Tuple<Tab, TabPage> original = t._tabPages[originalIndex];
+                            var originalIndex = t._tabPages.FindIndex(x => x.Item1 == this);
+                            var original = t._tabPages[originalIndex];
 
-                            for (int i = 0; i < t._tabPages.Count; i++)
+                            for (var i = 0; i < t._tabPages.Count; i++)
                             {
                                 var tab = t._tabPages[i];
 
@@ -160,13 +160,13 @@ namespace Chatterino.Controls
                     Invalidate();
                 };
 
-                bool dragOver = false;
+                var dragOver = false;
 
                 DragEnter += (s, e) =>
                 {
                     dragOver = true;
 
-                    Timer timer = new Timer() { Interval = 200 };
+                    var timer = new Timer() { Interval = 200 };
 
                     timer.Tick += (s2, e2) =>
                     {
@@ -205,12 +205,12 @@ namespace Chatterino.Controls
 
                 if (page != null)
                 {
-                    using (InputDialogForm dialog = new InputDialogForm("change tab title (leave empty for default)"))
+                    using (var dialog = new InputDialogForm("change tab title (leave empty for default)"))
                     {
                         dialog.Value = page.CustomTitle ?? "";
                         if (dialog.ShowDialog() == DialogResult.OK)
                         {
-                            string title = dialog.Value.Trim();
+                            var title = dialog.Value.Trim();
 
                             if (title == "")
                             {
@@ -296,7 +296,7 @@ namespace Chatterino.Controls
 
                 if (Selected || mouseOver)
                 {
-                    using (Pen pen = new Pen(text))
+                    using (var pen = new Pen(text))
                     {
                         e.Graphics.DrawLine(pen, xRectangle.Left + 4, xRectangle.Top + 4, xRectangle.Right - 5, xRectangle.Bottom - 5);
                         e.Graphics.DrawLine(pen, xRectangle.Right - 5, xRectangle.Top + 4, xRectangle.Left + 4, xRectangle.Bottom - 5);

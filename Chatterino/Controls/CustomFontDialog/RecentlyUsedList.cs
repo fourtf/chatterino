@@ -52,7 +52,7 @@ namespace CustomFontDialog
 
         public void Add(T item)
         {
-            int i = list.IndexOf(item);
+            var i = list.IndexOf(item);
             if (i != -1)    list.RemoveAt(i);
 
             if (list.Count == MaxSize) list.RemoveAt(list.Count - 1);

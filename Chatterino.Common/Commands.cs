@@ -31,7 +31,7 @@ namespace Chatterino.Common
 
                     if (S.Length > 1)
                     {
-                        string name = S[0];
+                        var name = S[0];
 
                         IrcMessage message;
                         IrcMessage.TryParse($":{name}!{name}@{name}.tmi.twitch.tv PRIVMSG #whispers :" + s.SubstringFromWordIndex(1), out message);
@@ -86,11 +86,11 @@ namespace Chatterino.Common
                 {
                     try
                     {
-                        WebRequest request = WebRequest.Create($"https://api.twitch.tv/kraken/streams/{channel.Name}?client_id={IrcManager.DefaultClientID}");
+                        var request = WebRequest.Create($"https://api.twitch.tv/kraken/streams/{channel.Name}?client_id={IrcManager.DefaultClientID}");
                         using (var resp = request.GetResponse())
                         using (var stream = resp.GetResponseStream())
                         {
-                            JsonParser parser = new JsonParser();
+                            var parser = new JsonParser();
 
                             dynamic json = parser.Parse(stream);
 
@@ -98,11 +98,11 @@ namespace Chatterino.Common
 
                             string createdAt = root["created_at"];
 
-                            DateTime streamStart = DateTime.Parse(createdAt);
+                            var streamStart = DateTime.Parse(createdAt);
 
-                            TimeSpan uptime = DateTime.Now - streamStart;
+                            var uptime = DateTime.Now - streamStart;
 
-                            string text = "Stream uptime: ";
+                            var text = "Stream uptime: ";
 
                             if (uptime.TotalDays > 1)
                             {
@@ -126,14 +126,14 @@ namespace Chatterino.Common
             {
                 if (execute)
                 {
-                    foreach (string x in new[] { "1", "100", "1000", "5000", "10000" })
+                    foreach (var x in new[] { "1", "100", "1000", "5000", "10000" })
                     {
                         IrcMessage msg;
                         IrcMessage.TryParse($"@badges=subscriber/1;bits={x};color=;display-name=FOURTF;emotes=;mod=0;subscriber=1;turbo=0;user-type= :fourtf!fourtf@fourtf.tmi.twitch.tv PRIVMSG #fourtf :cheer{x} xD donation", out msg);
 
-                        foreach (TwitchChannel c in TwitchChannel.Channels)
+                        foreach (var c in TwitchChannel.Channels)
                         {
-                            Message message = new Message(msg, c);
+                            var message = new Message(msg, c);
                             c.AddMessage(message);
                         }
                     }
@@ -159,17 +159,17 @@ namespace Chatterino.Common
             {
                 if (text[0] == '/')
                 {
-                    int index = text.IndexOf(' ');
+                    var index = text.IndexOf(' ');
                     _command = index == -1 ? text.Substring(1) : text.Substring(1, index - 1);
                     args = index == -1 ? "" : text.Substring(index + 1);
                 }
                 else if (AppSettings.ChatAllowCommandsAtEnd)
                 {
-                    int index = text.LastIndexOf(' ');
+                    var index = text.LastIndexOf(' ');
 
                     if (index != -1)
                     {
-                        string s = text.Substring(index + 1);
+                        var s = text.Substring(index + 1);
 
                         if (s.Length > 0 && s[0] == '/')
                         {
@@ -232,7 +232,7 @@ namespace Chatterino.Common
                 {
                     if (File.Exists(path))
                     {
-                        using (StreamReader reader = new StreamReader(path))
+                        using (var reader = new StreamReader(path))
                         {
                             CustomCommands.Clear();
 
@@ -261,7 +261,7 @@ namespace Chatterino.Common
         {
             try
             {
-                using (StreamWriter writer = new StreamWriter(path))
+                using (var writer = new StreamWriter(path))
                 {
                     lock (CustomCommandsLock)
                     {

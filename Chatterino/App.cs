@@ -168,7 +168,7 @@ namespace Chatterino
 
             AppSettings.SavePath = Path.Combine(Util.GetUserDataPath(), "Settings.ini");
 
-            bool showWelcomeForm = false;
+            var showWelcomeForm = false;
 
             try
             {
@@ -266,7 +266,7 @@ namespace Chatterino
             {
                 try
                 {
-                    using (UpdateDialog dialog = new UpdateDialog())
+                    using (var dialog = new UpdateDialog())
                     {
                         if (File.Exists(UpdaterPath))
                         {
@@ -276,7 +276,7 @@ namespace Chatterino
                             // Yes -> install on exit
                             if (result == DialogResult.OK || result == DialogResult.Yes)
                             {
-                                using (WebClient client = new WebClient())
+                                using (var client = new WebClient())
                                 {
                                     client.DownloadFile(e.Url, Path.Combine(Util.GetUserDataPath(), "update.zip"));
                                 }
@@ -456,7 +456,7 @@ namespace Chatterino
 
         static void updateTheme()
         {
-            float multiplier = -0.8f;
+            var multiplier = -0.8f;
 
             switch (AppSettings.Theme)
             {

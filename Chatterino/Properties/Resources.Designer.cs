@@ -39,7 +39,7 @@ namespace Chatterino.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Chatterino.Properties.Resources", typeof(Resources).Assembly);
+                    var temp = new global::System.Resources.ResourceManager("Chatterino.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -65,7 +65,7 @@ namespace Chatterino.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap admin_bg {
             get {
-                object obj = ResourceManager.GetObject("admin_bg", resourceCulture);
+                var obj = ResourceManager.GetObject("admin_bg", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -75,7 +75,7 @@ namespace Chatterino.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap AppearanceEditorPart_16x {
             get {
-                object obj = ResourceManager.GetObject("AppearanceEditorPart_16x", resourceCulture);
+                var obj = ResourceManager.GetObject("AppearanceEditorPart_16x", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -85,7 +85,7 @@ namespace Chatterino.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap broadcaster_bg {
             get {
-                object obj = ResourceManager.GetObject("broadcaster_bg", resourceCulture);
+                var obj = ResourceManager.GetObject("broadcaster_bg", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -95,7 +95,7 @@ namespace Chatterino.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap BrowserLink_16x {
             get {
-                object obj = ResourceManager.GetObject("BrowserLink_16x", resourceCulture);
+                var obj = ResourceManager.GetObject("BrowserLink_16x", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -105,7 +105,7 @@ namespace Chatterino.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap cheer1 {
             get {
-                object obj = ResourceManager.GetObject("cheer1", resourceCulture);
+                var obj = ResourceManager.GetObject("cheer1", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -115,7 +115,7 @@ namespace Chatterino.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap cheer100 {
             get {
-                object obj = ResourceManager.GetObject("cheer100", resourceCulture);
+                var obj = ResourceManager.GetObject("cheer100", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -125,7 +125,7 @@ namespace Chatterino.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap cheer1000 {
             get {
-                object obj = ResourceManager.GetObject("cheer1000", resourceCulture);
+                var obj = ResourceManager.GetObject("cheer1000", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -135,7 +135,7 @@ namespace Chatterino.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap cheer10000 {
             get {
-                object obj = ResourceManager.GetObject("cheer10000", resourceCulture);
+                var obj = ResourceManager.GetObject("cheer10000", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -145,7 +145,7 @@ namespace Chatterino.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap cheer100000 {
             get {
-                object obj = ResourceManager.GetObject("cheer100000", resourceCulture);
+                var obj = ResourceManager.GetObject("cheer100000", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -155,7 +155,7 @@ namespace Chatterino.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap cheer5000 {
             get {
-                object obj = ResourceManager.GetObject("cheer5000", resourceCulture);
+                var obj = ResourceManager.GetObject("cheer5000", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -165,7 +165,7 @@ namespace Chatterino.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap CopyLongTextToClipboard_16x {
             get {
-                object obj = ResourceManager.GetObject("CopyLongTextToClipboard_16x", resourceCulture);
+                var obj = ResourceManager.GetObject("CopyLongTextToClipboard_16x", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -175,7 +175,7 @@ namespace Chatterino.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap CustomActionEditor_16x {
             get {
-                object obj = ResourceManager.GetObject("CustomActionEditor_16x", resourceCulture);
+                var obj = ResourceManager.GetObject("CustomActionEditor_16x", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -185,7 +185,7 @@ namespace Chatterino.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap dev_bg {
             get {
-                object obj = ResourceManager.GetObject("dev_bg", resourceCulture);
+                var obj = ResourceManager.GetObject("dev_bg", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -195,7 +195,7 @@ namespace Chatterino.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap Emoji_Color_1F607_19 {
             get {
-                object obj = ResourceManager.GetObject("Emoji_Color_1F607_19", resourceCulture);
+                var obj = ResourceManager.GetObject("Emoji_Color_1F607_19", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -205,7 +205,7 @@ namespace Chatterino.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap Emoji_Color_1F60A_19 {
             get {
-                object obj = ResourceManager.GetObject("Emoji_Color_1F60A_19", resourceCulture);
+                var obj = ResourceManager.GetObject("Emoji_Color_1F60A_19", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -215,7 +215,7 @@ namespace Chatterino.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap ExpandChevronDown_16x {
             get {
-                object obj = ResourceManager.GetObject("ExpandChevronDown_16x", resourceCulture);
+                var obj = ResourceManager.GetObject("ExpandChevronDown_16x", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -225,7 +225,7 @@ namespace Chatterino.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap Filter_16x {
             get {
-                object obj = ResourceManager.GetObject("Filter_16x", resourceCulture);
+                var obj = ResourceManager.GetObject("Filter_16x", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -235,7 +235,7 @@ namespace Chatterino.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap format_Bold_16xLG {
             get {
-                object obj = ResourceManager.GetObject("format_Bold_16xLG", resourceCulture);
+                var obj = ResourceManager.GetObject("format_Bold_16xLG", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -245,7 +245,7 @@ namespace Chatterino.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap globalmod_bg {
             get {
-                object obj = ResourceManager.GetObject("globalmod_bg", resourceCulture);
+                var obj = ResourceManager.GetObject("globalmod_bg", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -255,7 +255,7 @@ namespace Chatterino.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap Message_16xLG {
             get {
-                object obj = ResourceManager.GetObject("Message_16xLG", resourceCulture);
+                var obj = ResourceManager.GetObject("Message_16xLG", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -265,7 +265,7 @@ namespace Chatterino.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap moderator_bg {
             get {
-                object obj = ResourceManager.GetObject("moderator_bg", resourceCulture);
+                var obj = ResourceManager.GetObject("moderator_bg", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -275,7 +275,7 @@ namespace Chatterino.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap OpenFolder_16x {
             get {
-                object obj = ResourceManager.GetObject("OpenFolder_16x", resourceCulture);
+                var obj = ResourceManager.GetObject("OpenFolder_16x", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -294,7 +294,7 @@ namespace Chatterino.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap screenshot_user {
             get {
-                object obj = ResourceManager.GetObject("screenshot_user", resourceCulture);
+                var obj = ResourceManager.GetObject("screenshot_user", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -304,7 +304,7 @@ namespace Chatterino.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap settings {
             get {
-                object obj = ResourceManager.GetObject("settings", resourceCulture);
+                var obj = ResourceManager.GetObject("settings", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -314,7 +314,7 @@ namespace Chatterino.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap staff_bg {
             get {
-                object obj = ResourceManager.GetObject("staff_bg", resourceCulture);
+                var obj = ResourceManager.GetObject("staff_bg", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -324,7 +324,7 @@ namespace Chatterino.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap StatusAnnotations_Blocked_16xLG_color {
             get {
-                object obj = ResourceManager.GetObject("StatusAnnotations_Blocked_16xLG_color", resourceCulture);
+                var obj = ResourceManager.GetObject("StatusAnnotations_Blocked_16xLG_color", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -334,7 +334,7 @@ namespace Chatterino.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap turbo_bg {
             get {
-                object obj = ResourceManager.GetObject("turbo_bg", resourceCulture);
+                var obj = ResourceManager.GetObject("turbo_bg", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -344,7 +344,7 @@ namespace Chatterino.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap twitchprime_bg {
             get {
-                object obj = ResourceManager.GetObject("twitchprime_bg", resourceCulture);
+                var obj = ResourceManager.GetObject("twitchprime_bg", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -354,7 +354,7 @@ namespace Chatterino.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap UserProfile_22x {
             get {
-                object obj = ResourceManager.GetObject("UserProfile_22x", resourceCulture);
+                var obj = ResourceManager.GetObject("UserProfile_22x", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -364,7 +364,7 @@ namespace Chatterino.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap VSO_Link_blue_16x {
             get {
-                object obj = ResourceManager.GetObject("VSO_Link_blue_16x", resourceCulture);
+                var obj = ResourceManager.GetObject("VSO_Link_blue_16x", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

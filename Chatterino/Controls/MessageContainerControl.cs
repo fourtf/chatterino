@@ -23,6 +23,8 @@ namespace Chatterino.Controls
             SmallChange = 4,
         };
 
+        public bool AllowMessageSeperator { get; set; } = true;
+
         static ContextMenu urlContextMenu;
         static Link urlContextMenuLink;
 
@@ -117,7 +119,7 @@ namespace Chatterino.Controls
                 {
                     if (buffer != null)
                     {
-                        bool hasUpdated = false;
+                        var hasUpdated = false;
 
                         if (MessageLock != null)
                         {
@@ -168,21 +170,21 @@ namespace Chatterino.Controls
         {
             if (_scroll.Enabled)
             {
-                int scrollDistance = (int)(e.Delta * AppSettings.ScrollMultiplyer);
+                var scrollDistance = (int)(e.Delta * AppSettings.ScrollMultiplyer);
 
                 if (MessageLock != null)
                 {
-                    Graphics graphics = App.UseDirectX ? null : CreateGraphics();
+                    var graphics = App.UseDirectX ? null : CreateGraphics();
 
                     lock (MessageLock)
                     {
                         if (e.Delta > 0)
                         {
-                            int i = (int)_scroll.Value;
-                            double val = _scroll.Value;
+                            var i = (int)_scroll.Value;
+                            var val = _scroll.Value;
 
-                            double scrollFactor = _scroll.Value % 1;
-                            int currentScrollLeft = (int)(scrollFactor * Messages[i].Height);
+                            var scrollFactor = _scroll.Value % 1;
+                            var currentScrollLeft = (int)(scrollFactor * Messages[i].Height);
 
                             for (; i >= 0; i--)
                             {
@@ -215,11 +217,11 @@ namespace Chatterino.Controls
                         {
                             scrollDistance = -scrollDistance;
 
-                            int i = (int)_scroll.Value;
-                            double val = _scroll.Value;
+                            var i = (int)_scroll.Value;
+                            var val = _scroll.Value;
 
-                            double scrollFactor = 1 - (_scroll.Value % 1);
-                            int currentScrollLeft = (int)(scrollFactor * Messages[i].Height);
+                            var scrollFactor = 1 - (_scroll.Value % 1);
+                            var currentScrollLeft = (int)(scrollFactor * Messages[i].Height);
 
                             for (; i < Messages.Length; i++)
                             {
@@ -502,14 +504,14 @@ namespace Chatterino.Controls
             {
                 try
                 {
-                    List<GifEmoteState> gifEmotesOnScreen = new List<GifEmoteState>();
+                    var gifEmotesOnScreen = new List<GifEmoteState>();
 
                     if (buffer == null)
                     {
                         buffer = context.Allocate(e.Graphics, ClientRectangle);
                     }
 
-                    Graphics g = buffer.Graphics;
+                    var g = buffer.Graphics;
 
                     g.Clear((App.ColorScheme.ChatBackground as SolidBrush).Color);
 
@@ -518,31 +520,31 @@ namespace Chatterino.Controls
                     g.SmoothingMode = SmoothingMode.AntiAlias;
 
                     // DRAW MESSAGES
-                    Message[] M = GetMessagesClone();
+                    var M = GetMessagesClone();
 
                     if (M != null && M.Length > 0)
                     {
-                        int startIndex = Math.Max(0, (int)_scroll.Value);
+                        var startIndex = Math.Max(0, (int)_scroll.Value);
                         if (startIndex < M.Length)
                         {
-                            int yStart = MessagePadding.Top - (int)(M[startIndex].Height * (_scroll.Value % 1));
-                            int h = Height - MessagePadding.Top - MessagePadding.Bottom;
+                            var yStart = MessagePadding.Top - (int)(M[startIndex].Height * (_scroll.Value % 1));
+                            var h = Height - MessagePadding.Top - MessagePadding.Bottom;
 
                             if (startIndex < M.Length)
                             {
-                                int y = yStart;
+                                var y = yStart;
 
                                 //for (int i = 0; i < startIndex; i++)
                                 //{
                                 //    M[i].IsVisible = false;
                                 //}
 
-                                for (int i = startIndex; i < M.Length; i++)
+                                for (var i = startIndex; i < M.Length; i++)
                                 {
                                     var msg = M[i];
                                     //msg.IsVisible = true;
 
-                                    MessageRenderer.DrawMessage(g, msg, MessagePadding.Left, y, selection, i, !App.UseDirectX, gifEmotesOnScreen);
+                                    MessageRenderer.DrawMessage(g, msg, MessagePadding.Left, y, selection, i, !App.UseDirectX, gifEmotesOnScreen, allowMessageSeperator: AllowMessageSeperator);
 
                                     if (y - msg.Height > h)
                                     {
@@ -568,7 +570,7 @@ namespace Chatterino.Controls
                             if (App.UseDirectX)
                             {
                                 SharpDX.Direct2D1.DeviceContextRenderTarget renderTarget = null;
-                                IntPtr dc = g.GetHdc();
+                                var dc = g.GetHdc();
 
                                 renderTarget = new SharpDX.Direct2D1.DeviceContextRenderTarget(MessageRenderer.D2D1Factory, MessageRenderer.RenderTargetProperties);
 
@@ -579,18 +581,18 @@ namespace Chatterino.Controls
                                 //renderTarget.TextRenderingParams = new SharpDX.DirectWrite.RenderingParams(Fonts.Factory, 1, 1, 1, SharpDX.DirectWrite.PixelGeometry.Flat, SharpDX.DirectWrite.RenderingMode.CleartypeGdiClassic);
                                 renderTarget.TextAntialiasMode = SharpDX.Direct2D1.TextAntialiasMode.Grayscale;
 
-                                int y = yStart;
+                                var y = yStart;
 
-                                Dictionary<RawColor4, SCB> brushes = new Dictionary<RawColor4, SCB>();
+                                var brushes = new Dictionary<RawColor4, SCB>();
 
                                 var textColor = App.ColorScheme.Text;
                                 var textBrush = new SCB(renderTarget, new RawColor4(textColor.R / 255f, textColor.G / 255f, textColor.B / 255f, 1));
 
-                                for (int i = startIndex; i < M.Length; i++)
+                                for (var i = startIndex; i < M.Length; i++)
                                 {
                                     var msg = M[i];
 
-                                    foreach (Word word in msg.Words)
+                                    foreach (var word in msg.Words)
                                     {
                                         if (word.Type == SpanType.Text)
                                         {
@@ -602,7 +604,7 @@ namespace Chatterino.Controls
                                             }
                                             else
                                             {
-                                                HSLColor hsl = word.Color.Value;
+                                                var hsl = word.Color.Value;
 
                                                 if (App.ColorScheme.IsLightTheme)
                                                 {
@@ -630,7 +632,7 @@ namespace Chatterino.Controls
 
                                                 float r, _g, b;
                                                 hsl.ToRGB(out r, out _g, out b);
-                                                RawColor4 color = new RawColor4(r, _g, b, 1f);
+                                                var color = new RawColor4(r, _g, b, 1f);
 
                                                 if (!brushes.TryGetValue(color, out brush))
                                                 {
@@ -671,10 +673,10 @@ namespace Chatterino.Controls
                             }
 
                             {
-                                int y = yStart;
+                                var y = yStart;
 
                                 Brush disabledBrush = new SolidBrush(Color.FromArgb(172, (App.ColorScheme.ChatBackground as SolidBrush)?.Color ?? Color.Black));
-                                for (int i = startIndex; i < M.Length; i++)
+                                for (var i = startIndex; i < M.Length; i++)
                                 {
                                     var msg = M[i];
 
@@ -682,7 +684,7 @@ namespace Chatterino.Controls
                                     {
                                         g.SmoothingMode = SmoothingMode.None;
 
-                                        g.FillRectangle(disabledBrush, 0, y, Width, msg.Height);
+                                        g.FillRectangle(disabledBrush, 0, y + 1, Width, msg.Height - 1);
                                     }
 
                                     if (y - msg.Height > h)
@@ -744,7 +746,7 @@ namespace Chatterino.Controls
                 {
                     var messages = Messages;
 
-                    for (int i = Math.Max(0, (int)_scroll.Value); i < messages.Length; i++)
+                    for (var i = Math.Max(0, (int)_scroll.Value); i < messages.Length; i++)
                     {
                         var m = messages[i];
                         if (m.Y > p.Y - m.Height)
@@ -774,17 +776,17 @@ namespace Chatterino.Controls
             if (selection == null || selection.IsEmpty)
                 return null;
 
-            StringBuilder b = new StringBuilder();
+            var b = new StringBuilder();
 
             if (MessageLock != null)
             {
                 lock (MessageLock)
                 {
-                    Message[] messages = Messages;
+                    var messages = Messages;
 
-                    bool isFirstLine = true;
+                    var isFirstLine = true;
 
-                    for (int currentLine = selection.First.MessageIndex; currentLine <= selection.Last.MessageIndex; currentLine++)
+                    for (var currentLine = selection.First.MessageIndex; currentLine <= selection.Last.MessageIndex; currentLine++)
                     {
                         if (isFirstLine)
                         {
@@ -800,9 +802,9 @@ namespace Chatterino.Controls
                         var first = selection.First;
                         var last = selection.Last;
 
-                        bool appendNewline = false;
+                        var appendNewline = false;
 
-                        for (int i = 0; i < message.Words.Count; i++)
+                        for (var i = 0; i < message.Words.Count; i++)
                         {
                             if ((currentLine != first.MessageIndex || i >= first.WordIndex) && (currentLine != last.MessageIndex || i <= last.WordIndex))
                             {
@@ -816,19 +818,19 @@ namespace Chatterino.Controls
 
                                 if (word.Type == SpanType.Text)
                                 {
-                                    for (int j = 0; j < (word.SplitSegments?.Length ?? 1); j++)
+                                    for (var j = 0; j < (word.SplitSegments?.Length ?? 1); j++)
                                     {
                                         if ((first.MessageIndex == currentLine && first.WordIndex == i && first.SplitIndex > j) || (last.MessageIndex == currentLine && last.WordIndex == i && last.SplitIndex < j))
                                             continue;
 
                                         var split = word.SplitSegments?[j];
-                                        string text = split?.Item1 ?? (string)word.Value;
-                                        CommonRectangle rect = split?.Item2 ?? new CommonRectangle(word.X, word.Y, word.Width, word.Height);
+                                        var text = split?.Item1 ?? (string)word.Value;
+                                        var rect = split?.Item2 ?? new CommonRectangle(word.X, word.Y, word.Width, word.Height);
 
-                                        int textLength = text.Length;
+                                        var textLength = text.Length;
 
-                                        int offset = (first.MessageIndex == currentLine && first.SplitIndex == j && first.WordIndex == i) ? first.CharIndex : 0;
-                                        int length = ((last.MessageIndex == currentLine && last.SplitIndex == j && last.WordIndex == i) ? last.CharIndex : textLength) - offset;
+                                        var offset = (first.MessageIndex == currentLine && first.SplitIndex == j && first.WordIndex == i) ? first.CharIndex : 0;
+                                        var length = ((last.MessageIndex == currentLine && last.SplitIndex == j && last.WordIndex == i) ? last.CharIndex : textLength) - offset;
 
                                         b.Append(text.Substring(offset, length));
 
@@ -838,10 +840,10 @@ namespace Chatterino.Controls
                                 }
                                 else if (word.Type == SpanType.Image)
                                 {
-                                    int textLength = word.Type == SpanType.Text ? ((string)word.Value).Length : 2;
+                                    var textLength = word.Type == SpanType.Text ? ((string)word.Value).Length : 2;
 
-                                    int offset = (first.MessageIndex == currentLine && first.WordIndex == i) ? first.CharIndex : 0;
-                                    int length = ((last.MessageIndex == currentLine && last.WordIndex == i) ? last.CharIndex : textLength) - offset;
+                                    var offset = (first.MessageIndex == currentLine && first.WordIndex == i) ? first.CharIndex : 0;
+                                    var length = ((last.MessageIndex == currentLine && last.WordIndex == i) ? last.CharIndex : textLength) - offset;
 
                                     if (word.CopyText != null)
                                     {
@@ -854,10 +856,10 @@ namespace Chatterino.Controls
                                 }
                                 else if (word.Type == SpanType.Emote)
                                 {
-                                    int textLength = word.Type == SpanType.Text ? ((string)word.Value).Length : 2;
+                                    var textLength = word.Type == SpanType.Text ? ((string)word.Value).Length : 2;
 
-                                    int offset = (first.MessageIndex == currentLine && first.WordIndex == i) ? first.CharIndex : 0;
-                                    int length = ((last.MessageIndex == currentLine && last.WordIndex == i) ? last.CharIndex : textLength) - offset;
+                                    var offset = (first.MessageIndex == currentLine && first.WordIndex == i) ? first.CharIndex : 0;
+                                    var length = ((last.MessageIndex == currentLine && last.WordIndex == i) ? last.CharIndex : textLength) - offset;
 
                                     if (word.CopyText != null)
                                     {
@@ -935,11 +937,11 @@ namespace Chatterino.Controls
 
             // determine if
             double scrollbarThumbHeight = 0;
-            int totalHeight = Height - MessagePadding.Top - MessagePadding.Bottom;
-            int currentHeight = 0;
-            int tmpHeight = Height - MessagePadding.Top - MessagePadding.Bottom;
-            bool enableScrollbar = false;
-            int messageCount = 0;
+            var totalHeight = Height - MessagePadding.Top - MessagePadding.Bottom;
+            var currentHeight = 0;
+            var tmpHeight = Height - MessagePadding.Top - MessagePadding.Bottom;
+            var enableScrollbar = false;
+            var messageCount = 0;
 
             if (MessageLock != null)
             {
@@ -949,19 +951,19 @@ namespace Chatterino.Controls
                     var messages = Messages;
                     messageCount = messages.Length;
 
-                    int visibleStart = Math.Max(0, (int)_scroll.Value);
+                    var visibleStart = Math.Max(0, (int)_scroll.Value);
 
                     // set EmotesChanged for messages
                     if (emoteChanged)
                     {
-                        for (int i = 0; i < messages.Length; i++)
+                        for (var i = 0; i < messages.Length; i++)
                         {
                             messages[i].EmoteBoundsChanged = true;
                         }
                     }
 
                     // calculate bounds for visible messages
-                    for (int i = visibleStart; i < messages.Length; i++)
+                    for (var i = visibleStart; i < messages.Length; i++)
                     {
                         var msg = messages[i];
 
@@ -975,7 +977,7 @@ namespace Chatterino.Controls
                     }
 
                     // calculate bounds for messages at the bottom to determine the size of the scrollbar thumb
-                    for (int i = messages.Length - 1; i >= 0; i--)
+                    for (var i = messages.Length - 1; i >= 0; i--)
                     {
                         var msg = messages[i];
                         msg.CalculateBounds(g, Width - MessagePadding.Left - MessagePadding.Right);

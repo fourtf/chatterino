@@ -32,10 +32,10 @@ namespace Chatterino.Common
                 text = value;
                 Message = new Message(value);
 
-                string sendmessage = Commands.ProcessMessage(value, Channel, false) ?? "";
+                var sendmessage = Commands.ProcessMessage(value, Channel, false) ?? "";
 
-                int messageLength = 0;
-                for (int j = 0; j < sendmessage.Length; j++)
+                var messageLength = 0;
+                for (var j = 0; j < sendmessage.Length; j++)
                 {
                     messageLength++;
 
@@ -281,7 +281,7 @@ namespace Chatterino.Common
 
         private int findNextCtrlPositionLeft()
         {
-            int i = CaretPosition - 1;
+            var i = CaretPosition - 1;
 
             for (; i >= 0; i--)
             {
@@ -311,7 +311,7 @@ namespace Chatterino.Common
 
         private int findNextCtrlPositionRight()
         {
-            int i = CaretPosition;
+            var i = CaretPosition;
 
             for (; i < text.Length; i++)
             {

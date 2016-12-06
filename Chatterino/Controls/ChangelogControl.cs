@@ -26,12 +26,14 @@ namespace Chatterino.Controls
         {
             lock (MessageLock)
             {
-                messages = Message.ParseMD(md);
+                messages = Message.ParseMarkdown(md);
             }
 
             scrollAtBottom = false;
 
             updateMessageBounds();
+
+            AllowMessageSeperator = false;
         }
 
         protected override void OnMouseDown(MouseEventArgs e)

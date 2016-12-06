@@ -26,14 +26,14 @@ namespace Chatterino.Controls
         {
             foreach (Control c in control.Controls)
             {
-                Label label = c as Label;
+                var label = c as Label;
 
                 if (label != null)
                 {
                     label.Font = Fonts.GetFont(Common.FontType.Medium);
                 }
 
-                FlatButton btn = c as FlatButton;
+                var btn = c as FlatButton;
 
                 if (btn != null)
                 {
@@ -69,7 +69,7 @@ namespace Chatterino.Controls
                     using (var response = request.GetResponse())
                     using (var stream = response.GetResponseStream())
                     {
-                        JsonParser parser = new JsonParser();
+                        var parser = new JsonParser();
 
                         dynamic json = parser.Parse(stream);
 
@@ -96,7 +96,7 @@ namespace Chatterino.Controls
                                 using (var res = req.GetResponse())
                                 using (var s = res.GetResponseStream())
                                 {
-                                    Image image = Image.FromStream(s);
+                                    var image = Image.FromStream(s);
 
                                     picAvatar.Invoke(() => picAvatar.Image = image);
                                 }
@@ -293,7 +293,7 @@ namespace Chatterino.Controls
                 btnIgnoreHighlights.Text = AppSettings.HighlightIgnoredUsers.ContainsKey(data.UserName) ? "Enable Highlights" : "Disable Highlights";
 
                 // follow user
-                bool isFollowing = false;
+                var isFollowing = false;
 
                 Task.Run(() =>
                 {

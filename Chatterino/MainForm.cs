@@ -116,7 +116,7 @@ namespace Chatterino
                 {
                     foreach (var control in col.Widgets)
                     {
-                        MessageContainerControl container = control as MessageContainerControl;
+                        var container = control as MessageContainerControl;
 
                         if (container != null)
                         {
@@ -131,6 +131,9 @@ namespace Chatterino
         {
             switch (keyData)
             {
+                case Keys.Control | Keys.F:
+                    (selected as ChatControl)?.SearchFor(((ChatControl) selected).Input.Logic.Text);
+                    break;
                 case Keys.Control | Keys.U:
                     tabControl.ShowUserSwitchPopup();
                     break;
@@ -222,7 +225,7 @@ namespace Chatterino
                 case Keys.Control | Keys.D8:
                 case Keys.Control | Keys.D9:
                     {
-                        int tab = (keyData & ~Keys.Modifiers) - Keys.D0;
+                        var tab = (keyData & ~Keys.Modifiers) - Keys.D0;
 
                         var t = tabControl.TabPages.ElementAtOrDefault(tab - 1);
 
@@ -234,7 +237,7 @@ namespace Chatterino
                     break;
                 case Keys.Control | Keys.Tab:
                     {
-                        int index = tabControl.TabPages.TakeWhile(x => !x.Selected).Count();
+                        var index = tabControl.TabPages.TakeWhile(x => !x.Selected).Count();
 
                         if (tabControl.TabPages.Count() > index + 1)
                         {
@@ -248,7 +251,7 @@ namespace Chatterino
                     break;
                 case Keys.Control | Keys.Shift | Keys.Tab:
                     {
-                        int index = tabControl.TabPages.TakeWhile(x => !x.Selected).Count();
+                        var index = tabControl.TabPages.TakeWhile(x => !x.Selected).Count();
 
                         if (index > 0)
                         {
@@ -438,7 +441,7 @@ namespace Chatterino
 
         public void AddNewSplit()
         {
-            ChatControl chatControl = new ChatControl();
+            var chatControl = new ChatControl();
 
             (tabControl.Selected as ColumnTabPage)?.AddColumn()?.Process(col =>
             {
@@ -485,10 +488,10 @@ namespace Chatterino
 
         public void RenameSelectedSplit()
         {
-            ChatControl focused = Selected as ChatControl;
+            var focused = Selected as ChatControl;
             if (focused != null)
             {
-                using (InputDialogForm dialog = new InputDialogForm("channel name") { Value = focused.ChannelName })
+                using (var dialog = new InputDialogForm("channel name") { Value = focused.ChannelName })
                 {
                     if (dialog.ShowDialog() == DialogResult.OK)
                     {
@@ -516,7 +519,7 @@ namespace Chatterino
             {
                 if (File.Exists(path))
                 {
-                    XDocument doc = XDocument.Load(path);
+                    var doc = XDocument.Load(path);
 
                     doc.Root.Process(root =>
                     {
@@ -524,13 +527,13 @@ namespace Chatterino
                         {
                             Console.WriteLine("tab");
 
-                            ColumnTabPage page = new ColumnTabPage();
+                            var page = new ColumnTabPage();
 
                             page.CustomTitle = tab.Attribute("title")?.Value;
 
                             foreach (var col in tab.Elements("column"))
                             {
-                                ChatColumn column = new ChatColumn();
+                                var column = new ChatColumn();
 
                                 foreach (var chat in col.Elements("chat"))
                                 {
@@ -538,9 +541,9 @@ namespace Chatterino
                                     {
                                         Console.WriteLine("added chat");
 
-                                        string channel = chat.Attribute("channel")?.Value;
+                                        var channel = chat.Attribute("channel")?.Value;
 
-                                        ChatControl widget = new ChatControl();
+                                        var widget = new ChatControl();
                                         widget.ChannelName = channel;
 
                                         column.AddWidget(widget);
@@ -614,8 +617,8 @@ namespace Chatterino
         {
             try
             {
-                XDocument doc = new XDocument();
-                XElement root = new XElement("layout");
+                var doc = new XDocument();
+                var root = new XElement("layout");
                 doc.Add(root);
 
                 foreach (ColumnTabPage page in tabControl.TabPages)
@@ -627,7 +630,7 @@ namespace Chatterino
                             xtab.SetAttributeValue("title", page.Title);
                         }
 
-                        foreach (ChatColumn col in page.Columns)
+                        foreach (var col in page.Columns)
                         {
                             xtab.Add(new XElement("column").With(xcol =>
                             {

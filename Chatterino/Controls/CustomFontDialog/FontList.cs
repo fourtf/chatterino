@@ -24,7 +24,7 @@ namespace CustomFontDialog
             lstFont.Items.Add("Section"); //section entry for Recently Used
             
             lstFont.Items.Add("Section"); //section entry for All Fonts
-            foreach (FontFamily f in FontFamily.Families)
+            foreach (var f in FontFamily.Families)
             {
                 try
                 {
@@ -79,12 +79,12 @@ namespace CustomFontDialog
 
         public int IndexOf(FontFamily ff)
         {
-            for (int i = 1; i < lstFont.Items.Count; i++)
+            for (var i = 1; i < lstFont.Items.Count; i++)
             {
 #pragma warning disable CS0252
                 if (lstFont.Items[i] == "Section") continue;
 #pragma warning restore CS0252
-                Font f = (Font)lstFont.Items[i];
+                var f = (Font)lstFont.Items[i];
                 if (f.FontFamily.Name == ff.Name)
                 {
                     return i;
@@ -100,16 +100,16 @@ namespace CustomFontDialog
 
             lstFont.SuspendLayout();
 
-            int tmpCount = RecentlyUsed.Count;
+            var tmpCount = RecentlyUsed.Count;
 
             RecentlyUsed.Add((Font)lstFont.SelectedItem);
 
-            for (int i = 1; i <= tmpCount; i++)
+            for (var i = 1; i <= tmpCount; i++)
             {
                 lstFont.Items.RemoveAt(1);
             }            
                         
-            for (int i = 0; i < RecentlyUsed.Count; i++)
+            for (var i = 0; i < RecentlyUsed.Count; i++)
             {
                 lstFont.Items.Insert(i+1, RecentlyUsed[i]); 
             }
@@ -124,14 +124,14 @@ namespace CustomFontDialog
         {
             lstFont.SuspendLayout();
 
-            for (int i = 1; i <= RecentlyUsed.Count; i++)
+            for (var i = 1; i <= RecentlyUsed.Count; i++)
             {
                 lstFont.Items.RemoveAt(1);
             }
 
             RecentlyUsed.Add((Font)lstFont.Items[IndexOf(ff)]);
 
-            for (int i = 0; i < RecentlyUsed.Count; i++)
+            for (var i = 0; i < RecentlyUsed.Count; i++)
             {
                 lstFont.Items.Insert(i + 1, RecentlyUsed[i]);
             }
@@ -150,13 +150,13 @@ namespace CustomFontDialog
             if (e.Index == 0)
             {
                 e.Graphics.FillRectangle(Brushes.AliceBlue, e.Bounds);
-                Font font = new Font(DefaultFont, FontStyle.Bold | FontStyle.Italic);
+                var font = new Font(DefaultFont, FontStyle.Bold | FontStyle.Italic);
                 e.Graphics.DrawString("Default Font", font, Brushes.Black, e.Bounds.X + 10, e.Bounds.Y + 3, StringFormat.GenericDefault);
             }
             else if (e.Index == AllFontsStartIndex - 1)
             {
                 e.Graphics.FillRectangle(Brushes.AliceBlue, e.Bounds);
-                Font font = new Font(DefaultFont, FontStyle.Bold | FontStyle.Italic);
+                var font = new Font(DefaultFont, FontStyle.Bold | FontStyle.Italic);
                 e.Graphics.DrawString("All Fonts", font, Brushes.Black, e.Bounds.X + 10, e.Bounds.Y + 3, StringFormat.GenericDefault);
             }
             else
@@ -164,7 +164,7 @@ namespace CustomFontDialog
                 // Draw the background of the ListBox control for each item.
                 e.DrawBackground();
 
-                Font font = (Font)lstFont.Items[e.Index];
+                var font = (Font)lstFont.Items[e.Index];
                 e.Graphics.DrawString(font.Name, font, Brushes.Black, e.Bounds, StringFormat.GenericDefault);
 
                 // If the ListBox has focus, draw a focus rectangle around the selected item.
@@ -187,7 +187,7 @@ namespace CustomFontDialog
             {
                 if (!txtFont.Focused)
                 {
-                    Font f = (Font)lstFont.SelectedItem;
+                    var f = (Font)lstFont.SelectedItem;
                     txtFont.Text = f.Name;
                 }
 
@@ -200,9 +200,9 @@ namespace CustomFontDialog
         {
             if (!txtFont.Focused) return;
 
-            for(int i = AllFontsStartIndex; i < lstFont.Items.Count; i++)
+            for(var i = AllFontsStartIndex; i < lstFont.Items.Count; i++)
             {
-                string str = ((Font)lstFont.Items[i]).Name;
+                var str = ((Font)lstFont.Items[i]).Name;
                 if (str.StartsWith(txtFont.Text, true, null))
                 {
                     lstFont.SelectedIndex = i;
@@ -210,7 +210,7 @@ namespace CustomFontDialog
                     const uint WM_VSCROLL = 0x0115;
                     const uint SB_THUMBPOSITION = 4;
 
-                    uint b = ((uint)(lstFont.SelectedIndex) << 16) | (SB_THUMBPOSITION & 0xffff);
+                    var b = ((uint)(lstFont.SelectedIndex) << 16) | (SB_THUMBPOSITION & 0xffff);
                     SendMessage(lstFont.Handle, WM_VSCROLL, b, 0);
 
                     return;

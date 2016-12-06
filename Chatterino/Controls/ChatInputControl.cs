@@ -57,7 +57,7 @@ namespace Chatterino.Controls
         {
             Size = new Size(100, 100);
 
-            int caretBlinkInterval = SystemInformation.CaretBlinkTime;
+            var caretBlinkInterval = SystemInformation.CaretBlinkTime;
 
             if (caretBlinkInterval > 0)
             {
@@ -82,7 +82,7 @@ namespace Chatterino.Controls
             this.chatControl = chatControl;
 
             {
-                Graphics g = App.UseDirectX ? null : CreateGraphics();
+                var g = App.UseDirectX ? null : CreateGraphics();
 
                 Height = minHeight = GuiEngine.Current.MeasureStringSize(g, FontType.Medium, "X").Height + 8 + messagePadding.Top + messagePadding.Bottom;
 
@@ -141,7 +141,7 @@ namespace Chatterino.Controls
 
         protected override void OnMouseMove(MouseEventArgs e)
         {
-            Graphics g = App.UseDirectX ? null : CreateGraphics();
+            var g = App.UseDirectX ? null : CreateGraphics();
 
             if (mdown)
             {
@@ -162,19 +162,19 @@ namespace Chatterino.Controls
         {
             var msg = Logic.Message;
 
-            int position = 0;
+            var position = 0;
 
-            for (int wordIndex = 0; wordIndex <= pos.WordIndex; wordIndex++)
+            for (var wordIndex = 0; wordIndex <= pos.WordIndex; wordIndex++)
             {
                 var word = msg.Words[wordIndex];
 
-                for (int splitIndex = 0; splitIndex <= (wordIndex == pos.WordIndex ? pos.SplitIndex : (word.SplitSegments?.Length ?? 0)); splitIndex++)
+                for (var splitIndex = 0; splitIndex <= (wordIndex == pos.WordIndex ? pos.SplitIndex : (word.SplitSegments?.Length ?? 0)); splitIndex++)
                 {
-                    string split = word.SplitSegments?[splitIndex].Item1 ?? word.Value as string;
+                    var split = word.SplitSegments?[splitIndex].Item1 ?? word.Value as string;
 
                     if (pos.WordIndex == wordIndex && pos.SplitIndex == splitIndex)
                     {
-                        for (int i = 0; i < pos.CharIndex; i++)
+                        for (var i = 0; i < pos.CharIndex; i++)
                         {
                             position++;
                         }
@@ -193,7 +193,7 @@ namespace Chatterino.Controls
 
         protected override void OnMouseDown(MouseEventArgs e)
         {
-            Graphics g = App.UseDirectX ? null : CreateGraphics();
+            var g = App.UseDirectX ? null : CreateGraphics();
 
             if (e.Button == MouseButtons.Left)
             {
@@ -239,7 +239,7 @@ namespace Chatterino.Controls
             var msg = Logic.Message;
             if (msg != null)
             {
-                Graphics g = App.UseDirectX ? null : CreateGraphics();
+                var g = App.UseDirectX ? null : CreateGraphics();
 
                 msg.CalculateBounds(g, Width - messagePadding.Left - messagePadding.Right - 20);
 
@@ -272,7 +272,7 @@ namespace Chatterino.Controls
             {
                 if (Logic.MessageLength > 1)
                 {
-                    string messageLength = Logic.MessageLength.ToString();
+                    var messageLength = Logic.MessageLength.ToString();
                     var size = TextRenderer.MeasureText(e.Graphics, messageLength, Font, Size.Empty, App.DefaultTextFormatFlags);
                     TextRenderer.DrawText(e.Graphics, messageLength, Font, new Point(Width - size.Width - 4, 0), Logic.MessageLength > 500 ? Color.Red : App.ColorScheme.Text, App.DefaultTextFormatFlags);
                 }
@@ -280,24 +280,25 @@ namespace Chatterino.Controls
 
             if (sendMessage != null)
             {
-                Selection selection = Logic.Selection;
+                var selection = Logic.Selection;
 
-                MessageRenderer.DrawMessage(e.Graphics, sendMessage, messagePadding.Left, messagePadding.Top, selection, 0, !App.UseDirectX);
+                MessageRenderer.DrawMessage(e.Graphics, sendMessage, messagePadding.Left, messagePadding.Top, selection,
+                    0, !App.UseDirectX, allowMessageSeperator: false);
 
-                int spaceWidth = GuiEngine.Current.MeasureStringSize(g, FontType.Medium, " ").Width;
+                var spaceWidth = GuiEngine.Current.MeasureStringSize(g, FontType.Medium, " ").Width;
 
-                Rectangle? caretRect = new Rectangle?();
+                var caretRect = new Rectangle?();
 
-                int x = 0;
-                bool isFirst = true;
+                var x = 0;
+                var isFirst = true;
 
                 if (sendMessage.RawMessage.Length > 0)
                 {
                     foreach (var word in sendMessage.Words)
                     {
-                        for (int j = 0; j < (word.SplitSegments?.Length ?? 1); j++)
+                        for (var j = 0; j < (word.SplitSegments?.Length ?? 1); j++)
                         {
-                            string text = word.SplitSegments?[j].Item1 ?? (string)word.Value;
+                            var text = word.SplitSegments?[j].Item1 ?? (string)word.Value;
 
                             if (j == 0)
                                 if (isFirst)
@@ -312,7 +313,7 @@ namespace Chatterino.Controls
                                     x++;
                                 }
 
-                            for (int i = 0; i < text.Length; i++)
+                            for (var i = 0; i < text.Length; i++)
                             {
                                 if (x == Logic.CaretPosition)
                                 {
@@ -342,7 +343,7 @@ namespace Chatterino.Controls
                 if (App.UseDirectX)
                 {
                     SharpDX.Direct2D1.DeviceContextRenderTarget renderTarget = null;
-                    IntPtr dc = IntPtr.Zero;
+                    var dc = IntPtr.Zero;
 
                     dc = g.GetHdc();
 
@@ -352,12 +353,12 @@ namespace Chatterino.Controls
 
                     renderTarget.BeginDraw();
 
-                    Dictionary<RawColor4, SCB> brushes = new Dictionary<RawColor4, SCB>();
+                    var brushes = new Dictionary<RawColor4, SCB>();
 
                     var textColor = App.ColorScheme.Text;
                     var textBrush = new SCB(renderTarget, new RawColor4(textColor.R / 255f, textColor.G / 255f, textColor.B / 255f, 1));
 
-                    foreach (Word word in sendMessage.Words)
+                    foreach (var word in sendMessage.Words)
                     {
                         if (word.Type == SpanType.Text)
                         {

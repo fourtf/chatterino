@@ -22,19 +22,21 @@ namespace Chatterino.Controls
         public EmoteList()
         {
             mouseScrollMultiplyer = 0.2;
+
+            AllowMessageSeperator = false;
         }
 
         public void LoadChannel(TwitchChannel channel)
         {
             lock (MessageLock)
             {
-                List<Message> messages = new List<Message>();
+                var messages = new List<Message>();
 
                 // twitch emotes
                 {
                     foreach (var emotes in Emotes.TwitchEmotes.GroupBy(x => x.Value.Set))
                     {
-                        List<Word> words = new List<Word>();
+                        var words = new List<Word>();
 
                         foreach (var emote in emotes.OrderBy(x => x.Key))
                         {
@@ -76,7 +78,7 @@ namespace Chatterino.Controls
                 // bttv channel emotes
                 if (channel != null)
                 {
-                    List<Word> words = new List<Word>();
+                    var words = new List<Word>();
 
                     foreach (var emote in channel.BttvChannelEmotes.Values)
                     {
@@ -92,7 +94,7 @@ namespace Chatterino.Controls
 
                 // bttv global emotes
                 {
-                    List<Word> words = new List<Word>();
+                    var words = new List<Word>();
 
                     foreach (var emote in Emotes.BttvGlobalEmotes.Values)
                     {
@@ -109,7 +111,7 @@ namespace Chatterino.Controls
                 // ffz channel emotes
                 if (channel != null)
                 {
-                    List<Word> words = new List<Word>();
+                    var words = new List<Word>();
 
                     foreach (var emote in channel.FfzChannelEmotes.Values)
                     {
@@ -125,7 +127,7 @@ namespace Chatterino.Controls
 
                 // ffz global emotes
                 {
-                    List<Word> words = new List<Word>();
+                    var words = new List<Word>();
 
                     foreach (var emote in Emotes.FfzGlobalEmotes.Values)
                     {

@@ -6,11 +6,13 @@ using System.Threading.Tasks;
 
 namespace Chatterino.Common
 {
+    [Flags]
     public enum HighlightType
     {
         None, 
-        Highlighted,
-        Resub,
-        Whisper
+        Highlighted = 1,
+        Resub = 2,
+        Whisper = 4,
+        SearchResult = 8,
     }
 }

@@ -16,7 +16,7 @@ namespace Chatterino.Common
         public Command(string command)
         {
             Raw = command;
-            int index = command.IndexOf(" ");
+            var index = command.IndexOf(" ");
 
             if (index == -1)
             {
@@ -28,18 +28,18 @@ namespace Chatterino.Common
 
                 command = command.Substring(index + 1).Trim();
 
-                List<object> objects = new List<object>();
+                var objects = new List<object>();
 
-                StringBuilder builder = new StringBuilder();
+                var builder = new StringBuilder();
 
-                for (int i = 0; i < command.Length; i++)
+                for (var i = 0; i < command.Length; i++)
                 {
                     if (command[i] == '{')
                     {
-                        int j = i + 1;
+                        var j = i + 1;
 
-                        string number = "";
-                        bool allAfter = false;
+                        var number = "";
+                        var allAfter = false;
 
                         for (; j < command.Length; j++)
                         {
@@ -93,13 +93,13 @@ namespace Chatterino.Common
 
         public string Execute(string message)
         {
-            string[] S = message.SplitWords();
+            var S = message.SplitWords();
 
-            string text = "";
+            var text = "";
 
             foreach (var o in objects)
             {
-                string s = o as string;
+                var s = o as string;
 
                 if (s != null)
                 {
@@ -107,7 +107,7 @@ namespace Chatterino.Common
                     continue;
                 }
 
-                WordSelection selection = o as WordSelection;
+                var selection = o as WordSelection;
 
                 if (selection != null)
                 {

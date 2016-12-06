@@ -105,11 +105,11 @@ namespace CustomFontDialog
 
         private void UpdateSampleText()
         {
-            float size = txtSize.Text != "" ? float.Parse(txtSize.Text) : 1;
-            FontStyle style = chbBold.Checked ? FontStyle.Bold : FontStyle.Regular;
+            var size = txtSize.Text != "" ? float.Parse(txtSize.Text) : 1;
+            var style = chbBold.Checked ? FontStyle.Bold : FontStyle.Regular;
             if (chbItalic.Checked)  style |= FontStyle.Italic;
             if (chbStrikeout.Checked) style |= FontStyle.Strikeout;
-            Font tmp = lblSampleText.Font;
+            var tmp = lblSampleText.Font;
             lblSampleText.Font = new Font(lstFont.SelectedFontFamily, size, style);
             tmp.Dispose();
         }

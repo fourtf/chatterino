@@ -74,7 +74,7 @@ namespace Chatterino.Controls
 
                             var username = loginForm.Account.Username.ToLowerInvariant();
 
-                            bool addGridViewItem = true;
+                            var addGridViewItem = true;
 
                             foreach (DataGridViewRow row in dataGridViewAccounts.Rows)
                             {
@@ -123,8 +123,8 @@ namespace Chatterino.Controls
             #endregion
 
             // Appearance
-            string originalTheme = comboTheme.Text = AppSettings.Theme;
-            double originalThemeHue = AppSettings.ThemeHue;
+            var originalTheme = comboTheme.Text = AppSettings.Theme;
+            var originalThemeHue = AppSettings.ThemeHue;
 
             comboTheme.SelectedValueChanged += (s, e) =>
             {
@@ -139,7 +139,7 @@ namespace Chatterino.Controls
                 App.MainForm.Refresh();
             };
 
-            double defaultScrollSpeed = AppSettings.ScrollMultiplyer;
+            var defaultScrollSpeed = AppSettings.ScrollMultiplyer;
 
             trackBar2.Value = Math.Min(400, Math.Max(100, (int)(AppSettings.ScrollMultiplyer * 200)));
 
@@ -166,7 +166,7 @@ namespace Chatterino.Controls
 
             btnSelectFont.Click += (s, e) =>
             {
-                using (CustomFontDialog.FontDialog dialog = new CustomFontDialog.FontDialog())
+                using (var dialog = new CustomFontDialog.FontDialog())
                 {
                     if (dialog.ShowDialog(this) == DialogResult.OK)
                     {
@@ -213,13 +213,13 @@ namespace Chatterino.Controls
             // Commands
             lock (Commands.CustomCommandsLock)
             {
-                foreach (Command c in Commands.CustomCommands)
+                foreach (var c in Commands.CustomCommands)
                 {
                     dgvCommands.Rows.Add(c.Raw);
                 }
             }
             //ChatAllowCommandsAtEnd
-            bool defaultAllowCommandAtEnd = AppSettings.ChatAllowCommandsAtEnd;
+            var defaultAllowCommandAtEnd = AppSettings.ChatAllowCommandsAtEnd;
 
             chkAllowCommandAtEnd.Checked = AppSettings.ChatAllowCommandsAtEnd;
 
@@ -274,7 +274,7 @@ namespace Chatterino.Controls
                 updateCustomCommands();
             };
 
-            List<Command> originalCustomCommand = Commands.CustomCommands;
+            var originalCustomCommand = Commands.CustomCommands;
 
             lock (Commands.CustomCommandsLock)
             {
@@ -301,7 +301,7 @@ namespace Chatterino.Controls
             BindCheckBox(chkEmojis, "ChatEnableEmojis");
             BindCheckBox(chkGifEmotes, "ChatEnableGifAnimations");
 
-            string originalIgnoredEmotes = rtbIngoredEmotes.Text = string.Join(Environment.NewLine, AppSettings.ChatIgnoredEmotes.Keys);
+            var originalIgnoredEmotes = rtbIngoredEmotes.Text = string.Join(Environment.NewLine, AppSettings.ChatIgnoredEmotes.Keys);
 
             rtbIngoredEmotes.LostFocus += (s, e) =>
             {
@@ -328,7 +328,7 @@ namespace Chatterino.Controls
             // Ignored Users
             BindCheckBox(chkTwitchIgnores, "EnableTwitchUserIgnores");
 
-            foreach (string user in IrcManager.IgnoredUsers)
+            foreach (var user in IrcManager.IgnoredUsers)
             {
                 dgvIgnoredUsers.Rows.Add(user);
             }
@@ -392,7 +392,7 @@ namespace Chatterino.Controls
                 if (dgvIgnoredUsers.SelectedCells.Count != 0)
                 {
                     string message;
-                    string username = (string)dgvIgnoredUsers.SelectedCells[0].Value;
+                    var username = (string)dgvIgnoredUsers.SelectedCells[0].Value;
 
                     if (IrcManager.TryRemoveIgnoredUser(username, out message))
                     {
@@ -406,12 +406,12 @@ namespace Chatterino.Controls
             };
 
             // Ignored Messages
-            string ignoreKeywordsOriginal = rtbIgnoreKeywords.Text = string.Join(Environment.NewLine, AppSettings.ChatIgnoredKeywords);
+            var ignoreKeywordsOriginal = rtbIgnoreKeywords.Text = string.Join(Environment.NewLine, AppSettings.ChatIgnoredKeywords);
 
             rtbIgnoreKeywords.LostFocus += (s, e) =>
             {
-                List<string> list = new List<string>();
-                StringReader reader = new StringReader(rtbIgnoreKeywords.Text);
+                var list = new List<string>();
+                var reader = new StringReader(rtbIgnoreKeywords.Text);
                 string line;
                 while ((line = reader.ReadLine()) != null)
                 {
@@ -424,8 +424,8 @@ namespace Chatterino.Controls
             {
                 // highlight keywords
                 {
-                    List<string> list = new List<string>();
-                    StringReader reader = new StringReader(ignoreKeywordsOriginal);
+                    var list = new List<string>();
+                    var reader = new StringReader(ignoreKeywordsOriginal);
                     string line;
                     while ((line = reader.ReadLine()) != null)
                     {
@@ -452,13 +452,13 @@ namespace Chatterino.Controls
             BindTextBox(textBox3, "ProxyPassword");
 
             // Highlights
-            string customHighlightsOriginal = rtbHighlights.Text = string.Join(Environment.NewLine, AppSettings.ChatCustomHighlights);
-            string highlightIgnoredUsersOriginal = rtbUserBlacklist.Text = string.Join(Environment.NewLine, AppSettings.HighlightIgnoredUsers.Keys);
+            var customHighlightsOriginal = rtbHighlights.Text = string.Join(Environment.NewLine, AppSettings.ChatCustomHighlights);
+            var highlightIgnoredUsersOriginal = rtbUserBlacklist.Text = string.Join(Environment.NewLine, AppSettings.HighlightIgnoredUsers.Keys);
 
             rtbHighlights.LostFocus += (s, e) =>
             {
-                List<string> list = new List<string>();
-                StringReader reader = new StringReader(rtbHighlights.Text);
+                var list = new List<string>();
+                var reader = new StringReader(rtbHighlights.Text);
                 string line;
                 while ((line = reader.ReadLine()) != null)
                 {
@@ -482,8 +482,8 @@ namespace Chatterino.Controls
             {
                 // highlight keywords
                 {
-                    List<string> list = new List<string>();
-                    StringReader reader = new StringReader(customHighlightsOriginal);
+                    var list = new List<string>();
+                    var reader = new StringReader(customHighlightsOriginal);
                     string line;
                     while ((line = reader.ReadLine()) != null)
                     {
@@ -508,7 +508,7 @@ namespace Chatterino.Controls
 
             btnCustomHighlightOpenFile.Click += (s, e) =>
             {
-                using (OpenFileDialog dialog = new OpenFileDialog())
+                using (var dialog = new OpenFileDialog())
                 {
                     dialog.Filter = "wave sound file|*.wav";
 
@@ -535,7 +535,7 @@ namespace Chatterino.Controls
             BindCheckBox(chkEnableInlineWhispers, "ChatEnableInlineWhispers");
 
             //Buttons
-            int x = 0;
+            var x = 0;
 
             ///Cancel
             btnCancel = new Button();
@@ -610,7 +610,7 @@ namespace Chatterino.Controls
 
             //OriginalSettings = Options.Settings.GetRawData();
 
-            for (int i = 1; i < tabs.Controls.Count; i++)
+            for (var i = 1; i < tabs.Controls.Count; i++)
             {
                 if (tabs.Controls[i].Name == key)
                 {

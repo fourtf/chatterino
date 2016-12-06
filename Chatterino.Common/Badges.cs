@@ -24,9 +24,9 @@ namespace Chatterino.Common
                     using (var response = request.GetResponse())
                     using (var stream = response.GetResponseStream())
                     {
-                        JsonParser parser = new JsonParser();
+                        var parser = new JsonParser();
                         dynamic json = parser.Parse(stream);
-                        foreach (dynamic badge in json["badges"])
+                        foreach (var badge in json["badges"])
                         {
                             var emote = new TwitchEmote { Url = badge["image"], Tooltip = badge["tooltip"] };
                             foreach (string user in badge["users"])

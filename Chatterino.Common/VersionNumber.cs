@@ -19,11 +19,11 @@ namespace Chatterino.Common
 
         public static VersionNumber Parse(string version)
         {
-            Match match = Regex.Match(version, @"(?<major>\d+)(?<minor>\.\d+)?(?<build>\.\d+)?(?<revision>\.\d+)?");
+            var match = Regex.Match(version, @"(?<major>\d+)(?<minor>\.\d+)?(?<build>\.\d+)?(?<revision>\.\d+)?");
 
             if (match.Success)
             {
-                VersionNumber v = new VersionNumber();
+                var v = new VersionNumber();
 
                 var major = match.Groups["major"];
                 v.Major = int.Parse(major.Value, CultureInfo.InvariantCulture);
@@ -62,7 +62,7 @@ namespace Chatterino.Common
 
         public override string ToString()
         {
-            string v = "";
+            var v = "";
 
             if (Revision != 0)
             {

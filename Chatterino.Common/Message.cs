@@ -60,8 +60,8 @@ namespace Chatterino.Common
         public List<Word> Words { get; set; }
         public TwitchChannel Channel { get; set; }
 
-        static Regex linkRegex = new Regex(@"^((?<Protocol>\w+):\/\/)?(?<Domain>[\w%@-][\w.%-:@]+\w)\/?[\w\.?=#%&=\+\-@/$,\(\)]*$", RegexOptions.Compiled);
-        static char[] linkIdentifiers = new char[] { '.', ':' };
+        private static Regex _linkRegex = new Regex(@"^((?<Protocol>\w+):\/\/)?(?<Domain>[\w%@-][\w.%-:@]+\w)\/?[\w\.?=#%&=\+\-@/$,\(\)]*$", RegexOptions.Compiled);
+        private static char[] _linkIdentifiers = new char[] { '.', ':' };
 
         public DateTime ParseTime { get; set; }
 
@@ -70,7 +70,8 @@ namespace Chatterino.Common
 
         }
 
-        public Message(IrcMessage data, TwitchChannel channel, bool enableTimestamp = true, bool enablePingSound = true, bool isReceivedWhisper = false, bool isSentWhisper = false, bool includeChannel = false)
+        public Message(IrcMessage data, TwitchChannel channel, bool enableTimestamp = true, bool enablePingSound = true,
+            bool isReceivedWhisper = false, bool isSentWhisper = false, bool includeChannel = false)
         {
             //var w = Stopwatch.StartNew();
 
@@ -78,9 +79,9 @@ namespace Chatterino.Common
 
             Channel = channel;
 
-            List<Word> words = new List<Word>();
+            var words = new List<Word>();
 
-            string text = data.Params ?? "";
+            var text = data.Params ?? "";
 
             Username = data.PrefixNickname ?? "";
 
@@ -94,7 +95,7 @@ namespace Chatterino.Common
                 }
             }
 
-            bool slashMe = false;
+            var slashMe = false;
 
             // Handle /me messages
             if (text.Length > 8 && text.StartsWith("\u0001ACTION "))
@@ -106,7 +107,8 @@ namespace Chatterino.Common
             // Highlights
             if (!IrcManager.Account.IsAnon)
             {
-                if ((AppSettings.ChatEnableHighlight || AppSettings.ChatEnableHighlightSound || AppSettings.ChatEnableHighlightTaskbar) && Username != IrcManager.Account.Username.ToLower())
+                if ((AppSettings.ChatEnableHighlight || AppSettings.ChatEnableHighlightSound ||
+                     AppSettings.ChatEnableHighlightTaskbar) && Username != IrcManager.Account.Username.ToLower())
                 {
                     if (!AppSettings.HighlightIgnoredUsers.ContainsKey(Username))
                     {
@@ -168,7 +170,7 @@ namespace Chatterino.Common
 
                 if (long.TryParse(tmiTimestamp, out tmiTimestampInt))
                 {
-                    DateTime dtDateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+                    var dtDateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
 
                     var time = dtDateTime.AddSeconds(tmiTimestampInt / 1000).ToLocalTime();
 
@@ -260,7 +262,7 @@ namespace Chatterino.Common
                     {
                         try
                         {
-                            int n = int.Parse(badge.Substring("subscriber/".Length));
+                            var n = int.Parse(badge.Substring("subscriber/".Length));
 
                             Badges |= MessageBadges.Sub;
                             var e = channel.GetSubscriberBadge(n);
@@ -353,7 +355,7 @@ namespace Chatterino.Common
                 CopyText = messageUser
             });
 
-            List<Tuple<int, TwitchEmote>> twitchEmotes = new List<Tuple<int, TwitchEmote>>();
+            var twitchEmotes = new List<Tuple<int, TwitchEmote>>();
 
             // Twitch Emotes
             if (AppSettings.ChatEnableTwitchEmotes && data.Tags.TryGetValue("emotes", out value))
@@ -368,13 +370,13 @@ namespace Chatterino.Common
                         foreach (var y in x[1].Split(','))
                         {
                             var coords = y.Split('-');
-                            int index = int.Parse(coords[0]);
-                            string name = text.Substring(index, int.Parse(coords[1]) - index + 1);
+                            var index = int.Parse(coords[0]);
+                            var name = text.Substring(index, int.Parse(coords[1]) - index + 1);
 
                             // ignore ignored emotes
                             if (!AppSettings.ChatIgnoredEmotes.ContainsKey(name))
                             {
-                                TwitchEmote e = Emotes.GetTwitchEmoteById(id, name);
+                                var e = Emotes.GetTwitchEmoteById(id, name);
 
                                 twitchEmotes.Add(Tuple.Create(index, e));
                             }
@@ -403,9 +405,9 @@ namespace Chatterino.Common
             //        Badges |= MessageBadges.Turbo;
             //}
 
-            int i = 0;
-            int currentTwitchEmoteIndex = 0;
-            Tuple<int, TwitchEmote> currentTwitchEmote = twitchEmotes.FirstOrDefault();
+            var i = 0;
+            var currentTwitchEmoteIndex = 0;
+            var currentTwitchEmote = twitchEmotes.FirstOrDefault();
 
             foreach (var split in text.Split(' '))
             {
@@ -428,9 +430,9 @@ namespace Chatterino.Common
                     }
                 }
 
-                foreach (object o in Emojis.ParseEmojis(split))
+                foreach (var o in Emojis.ParseEmojis(split))
                 {
-                    string s = o as string;
+                    var s = o as string;
 
                     if (s != null)
                     {
@@ -514,7 +516,7 @@ namespace Chatterino.Common
                         }
                         else
                         {
-                            string link = matchLink(split);
+                            var link = _matchLink(split);
 
                             words.Add(new Word
                             {
@@ -528,7 +530,7 @@ namespace Chatterino.Common
                     }
                     else
                     {
-                        TwitchEmote e = o as TwitchEmote;
+                        var e = o as TwitchEmote;
 
                         if (e != null)
                         {
@@ -544,8 +546,8 @@ namespace Chatterino.Common
                     }
                 }
 
-                int splitLength = 0;
-                for (int j = 0; j < split.Length; j++)
+                var splitLength = 0;
+                for (var j = 0; j < split.Length; j++)
                 {
                     splitLength++;
 
@@ -597,7 +599,7 @@ namespace Chatterino.Common
                 });
             }
 
-            Words.AddRange(text.Split(' ').Select(x => createWord(SpanType.Text, x, color)));
+            Words.AddRange(text.Split(' ').Select(x => _createWord(SpanType.Text, x, color)));
         }
 
         public Message(List<Word> words)
@@ -608,19 +610,24 @@ namespace Chatterino.Common
             Words = words;
         }
 
-        public static Message[] ParseMD(string md)
+        public override string ToString()
         {
-            List<Message> list = new List<Message>();
+            return Username + ": " + RawMessage;
+        }
 
-            using (StringReader reader = new StringReader(md))
+        public static Message[] ParseMarkdown(string md)
+        {
+            var list = new List<Message>();
+
+            using (var reader = new StringReader(md))
             {
                 string line;
 
                 while ((line = reader.ReadLine()) != null)
                 {
-                    Message msg = new Message();
+                    var msg = new Message();
 
-                    FontType font = FontType.Medium;
+                    var font = FontType.Medium;
 
                     // Heading
                     var headerMatch = Regex.Match(line, "^(#{1,6}) ");
@@ -643,7 +650,7 @@ namespace Chatterino.Common
                     // Add words
                     msg.Words = line.Split(' ').Select(x =>
                     {
-                        string link = matchLink(x);
+                        var link = _matchLink(x);
 
                         return new Word { Type = SpanType.Text, Font = font, Value = x, CopyText = x, Link = (link == null ? null : new Link(LinkType.Url, link)) };
                     }).ToList();
@@ -660,14 +667,19 @@ namespace Chatterino.Common
             measureText = true;
         }
 
-        bool measureText = true;
-        bool measureImages = true;
+        private bool measureText = true;
+        private bool _measureImages = true;
+
+        public bool HasAnyHighlightType(HighlightType type)
+        {
+            return (HighlightType & type) != HighlightType.None;
+        }
 
         // return true if control needs to be redrawn
         public bool CalculateBounds(object graphics, int width)
         {
             var emotesChanged = EmoteBoundsChanged;
-            bool redraw = false;
+            var redraw = false;
 
             if (Width != width)
             {
@@ -676,22 +688,22 @@ namespace Chatterino.Common
             }
 
             // check if any words need to be recalculated
-            if (emotesChanged || measureText || measureImages)
+            if (emotesChanged || measureText || _measureImages)
             {
-                foreach (Word word in Words)
+                foreach (var word in Words)
                 {
                     if (word.Type == SpanType.Text)
                     {
                         if (measureText)
                         {
-                            CommonSize size = GuiEngine.Current.MeasureStringSize(graphics, word.Font, (string)word.Value);
+                            var size = GuiEngine.Current.MeasureStringSize(graphics, word.Font, (string)word.Value);
                             word.Width = size.Width;
                             word.Height = size.Height;
                         }
                     }
                     else if (word.Type == SpanType.Image)
                     {
-                        //if (measureImages)
+                        //if (_measureImages)
                         //{
                         //    if (word.Value == null)
                         //    {
@@ -707,17 +719,17 @@ namespace Chatterino.Common
                     }
                     else if (word.Type == SpanType.Emote)
                     {
-                        if (emotesChanged || measureImages)
+                        if (emotesChanged || _measureImages)
                         {
-                            TwitchEmote emote = word.Value as TwitchEmote;
-                            object image = emote?.Image;
+                            var emote = word.Value as TwitchEmote;
+                            var image = emote?.Image;
                             if (image == null)
                             {
                                 word.Width = word.Height = 16;
                             }
                             else
                             {
-                                CommonSize size = GuiEngine.Current.GetImageSize(image);
+                                var size = GuiEngine.Current.GetImageSize(image);
                                 word.Width = size.Width;
                                 word.Height = size.Height;
                             }
@@ -726,38 +738,38 @@ namespace Chatterino.Common
                 }
 
                 measureText = false;
-                measureImages = false;
+                _measureImages = false;
 
                 redraw = true;
             }
 
             if (redraw)
             {
-                int x = 0;
-                int y = 4;
-                int lineStartIndex = 0;
+                var x = 0;
+                var y = 4;
+                var lineStartIndex = 0;
 
-                int spaceWidth = GuiEngine.Current.MeasureStringSize(graphics, FontType.Medium, " ").Width;
+                var spaceWidth = GuiEngine.Current.MeasureStringSize(graphics, FontType.Medium, " ").Width;
 
-                int i = 0;
+                var i = 0;
 
                 Func<int> fixCurrentLineHeight = () =>
                 {
-                    int lineHeight = 0;
+                    var lineHeight = 0;
 
-                    for (int j = lineStartIndex; j < i; j++)
+                    for (var j = lineStartIndex; j < i; j++)
                     {
-                        int h = Words[j].Height;
+                        var h = Words[j].Height;
                         lineHeight = h > lineHeight ? h : lineHeight;
                     }
 
-                    for (int j = lineStartIndex; j < i; j++)
+                    for (var j = lineStartIndex; j < i; j++)
                     {
                         var word = Words[j];
                         if (j == lineStartIndex && word.Type == SpanType.Text && word.SplitSegments != null)
                         {
                             var segment = word.SplitSegments[word.SplitSegments.Length - 1];
-                            CommonRectangle rec = segment.Item2;
+                            var rec = segment.Item2;
                             word.SplitSegments[word.SplitSegments.Length - 1] = Tuple.Create(segment.Item1, new CommonRectangle(rec.X, rec.Y + lineHeight - word.Height, rec.Width, rec.Height));
                         }
                         else
@@ -771,7 +783,7 @@ namespace Chatterino.Common
 
                 for (; i < Words.Count; i++)
                 {
-                    Word word = Words[i];
+                    var word = Words[i];
 
                     word.SplitSegments = null;
 
@@ -791,23 +803,23 @@ namespace Chatterino.Common
                         word.X = 0;
                         word.Y = y;
 
-                        string text = (string)word.Value;
-                        int startIndex = 0;
-                        List<Tuple<string, CommonRectangle>> items = new List<Tuple<string, CommonRectangle>>();
+                        var text = (string)word.Value;
+                        var startIndex = 0;
+                        var items = new List<Tuple<string, CommonRectangle>>();
 
                         string s;
 
-                        int[] widths = word.CharacterWidths;
+                        var widths = word.CharacterWidths;
 
                         // calculate word widths
                         if (widths == null)
                         {
                             widths = new int[text.Length];
 
-                            int lastW = 0;
-                            for (int j = 0; j < text.Length; j++)
+                            var lastW = 0;
+                            for (var j = 0; j < text.Length; j++)
                             {
-                                int w = GuiEngine.Current.MeasureStringSize(graphics, word.Font, text.Remove(j)).Width;
+                                var w = GuiEngine.Current.MeasureStringSize(graphics, word.Font, text.Remove(j)).Width;
                                 widths[j] = w - lastW;
                                 lastW = w;
                             }
@@ -817,9 +829,9 @@ namespace Chatterino.Common
 
                         // create word splits
                         {
-                            int w = widths[0];
+                            var w = widths[0];
 
-                            for (int j = 1; j < text.Length; j++)
+                            for (var j = 1; j < text.Length; j++)
                             {
                                 w += widths[j];
                                 if (w > width - spaceWidth - spaceWidth - spaceWidth)
@@ -833,7 +845,7 @@ namespace Chatterino.Common
 
                             s = text.Substring(startIndex);
 
-                            for (int j = startIndex; j < text.Length; j++)
+                            for (var j = startIndex; j < text.Length; j++)
                             {
                                 w += widths[j];
                             }
@@ -880,7 +892,7 @@ namespace Chatterino.Common
 
         public Word WordAtPoint(CommonPoint point)
         {
-            for (int i = 0; i < Words.Count; i++)
+            for (var i = 0; i < Words.Count; i++)
             {
                 var word = Words[i];
                 if (word.Type == SpanType.Text && word.SplitSegments != null)
@@ -899,11 +911,11 @@ namespace Chatterino.Common
 
         public MessagePosition MessagePositionAtPoint(object graphics, CommonPoint point, int messageIndex)
         {
-            int currentWord = 0;
-            int currentChar = 0;
-            int currentSplit = 0;
+            var currentWord = 0;
+            var currentChar = 0;
+            var currentSplit = 0;
 
-            for (int i = 0; i < Words.Count; i++)
+            for (var i = 0; i < Words.Count; i++)
             {
                 var word = Words[i];
 
@@ -911,7 +923,7 @@ namespace Chatterino.Common
                 {
                     var splits = word.SplitSegments;
 
-                    for (int j = 0; j < splits.Length; j++)
+                    for (var j = 0; j < splits.Length; j++)
                     {
                         var split = splits[j];
                         if (point.Y > split.Item2.Y)
@@ -935,7 +947,7 @@ namespace Chatterino.Common
             }
 
             var w = Words[currentWord];
-            int _currentSplit = 0;
+            var _currentSplit = 0;
 
             if (w.Type == SpanType.Image)
             {
@@ -976,9 +988,9 @@ namespace Chatterino.Common
                 }
                 else
                 {
-                    for (int i = text.Length - 1; i >= 1; i--)
+                    for (var i = text.Length - 1; i >= 1; i--)
                     {
-                        string s = text.Remove(i);
+                        var s = text.Remove(i);
 
                         var size = GuiEngine.Current.MeasureStringSize(graphics, w.Font, s);
 
@@ -999,13 +1011,13 @@ namespace Chatterino.Common
             if (index == 0)
                 return new MessagePosition(0, 0, 0, 0);
 
-            bool isFirstWord = true;
+            var isFirstWord = true;
 
-            int _index = 0;
+            var _index = 0;
 
-            int i = 0;
-            int j = 0;
-            int k = 0;
+            var i = 0;
+            var j = 0;
+            var k = 0;
 
             for (; i < Words.Count; i++)
             {
@@ -1040,15 +1052,15 @@ namespace Chatterino.Common
 
         public int IndexFromPosition(MessagePosition pos)
         {
-            bool isFirstWord = true;
+            var isFirstWord = true;
 
-            int index = 0;
+            var index = 0;
 
-            for (int i = 0; i < pos.WordIndex; i++)
+            for (var i = 0; i < pos.WordIndex; i++)
             {
                 var word = Words[i];
 
-                for (int j = 0; j < (word.SplitSegments?.Length ?? 1); j++)
+                for (var j = 0; j < (word.SplitSegments?.Length ?? 1); j++)
                 {
                     var text = word.SplitSegments?[j].Item1 ?? (string)word.Value;
 
@@ -1058,7 +1070,7 @@ namespace Chatterino.Common
                         else
                             index++;
 
-                    for (int k = 0; k < text.Length; k++)
+                    for (var k = 0; k < text.Length; k++)
                     {
                         if (pos.WordIndex == i && pos.SplitIndex == j && pos.CharIndex == k)
                             return index;
@@ -1069,9 +1081,9 @@ namespace Chatterino.Common
         }
 
         // private
-        private static Word createWord(SpanType type, string text, HSLColor? color)
+        private static Word _createWord(SpanType type, string text, HSLColor? color)
         {
-            var link = createLink(text);
+            var link = _createLink(text);
 
             return new Word
             {
@@ -1084,9 +1096,9 @@ namespace Chatterino.Common
         }
 
         // Try to create Link object from text, return null if no link was found, otherwise return new LinkType.Url Link
-        private static Link createLink(string text)
+        private static Link _createLink(string text)
         {
-            string url = matchLink(text);
+            var url = _matchLink(text);
             if (url == null)
             {
                 return null;
@@ -1095,13 +1107,13 @@ namespace Chatterino.Common
         }
 
         // Try to parse link from text, return null if no link was found, otherwise return the url parsed as a string
-        private static string matchLink(string text)
+        private static string _matchLink(string text)
         {
             string link = null;
 
-            if (text.IndexOfAny(linkIdentifiers) != -1)
+            if (text.IndexOfAny(_linkIdentifiers) != -1)
             {
-                Match m = linkRegex.Match(text);
+                var m = _linkRegex.Match(text);
 
                 if (m.Success)
                 {

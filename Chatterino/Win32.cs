@@ -85,7 +85,7 @@ namespace Chatterino
                 // Make sure we're running under Windows 2000 or later
                 if (Win2000OrLater)
                 {
-                    FLASHWINFO fi = Create_FLASHWINFO(form.Handle, FLASHW_ALL | FLASHW_TIMERNOFG, uint.MaxValue, 0);
+                    var fi = Create_FLASHWINFO(form.Handle, FLASHW_ALL | FLASHW_TIMERNOFG, uint.MaxValue, 0);
                     return FlashWindowEx(ref fi);
                 }
                 return false;
@@ -93,7 +93,7 @@ namespace Chatterino
 
             private static FLASHWINFO Create_FLASHWINFO(IntPtr handle, uint flags, uint count, uint timeout)
             {
-                FLASHWINFO fi = new FLASHWINFO();
+                var fi = new FLASHWINFO();
                 fi.cbSize = Convert.ToUInt32(Marshal.SizeOf(fi));
                 fi.hwnd = handle;
                 fi.dwFlags = flags;
@@ -112,7 +112,7 @@ namespace Chatterino
             {
                 if (Win2000OrLater)
                 {
-                    FLASHWINFO fi = Create_FLASHWINFO(form.Handle, FLASHW_ALL, count, 0);
+                    var fi = Create_FLASHWINFO(form.Handle, FLASHW_ALL, count, 0);
                     return FlashWindowEx(ref fi);
                 }
                 return false;
@@ -127,7 +127,7 @@ namespace Chatterino
             {
                 if (Win2000OrLater)
                 {
-                    FLASHWINFO fi = Create_FLASHWINFO(form.Handle, FLASHW_ALL, uint.MaxValue, 0);
+                    var fi = Create_FLASHWINFO(form.Handle, FLASHW_ALL, uint.MaxValue, 0);
                     return FlashWindowEx(ref fi);
                 }
                 return false;
@@ -142,7 +142,7 @@ namespace Chatterino
             {
                 if (Win2000OrLater)
                 {
-                    FLASHWINFO fi = Create_FLASHWINFO(form.Handle, FLASHW_STOP, uint.MaxValue, 0);
+                    var fi = Create_FLASHWINFO(form.Handle, FLASHW_STOP, uint.MaxValue, 0);
                     return FlashWindowEx(ref fi);
                 }
                 return false;

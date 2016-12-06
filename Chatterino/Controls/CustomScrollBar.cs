@@ -111,7 +111,7 @@ namespace Chatterino.Controls
         {
             lock (highlightLock)
             {
-                foreach (ScrollBarHighlight highlight in highlights)
+                foreach (var highlight in highlights)
                 {
                     func(highlight);
                 }
@@ -176,7 +176,7 @@ namespace Chatterino.Controls
         {
             if (mDownIndex == -1)
             {
-                int oldMOverIndex = mOverIndex;
+                var oldMOverIndex = mOverIndex;
 
                 if (e.Y < buttonSize)
                     mOverIndex = 0;
@@ -196,9 +196,9 @@ namespace Chatterino.Controls
             {
                 if (mOverIndex == 2)
                 {
-                    int deltaY = e.Y - lastMousePosition.Y;
+                    var deltaY = e.Y - lastMousePosition.Y;
 
-                    double oldValue = value;
+                    var oldValue = value;
                     Value += (double)deltaY / trackHeight * max;
 
                     if (oldValue != value)
@@ -245,7 +245,7 @@ namespace Chatterino.Controls
             {
                 if (mOverIndex == 0)
                 {
-                    double oldValue = value;
+                    var oldValue = value;
                     Value -= SmallChange;
 
                     if (oldValue != value)
@@ -256,7 +256,7 @@ namespace Chatterino.Controls
             {
                 if (mOverIndex == 1)
                 {
-                    double oldValue = value;
+                    var oldValue = value;
                     Value -= SmallChange;
 
                     if (oldValue != value)
@@ -272,7 +272,7 @@ namespace Chatterino.Controls
             {
                 if (mOverIndex == 3)
                 {
-                    double oldValue = value;
+                    var oldValue = value;
                     Value += SmallChange;
 
                     if (oldValue != value)
@@ -283,7 +283,7 @@ namespace Chatterino.Controls
             {
                 if (mOverIndex == 4)
                 {
-                    double oldValue = value;
+                    var oldValue = value;
                     Value += SmallChange;
 
                     if (oldValue != value)
@@ -351,11 +351,11 @@ namespace Chatterino.Controls
                             foreach (var highlight in highlights)
                             {
 
-                                SolidBrush brush = colors.GetOrAdd(highlight.Color, (x) =>
+                                var brush = colors.GetOrAdd(highlight.Color, (x) =>
                                 {
-                                    Color bg = (App.ColorScheme.ChatBackground as SolidBrush)?.Color ?? Color.Black;
+                                    var bg = (App.ColorScheme.ChatBackground as SolidBrush)?.Color ?? Color.Black;
 
-                                    Color n = Color.FromArgb(
+                                    var n = Color.FromArgb(
                                         (bg.R + x.R) / 2,
                                         (bg.G + x.G) / 2,
                                         (bg.B + x.B) / 2);
@@ -370,7 +370,7 @@ namespace Chatterino.Controls
                                     y += (int)((h / Maximum) - 1);
                                 }
 
-                                int a = 0;
+                                var a = 0;
 
                                 if (y > thumbOffset)
                                 {

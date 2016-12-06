@@ -23,12 +23,12 @@ namespace Chatterino.Common
                     using (var response = request.GetResponse())
                     using (var stream = response.GetResponseStream())
                     {
-                        JsonParser parser = new JsonParser();
+                        var parser = new JsonParser();
 
                         dynamic json = parser.Parse(stream);
                         dynamic branches = json["branches"];
 
-                        foreach (dynamic branch in branches)
+                        foreach (var branch in branches)
                         {
                             if (branchName == (string)branch["name"])
                             {

@@ -81,7 +81,7 @@ namespace Chatterino.Controls
 
             dropDownButton.Click += (s, e) =>
             {
-                ContextMenu menu = new ContextMenu();
+                var menu = new ContextMenu();
 
                 foreach (var t in _tabPages)
                 {
@@ -161,12 +161,12 @@ namespace Chatterino.Controls
                 var lineHeight = Tab.GetHeight();
 
                 int x = 48, y = 0, w = Bounds.Width - dropDownButton.Width;
-                bool firstInline = true;
+                var firstInline = true;
 
-                bool allTabsVisible = true;
+                var allTabsVisible = true;
 
                 // go through all the tabs
-                for (int i = 0; i < _tabPages.Count; i++)
+                for (var i = 0; i < _tabPages.Count; i++)
                 {
                     var t = _tabPages[i];
 
@@ -258,7 +258,7 @@ namespace Chatterino.Controls
             if (index == -1)
                 throw new ArgumentException("\"child\" is not a child of this control.");
 
-            ColumnTabPage ctab = page as ColumnTabPage;
+            var ctab = page as ColumnTabPage;
 
             if (ctab != null)
             {

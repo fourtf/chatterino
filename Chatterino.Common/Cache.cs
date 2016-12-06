@@ -74,7 +74,6 @@ namespace Chatterino.Common
         private Dictionary<string, int> _data = new Dictionary<string, int>();
         private object _dataLock = new object();
 
-
         public RoomIdCache()
             : base(Path.Combine(Util.GetUserDataPath(), "Cache", "room_ids.json"))
         {

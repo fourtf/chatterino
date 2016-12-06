@@ -40,7 +40,7 @@ namespace Chatterino.Common
                         {
                             try
                             {
-                                WebRequest request = WebRequest.Create(Url);
+                                var request = WebRequest.Create(Url);
                                 using (var response = request.GetResponse())
                                 using (var stream = response.GetResponseStream())
                                 {

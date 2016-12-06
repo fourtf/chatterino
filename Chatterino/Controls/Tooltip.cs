@@ -72,7 +72,7 @@ namespace Chatterino.Controls
         {
             get
             {
-                CreateParams createParams = base.CreateParams;
+                var createParams = base.CreateParams;
                 createParams.ExStyle |= WS_EX_TOPMOST;
                 return createParams;
             }

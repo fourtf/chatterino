@@ -32,7 +32,7 @@ namespace Chatterino.Updater
 
             Thread.Sleep(2000);
 
-            bool locked = false;
+            var locked = false;
 
             try
             {
@@ -119,7 +119,7 @@ namespace Chatterino.Updater
             ZipFile zf = null;
             try
             {
-                FileStream fs = File.OpenRead(archiveFilenameIn);
+                var fs = File.OpenRead(archiveFilenameIn);
                 zf = new ZipFile(fs);
 
                 foreach (ZipEntry zipEntry in zf)
@@ -128,22 +128,22 @@ namespace Chatterino.Updater
                     {
                         continue;
                     }
-                    string entryFileName = zipEntry.Name;
+                    var entryFileName = zipEntry.Name;
 
-                    byte[] buffer = new byte[4096];
-                    Stream zipStream = zf.GetInputStream(zipEntry);
+                    var buffer = new byte[4096];
+                    var zipStream = zf.GetInputStream(zipEntry);
 
                     if (!update2)
                     {
                         entryFileName = Regex.Replace(entryFileName, @"^Updater/", "Updater2/");
                     }
 
-                    string fullZipToPath = Path.Combine(outFolder, entryFileName);
-                    string directoryName = Path.GetDirectoryName(fullZipToPath);
+                    var fullZipToPath = Path.Combine(outFolder, entryFileName);
+                    var directoryName = Path.GetDirectoryName(fullZipToPath);
                     if (directoryName.Length > 0)
                         Directory.CreateDirectory(directoryName);
 
-                    using (FileStream streamWriter = File.Create(fullZipToPath))
+                    using (var streamWriter = File.Create(fullZipToPath))
                     {
                         StreamUtils.Copy(zipStream, streamWriter, buffer);
                     }

@@ -30,7 +30,7 @@ namespace Chatterino.Common
 
                 if (File.Exists(path))
                 {
-                    using (StreamReader reader = new StreamReader(path))
+                    using (var reader = new StreamReader(path))
                     {
                         Load(reader);
                     }
@@ -50,7 +50,7 @@ namespace Chatterino.Common
                 int index;
                 if ((index = line.IndexOf('=')) != -1)
                 {
-                    string key = line.Remove(index).Trim();
+                    var key = line.Remove(index).Trim();
                     if (key != "")
                     {
                         map[key] = line.Substring(index + 1).Trim();
@@ -71,9 +71,9 @@ namespace Chatterino.Common
         {
             try
             {
-                using (StreamWriter writer = new StreamWriter(path))
+                using (var writer = new StreamWriter(path))
                 {
-                    List<KeyValuePair<string, string>> items = new List<KeyValuePair<string, string>>();
+                    var items = new List<KeyValuePair<string, string>>();
 
                     foreach (var kvp in map)
                     {
@@ -170,13 +170,13 @@ namespace Chatterino.Common
             string v;
             if (map.TryGetValue(key, out v))
             {
-                List<string> vals = new List<string>();
+                var vals = new List<string>();
 
-                bool inEscape = false;
+                var inEscape = false;
 
-                System.Text.StringBuilder b = new System.Text.StringBuilder(64);
+                var b = new System.Text.StringBuilder(64);
 
-                for (int i = 0; i < v.Length; i++)
+                for (var i = 0; i < v.Length; i++)
                 {
                     var c = v[i];
 
@@ -276,14 +276,17 @@ namespace Chatterino.Common
         public void Set(string key, IEnumerable<string> values) => map[key] = string.Join(",", (values ?? new string[0]).Select(x => Regex.Replace(x, "[\n\r\\\\]", m =>
         {
             var a = m.Value;
+
             if (a[0] == '\n')
                 return "\\n";
-            else if (a[0] == '\r')
+
+            if (a[0] == '\r')
                 return "\\r";
-            else if (a[0] == ',')
+
+            if (a[0] == ',')
                 return "\\,";
-            else
-                return "\\\\";
+
+            return "\\\\";
         })));
     }
 }

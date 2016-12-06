@@ -45,7 +45,7 @@ namespace Chatterino
 
         public void RemoveWidget(ColumnLayoutItem widget)
         {
-            int index = widgets.FindIndex(x => x == widget);
+            var index = widgets.FindIndex(x => x == widget);
 
             if (index == -1)
             {

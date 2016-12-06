@@ -25,7 +25,7 @@ namespace Chatterino.Gtk
 
             IrcManager.Connect();
 
-            MainWindow window = new MainWindow();
+            var window = new MainWindow();
 
             window.ShowAll();
             window.Hidden += (s, e) => { Application.Quit(); };
