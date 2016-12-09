@@ -47,7 +47,7 @@ namespace Chatterino.Gtk
             return new CommonSize(16, 16);
         }
 
-        public void HandleAnimatedTwitchEmote(TwitchEmote emote)
+        public void HandleAnimatedTwitchEmote(LazyLoadedImage emote)
         {
         }
 

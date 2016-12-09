@@ -23,6 +23,8 @@ namespace Chatterino.Common
         public int X { get; set; }
         public int Y { get; set; }
 
+        public bool HasTrailingSpace { get; set; } = true;
+
         public Tuple<string, CommonRectangle>[] SplitSegments { get; set; } = null;
         public int[] CharacterWidths { get; set; } = null;
     }
@@ -30,7 +32,7 @@ namespace Chatterino.Common
     public enum SpanType
     {
         Text,
-        Emote,
+        LazyLoadedImage,
         Image
     }
 }

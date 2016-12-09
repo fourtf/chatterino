@@ -15,7 +15,7 @@ namespace Chatterino.Common
         public static ConcurrentDictionary<string, string> ShortCodeToEmoji = new ConcurrentDictionary<string, string>();
         public static ConcurrentDictionary<string, string> EmojiToShortCode = new ConcurrentDictionary<string, string>();
 
-        public static ConcurrentDictionary<char, ConcurrentDictionary<string, TwitchEmote>> FirstEmojiChars = new ConcurrentDictionary<char, ConcurrentDictionary<string, TwitchEmote>>();
+        public static ConcurrentDictionary<char, ConcurrentDictionary<string, LazyLoadedImage>> FirstEmojiChars = new ConcurrentDictionary<char, ConcurrentDictionary<string, LazyLoadedImage>>();
 
         public static string ReplaceShortCodes(string s)
         {
@@ -33,7 +33,7 @@ namespace Chatterino.Common
         public static int[] ToCodePoints(string str)
         {
             if (str == null)
-                throw new ArgumentNullException("str");
+                throw new ArgumentNullException(nameof(str));
 
             var codePoints = new List<int>(str.Length);
             for (var i = 0; i < str.Length; i++)
@@ -56,13 +56,14 @@ namespace Chatterino.Common
             {
                 if (!char.IsLowSurrogate(text, i))
                 {
-                    ConcurrentDictionary<string, TwitchEmote> _emojis;
+                    ConcurrentDictionary<string, LazyLoadedImage> _emojis;
                     if (FirstEmojiChars.TryGetValue(text[i], out _emojis))
                     {
-                        TwitchEmote emote;
                         for (var j = Math.Min(8, text.Length - i); j > 0; j--)
                         {
                             var emoji = text.Substring(i, j);
+                            LazyLoadedImage emote;
+
                             if (_emojis.TryGetValue(emoji, out emote))
                             {
                                 if (emote == null)
@@ -71,7 +72,7 @@ namespace Chatterino.Common
 
                                     var url = $"https://cdnjs.cloudflare.com/ajax/libs/emojione/2.2.6/assets/png/{codepoints}.png";
 
-                                    _emojis[emoji] = emote = new TwitchEmote
+                                    _emojis[emoji] = emote = new LazyLoadedImage
                                     {
                                         Url = url,
                                         Tooltip = $":{EmojiToShortCode[emoji]}:\nemoji",
@@ -86,7 +87,7 @@ namespace Chatterino.Common
                                                 using (var stream = response.GetResponseStream())
                                                 {
                                                     img = GuiEngine.Current.ReadImageFromStream(stream);
-                                                    img = GuiEngine.Current.ScaleImage(img, 0.33);
+                                                    //img = GuiEngine.Current.ScaleImage(img, 0.35);
                                                     GuiEngine.Current.FreezeImage(img);
                                                     return img;
                                                 }
@@ -97,7 +98,10 @@ namespace Chatterino.Common
                                             }
 
                                             return img;
-                                        }
+                                        },
+                                        Scale = 0.35,
+                                        HasTrailingSpace = false,
+                                        IsEmote = true
                                     };
                                 }
 
@@ -1957,7 +1961,7 @@ namespace Chatterino.Common
 
                 foreach (var emoji in ShortCodeToEmoji.Values)
             {
-                FirstEmojiChars.GetOrAdd(emoji[0], c => new ConcurrentDictionary<string, TwitchEmote>())[emoji] = null;
+                FirstEmojiChars.GetOrAdd(emoji[0], c => new ConcurrentDictionary<string, LazyLoadedImage>())[emoji] = null;
             }
         }
     }

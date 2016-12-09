@@ -854,7 +854,7 @@ namespace Chatterino.Controls
                                         //b.Append(' ');
                                     }
                                 }
-                                else if (word.Type == SpanType.Emote)
+                                else if (word.Type == SpanType.LazyLoadedImage)
                                 {
                                     var textLength = word.Type == SpanType.Text ? ((string)word.Value).Length : 2;
 
@@ -865,7 +865,7 @@ namespace Chatterino.Controls
                                     {
                                         if (offset == 0)
                                             b.Append(word.CopyText);
-                                        if (offset + length == 2)
+                                        if (offset + length == 2 && word.HasTrailingSpace)
                                             appendNewline = true;
                                         //b.Append(' ');
                                     }

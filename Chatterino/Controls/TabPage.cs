@@ -10,31 +10,31 @@ namespace Chatterino.Controls
 {
     public class TabPage : Control
     {
-        private string title;
+        private string _title;
 
         public string Title
         {
-            get { return title; }
+            get { return _title; }
             set
             {
-                if (title != value)
+                if (_title != value)
                 {
-                    title = value;
+                    _title = value;
                     TitleChanged?.Invoke(this, EventArgs.Empty);
                 }
             }
         }
 
-        private bool selected;
+        private bool _selected;
 
         public bool Selected
         {
-            get { return selected; }
+            get { return _selected; }
             set
             {
-                if (selected != value)
+                if (_selected != value)
                 {
-                    selected = value;
+                    _selected = value;
                     Invalidate();
                 }
             }
@@ -42,44 +42,27 @@ namespace Chatterino.Controls
 
         public event EventHandler<ValueEventArgs<TabPageHighlightType>> HighlightTypeChanged;
 
-        private TabPageHighlightType highlightType;
+        private TabPageHighlightType _highlightType;
 
         public TabPageHighlightType HighlightType
         {
-            get { return highlightType; }
+            get { return _highlightType; }
             set
             {
                 if (!Selected)
                 {
-                    if (highlightType != value)
+                    if (_highlightType != value)
                     {
-                        highlightType = value;
+                        _highlightType = value;
                         HighlightTypeChanged?.Invoke(this, new ValueEventArgs<TabPageHighlightType>(value));
                     }
                 }
 
-                highlightType = value;
+                _highlightType = value;
             }
         }
 
-
-        //private bool highlighted = false;
-
-        //public bool Highlighted
-        //{
-        //    get { return highlighted; }
-        //    set
-        //    {
-        //        if (!value || !Selected)
-        //        {
-        //            if (highlighted != value)
-        //            {
-        //                highlighted = value;
-        //                HighlightTypeChanged?.Invoke(this, new ValueEventArgs<bool>(value));
-        //            }
-        //        }
-        //    }
-        //}
+        public bool EnableNewMessageHighlights { get; set; } = true;
 
         public event EventHandler TitleChanged;
 

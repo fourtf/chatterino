@@ -36,7 +36,10 @@ namespace Chatterino
 
             listView.Items.Add("anonymous user");
 
-            foreach (var account in AccountManager.Accounts)
+            var accounts = AccountManager.Accounts.ToList();
+            accounts.Sort((acc1, acc2) => string.Compare(acc1.Username, acc2.Username, StringComparison.Ordinal));
+            
+            foreach (var account in accounts)
             {
                 listView.Items.Add(account.Username);
             }

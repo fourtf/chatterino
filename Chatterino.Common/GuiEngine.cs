@@ -28,7 +28,7 @@ namespace Chatterino.Common
         void HandleLink(Link link);
         void PlaySound(NotificationSound sound, bool forceCustom = false);
         object GetImage(ImageType type);
-        void HandleAnimatedTwitchEmote(TwitchEmote emote);
+        void HandleAnimatedTwitchEmote(LazyLoadedImage emote);
         void FlashTaskbar();
 
         object ReadImageFromStream(Stream stream);

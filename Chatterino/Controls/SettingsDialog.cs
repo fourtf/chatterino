@@ -55,6 +55,8 @@ namespace Chatterino.Controls
                 dataGridViewAccounts.Rows.Add(account.Username);
             }
 
+            dataGridViewAccounts.Sort(dataGridViewAccounts.Columns[0], ListSortDirection.Descending);
+
             LoginForm loginForm = null;
 
             buttonAccountAdd.Click += delegate
@@ -88,6 +90,7 @@ namespace Chatterino.Controls
                             if (addGridViewItem)
                             {
                                 dataGridViewAccounts.Rows.Add(loginForm.Account.Username);
+                                dataGridViewAccounts.Sort(dataGridViewAccounts.Columns[0], ListSortDirection.Ascending);
                             }
                         }
                         loginForm = null;
@@ -123,13 +126,66 @@ namespace Chatterino.Controls
             #endregion
 
             // Appearance
+            #region Appearance
+
+            Action setNightThemeVisibility = () =>
+            {
+                comboThemeNight.Visible = labelNightDesc.Visible = comboThemeNight.Visible =
+                labelThemeNight.Visible = labelThemeNightFrom.Visible = labelNightThemeUntil.Visible =
+                numThemeNightFrom.Visible = numThemeNightUntil.Visible =
+                checkBoxDifferentThemeAtNight.Checked;
+            };
+
             var originalTheme = comboTheme.Text = AppSettings.Theme;
+            var originalThemeNight = comboThemeNight.Text = AppSettings.NightTheme;
             var originalThemeHue = AppSettings.ThemeHue;
+            var originalThemeNightStart = AppSettings.NightThemeStart;
+            var originalThemeNightEnd = AppSettings.NightThemeEnd;
+
+            BindCheckBox(checkBoxDifferentThemeAtNight, "EnableNightTheme");
+
+            checkBoxDifferentThemeAtNight.CheckedChanged += (s, e) =>
+            {
+                AppSettings.UpdateCurrentTheme();
+                setNightThemeVisibility();
+            };
 
             comboTheme.SelectedValueChanged += (s, e) =>
             {
                 AppSettings.Theme = comboTheme.Text;
             };
+
+            comboThemeNight.SelectedValueChanged += (s, e) =>
+            {
+                AppSettings.NightTheme = comboThemeNight.Text;
+            };
+
+            numThemeNightFrom.Value = Math.Max(1, Math.Min(24, AppSettings.NightThemeStart));
+
+            numThemeNightFrom.ValueChanged += (s, e) =>
+            {
+                AppSettings.NightThemeStart = (int)numThemeNightFrom.Value;
+            };
+
+            numThemeNightUntil.Value = Math.Max(1, Math.Min(24, AppSettings.NightThemeEnd));
+
+            numThemeNightUntil.ValueChanged += (s, e) =>
+            {
+                AppSettings.NightThemeEnd = (int)numThemeNightUntil.Value;
+            };
+
+            setNightThemeVisibility();
+
+            onCancel += (s, e) =>
+            {
+                AppSettings.Theme = originalTheme;
+                AppSettings.NightTheme = originalThemeNight;
+                AppSettings.ThemeHue = originalThemeHue;
+                AppSettings.NightThemeStart = originalThemeNightStart;
+                AppSettings.NightThemeEnd = originalThemeNightEnd;
+                App.MainForm.Refresh();
+            };
+
 
             trackBar1.Value = Math.Max(Math.Min((int)Math.Round(originalThemeHue * 360), 360), 0);
 
@@ -155,13 +211,6 @@ namespace Chatterino.Controls
                 AppSettings.ScrollMultiplyer = (double)trackBar2.Value / 200;
 
                 lblScrollSpeed.Text = (int)(AppSettings.ScrollMultiplyer * 100) + "%";
-            };
-
-            onCancel += (s, e) =>
-            {
-                AppSettings.Theme = originalTheme;
-                AppSettings.ThemeHue = originalThemeHue;
-                App.MainForm.Refresh();
             };
 
             btnSelectFont.Click += (s, e) =>
@@ -208,9 +257,10 @@ namespace Chatterino.Controls
             {
                 App.MainForm.Refresh();
             };
-
+            #endregion
 
             // Commands
+            #region Commands
             lock (Commands.CustomCommandsLock)
             {
                 foreach (var c in Commands.CustomCommands)
@@ -218,6 +268,7 @@ namespace Chatterino.Controls
                     dgvCommands.Rows.Add(c.Raw);
                 }
             }
+
             //ChatAllowCommandsAtEnd
             var defaultAllowCommandAtEnd = AppSettings.ChatAllowCommandsAtEnd;
 
@@ -293,8 +344,10 @@ namespace Chatterino.Controls
                     Commands.CustomCommands = originalCustomCommand;
                 }
             };
+            #endregion
 
             // Emotes
+            #region emotes
             BindCheckBox(chkTwitchEmotes, "ChatEnableTwitchEmotes");
             BindCheckBox(chkBttvEmotes, "ChatEnableBttvEmotes");
             BindCheckBox(chkFFzEmotes, "ChatEnableFfzEmotes");
@@ -324,6 +377,37 @@ namespace Chatterino.Controls
                     AppSettings.ChatIgnoredEmotes[line.Trim()] = null;
                 }
             };
+
+            BindCheckBox(checkBoxEmoteSizeBasedOnTextHeight, "EmoteScaleByLineHeight");
+
+            var originialEmoteScale = AppSettings.EmoteScale;
+
+            onCancel += (s, e) =>
+            {
+                AppSettings.EmoteScale = originialEmoteScale;
+                App.TriggerEmoteLoaded();
+            };
+
+            checkBoxEmoteSizeBasedOnTextHeight.CheckedChanged += (s, e) =>
+            {
+                labelEmoteScale.Text = $"Emote scale: {AppSettings.EmoteScale:0.##}x";
+
+                App.TriggerEmoteLoaded();
+            };
+
+            trackBarEmoteScale.Value = Math.Min(trackBarEmoteScale.Maximum,
+                Math.Max(trackBarEmoteScale.Minimum, (int)Math.Round((AppSettings.EmoteScale - 0.5) * 10)));
+
+            trackBarEmoteScale.ValueChanged += (s, e) =>
+            {
+                AppSettings.EmoteScale = trackBarEmoteScale.Value / 10.0 + 0.5;
+                labelEmoteScale.Text = $"Emote scale: {AppSettings.EmoteScale:0.##}x";
+
+                App.TriggerEmoteLoaded();
+            };
+
+            labelEmoteScale.Text = $"Emote scale: {AppSettings.EmoteScale:0.##}x";
+            #endregion
 
             // Ignored Users
             BindCheckBox(chkTwitchIgnores, "EnableTwitchUserIgnores");

@@ -194,7 +194,7 @@ namespace Chatterino
             return null;
         }
 
-        public void HandleAnimatedTwitchEmote(TwitchEmote emote)
+        public void HandleAnimatedTwitchEmote(LazyLoadedImage emote)
         {
             if (emote.Image != null)
             {

@@ -1,12 +1,15 @@
 ﻿# changelog
 
-## 1.1
+## 1.0.5
+- added emote scaling
 - added live indicator to splits
-- the user info popup now doesn't go over the screen workspace anymore
-- fixed shift + arrow keys not selecting text by characters
 - added button in the user info popup to disable/enable highlights for certain users
 - added option to show messages from ignored users if you are mod or broadcaster
+
+- fixes the user info popup going over the screen workspace
+- fixed shift + arrow keys not selecting text by characters
 - fixed not parting channel when closing split
+- fixed copying spaces after emojis
 
 ## 1.0.4
 - fixed the messages appearing multiple times after switching accounts

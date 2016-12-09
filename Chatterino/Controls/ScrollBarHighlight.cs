@@ -26,6 +26,7 @@ namespace Chatterino.Controls
     public enum ScrollBarHighlightStyle
     {
         Default,
+        Right,
         SingleLine
     }
 }

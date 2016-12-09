@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using SharpDX.Direct2D1;
 using Brush = System.Drawing.Brush;
 using Image = System.Drawing.Image;
+using InterpolationMode = System.Drawing.Drawing2D.InterpolationMode;
 
 namespace Chatterino
 {
@@ -46,6 +47,7 @@ namespace Chatterino
 
             g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
             g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.None;
+            g.InterpolationMode = InterpolationMode.HighQualityBicubic;
 
             message.X = xOffset;
             var textColor = App.ColorScheme.Text;
@@ -123,9 +125,9 @@ namespace Chatterino
                         }
                     }
                 }
-                else if (word.Type == SpanType.Emote)
+                else if (word.Type == SpanType.LazyLoadedImage)
                 {
-                    var emote = (TwitchEmote)word.Value;
+                    var emote = (LazyLoadedImage)word.Value;
                     var img = (Image)emote.Image;
                     if (img != null)
                     {
@@ -225,7 +227,7 @@ namespace Chatterino
                                 (offset == 0 ? word.Width : 0) + (offset + length == 2 ? spaceWidth : 0) - 1,
                                 word.Height);
                         }
-                        else if (word.Type == SpanType.Emote)
+                        else if (word.Type == SpanType.LazyLoadedImage)
                         {
                             var textLength = 2;
 
@@ -236,7 +238,7 @@ namespace Chatterino
                                              ? last.CharIndex
                                              : textLength) - offset;
 
-                            var emote = (TwitchEmote)word.Value;
+                            var emote = (LazyLoadedImage)word.Value;
 
                             if (emote.IsAnimated)
                             {
@@ -251,9 +253,9 @@ namespace Chatterino
                     }
                     else
                     {
-                        if (word.Type == SpanType.Emote)
+                        if (word.Type == SpanType.LazyLoadedImage)
                         {
-                            var emote = (TwitchEmote)word.Value;
+                            var emote = (LazyLoadedImage)word.Value;
                             if (emote.IsAnimated)
                                 gifEmotesOnScreen?.Add(new GifEmoteState(word.X + xOffset, word.Y + yOffset, word.Width, word.Height, emote, false, message.HighlightType, message.Disabled));
                         }
@@ -264,9 +266,9 @@ namespace Chatterino
             {
                 foreach (var word in message.Words)
                 {
-                    if (word.Type == SpanType.Emote)
+                    if (word.Type == SpanType.LazyLoadedImage)
                     {
-                        var emote = (TwitchEmote)word.Value;
+                        var emote = (LazyLoadedImage)word.Value;
                         if (emote.IsAnimated)
                             gifEmotesOnScreen?.Add(new GifEmoteState(word.X + xOffset, word.Y + yOffset, word.Width, word.Height, emote, false, message.HighlightType, message.Disabled));
                     }
@@ -341,8 +343,8 @@ namespace Chatterino
             //{
             //    var word = Words[i];
 
-            //    TwitchEmote emote;
-            //    if (word.Type == SpanType.Emote && (emote = (TwitchEmote)word.Value).IsAnimated)
+            //    LazyLoadedImage emote;
+            //    if (word.Type == SpanType.LazyLoadedImage && (emote = (LazyLoadedImage)word.Value).IsAnimated)
             //    {
             //        if (emote.Image != null)
             //        {

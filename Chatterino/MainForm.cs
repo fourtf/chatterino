@@ -108,21 +108,27 @@ namespace Chatterino
             lastTabPage = tabControl.Selected as ColumnTabPage;
         }
 
+        public IEnumerable<ColumnLayoutItem> VisibleSplits
+        {
+            get
+            {
+                return
+                    ((ColumnTabPage) tabControl.Selected).Columns
+                        .SelectMany(x => x.Widgets);
+            }
+        }
+
         private void setTabPageLastMessageThingy(ColumnTabPage page)
         {
-            if (page != null)
-            {
-                foreach (var col in page.Columns)
-                {
-                    foreach (var control in col.Widgets)
-                    {
-                        var container = control as MessageContainerControl;
+            if (page == null) return;
 
-                        if (container != null)
-                        {
-                            container.SetLastReadMessage();
-                        }
-                    }
+            foreach (var col in page.Columns)
+            {
+                foreach (var control in col.Widgets)
+                {
+                    var container = control as MessageContainerControl;
+
+                    container?.SetLastReadMessage();
                 }
             }
         }
@@ -531,6 +537,8 @@ namespace Chatterino
 
                             page.CustomTitle = tab.Attribute("title")?.Value;
 
+                            page.EnableNewMessageHighlights = (tab.Attribute("enableNewMessageHighlights")?.Value?.ToUpper() ?? "TRUE") == "TRUE";
+
                             foreach (var col in tab.Elements("column"))
                             {
                                 var column = new ChatColumn();
@@ -628,6 +636,11 @@ namespace Chatterino
                         if (page.CustomTitle != null)
                         {
                             xtab.SetAttributeValue("title", page.Title);
+                        }
+
+                        if (!page.EnableNewMessageHighlights)
+                        {
+                            xtab.SetAttributeValue("enableNewMessageHighlights", false);
                         }
 
                         foreach (var col in page.Columns)

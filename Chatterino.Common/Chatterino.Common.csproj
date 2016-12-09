@@ -83,7 +83,7 @@
     <Compile Include="VersionNumber.cs" />
     <Compile Include="Word.cs" />
     <Compile Include="TwitchChannel.cs" />
-    <Compile Include="TwitchEmote.cs" />
+    <Compile Include="LazyLoadedImage.cs" />
     <Compile Include="Util.cs" />
   </ItemGroup>
   <ItemGroup>

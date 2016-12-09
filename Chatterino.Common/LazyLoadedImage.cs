@@ -6,13 +6,16 @@ using System.Threading.Tasks;
 
 namespace Chatterino.Common
 {
-    public class TwitchEmote
+    public class LazyLoadedImage
     {
         public string Url { get; set; } = null;
         public string Name { get; set; } = null;
         public bool IsAnimated { get; set; } = false;
         public Func<object> LoadAction { get; set; } = null;
         public bool IsHat { get; set; } = false;
+        public bool HasTrailingSpace { get; set; } = true;
+        public bool IsEmote { get; set; }
+        public double Scale { get; set; } = 1;
 
         public string Tooltip { get; set; } = null;
 

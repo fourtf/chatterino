@@ -11,7 +11,7 @@ namespace Chatterino.Common
 {
     public static class Badges
     {
-        public static ConcurrentDictionary<string, TwitchEmote> FourtfGlobalBadges = new ConcurrentDictionary<string, TwitchEmote>();
+        public static ConcurrentDictionary<string, LazyLoadedImage> FourtfGlobalBadges = new ConcurrentDictionary<string, LazyLoadedImage>();
 
         public static void LoadGlobalBadges()
         {
@@ -28,7 +28,7 @@ namespace Chatterino.Common
                         dynamic json = parser.Parse(stream);
                         foreach (var badge in json["badges"])
                         {
-                            var emote = new TwitchEmote { Url = badge["image"], Tooltip = badge["tooltip"] };
+                            var emote = new LazyLoadedImage { Url = badge["image"], Tooltip = badge["tooltip"] };
                             foreach (string user in badge["users"])
                             {
                                 FourtfGlobalBadges[user] = emote;

@@ -30,16 +30,15 @@
         {
             this.tabs = new Chatterino.Controls.SettingsTabControl();
             this.RightPanel = new System.Windows.Forms.Panel();
-            this.panel6 = new System.Windows.Forms.Panel();
-            this.comboShowIgnoredUsersMessagesIf = new System.Windows.Forms.ComboBox();
-            this.label15 = new System.Windows.Forms.Label();
-            this.chkTwitchIgnores = new System.Windows.Forms.CheckBox();
-            this.btnIgnoredUserRemove = new System.Windows.Forms.Button();
-            this.btnIgnoredUserAdd = new System.Windows.Forms.Button();
-            this.dgvIgnoredUsers = new System.Windows.Forms.DataGridView();
-            this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.label9 = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.labelNightDesc = new System.Windows.Forms.Label();
+            this.numThemeNightUntil = new System.Windows.Forms.NumericUpDown();
+            this.labelNightThemeUntil = new System.Windows.Forms.Label();
+            this.numThemeNightFrom = new System.Windows.Forms.NumericUpDown();
+            this.labelThemeNightFrom = new System.Windows.Forms.Label();
+            this.comboThemeNight = new System.Windows.Forms.ComboBox();
+            this.labelThemeNight = new System.Windows.Forms.Label();
+            this.checkBoxDifferentThemeAtNight = new System.Windows.Forms.CheckBox();
             this.chkLastReadMessageIndicator = new System.Windows.Forms.CheckBox();
             this.chkTopMost = new System.Windows.Forms.CheckBox();
             this.chkTabLocalizedNames = new System.Windows.Forms.CheckBox();
@@ -62,13 +61,10 @@
             this.chkAllowSameMessages = new System.Windows.Forms.CheckBox();
             this.chkTimestampSeconds = new System.Windows.Forms.CheckBox();
             this.chkTimestamps = new System.Windows.Forms.CheckBox();
-            this.panel11 = new System.Windows.Forms.Panel();
-            this.label14 = new System.Windows.Forms.Label();
-            this.buttonAccountRemove = new System.Windows.Forms.Button();
-            this.buttonAccountAdd = new System.Windows.Forms.Button();
-            this.dataGridViewAccounts = new System.Windows.Forms.DataGridView();
-            this.Username = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.panel4 = new System.Windows.Forms.Panel();
+            this.labelEmoteScale = new System.Windows.Forms.Label();
+            this.trackBarEmoteScale = new System.Windows.Forms.TrackBar();
+            this.checkBoxEmoteSizeBasedOnTextHeight = new System.Windows.Forms.CheckBox();
             this.chkTwitchEmotes = new System.Windows.Forms.CheckBox();
             this.tabControl2 = new System.Windows.Forms.TabControl();
             this.tabPage3 = new System.Windows.Forms.TabPage();
@@ -78,6 +74,21 @@
             this.chkGifEmotes = new System.Windows.Forms.CheckBox();
             this.chkBttvEmotes = new System.Windows.Forms.CheckBox();
             this.chkFFzEmotes = new System.Windows.Forms.CheckBox();
+            this.panel11 = new System.Windows.Forms.Panel();
+            this.label14 = new System.Windows.Forms.Label();
+            this.buttonAccountRemove = new System.Windows.Forms.Button();
+            this.buttonAccountAdd = new System.Windows.Forms.Button();
+            this.dataGridViewAccounts = new System.Windows.Forms.DataGridView();
+            this.Username = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.panel6 = new System.Windows.Forms.Panel();
+            this.comboShowIgnoredUsersMessagesIf = new System.Windows.Forms.ComboBox();
+            this.label15 = new System.Windows.Forms.Label();
+            this.chkTwitchIgnores = new System.Windows.Forms.CheckBox();
+            this.btnIgnoredUserRemove = new System.Windows.Forms.Button();
+            this.btnIgnoredUserAdd = new System.Windows.Forms.Button();
+            this.dgvIgnoredUsers = new System.Windows.Forms.DataGridView();
+            this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.label9 = new System.Windows.Forms.Label();
             this.panel5 = new System.Windows.Forms.Panel();
             this.chkAllowCommandAtEnd = new System.Windows.Forms.CheckBox();
             this.lblCommands = new System.Windows.Forms.Label();
@@ -137,16 +148,19 @@
             this.spConnection = new Chatterino.Controls.SettingsTabPage();
             this.tabs.SuspendLayout();
             this.RightPanel.SuspendLayout();
-            this.panel6.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvIgnoredUsers)).BeginInit();
             this.panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numThemeNightUntil)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numThemeNightFrom)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
-            this.panel11.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewAccounts)).BeginInit();
             this.panel4.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBarEmoteScale)).BeginInit();
             this.tabControl2.SuspendLayout();
             this.tabPage3.SuspendLayout();
+            this.panel11.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewAccounts)).BeginInit();
+            this.panel6.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvIgnoredUsers)).BeginInit();
             this.panel5.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvCommands)).BeginInit();
             this.panel8.SuspendLayout();
@@ -180,8 +194,8 @@
             this.tabs.Location = new System.Drawing.Point(0, 0);
             this.tabs.Name = "tabs";
             this.tabs.Panel = this.RightPanel;
-            this.tabs.SelectedIndex = 4;
-            this.tabs.SelectedTab = this.spIgnoredUsers;
+            this.tabs.SelectedIndex = 1;
+            this.tabs.SelectedTab = this.spAppearance;
             this.tabs.Size = new System.Drawing.Size(614, 484);
             this.tabs.TabIndex = 0;
             this.tabs.TabsWidth = 150;
@@ -191,10 +205,10 @@
             this.RightPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.RightPanel.Controls.Add(this.panel6);
             this.RightPanel.Controls.Add(this.panel1);
-            this.RightPanel.Controls.Add(this.panel11);
             this.RightPanel.Controls.Add(this.panel4);
+            this.RightPanel.Controls.Add(this.panel11);
+            this.RightPanel.Controls.Add(this.panel6);
             this.RightPanel.Controls.Add(this.panel5);
             this.RightPanel.Controls.Add(this.panel8);
             this.RightPanel.Controls.Add(this.panel7);
@@ -208,112 +222,16 @@
             this.RightPanel.Size = new System.Drawing.Size(464, 484);
             this.RightPanel.TabIndex = 0;
             // 
-            // panel6
-            // 
-            this.panel6.Controls.Add(this.comboShowIgnoredUsersMessagesIf);
-            this.panel6.Controls.Add(this.label15);
-            this.panel6.Controls.Add(this.chkTwitchIgnores);
-            this.panel6.Controls.Add(this.btnIgnoredUserRemove);
-            this.panel6.Controls.Add(this.btnIgnoredUserAdd);
-            this.panel6.Controls.Add(this.dgvIgnoredUsers);
-            this.panel6.Controls.Add(this.label9);
-            this.panel6.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel6.Location = new System.Drawing.Point(0, 0);
-            this.panel6.Name = "panel6";
-            this.panel6.Size = new System.Drawing.Size(464, 442);
-            this.panel6.TabIndex = 4;
-            // 
-            // comboShowIgnoredUsersMessagesIf
-            // 
-            this.comboShowIgnoredUsersMessagesIf.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboShowIgnoredUsersMessagesIf.FormattingEnabled = true;
-            this.comboShowIgnoredUsersMessagesIf.Items.AddRange(new object[] {
-            "You are moderator",
-            "You are broadcaster",
-            "Never"});
-            this.comboShowIgnoredUsersMessagesIf.Location = new System.Drawing.Point(322, 36);
-            this.comboShowIgnoredUsersMessagesIf.Name = "comboShowIgnoredUsersMessagesIf";
-            this.comboShowIgnoredUsersMessagesIf.Size = new System.Drawing.Size(109, 21);
-            this.comboShowIgnoredUsersMessagesIf.TabIndex = 25;
-            // 
-            // label15
-            // 
-            this.label15.AutoSize = true;
-            this.label15.ForeColor = System.Drawing.Color.White;
-            this.label15.Location = new System.Drawing.Point(177, 41);
-            this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(139, 13);
-            this.label15.TabIndex = 6;
-            this.label15.Text = "Show messages anyways if:";
-            // 
-            // chkTwitchIgnores
-            // 
-            this.chkTwitchIgnores.AutoSize = true;
-            this.chkTwitchIgnores.Checked = true;
-            this.chkTwitchIgnores.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkTwitchIgnores.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.chkTwitchIgnores.Location = new System.Drawing.Point(16, 13);
-            this.chkTwitchIgnores.Name = "chkTwitchIgnores";
-            this.chkTwitchIgnores.Size = new System.Drawing.Size(163, 17);
-            this.chkTwitchIgnores.TabIndex = 24;
-            this.chkTwitchIgnores.Text = "Enable Twitch Ignored Users";
-            this.chkTwitchIgnores.UseVisualStyleBackColor = true;
-            // 
-            // btnIgnoredUserRemove
-            // 
-            this.btnIgnoredUserRemove.Location = new System.Drawing.Point(96, 36);
-            this.btnIgnoredUserRemove.Name = "btnIgnoredUserRemove";
-            this.btnIgnoredUserRemove.Size = new System.Drawing.Size(75, 23);
-            this.btnIgnoredUserRemove.TabIndex = 8;
-            this.btnIgnoredUserRemove.Text = "Remove";
-            this.btnIgnoredUserRemove.UseVisualStyleBackColor = true;
-            // 
-            // btnIgnoredUserAdd
-            // 
-            this.btnIgnoredUserAdd.Location = new System.Drawing.Point(16, 36);
-            this.btnIgnoredUserAdd.Name = "btnIgnoredUserAdd";
-            this.btnIgnoredUserAdd.Size = new System.Drawing.Size(75, 23);
-            this.btnIgnoredUserAdd.TabIndex = 7;
-            this.btnIgnoredUserAdd.Text = "Add";
-            this.btnIgnoredUserAdd.UseVisualStyleBackColor = true;
-            // 
-            // dgvIgnoredUsers
-            // 
-            this.dgvIgnoredUsers.AllowUserToAddRows = false;
-            this.dgvIgnoredUsers.AllowUserToDeleteRows = false;
-            this.dgvIgnoredUsers.AllowUserToResizeColumns = false;
-            this.dgvIgnoredUsers.AllowUserToResizeRows = false;
-            this.dgvIgnoredUsers.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvIgnoredUsers.ColumnHeadersVisible = false;
-            this.dgvIgnoredUsers.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.dataGridViewTextBoxColumn1});
-            this.dgvIgnoredUsers.Location = new System.Drawing.Point(16, 63);
-            this.dgvIgnoredUsers.Name = "dgvIgnoredUsers";
-            this.dgvIgnoredUsers.RowHeadersVisible = false;
-            this.dgvIgnoredUsers.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvIgnoredUsers.Size = new System.Drawing.Size(415, 268);
-            this.dgvIgnoredUsers.TabIndex = 6;
-            // 
-            // dataGridViewTextBoxColumn1
-            // 
-            this.dataGridViewTextBoxColumn1.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.dataGridViewTextBoxColumn1.HeaderText = "Command";
-            this.dataGridViewTextBoxColumn1.Name = "dataGridViewTextBoxColumn1";
-            // 
-            // label9
-            // 
-            this.label9.AutoSize = true;
-            this.label9.ForeColor = System.Drawing.Color.White;
-            this.label9.Location = new System.Drawing.Point(13, 334);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(361, 65);
-            this.label9.TabIndex = 5;
-            this.label9.Text = "/ignore in chat to ignore someone\r\n/unignore in chat to unignore someone\r\n\r\nChatt" +
-    "erino uses the twitch ignore api.\r\nIf you use your own oauth key make sure that " +
-    "it has the proper permissions.";
-            // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.labelNightDesc);
+            this.panel1.Controls.Add(this.numThemeNightUntil);
+            this.panel1.Controls.Add(this.labelNightThemeUntil);
+            this.panel1.Controls.Add(this.numThemeNightFrom);
+            this.panel1.Controls.Add(this.labelThemeNightFrom);
+            this.panel1.Controls.Add(this.comboThemeNight);
+            this.panel1.Controls.Add(this.labelThemeNight);
+            this.panel1.Controls.Add(this.checkBoxDifferentThemeAtNight);
             this.panel1.Controls.Add(this.chkLastReadMessageIndicator);
             this.panel1.Controls.Add(this.chkTopMost);
             this.panel1.Controls.Add(this.chkTabLocalizedNames);
@@ -341,6 +259,121 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(464, 442);
             this.panel1.TabIndex = 0;
+            // 
+            // labelNightDesc
+            // 
+            this.labelNightDesc.AutoSize = true;
+            this.labelNightDesc.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.labelNightDesc.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.labelNightDesc.Location = new System.Drawing.Point(410, 44);
+            this.labelNightDesc.Name = "labelNightDesc";
+            this.labelNightDesc.Size = new System.Drawing.Size(34, 13);
+            this.labelNightDesc.TabIndex = 35;
+            this.labelNightDesc.Text = "(1-24)";
+            // 
+            // numThemeNightUntil
+            // 
+            this.numThemeNightUntil.Location = new System.Drawing.Point(346, 40);
+            this.numThemeNightUntil.Maximum = new decimal(new int[] {
+            24,
+            0,
+            0,
+            0});
+            this.numThemeNightUntil.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.numThemeNightUntil.Name = "numThemeNightUntil";
+            this.numThemeNightUntil.Size = new System.Drawing.Size(57, 20);
+            this.numThemeNightUntil.TabIndex = 34;
+            this.numThemeNightUntil.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
+            // labelNightThemeUntil
+            // 
+            this.labelNightThemeUntil.AutoSize = true;
+            this.labelNightThemeUntil.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.labelNightThemeUntil.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.labelNightThemeUntil.Location = new System.Drawing.Point(315, 44);
+            this.labelNightThemeUntil.Name = "labelNightThemeUntil";
+            this.labelNightThemeUntil.Size = new System.Drawing.Size(26, 13);
+            this.labelNightThemeUntil.TabIndex = 33;
+            this.labelNightThemeUntil.Text = "until";
+            // 
+            // numThemeNightFrom
+            // 
+            this.numThemeNightFrom.Location = new System.Drawing.Point(252, 40);
+            this.numThemeNightFrom.Maximum = new decimal(new int[] {
+            24,
+            0,
+            0,
+            0});
+            this.numThemeNightFrom.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.numThemeNightFrom.Name = "numThemeNightFrom";
+            this.numThemeNightFrom.Size = new System.Drawing.Size(57, 20);
+            this.numThemeNightFrom.TabIndex = 32;
+            this.numThemeNightFrom.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
+            // labelThemeNightFrom
+            // 
+            this.labelThemeNightFrom.AutoSize = true;
+            this.labelThemeNightFrom.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.labelThemeNightFrom.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.labelThemeNightFrom.Location = new System.Drawing.Point(222, 44);
+            this.labelThemeNightFrom.Name = "labelThemeNightFrom";
+            this.labelThemeNightFrom.Size = new System.Drawing.Size(27, 13);
+            this.labelThemeNightFrom.TabIndex = 31;
+            this.labelThemeNightFrom.Text = "from";
+            // 
+            // comboThemeNight
+            // 
+            this.comboThemeNight.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboThemeNight.FormattingEnabled = true;
+            this.comboThemeNight.Items.AddRange(new object[] {
+            "White",
+            "Light",
+            "Dark",
+            "Black"});
+            this.comboThemeNight.Location = new System.Drawing.Point(97, 41);
+            this.comboThemeNight.Name = "comboThemeNight";
+            this.comboThemeNight.Size = new System.Drawing.Size(119, 21);
+            this.comboThemeNight.TabIndex = 29;
+            // 
+            // labelThemeNight
+            // 
+            this.labelThemeNight.AutoSize = true;
+            this.labelThemeNight.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.labelThemeNight.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.labelThemeNight.Location = new System.Drawing.Point(14, 44);
+            this.labelThemeNight.Name = "labelThemeNight";
+            this.labelThemeNight.Size = new System.Drawing.Size(77, 13);
+            this.labelThemeNight.TabIndex = 30;
+            this.labelThemeNight.Text = "Theme (Night):";
+            // 
+            // checkBoxDifferentThemeAtNight
+            // 
+            this.checkBoxDifferentThemeAtNight.AutoSize = true;
+            this.checkBoxDifferentThemeAtNight.Checked = true;
+            this.checkBoxDifferentThemeAtNight.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBoxDifferentThemeAtNight.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.checkBoxDifferentThemeAtNight.Location = new System.Drawing.Point(243, 14);
+            this.checkBoxDifferentThemeAtNight.Name = "checkBoxDifferentThemeAtNight";
+            this.checkBoxDifferentThemeAtNight.Size = new System.Drawing.Size(160, 17);
+            this.checkBoxDifferentThemeAtNight.TabIndex = 28;
+            this.checkBoxDifferentThemeAtNight.Text = "different Theme during Night";
+            this.checkBoxDifferentThemeAtNight.UseVisualStyleBackColor = true;
             // 
             // chkLastReadMessageIndicator
             // 
@@ -426,7 +459,7 @@
             // 
             // btnSelectFont
             // 
-            this.btnSelectFont.Location = new System.Drawing.Point(99, 80);
+            this.btnSelectFont.Location = new System.Drawing.Point(101, 127);
             this.btnSelectFont.Name = "btnSelectFont";
             this.btnSelectFont.Size = new System.Drawing.Size(75, 23);
             this.btnSelectFont.TabIndex = 14;
@@ -438,7 +471,7 @@
             this.label10.AutoSize = true;
             this.label10.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
             this.label10.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.label10.Location = new System.Drawing.Point(14, 41);
+            this.label10.Location = new System.Drawing.Point(17, 95);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(66, 13);
             this.label10.TabIndex = 20;
@@ -447,7 +480,7 @@
             // trackBar1
             // 
             this.trackBar1.LargeChange = 45;
-            this.trackBar1.Location = new System.Drawing.Point(89, 36);
+            this.trackBar1.Location = new System.Drawing.Point(89, 90);
             this.trackBar1.Maximum = 360;
             this.trackBar1.Name = "trackBar1";
             this.trackBar1.Size = new System.Drawing.Size(250, 45);
@@ -476,7 +509,7 @@
             "Black"});
             this.comboTheme.Location = new System.Drawing.Point(97, 11);
             this.comboTheme.Name = "comboTheme";
-            this.comboTheme.Size = new System.Drawing.Size(167, 21);
+            this.comboTheme.Size = new System.Drawing.Size(119, 21);
             this.comboTheme.TabIndex = 16;
             // 
             // label7
@@ -506,7 +539,7 @@
             this.lblFont.AutoSize = true;
             this.lblFont.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
             this.lblFont.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.lblFont.Location = new System.Drawing.Point(183, 85);
+            this.lblFont.Location = new System.Drawing.Point(185, 132);
             this.lblFont.Name = "lblFont";
             this.lblFont.Size = new System.Drawing.Size(54, 13);
             this.lblFont.TabIndex = 15;
@@ -517,7 +550,7 @@
             this.label5.AutoSize = true;
             this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
             this.label5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.label5.Location = new System.Drawing.Point(16, 85);
+            this.label5.Location = new System.Drawing.Point(18, 132);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(31, 13);
             this.label5.TabIndex = 13;
@@ -536,7 +569,7 @@
             // 
             // txtMsgLimit
             // 
-            this.txtMsgLimit.Location = new System.Drawing.Point(99, 107);
+            this.txtMsgLimit.Location = new System.Drawing.Point(101, 398);
             this.txtMsgLimit.Name = "txtMsgLimit";
             this.txtMsgLimit.Size = new System.Drawing.Size(167, 20);
             this.txtMsgLimit.TabIndex = 10;
@@ -547,7 +580,7 @@
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
             this.label3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.label3.Location = new System.Drawing.Point(16, 111);
+            this.label3.Location = new System.Drawing.Point(18, 402);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(77, 13);
             this.label3.TabIndex = 11;
@@ -571,7 +604,7 @@
             this.chkTimestampSeconds.Checked = true;
             this.chkTimestampSeconds.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkTimestampSeconds.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.chkTimestampSeconds.Location = new System.Drawing.Point(18, 156);
+            this.chkTimestampSeconds.Location = new System.Drawing.Point(156, 158);
             this.chkTimestampSeconds.Name = "chkTimestampSeconds";
             this.chkTimestampSeconds.Size = new System.Drawing.Size(168, 17);
             this.chkTimestampSeconds.TabIndex = 1;
@@ -584,79 +617,18 @@
             this.chkTimestamps.Checked = true;
             this.chkTimestamps.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkTimestamps.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.chkTimestamps.Location = new System.Drawing.Point(18, 133);
+            this.chkTimestamps.Location = new System.Drawing.Point(18, 158);
             this.chkTimestamps.Name = "chkTimestamps";
             this.chkTimestamps.Size = new System.Drawing.Size(112, 17);
             this.chkTimestamps.TabIndex = 0;
             this.chkTimestamps.Text = "Show Timestamps";
             this.chkTimestamps.UseVisualStyleBackColor = true;
             // 
-            // panel11
-            // 
-            this.panel11.Controls.Add(this.label14);
-            this.panel11.Controls.Add(this.buttonAccountRemove);
-            this.panel11.Controls.Add(this.buttonAccountAdd);
-            this.panel11.Controls.Add(this.dataGridViewAccounts);
-            this.panel11.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel11.Location = new System.Drawing.Point(0, 0);
-            this.panel11.Name = "panel11";
-            this.panel11.Size = new System.Drawing.Size(464, 442);
-            this.panel11.TabIndex = 9;
-            // 
-            // label14
-            // 
-            this.label14.AutoSize = true;
-            this.label14.ForeColor = System.Drawing.Color.White;
-            this.label14.Location = new System.Drawing.Point(18, 12);
-            this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(401, 26);
-            this.label14.TabIndex = 5;
-            this.label14.Text = "Note: Using too many accounts from the same IP can get you suspended on twitch!\r\n" +
-    "Be careful and don\'t try to abuse the system!";
-            // 
-            // buttonAccountRemove
-            // 
-            this.buttonAccountRemove.Location = new System.Drawing.Point(99, 52);
-            this.buttonAccountRemove.Name = "buttonAccountRemove";
-            this.buttonAccountRemove.Size = new System.Drawing.Size(75, 23);
-            this.buttonAccountRemove.TabIndex = 2;
-            this.buttonAccountRemove.Text = "Remove";
-            this.buttonAccountRemove.UseVisualStyleBackColor = true;
-            // 
-            // buttonAccountAdd
-            // 
-            this.buttonAccountAdd.Location = new System.Drawing.Point(21, 52);
-            this.buttonAccountAdd.Name = "buttonAccountAdd";
-            this.buttonAccountAdd.Size = new System.Drawing.Size(75, 23);
-            this.buttonAccountAdd.TabIndex = 1;
-            this.buttonAccountAdd.Text = "Add";
-            this.buttonAccountAdd.UseVisualStyleBackColor = true;
-            // 
-            // dataGridViewAccounts
-            // 
-            this.dataGridViewAccounts.AllowUserToAddRows = false;
-            this.dataGridViewAccounts.AllowUserToDeleteRows = false;
-            this.dataGridViewAccounts.AllowUserToResizeColumns = false;
-            this.dataGridViewAccounts.AllowUserToResizeRows = false;
-            this.dataGridViewAccounts.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridViewAccounts.ColumnHeadersVisible = false;
-            this.dataGridViewAccounts.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.Username});
-            this.dataGridViewAccounts.Location = new System.Drawing.Point(19, 85);
-            this.dataGridViewAccounts.Name = "dataGridViewAccounts";
-            this.dataGridViewAccounts.RowHeadersVisible = false;
-            this.dataGridViewAccounts.Size = new System.Drawing.Size(417, 307);
-            this.dataGridViewAccounts.TabIndex = 0;
-            // 
-            // Username
-            // 
-            this.Username.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.Username.HeaderText = "Username";
-            this.Username.Name = "Username";
-            this.Username.ReadOnly = true;
-            // 
             // panel4
             // 
+            this.panel4.Controls.Add(this.labelEmoteScale);
+            this.panel4.Controls.Add(this.trackBarEmoteScale);
+            this.panel4.Controls.Add(this.checkBoxEmoteSizeBasedOnTextHeight);
             this.panel4.Controls.Add(this.chkTwitchEmotes);
             this.panel4.Controls.Add(this.tabControl2);
             this.panel4.Controls.Add(this.chkEmojis);
@@ -668,6 +640,36 @@
             this.panel4.Name = "panel4";
             this.panel4.Size = new System.Drawing.Size(464, 442);
             this.panel4.TabIndex = 2;
+            // 
+            // labelEmoteScale
+            // 
+            this.labelEmoteScale.AutoSize = true;
+            this.labelEmoteScale.ForeColor = System.Drawing.Color.White;
+            this.labelEmoteScale.Location = new System.Drawing.Point(305, 47);
+            this.labelEmoteScale.Name = "labelEmoteScale";
+            this.labelEmoteScale.Size = new System.Drawing.Size(82, 13);
+            this.labelEmoteScale.TabIndex = 26;
+            this.labelEmoteScale.Text = "Emote scale: 1x";
+            // 
+            // trackBarEmoteScale
+            // 
+            this.trackBarEmoteScale.Location = new System.Drawing.Point(243, 63);
+            this.trackBarEmoteScale.Maximum = 45;
+            this.trackBarEmoteScale.Name = "trackBarEmoteScale";
+            this.trackBarEmoteScale.Size = new System.Drawing.Size(193, 45);
+            this.trackBarEmoteScale.TabIndex = 25;
+            this.trackBarEmoteScale.Value = 5;
+            // 
+            // checkBoxEmoteSizeBasedOnTextHeight
+            // 
+            this.checkBoxEmoteSizeBasedOnTextHeight.AutoSize = true;
+            this.checkBoxEmoteSizeBasedOnTextHeight.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.checkBoxEmoteSizeBasedOnTextHeight.Location = new System.Drawing.Point(252, 13);
+            this.checkBoxEmoteSizeBasedOnTextHeight.Name = "checkBoxEmoteSizeBasedOnTextHeight";
+            this.checkBoxEmoteSizeBasedOnTextHeight.Size = new System.Drawing.Size(184, 17);
+            this.checkBoxEmoteSizeBasedOnTextHeight.TabIndex = 24;
+            this.checkBoxEmoteSizeBasedOnTextHeight.Text = "Emote Size based on Text Height";
+            this.checkBoxEmoteSizeBasedOnTextHeight.UseVisualStyleBackColor = true;
             // 
             // chkTwitchEmotes
             // 
@@ -776,6 +778,174 @@
             this.chkFFzEmotes.TabIndex = 10;
             this.chkFFzEmotes.Text = "Enable FrankerFaceZ Emotes";
             this.chkFFzEmotes.UseVisualStyleBackColor = true;
+            // 
+            // panel11
+            // 
+            this.panel11.Controls.Add(this.label14);
+            this.panel11.Controls.Add(this.buttonAccountRemove);
+            this.panel11.Controls.Add(this.buttonAccountAdd);
+            this.panel11.Controls.Add(this.dataGridViewAccounts);
+            this.panel11.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel11.Location = new System.Drawing.Point(0, 0);
+            this.panel11.Name = "panel11";
+            this.panel11.Size = new System.Drawing.Size(464, 442);
+            this.panel11.TabIndex = 9;
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.ForeColor = System.Drawing.Color.White;
+            this.label14.Location = new System.Drawing.Point(18, 12);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(401, 26);
+            this.label14.TabIndex = 5;
+            this.label14.Text = "Note: Using too many accounts from the same IP can get you suspended on twitch!\r\n" +
+    "Be careful and don\'t try to abuse the system!";
+            // 
+            // buttonAccountRemove
+            // 
+            this.buttonAccountRemove.Location = new System.Drawing.Point(99, 52);
+            this.buttonAccountRemove.Name = "buttonAccountRemove";
+            this.buttonAccountRemove.Size = new System.Drawing.Size(75, 23);
+            this.buttonAccountRemove.TabIndex = 2;
+            this.buttonAccountRemove.Text = "Remove";
+            this.buttonAccountRemove.UseVisualStyleBackColor = true;
+            // 
+            // buttonAccountAdd
+            // 
+            this.buttonAccountAdd.Location = new System.Drawing.Point(21, 52);
+            this.buttonAccountAdd.Name = "buttonAccountAdd";
+            this.buttonAccountAdd.Size = new System.Drawing.Size(75, 23);
+            this.buttonAccountAdd.TabIndex = 1;
+            this.buttonAccountAdd.Text = "Add";
+            this.buttonAccountAdd.UseVisualStyleBackColor = true;
+            // 
+            // dataGridViewAccounts
+            // 
+            this.dataGridViewAccounts.AllowUserToAddRows = false;
+            this.dataGridViewAccounts.AllowUserToDeleteRows = false;
+            this.dataGridViewAccounts.AllowUserToResizeColumns = false;
+            this.dataGridViewAccounts.AllowUserToResizeRows = false;
+            this.dataGridViewAccounts.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridViewAccounts.ColumnHeadersVisible = false;
+            this.dataGridViewAccounts.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.Username});
+            this.dataGridViewAccounts.Location = new System.Drawing.Point(19, 85);
+            this.dataGridViewAccounts.Name = "dataGridViewAccounts";
+            this.dataGridViewAccounts.RowHeadersVisible = false;
+            this.dataGridViewAccounts.Size = new System.Drawing.Size(417, 307);
+            this.dataGridViewAccounts.TabIndex = 0;
+            // 
+            // Username
+            // 
+            this.Username.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.Username.HeaderText = "Username";
+            this.Username.Name = "Username";
+            this.Username.ReadOnly = true;
+            // 
+            // panel6
+            // 
+            this.panel6.Controls.Add(this.comboShowIgnoredUsersMessagesIf);
+            this.panel6.Controls.Add(this.label15);
+            this.panel6.Controls.Add(this.chkTwitchIgnores);
+            this.panel6.Controls.Add(this.btnIgnoredUserRemove);
+            this.panel6.Controls.Add(this.btnIgnoredUserAdd);
+            this.panel6.Controls.Add(this.dgvIgnoredUsers);
+            this.panel6.Controls.Add(this.label9);
+            this.panel6.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel6.Location = new System.Drawing.Point(0, 0);
+            this.panel6.Name = "panel6";
+            this.panel6.Size = new System.Drawing.Size(464, 442);
+            this.panel6.TabIndex = 4;
+            // 
+            // comboShowIgnoredUsersMessagesIf
+            // 
+            this.comboShowIgnoredUsersMessagesIf.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboShowIgnoredUsersMessagesIf.FormattingEnabled = true;
+            this.comboShowIgnoredUsersMessagesIf.Items.AddRange(new object[] {
+            "You are moderator",
+            "You are broadcaster",
+            "Never"});
+            this.comboShowIgnoredUsersMessagesIf.Location = new System.Drawing.Point(322, 36);
+            this.comboShowIgnoredUsersMessagesIf.Name = "comboShowIgnoredUsersMessagesIf";
+            this.comboShowIgnoredUsersMessagesIf.Size = new System.Drawing.Size(109, 21);
+            this.comboShowIgnoredUsersMessagesIf.TabIndex = 25;
+            // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.ForeColor = System.Drawing.Color.White;
+            this.label15.Location = new System.Drawing.Point(177, 41);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(139, 13);
+            this.label15.TabIndex = 6;
+            this.label15.Text = "Show messages anyways if:";
+            // 
+            // chkTwitchIgnores
+            // 
+            this.chkTwitchIgnores.AutoSize = true;
+            this.chkTwitchIgnores.Checked = true;
+            this.chkTwitchIgnores.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkTwitchIgnores.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.chkTwitchIgnores.Location = new System.Drawing.Point(16, 13);
+            this.chkTwitchIgnores.Name = "chkTwitchIgnores";
+            this.chkTwitchIgnores.Size = new System.Drawing.Size(163, 17);
+            this.chkTwitchIgnores.TabIndex = 24;
+            this.chkTwitchIgnores.Text = "Enable Twitch Ignored Users";
+            this.chkTwitchIgnores.UseVisualStyleBackColor = true;
+            // 
+            // btnIgnoredUserRemove
+            // 
+            this.btnIgnoredUserRemove.Location = new System.Drawing.Point(96, 36);
+            this.btnIgnoredUserRemove.Name = "btnIgnoredUserRemove";
+            this.btnIgnoredUserRemove.Size = new System.Drawing.Size(75, 23);
+            this.btnIgnoredUserRemove.TabIndex = 8;
+            this.btnIgnoredUserRemove.Text = "Remove";
+            this.btnIgnoredUserRemove.UseVisualStyleBackColor = true;
+            // 
+            // btnIgnoredUserAdd
+            // 
+            this.btnIgnoredUserAdd.Location = new System.Drawing.Point(16, 36);
+            this.btnIgnoredUserAdd.Name = "btnIgnoredUserAdd";
+            this.btnIgnoredUserAdd.Size = new System.Drawing.Size(75, 23);
+            this.btnIgnoredUserAdd.TabIndex = 7;
+            this.btnIgnoredUserAdd.Text = "Add";
+            this.btnIgnoredUserAdd.UseVisualStyleBackColor = true;
+            // 
+            // dgvIgnoredUsers
+            // 
+            this.dgvIgnoredUsers.AllowUserToAddRows = false;
+            this.dgvIgnoredUsers.AllowUserToDeleteRows = false;
+            this.dgvIgnoredUsers.AllowUserToResizeColumns = false;
+            this.dgvIgnoredUsers.AllowUserToResizeRows = false;
+            this.dgvIgnoredUsers.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvIgnoredUsers.ColumnHeadersVisible = false;
+            this.dgvIgnoredUsers.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.dataGridViewTextBoxColumn1});
+            this.dgvIgnoredUsers.Location = new System.Drawing.Point(16, 63);
+            this.dgvIgnoredUsers.Name = "dgvIgnoredUsers";
+            this.dgvIgnoredUsers.RowHeadersVisible = false;
+            this.dgvIgnoredUsers.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dgvIgnoredUsers.Size = new System.Drawing.Size(415, 268);
+            this.dgvIgnoredUsers.TabIndex = 6;
+            // 
+            // dataGridViewTextBoxColumn1
+            // 
+            this.dataGridViewTextBoxColumn1.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.dataGridViewTextBoxColumn1.HeaderText = "Command";
+            this.dataGridViewTextBoxColumn1.Name = "dataGridViewTextBoxColumn1";
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.ForeColor = System.Drawing.Color.White;
+            this.label9.Location = new System.Drawing.Point(13, 334);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(361, 65);
+            this.label9.TabIndex = 5;
+            this.label9.Text = "/ignore in chat to ignore someone\r\n/unignore in chat to unignore someone\r\n\r\nChatt" +
+    "erino uses the twitch ignore api.\r\nIf you use your own oauth key make sure that " +
+    "it has the proper permissions.";
             // 
             // panel5
             // 
@@ -1290,7 +1460,6 @@
             this.spAppearance.Location = new System.Drawing.Point(0, 30);
             this.spAppearance.Name = "spAppearance";
             this.spAppearance.Panel = this.panel1;
-            this.spAppearance.Selected = false;
             this.spAppearance.Size = new System.Drawing.Size(150, 30);
             this.spAppearance.TabIndex = 1;
             this.spAppearance.Text = "Appearance";
@@ -1326,6 +1495,7 @@
             this.spIgnoredUsers.Location = new System.Drawing.Point(0, 120);
             this.spIgnoredUsers.Name = "spIgnoredUsers";
             this.spIgnoredUsers.Panel = this.panel6;
+            this.spIgnoredUsers.Selected = false;
             this.spIgnoredUsers.Size = new System.Drawing.Size(150, 30);
             this.spIgnoredUsers.TabIndex = 6;
             this.spIgnoredUsers.Text = "Ignored Users";
@@ -1421,21 +1591,24 @@
             this.Text = "Preferences";
             this.tabs.ResumeLayout(false);
             this.RightPanel.ResumeLayout(false);
-            this.panel6.ResumeLayout(false);
-            this.panel6.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvIgnoredUsers)).EndInit();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numThemeNightUntil)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numThemeNightFrom)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).EndInit();
-            this.panel11.ResumeLayout(false);
-            this.panel11.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewAccounts)).EndInit();
             this.panel4.ResumeLayout(false);
             this.panel4.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBarEmoteScale)).EndInit();
             this.tabControl2.ResumeLayout(false);
             this.tabPage3.ResumeLayout(false);
             this.tabPage3.PerformLayout();
+            this.panel11.ResumeLayout(false);
+            this.panel11.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridViewAccounts)).EndInit();
+            this.panel6.ResumeLayout(false);
+            this.panel6.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvIgnoredUsers)).EndInit();
             this.panel5.ResumeLayout(false);
             this.panel5.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvCommands)).EndInit();
@@ -1569,5 +1742,16 @@
         private System.Windows.Forms.Label label14;
         private System.Windows.Forms.Label label15;
         private System.Windows.Forms.ComboBox comboShowIgnoredUsersMessagesIf;
+        private System.Windows.Forms.CheckBox checkBoxEmoteSizeBasedOnTextHeight;
+        private System.Windows.Forms.TrackBar trackBarEmoteScale;
+        private System.Windows.Forms.Label labelEmoteScale;
+        private System.Windows.Forms.CheckBox checkBoxDifferentThemeAtNight;
+        private System.Windows.Forms.ComboBox comboThemeNight;
+        private System.Windows.Forms.Label labelThemeNight;
+        private System.Windows.Forms.Label labelThemeNightFrom;
+        private System.Windows.Forms.NumericUpDown numThemeNightFrom;
+        private System.Windows.Forms.NumericUpDown numThemeNightUntil;
+        private System.Windows.Forms.Label labelNightThemeUntil;
+        private System.Windows.Forms.Label labelNightDesc;
     }
 }

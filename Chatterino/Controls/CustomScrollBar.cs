@@ -387,8 +387,7 @@ namespace Chatterino.Controls
 
                                 y += buttonSize;
 
-                                int width;
-                                int height;
+                                int width, height, xOffset = 0;
 
                                 if (highlight.Style == ScrollBarHighlightStyle.SingleLine)
                                 {
@@ -398,10 +397,15 @@ namespace Chatterino.Controls
                                 else
                                 {
                                     height = a + Math.Max(4, (int)(h / (Maximum + 1)));
-                                    width = (int)(4);
+                                    width = 4;
                                 }
 
-                                g.FillRectangle(brush, Width / 2 - (width / 2), y, width, height);
+                                if (highlight.Style == ScrollBarHighlightStyle.Right)
+                                {
+                                    xOffset = Width/4;
+                                }
+
+                                g.FillRectangle(brush, xOffset + Width / 2 - (width / 2), y, width, height);
                             }
                         }
                     }

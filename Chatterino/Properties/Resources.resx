@@ -211,4 +211,7 @@
   <data name="screenshot_user" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\screenshot_user.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="tool_moreCollapser_off16" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\tool_moreCollapser_off16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>

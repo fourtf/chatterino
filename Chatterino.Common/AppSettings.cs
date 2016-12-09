@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Chatterino.Common
@@ -20,18 +21,72 @@ namespace Chatterino.Common
         // Theme
         public static event EventHandler ThemeChanged;
 
-        private static string theme = "Dark";
+        public static string CurrentTheme { get; private set; }
+
+        private static string _theme = "Dark";
 
         public static string Theme
         {
-            get { return theme; }
+            get { return _theme; }
             set
             {
-                if (theme != value)
+                if (_theme != value)
                 {
-                    theme = value;
-                    ThemeChanged?.Invoke(null, EventArgs.Empty);
+                    _theme = value;
+                    UpdateCurrentTheme();
                 }
+            }
+        }
+
+        private static string _nightTheme = "Dark";
+
+        public static string NightTheme
+        {
+            get { return _nightTheme; }
+            set
+            {
+                if (_nightTheme != value)
+                {
+                    _nightTheme = value;
+                    UpdateCurrentTheme();
+                }
+            }
+        }
+
+        private static int _nightThemeStart = 20;
+
+        public static int NightThemeStart
+        {
+            get { return _nightThemeStart; }
+            set
+            {
+                _nightThemeStart = value;
+
+                UpdateCurrentTheme();
+            }
+        }
+
+        private static int _nightThemeEnd = 6;
+
+        public static int NightThemeEnd
+        {
+            get { return _nightThemeEnd; }
+            set
+            {
+                _nightThemeEnd = value;
+
+                UpdateCurrentTheme();
+            }
+        }
+
+        private static bool _enableNightTheme;
+
+        public static bool EnableNightTheme
+        {
+            get { return _enableNightTheme; }
+            set
+            {
+                _enableNightTheme = value; UpdateCurrentTheme();
             }
         }
 
@@ -43,8 +98,44 @@ namespace Chatterino.Common
             set { themeHue = value; ThemeChanged?.Invoke(null, null); }
         }
 
+        public static void UpdateCurrentTheme()
+        {
+            string theme;
+
+            if (!EnableNightTheme)
+            {
+                theme = Theme;
+            }
+            else
+            {
+                var now = DateTime.Now;
+
+                // start: 20:00, end: 6:00
+                if (NightThemeStart > NightThemeEnd)
+                {
+                    theme = (NightThemeStart <= now.Hour || NightThemeEnd > now.Hour) ? NightTheme : Theme;
+                }
+                else
+                {
+                    theme = (NightThemeStart <= now.Hour && NightThemeEnd > now.Hour) ? NightTheme : Theme;
+                }
+            }
+
+            Console.WriteLine(theme);
+
+            if (theme != CurrentTheme)
+            {
+                CurrentTheme = theme;
+
+                ThemeChanged?.Invoke(null, EventArgs.Empty);
+            }
+        }
+
         // Chat
         public static double ScrollMultiplyer { get; set; } = 1;
+
+        public static double EmoteScale { get; set; } = 1;
+        public static bool EmoteScaleByLineHeight { get; set; } = false;
 
         // 0 = no, 1 = if mod, 2 = if broadcaster
         public static int ChatShowIgnoredUsersMessages { get; set; } = 1;
@@ -196,6 +287,8 @@ namespace Chatterino.Common
         // static stuff
         public static ConcurrentDictionary<string, PropertyInfo> Properties = new ConcurrentDictionary<string, PropertyInfo>();
 
+        private static System.Threading.Timer everyHourTimer;
+
         static AppSettings()
         {
             var T = typeof(AppSettings);
@@ -208,6 +301,14 @@ namespace Chatterino.Common
                         Properties[property.Name] = property;
                 }
             }
+
+            Func<long> timeUntilFullHour = () => ((59 - DateTime.Now.Minute) * 60 + 60 - DateTime.Now.Second) * 1000;
+
+            everyHourTimer = new Timer(state =>
+            {
+                UpdateCurrentTheme();
+                everyHourTimer.Change(timeUntilFullHour(), -1);
+            }, null, timeUntilFullHour(), -1);
         }
 
 

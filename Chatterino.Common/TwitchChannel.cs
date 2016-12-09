@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System;
+using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Drawing;
@@ -43,21 +44,21 @@ namespace Chatterino.Common
         public event EventHandler LiveStatusUpdated;
 
         // Channel Emotes
-        public ConcurrentDictionary<string, TwitchEmote> BttvChannelEmotes { get; private set; }
-        = new ConcurrentDictionary<string, TwitchEmote>();
+        public ConcurrentDictionary<string, LazyLoadedImage> BttvChannelEmotes { get; private set; }
+        = new ConcurrentDictionary<string, LazyLoadedImage>();
 
-        public ConcurrentDictionary<string, TwitchEmote> FfzChannelEmotes { get; private set; }
-        = new ConcurrentDictionary<string, TwitchEmote>();
+        public ConcurrentDictionary<string, LazyLoadedImage> FfzChannelEmotes { get; private set; }
+        = new ConcurrentDictionary<string, LazyLoadedImage>();
 
 
         // Sub Badge
-        private TwitchEmote subBadge;
+        private LazyLoadedImage subBadge;
 
-        public TwitchEmote SubscriberBadge
+        public LazyLoadedImage SubscriberBadge
         {
             get
             {
-                return subBadge ?? (subBadge = new TwitchEmote
+                return subBadge ?? (subBadge = new LazyLoadedImage
                 {
                     LoadAction = () =>
                     {
@@ -97,11 +98,11 @@ namespace Chatterino.Common
             }
         }
 
-        public ConcurrentDictionary<int, TwitchEmote> SubscriberBadges = new ConcurrentDictionary<int, TwitchEmote>();
+        public ConcurrentDictionary<int, LazyLoadedImage> SubscriberBadges = new ConcurrentDictionary<int, LazyLoadedImage>();
 
-        public TwitchEmote GetSubscriberBadge(int months)
+        public LazyLoadedImage GetSubscriberBadge(int months)
         {
-            TwitchEmote emote;
+            LazyLoadedImage emote;
 
             if (SubscriberBadges.TryGetValue(months, out emote))
             {
@@ -113,7 +114,7 @@ namespace Chatterino.Common
 
 
         // Moderator Badge
-        public TwitchEmote ModeratorBadge { get; private set; } = null;
+        public LazyLoadedImage ModeratorBadge { get; private set; } = null;
 
 
         // Roomstate
@@ -293,7 +294,7 @@ namespace Chatterino.Common
                                     string description = value["description"];
                                     string clickUrl = value["click_url"];
 
-                                    SubscriberBadges[months] = new TwitchEmote
+                                    SubscriberBadges[months] = new LazyLoadedImage
                                     {
                                         Name = title,
                                         Url = imageUrl,
@@ -569,7 +570,7 @@ namespace Chatterino.Common
         }
 
 
-        // Emote + Name Autocompletion
+        // LazyLoadedImage + Name Autocompletion
         public ConcurrentDictionary<string, string> Users = new ConcurrentDictionary<string, string>();
 
         List<KeyValuePair<string, string>> emoteNames = new List<KeyValuePair<string, string>>();
@@ -694,6 +695,8 @@ namespace Chatterino.Common
 
         public object MessageLock { get; private set; } = new object();
 
+        public static IEnumerable<TwitchChannel> AllChannels => Channels.Concat(new[] {WhisperChannel, MentionsChannel});
+
         public void ClearChat(bool removeMessages)
         {
             if (removeMessages)
@@ -747,7 +750,11 @@ namespace Chatterino.Common
                 {
                     if (m.TimeoutUser != user) continue;
 
-                    Messages[i] = new Message($"{user} was timed out for {duration} second{(duration != 1 ? "s" : "")}: \"{reason}\" (multiple times)") { TimeoutUser = user };
+                    Messages[i] =
+                        new Message(
+                            $"{user} was timed out for {duration} second{(duration != 1 ? "s" : "")}: \"{reason}\" (multiple times)",
+                            HSLColor.Gray, true)
+                        { TimeoutUser = user, Id = Messages[i].Id };
                     Monitor.Exit(MessageLock);
 
                     ChatCleared?.Invoke(this, new ChatClearedEventArgs(user, reason, duration));
@@ -759,7 +766,10 @@ namespace Chatterino.Common
 
             Monitor.Exit(MessageLock);
 
-            AddMessage(new Message($"{user} was timed out for {duration} second{(duration != 1 ? "s" : "")}: \"{reason}\"") { TimeoutUser = user });
+            AddMessage(
+                new Message($"{user} was timed out for {duration} second{(duration != 1 ? "s" : "")}: \"{reason}\"",
+                    HSLColor.Gray, true)
+                { TimeoutUser = user });
 
             ChatCleared?.Invoke(this, new ChatClearedEventArgs(user, reason, duration));
         }
@@ -887,7 +897,7 @@ namespace Chatterino.Common
                             string code = e["code"];
                             string channel = e["channel"];
 
-                            TwitchEmote emote;
+                            LazyLoadedImage emote;
                             if (Emotes.BttvChannelEmotesCache.TryGetValue(id, out emote))
                             {
                                 BttvChannelEmotes[code] = emote;
@@ -896,7 +906,15 @@ namespace Chatterino.Common
                             {
                                 string imageType = e["imageType"];
                                 string url = template.Replace("{{id}}", id).Replace("{{image}}", "1x");
-                                Emotes.BttvChannelEmotesCache[id] = BttvChannelEmotes[code] = new TwitchEmote { Name = code, Url = url, Tooltip = code + "\nBetterTTV Channel Emote\nChannel: " + channel };
+                                Emotes.BttvChannelEmotesCache[id] =
+                                    BttvChannelEmotes[code] =
+                                        new LazyLoadedImage
+                                        {
+                                            Name = code,
+                                            Url = url,
+                                            Tooltip = code + "\nBetterTTV Channel Emote\nChannel: " + channel,
+                                            IsEmote = true
+                                        };
                             }
                         }
                     }
@@ -951,7 +969,7 @@ namespace Chatterino.Common
                                 if (moderator != null && !string.IsNullOrWhiteSpace((string)moderator))
                                 {
                                     var url = "https:" + (moderator as string);
-                                    ModeratorBadge = new TwitchEmote
+                                    ModeratorBadge = new LazyLoadedImage
                                     {
                                         Url = url,
                                         Tooltip = "custom moderator badge\nFFZ",
@@ -1004,14 +1022,22 @@ namespace Chatterino.Common
 
                                 string url = "http:" + urls["1"];
 
-                                TwitchEmote emote;
+                                LazyLoadedImage emote;
                                 if (Emotes.FfzChannelEmotesCache.TryGetValue(id, out emote))
                                 {
                                     FfzChannelEmotes[code] = emote;
                                 }
                                 else
                                 {
-                                    Emotes.FfzChannelEmotesCache[id] = FfzChannelEmotes[code] = new TwitchEmote { Name = code, Url = url, Tooltip = code + "\nFFZ Channel Emote\nChannel: " + ownerName };
+                                    Emotes.FfzChannelEmotesCache[id] =
+                                        FfzChannelEmotes[code] =
+                                            new LazyLoadedImage
+                                            {
+                                                Name = code,
+                                                Url = url,
+                                                Tooltip = code + "\nFFZ Channel Emote\nChannel: " + ownerName,
+                                                IsEmote = true
+                                            };
                                 }
                             }
                         }

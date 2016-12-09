@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using TwitchIrc;
 
 namespace Chatterino.Common
@@ -21,6 +22,10 @@ namespace Chatterino.Common
         public int TotalY { get; set; }
         public int Height { get; private set; }
         public int Width { get; set; } = 0;
+
+        private static long _currentId = long.MinValue;
+        // when replacing messages, the id should always stay the same
+        public long Id { get; set; } = Interlocked.Increment(ref _currentId);
 
         public bool Disabled { get; set; } = false;
         public HighlightType HighlightType { get; set; } = HighlightType.None;
@@ -61,7 +66,7 @@ namespace Chatterino.Common
         public TwitchChannel Channel { get; set; }
 
         private static Regex _linkRegex = new Regex(@"^((?<Protocol>\w+):\/\/)?(?<Domain>[\w%@-][\w.%-:@]+\w)\/?[\w\.?=#%&=\+\-@/$,\(\)]*$", RegexOptions.Compiled);
-        private static char[] _linkIdentifiers = new char[] { '.', ':' };
+        private static char[] _linkIdentifiers = { '.', ':' };
 
         public DateTime ParseTime { get; set; }
 
@@ -266,7 +271,7 @@ namespace Chatterino.Common
 
                             Badges |= MessageBadges.Sub;
                             var e = channel.GetSubscriberBadge(n);
-                            words.Add(new Word { Type = SpanType.Emote, Value = e, Link = new Link(LinkType.Url, Channel.SubLink), Tooltip = e.Tooltip });
+                            words.Add(new Word { Type = SpanType.LazyLoadedImage, Value = e, Link = new Link(LinkType.Url, Channel.SubLink), Tooltip = e.Tooltip });
                         }
                         catch { }
                     }
@@ -294,7 +299,7 @@ namespace Chatterino.Common
                                 }
                                 else
                                 {
-                                    words.Add(new Word { Type = SpanType.Emote, Value = channel.ModeratorBadge, Tooltip = channel.ModeratorBadge.Tooltip });
+                                    words.Add(new Word { Type = SpanType.LazyLoadedImage, Value = channel.ModeratorBadge, Tooltip = channel.ModeratorBadge.Tooltip });
                                 }
                                 break;
                             case "turbo/1":
@@ -314,10 +319,10 @@ namespace Chatterino.Common
                 }
             }
 
-            TwitchEmote fourtfBadge;
+            LazyLoadedImage fourtfBadge;
             if (Common.Badges.FourtfGlobalBadges.TryGetValue(Username, out fourtfBadge))
             {
-                words.Add(new Word { Type = SpanType.Emote, Value = fourtfBadge, Tooltip = fourtfBadge.Tooltip });
+                words.Add(new Word { Type = SpanType.LazyLoadedImage, Value = fourtfBadge, Tooltip = fourtfBadge.Tooltip });
             }
 
             // Username
@@ -355,7 +360,7 @@ namespace Chatterino.Common
                 CopyText = messageUser
             });
 
-            var twitchEmotes = new List<Tuple<int, TwitchEmote>>();
+            var twitchEmotes = new List<Tuple<int, LazyLoadedImage>>();
 
             // Twitch Emotes
             if (AppSettings.ChatEnableTwitchEmotes && data.Tags.TryGetValue("emotes", out value))
@@ -417,7 +422,7 @@ namespace Chatterino.Common
                     {
                         words.Add(new Word
                         {
-                            Type = SpanType.Emote,
+                            Type = SpanType.LazyLoadedImage,
                             Value = currentTwitchEmote.Item2,
                             Link = new Link(LinkType.Url, currentTwitchEmote.Item2.Url),
                             Tooltip = currentTwitchEmote.Item2.Tooltip,
@@ -438,13 +443,13 @@ namespace Chatterino.Common
                     {
                         //foreach (var match in Regex.Matches(@"\b\w+\b", s))
                         //{
-                        //    TwitchEmote bttvEmote;
+                        //    LazyLoadedImage bttvEmote;
                         //    if (AppSettings.ChatEnableBttvEmotes && (Emotes.BttvGlobalEmotes.TryGetValue(s, out bttvEmote) || channel.BttvChannelEmotes.TryGetValue(s, out bttvEmote))
                         //        || (AppSettings.ChatEnableFfzEmotes && Emotes.FfzGlobalEmotes.TryGetValue(s, out bttvEmote)))
                         //    {
                         //        words.Add(new Word
                         //        {
-                        //            Type = SpanType.Emote,
+                        //            Type = SpanType.LazyLoadedImage,
                         //            Value = bttvEmote,
                         //            Color = slashMe ? UsernameColor : new int?(),
                         //            Tooltip = bttvEmote.Tooltip,
@@ -492,21 +497,21 @@ namespace Chatterino.Common
 
                                 var bitsLink = $"http://static-cdn.jtvnw.net/bits/{(GuiEngine.Current.IsDarkTheme ? "dark" : "light")}/animated/{color}/1";
 
-                                words.Add(new Word { Type = SpanType.Emote, Value = Emotes.MiscEmotesByUrl.GetOrAdd(bitsLink, url => new TwitchEmote { Name = "cheer", Url = url, Tooltip = "Twitch Bits Badge" }), Tooltip = "Twitch Bits Donation", CopyText = s, Link = new Link(LinkType.Url, "https://blog.twitch.tv/introducing-cheering-celebrate-together-da62af41fac6") });
+                                words.Add(new Word { Type = SpanType.LazyLoadedImage, Value = Emotes.MiscEmotesByUrl.GetOrAdd(bitsLink, url => new LazyLoadedImage { Name = "cheer", Url = url, Tooltip = "Twitch Bits Badge" }), Tooltip = "Twitch Bits Donation", CopyText = s, Link = new Link(LinkType.Url, "https://blog.twitch.tv/introducing-cheering-celebrate-together-da62af41fac6") });
                                 words.Add(new Word { Type = SpanType.Text, Value = "x" + s.Substring(5), Font = FontType.Small, Color = bitsColor });
 
                                 continue;
                             }
                         }
 
-                        TwitchEmote bttvEmote;
+                        LazyLoadedImage bttvEmote;
                         if (!AppSettings.ChatIgnoredEmotes.ContainsKey(s) && (AppSettings.ChatEnableBttvEmotes && (Emotes.BttvGlobalEmotes.TryGetValue(s, out bttvEmote) || channel.BttvChannelEmotes.TryGetValue(s, out bttvEmote))
                             || (AppSettings.ChatEnableFfzEmotes && (Emotes.FfzGlobalEmotes.TryGetValue(s, out bttvEmote) || channel.FfzChannelEmotes.TryGetValue(s, out bttvEmote)))
                             || Emotes.ChatterinoEmotes.TryGetValue(s, out bttvEmote)))
                         {
                             words.Add(new Word
                             {
-                                Type = SpanType.Emote,
+                                Type = SpanType.LazyLoadedImage,
                                 Value = bttvEmote,
                                 Color = slashMe ? UsernameColor : new HSLColor?(),
                                 Tooltip = bttvEmote.Tooltip,
@@ -530,17 +535,18 @@ namespace Chatterino.Common
                     }
                     else
                     {
-                        var e = o as TwitchEmote;
+                        var e = o as LazyLoadedImage;
 
                         if (e != null)
                         {
                             words.Add(new Word
                             {
-                                Type = SpanType.Emote,
+                                Type = SpanType.LazyLoadedImage,
                                 Value = e,
                                 Link = new Link(LinkType.Url, e.Url),
                                 Tooltip = e.Tooltip,
-                                CopyText = e.Name
+                                CopyText = e.Name,
+                                HasTrailingSpace = e.HasTrailingSpace
                             });
                         }
                     }
@@ -681,6 +687,8 @@ namespace Chatterino.Common
             var emotesChanged = EmoteBoundsChanged;
             var redraw = false;
 
+            var mediumTextLineHeight = GuiEngine.Current.MeasureStringSize(null, FontType.Medium, "X").Height;
+
             if (Width != width)
             {
                 Width = width;
@@ -717,11 +725,11 @@ namespace Chatterino.Common
                         //    }
                         //}
                     }
-                    else if (word.Type == SpanType.Emote)
+                    else if (word.Type == SpanType.LazyLoadedImage)
                     {
                         if (emotesChanged || _measureImages)
                         {
-                            var emote = word.Value as TwitchEmote;
+                            var emote = word.Value as LazyLoadedImage;
                             var image = emote?.Image;
                             if (image == null)
                             {
@@ -730,8 +738,28 @@ namespace Chatterino.Common
                             else
                             {
                                 var size = GuiEngine.Current.GetImageSize(image);
-                                word.Width = size.Width;
-                                word.Height = size.Height;
+
+                                double w = size.Width, h = size.Height;
+
+                                if (emote.IsEmote)
+                                {
+                                    if (AppSettings.EmoteScaleByLineHeight)
+                                    {
+                                        w = size.Width * ((float)mediumTextLineHeight / size.Height);
+                                        h = mediumTextLineHeight;
+                                    }
+                                    else
+                                    {
+                                        w *= emote.Scale;
+                                        h *= emote.Scale;
+                                    }
+
+                                    w = w * AppSettings.EmoteScale;
+                                    h = h * AppSettings.EmoteScale;
+                                }
+
+                                word.Width = (int)w;
+                                word.Height = (int)h;
                             }
                         }
                     }
@@ -787,7 +815,7 @@ namespace Chatterino.Common
 
                     word.SplitSegments = null;
 
-                    if (word.Type == SpanType.Emote && ((TwitchEmote)word.Value).IsHat)
+                    if (word.Type == SpanType.LazyLoadedImage && ((LazyLoadedImage)word.Value).IsHat)
                     {
 #warning emote size
                         x -= word.Width + 2;
@@ -915,6 +943,8 @@ namespace Chatterino.Common
             var currentChar = 0;
             var currentSplit = 0;
 
+            var mediumTextLineHeight = GuiEngine.Current.MeasureStringSize(null, FontType.Medium, "X").Height;
+
             for (var i = 0; i < Words.Count; i++)
             {
                 var word = Words[i];
@@ -956,13 +986,34 @@ namespace Chatterino.Common
                 if (point.X - w.X > imageSize.Width)
                     currentChar = 1;
             }
-            else if (w.Type == SpanType.Emote)
+            else if (w.Type == SpanType.LazyLoadedImage)
             {
-                var emote = (TwitchEmote)w.Value;
+                var emote = (LazyLoadedImage)w.Value;
 
-                var imageSize = emote.Image == null ? new CommonSize(16, 16) : GuiEngine.Current.GetImageSize(emote.Image);
+                var size = GuiEngine.Current.GetImageSize(emote.Image);
 
-                if (point.X - w.X > imageSize.Width)
+                double width = size.Width, h = size.Height;
+
+                if (emote.IsEmote)
+                {
+                    if (AppSettings.EmoteScaleByLineHeight)
+                    {
+                        width = size.Width*((float) mediumTextLineHeight/size.Height);
+                        h = mediumTextLineHeight;
+                    }
+                    else
+                    {
+                        width *= emote.Scale;
+                        h *= emote.Scale;
+                    }
+
+                    width = width*AppSettings.EmoteScale;
+                    h = h*AppSettings.EmoteScale;
+                }
+
+                size = new CommonSize((int)width, (int)h);
+
+                if (point.X - w.X > size.Width)
                     currentChar = 1;
             }
             else if (w.Type == SpanType.Text)

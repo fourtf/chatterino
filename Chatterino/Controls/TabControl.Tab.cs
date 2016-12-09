@@ -12,38 +12,37 @@ namespace Chatterino.Controls
     {
         private class Tab : Control
         {
-            private bool selected;
+            private bool _selected;
 
             public bool Selected
             {
-                get { return selected; }
+                get { return _selected; }
                 set
                 {
-                    if (selected != value)
+                    if (_selected != value)
                     {
-                        selected = value;
+                        _selected = value;
                         Invalidate();
-                        tabPage.HighlightType = TabPageHighlightType.None;
+                        _tabPage.HighlightType = TabPageHighlightType.None;
                     }
                 }
             }
 
-            private bool mouseOver = false, mouseDown = false;
+            private bool _mouseOver = false, _mouseDown = false;
 
-            TabControl tabControl;
-            TabPage tabPage;
+            private TabPage _tabPage;
 
-            double titleWidth = -1;
+            private double _titleWidth = -1;
 
             // Context menu
-            ContextMenu menu = new ContextMenu();
+            private ContextMenu _menu = new ContextMenu();
+            private MenuItem _allowNewMessageHighlightsMenuItem;
+            private Point _lastP = Point.Empty;
 
-            Point lastP = Point.Empty;
+            private Rectangle _xRectangle;
 
-            Rectangle xRectangle;
-
-            bool mouseOverX;
-            bool mouseDownX;
+            private bool _mouseOverX;
+            private bool _mouseDownX;
 
             // Constructor
             public Tab(TabControl tabControl, TabPage tabPage)
@@ -56,13 +55,12 @@ namespace Chatterino.Controls
 
                 Padding = new Padding(8, 4, 8, 4);
 
-                this.tabControl = tabControl;
-                this.tabPage = tabPage;
+                _tabPage = tabPage;
 
                 tabPage.TitleChanged += (s, e) =>
                 {
-                    titleWidth = -1;
-                    calcSize();
+                    _titleWidth = -1;
+                    CalcSize();
                     tabControl.layout();
                     Invalidate();
                 };
@@ -76,19 +74,19 @@ namespace Chatterino.Controls
                 {
                     tabControl.Select(tabPage);
 
-                    if (xRectangle.Contains(e.Location))
+                    if (_xRectangle.Contains(e.Location))
                     {
-                        mouseDownX = true;
+                        _mouseDownX = true;
                     }
 
-                    mouseDown = true;
+                    _mouseDown = true;
                 };
 
                 MouseUp += (s, e) =>
                 {
                     if (e.Button == MouseButtons.Left)
                     {
-                        if (mouseDownX && xRectangle.Contains(e.Location))
+                        if (_mouseDownX && _xRectangle.Contains(e.Location))
                         {
                             tabControl.RemoveTab(tabPage);
                         }
@@ -96,7 +94,7 @@ namespace Chatterino.Controls
 
                     if (e.Button == MouseButtons.Right)
                     {
-                        menu.Show(this, e.Location);
+                        _menu.Show(this, e.Location);
                     }
 
                     if (e.Button == MouseButtons.Middle && ClientRectangle.Contains(e.Location))
@@ -104,33 +102,33 @@ namespace Chatterino.Controls
                         tabControl.RemoveTab(tabPage);
                     }
 
-                    mouseDownX = false;
-                    mouseDown = false;
+                    _mouseDownX = false;
+                    _mouseDown = false;
                 };
 
                 MouseEnter += (s, e) =>
                 {
-                    mouseOver = true;
+                    _mouseOver = true;
 
                     Invalidate();
                 };
 
                 MouseLeave += (s, e) =>
                 {
-                    mouseOver = false;
-                    mouseOverX = false;
+                    _mouseOver = false;
+                    _mouseOverX = false;
 
                     Invalidate();
                 };
 
                 MouseMove += (s, e) =>
                 {
-                    if (mouseDown)
+                    if (_mouseDown)
                     {
                         var t = ((TabControl)Parent);
                         var p = t.PointToClient(PointToScreen(e.Location));
 
-                        if (p != lastP)
+                        if (p != _lastP)
                         {
                             var originalIndex = t._tabPages.FindIndex(x => x.Item1 == this);
                             var original = t._tabPages[originalIndex];
@@ -151,11 +149,11 @@ namespace Chatterino.Controls
                                     }
                                 }
                             }
-                            lastP = p;
+                            _lastP = p;
                         }
                     }
 
-                    mouseOverX = xRectangle.Contains(e.Location);
+                    _mouseOverX = _xRectangle.Contains(e.Location);
 
                     Invalidate();
                 };
@@ -185,23 +183,29 @@ namespace Chatterino.Controls
                     dragOver = false;
                 };
 
-                calcSize();
+                CalcSize();
 
                 // Context
-                menu.MenuItems.Add(new MenuItem("Rename", (s, e) => rename()));
-                menu.MenuItems.Add(new MenuItem("Close", (s, e) => (Parent as TabControl)?.RemoveTab(tabPage)));
+                _menu.MenuItems.Add(new MenuItem("Rename", (s, e) => Rename()));
+                _menu.MenuItems.Add(new MenuItem("Close", (s, e) => (Parent as TabControl)?.RemoveTab(tabPage)));
+                _menu.MenuItems.Add(_allowNewMessageHighlightsMenuItem = new MenuItem("Enable highlights on new message", (s, e) => _tabPage.EnableNewMessageHighlights = !_tabPage.EnableNewMessageHighlights));
+
+                _menu.Popup += (s, e) =>
+                {
+                    _allowNewMessageHighlightsMenuItem.Checked = _tabPage.EnableNewMessageHighlights;
+                };
             }
 
             protected override void OnResize(EventArgs e)
             {
-                xRectangle = new Rectangle(Width - 20, Height / 2 - 8, 16, 16);
+                _xRectangle = new Rectangle(Width - 20, Height / 2 - 8, 16, 16);
 
                 base.OnResize(e);
             }
 
-            void rename()
+            private void Rename()
             {
-                var page = tabPage as ColumnTabPage;
+                var page = _tabPage as ColumnTabPage;
 
                 if (page != null)
                 {
@@ -229,20 +233,20 @@ namespace Chatterino.Controls
             {
                 base.OnDoubleClick(e);
 
-                rename();
+                Rename();
             }
 
-            private void calcSize()
+            private void CalcSize()
             {
-                if (titleWidth == -1)
+                if (_titleWidth == -1)
                 {
-                    var size = TextRenderer.MeasureText(tabPage.Title, Font);
+                    var size = TextRenderer.MeasureText(_tabPage.Title, Font);
                     Width = (int)(Padding.Left + size.Width + Padding.Right) + 12;
                     Height = GetHeight();
                 }
             }
 
-            Brush mouseOverXBrush = new SolidBrush(Color.FromArgb(64, 0, 0, 0));
+            private Brush _mouseOverXBrush = new SolidBrush(Color.FromArgb(64, 0, 0, 0));
 
             protected override void OnPaint(PaintEventArgs e)
             {
@@ -254,17 +258,17 @@ namespace Chatterino.Controls
                     bg = App.ColorScheme.TabSelectedBG;
                     text = App.ColorScheme.TabSelectedText;
                 }
-                else if (mouseOver)
+                else if (_mouseOver)
                 {
                     bg = App.ColorScheme.TabHoverBG;
                     text = App.ColorScheme.TabHoverText;
                 }
-                else if (tabPage.HighlightType == TabPageHighlightType.Highlighted)
+                else if (_tabPage.HighlightType == TabPageHighlightType.Highlighted)
                 {
                     bg = App.ColorScheme.TabHighlightedBG;
                     text = App.ColorScheme.TabHighlightedText;
                 }
-                else if (tabPage.HighlightType == TabPageHighlightType.NewMessage)
+                else if (_tabPage.HighlightType == TabPageHighlightType.NewMessage)
                 {
                     bg = App.ColorScheme.TabNewMessageBG;
                     text = App.ColorScheme.TabHighlightedText;
@@ -278,28 +282,28 @@ namespace Chatterino.Controls
                 e.Graphics.FillRectangle(bg, 0, 0, Width, Height);
 
                 // text
-                TextRenderer.DrawText(e.Graphics, tabPage.Title ?? "<no name>", Font, new Rectangle(0, 0, xRectangle.Left + 4, Height), text, App.DefaultTextFormatFlags | TextFormatFlags.VerticalCenter | TextFormatFlags.HorizontalCenter);
+                TextRenderer.DrawText(e.Graphics, _tabPage.Title ?? "<no name>", Font, new Rectangle(0, 0, _xRectangle.Left + 4, Height), text, App.DefaultTextFormatFlags | TextFormatFlags.VerticalCenter | TextFormatFlags.HorizontalCenter);
 
                 // x
-                if (mouseDownX || !mouseDown)
+                if (_mouseDownX || !_mouseDown)
                 {
-                    if (mouseOver && mouseOverX)
+                    if (_mouseOver && _mouseOverX)
                     {
-                        e.Graphics.FillRectangle(mouseOverXBrush, xRectangle);
+                        e.Graphics.FillRectangle(_mouseOverXBrush, _xRectangle);
 
-                        if (mouseDown)
+                        if (_mouseDown)
                         {
-                            e.Graphics.FillRectangle(mouseOverXBrush, xRectangle);
+                            e.Graphics.FillRectangle(_mouseOverXBrush, _xRectangle);
                         }
                     }
                 }
 
-                if (Selected || mouseOver)
+                if (Selected || _mouseOver)
                 {
                     using (var pen = new Pen(text))
                     {
-                        e.Graphics.DrawLine(pen, xRectangle.Left + 4, xRectangle.Top + 4, xRectangle.Right - 5, xRectangle.Bottom - 5);
-                        e.Graphics.DrawLine(pen, xRectangle.Right - 5, xRectangle.Top + 4, xRectangle.Left + 4, xRectangle.Bottom - 5);
+                        e.Graphics.DrawLine(pen, _xRectangle.Left + 4, _xRectangle.Top + 4, _xRectangle.Right - 5, _xRectangle.Bottom - 5);
+                        e.Graphics.DrawLine(pen, _xRectangle.Right - 5, _xRectangle.Top + 4, _xRectangle.Left + 4, _xRectangle.Bottom - 5);
                     }
                 }
             }

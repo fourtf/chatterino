@@ -242,9 +242,9 @@ namespace Chatterino
             Commands.LoadOrDefault(Path.Combine(Util.GetUserDataPath(), "Custom", "Commands.txt"));
             Cache.Load();
 
-            updateTheme();
+            _updateTheme();
 
-            AppSettings.ThemeChanged += (s, e) => updateTheme();
+            AppSettings.ThemeChanged += (s, e) => _updateTheme();
 
             // Check for updates
             //try
@@ -454,11 +454,11 @@ namespace Chatterino
             EmoteList?.SetChannel(channel);
         }
 
-        static void updateTheme()
+        private static void _updateTheme()
         {
             var multiplier = -0.8f;
 
-            switch (AppSettings.Theme)
+            switch (AppSettings.CurrentTheme)
             {
                 case "White":
                     multiplier = 1f;
@@ -474,26 +474,9 @@ namespace Chatterino
                     break;
             }
 
-
             ColorScheme = ColorScheme.FromHue((float)Math.Max(Math.Min(AppSettings.ThemeHue, 1), 0), multiplier);
 
-            MainForm?.Refresh();
-
-            //if (MainForm != null)
-            //{
-            //    Action<Control> invalidate = null;
-
-            //    invalidate = c =>
-            //    {
-            //        foreach (Control C in c.Controls)
-            //        {
-            //            C.Invalidate();
-            //            invalidate(C);
-            //        }
-            //    };
-
-            //    invalidate(MainForm);
-            //}
+            MainForm?.Invoke(() => MainForm.Refresh());
         }
     }
 }

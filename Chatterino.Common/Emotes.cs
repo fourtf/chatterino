@@ -14,17 +14,17 @@ namespace Chatterino.Common
         public static event EventHandler EmotesLoaded;
 
         public static ConcurrentDictionary<string, IrcManager.TwitchEmoteValue> TwitchEmotes = new ConcurrentDictionary<string, IrcManager.TwitchEmoteValue>();
-        public static ConcurrentDictionary<string, TwitchEmote> BttvGlobalEmotes = new ConcurrentDictionary<string, TwitchEmote>();
-        public static ConcurrentDictionary<string, TwitchEmote> FfzGlobalEmotes = new ConcurrentDictionary<string, TwitchEmote>();
-        public static ConcurrentDictionary<string, TwitchEmote> ChatterinoEmotes = new ConcurrentDictionary<string, TwitchEmote>();
-        public static ConcurrentDictionary<string, TwitchEmote> BttvChannelEmotesCache = new ConcurrentDictionary<string, TwitchEmote>();
-        public static ConcurrentDictionary<string, TwitchEmote> FfzChannelEmotesCache = new ConcurrentDictionary<string, TwitchEmote>();
-        public static ConcurrentDictionary<int, TwitchEmote> TwitchEmotesByIDCache = new ConcurrentDictionary<int, TwitchEmote>();
-        public static ConcurrentDictionary<string, TwitchEmote> MiscEmotesByUrl = new ConcurrentDictionary<string, TwitchEmote>();
+        public static ConcurrentDictionary<string, LazyLoadedImage> BttvGlobalEmotes = new ConcurrentDictionary<string, LazyLoadedImage>();
+        public static ConcurrentDictionary<string, LazyLoadedImage> FfzGlobalEmotes = new ConcurrentDictionary<string, LazyLoadedImage>();
+        public static ConcurrentDictionary<string, LazyLoadedImage> ChatterinoEmotes = new ConcurrentDictionary<string, LazyLoadedImage>();
+        public static ConcurrentDictionary<string, LazyLoadedImage> BttvChannelEmotesCache = new ConcurrentDictionary<string, LazyLoadedImage>();
+        public static ConcurrentDictionary<string, LazyLoadedImage> FfzChannelEmotesCache = new ConcurrentDictionary<string, LazyLoadedImage>();
+        public static ConcurrentDictionary<int, LazyLoadedImage> TwitchEmotesByIDCache = new ConcurrentDictionary<int, LazyLoadedImage>();
+        public static ConcurrentDictionary<string, LazyLoadedImage> MiscEmotesByUrl = new ConcurrentDictionary<string, LazyLoadedImage>();
 
         private static ConcurrentDictionary<string, string> twitchEmotesCodeReplacements = new ConcurrentDictionary<string, string>();
 
-        public const string TwitchEmoteTemplate = "https://static-cdn.jtvnw.net/emoticons/v1/{id}/1.0";
+        public const string TwitchEmoteTemplate = "https://static-cdn.jtvnw.net/emoticons/v1/{id}/{scale}.0";
 
         private static string twitchemotesGlobalCache = Path.Combine(Util.GetUserDataPath(), "Cache", "twitchemotes_global.json");
         private static string bttvEmotesGlobalCache = Path.Combine(Util.GetUserDataPath(), "Cache", "bttv_global.json");
@@ -32,11 +32,14 @@ namespace Chatterino.Common
 
         static Emotes()
         {
-            Func<int, string, TwitchEmote> getEmoteReplacement = (code, url) =>
+            Func<int, string, string, LazyLoadedImage> getEmoteReplacement = (id, name, url) =>
             {
-                var emote = new TwitchEmote()
+                var emote = new LazyLoadedImage()
                 {
                     Url = url,
+                    Name = name,
+                    Tooltip = $"{name}\nTwitch Global Emote\n(chatterino dankmode friendly version)",
+                    IsEmote = true
                 };
                 emote.LoadAction = () =>
                 {
@@ -60,7 +63,8 @@ namespace Chatterino.Common
 
                     if (img == null)
                     {
-                        url = TwitchEmoteTemplate.Replace("{id}", code.ToString());
+                        double scale;
+                        url = GetTwitchEmoteLink(id, out scale);
                         emote.Url = url;
 
                         try
@@ -85,11 +89,11 @@ namespace Chatterino.Common
                 return emote;
             };
 
-            TwitchEmotesByIDCache.TryAdd(17, getEmoteReplacement(17, "https://fourtf.com/chatterino/emotes/replacements/StoneLightning.png"));
-            TwitchEmotesByIDCache.TryAdd(18, getEmoteReplacement(18, "https://fourtf.com/chatterino/emotes/replacements/TheRinger.png"));
-            TwitchEmotesByIDCache.TryAdd(20, getEmoteReplacement(20, "https://fourtf.com/chatterino/emotes/replacements/EagleEye.png"));
-            TwitchEmotesByIDCache.TryAdd(22, getEmoteReplacement(22, "https://fourtf.com/chatterino/emotes/replacements/RedCoat.png"));
-            TwitchEmotesByIDCache.TryAdd(33, getEmoteReplacement(33, "https://fourtf.com/chatterino/emotes/replacements/DansGame.png"));
+            TwitchEmotesByIDCache.TryAdd(17, getEmoteReplacement(17, "StoneLightning", "https://fourtf.com/chatterino/emotes/replacements/StoneLightning.png"));
+            TwitchEmotesByIDCache.TryAdd(18, getEmoteReplacement(18, "TheRinger", "https://fourtf.com/chatterino/emotes/replacements/TheRinger.png"));
+            TwitchEmotesByIDCache.TryAdd(20, getEmoteReplacement(20, "EagleEye", "https://fourtf.com/chatterino/emotes/replacements/EagleEye.png"));
+            TwitchEmotesByIDCache.TryAdd(22, getEmoteReplacement(22, "RedCoat", "https://fourtf.com/chatterino/emotes/replacements/RedCoat.png"));
+            TwitchEmotesByIDCache.TryAdd(33, getEmoteReplacement(33, "DansGame", "https://fourtf.com/chatterino/emotes/replacements/DansGame.png"));
 
             twitchEmotesCodeReplacements[@"[oO](_|\.)[oO]"] = "o_O";
             twitchEmotesCodeReplacements[@"\&gt\;\("] = ">(";
@@ -105,7 +109,16 @@ namespace Chatterino.Common
             twitchEmotesCodeReplacements[@"\;-?\)"] = ";)";
             twitchEmotesCodeReplacements[@"R-?\)"] = "R-)";
 
-            //ChatterinoEmotes["WithAHat"] = new TwitchEmote { Name = "WithAHat", Tooltip = "WithAHat\nChatterino Emote", Url = "https://fourtf.com/chatterino/emotes/img/WithAHat_x1.png", IsHat = true };
+            //ChatterinoEmotes["WithAHat"] = new LazyLoadedImage { Name = "WithAHat", Tooltip = "WithAHat\nChatterino Emote", Url = "https://fourtf.com/chatterino/emotes/img/WithAHat_x1.png", IsHat = true };
+        }
+
+        private static string GetTwitchEmoteLink(int id, out double scale)
+        {
+            var _scale = AppSettings.EmoteScale > 2 ? 4 : (AppSettings.EmoteScale > 1 ? 2 : 1);
+
+            scale = 1.0 / _scale;
+
+            return TwitchEmoteTemplate.Replace("{id}", id.ToString()).Replace("{scale}", _scale.ToString());
         }
 
         public static string GetTwitchEmoteCodeReplacement(string emoteCode)
@@ -216,7 +229,7 @@ namespace Chatterino.Common
                             string imageType = e["imageType"];
                             string url = template.Replace("{{id}}", id).Replace("{{image}}", "1x");
 
-                            BttvGlobalEmotes[code] = new TwitchEmote { Name = code, Url = url, IsHat = code.StartsWith("Hallo"), Tooltip = code + "\nBetterTTV Global Emote" };
+                            BttvGlobalEmotes[code] = new LazyLoadedImage { Name = code, Url = url, IsHat = code.StartsWith("Hallo"), Tooltip = code + "\nBetterTTV Global Emote", IsEmote = true };
                         }
                     }
                     EmotesLoaded?.Invoke(null, EventArgs.Empty);
@@ -271,7 +284,7 @@ namespace Chatterino.Common
                                 var name = emote["name"];
                                 var urlX1 = "http:" + emote["urls"]["1"];
 
-                                FfzGlobalEmotes[name] = new TwitchEmote { Name = name, Url = urlX1, Tooltip = name + "\nFrankerFaceZ Global Emote" };
+                                FfzGlobalEmotes[name] = new LazyLoadedImage { Name = name, Url = urlX1, Tooltip = name + "\nFrankerFaceZ Global Emote", IsEmote = true };
                             }
                         }
                     }
@@ -316,7 +329,7 @@ namespace Chatterino.Common
                                 var name = emote["name"];
                                 var urlX1 = "http:" + emote["urls"]["1"];
 
-                                FfzGlobalEmotes[name] = new TwitchEmote { Name = name, Url = urlX1, Tooltip = name + "\nFrankerFaceZ Global Emote" };
+                                FfzGlobalEmotes[name] = new LazyLoadedImage { Name = name, Url = urlX1, Tooltip = name + "\nFrankerFaceZ Global Emote", IsEmote = true };
                             }
                         }
                     }
@@ -333,17 +346,21 @@ namespace Chatterino.Common
             EmotesLoaded?.Invoke(null, EventArgs.Empty);
         }
 
-        public static TwitchEmote GetTwitchEmoteById(int id, string name)
+        public static LazyLoadedImage GetTwitchEmoteById(int id, string name)
         {
-            TwitchEmote e;
+            LazyLoadedImage e;
 
             if (!TwitchEmotesByIDCache.TryGetValue(id, out e))
             {
-                e = new TwitchEmote
+                double scale;
+
+                e = new LazyLoadedImage
                 {
                     Name = name,
-                    Url = TwitchEmoteTemplate.Replace("{id}", id.ToString()),
-                    Tooltip = name + "\nTwitch Emote"
+                    Url = GetTwitchEmoteLink(id, out scale),
+                    Scale = scale,
+                    Tooltip = name + "\nTwitch Emote",
+                    IsEmote = true
                 };
                 TwitchEmotesByIDCache[id] = e;
             }
