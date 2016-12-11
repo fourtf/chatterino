@@ -18,8 +18,12 @@ namespace Chatterino.Controls
             get { return tooltip; }
             set
             {
-                tooltip = value;
-                calcSize();
+                if (tooltip != value)
+                {
+                    tooltip = value;
+                    calcSize();
+                    Invalidate();
+                }
             }
         }
 

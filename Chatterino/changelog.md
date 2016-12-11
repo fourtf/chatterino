@@ -1,5 +1,15 @@
 ﻿# changelog
 
+## 1.0.7.1
+- temporarily disabled SoSnowy again because it was causing lag
+
+## 1.0.7
+- fixed gif emotes with hats
+- fixed hat emotes going over others in the emote list
+
+## 1.0.6
+- added support for the bttv christmas emotes (unfortunately SoSnowy does not work)
+
 ## 1.0.5
 - added emote scaling
 - added live indicator to splits

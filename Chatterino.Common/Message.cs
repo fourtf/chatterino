@@ -682,7 +682,7 @@ namespace Chatterino.Common
         }
 
         // return true if control needs to be redrawn
-        public bool CalculateBounds(object graphics, int width)
+        public bool CalculateBounds(object graphics, int width, bool enableHatEmotes)
         {
             var emotesChanged = EmoteBoundsChanged;
             var redraw = false;
@@ -815,7 +815,7 @@ namespace Chatterino.Common
 
                     word.SplitSegments = null;
 
-                    if (word.Type == SpanType.LazyLoadedImage && ((LazyLoadedImage)word.Value).IsHat)
+                    if (word.Type == SpanType.LazyLoadedImage && ((LazyLoadedImage)word.Value).IsHat && (i > 0 && Words[i - 1].Type != SpanType.Text) && enableHatEmotes)
                     {
 #warning emote size
                         x -= word.Width + 2;
@@ -998,7 +998,7 @@ namespace Chatterino.Common
                 {
                     if (AppSettings.EmoteScaleByLineHeight)
                     {
-                        width = size.Width*((float) mediumTextLineHeight/size.Height);
+                        width = size.Width * ((float)mediumTextLineHeight / size.Height);
                         h = mediumTextLineHeight;
                     }
                     else
@@ -1007,8 +1007,8 @@ namespace Chatterino.Common
                         h *= emote.Scale;
                     }
 
-                    width = width*AppSettings.EmoteScale;
-                    h = h*AppSettings.EmoteScale;
+                    width = width * AppSettings.EmoteScale;
+                    h = h * AppSettings.EmoteScale;
                 }
 
                 size = new CommonSize((int)width, (int)h);

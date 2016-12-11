@@ -27,6 +27,51 @@ namespace Chatterino.Common
 
         public Tuple<string, CommonRectangle>[] SplitSegments { get; set; } = null;
         public int[] CharacterWidths { get; set; } = null;
+
+        public bool Intersects(Word word)
+        {
+            if (X < word.X)
+            {
+                if (word.X < X + Width)
+                {
+                    if (Y < word.Y)
+                    {
+                        if (word.Y < Y + Height)
+                        {
+                            return true;
+                        }
+                    }
+                    else
+                    {
+                        if (Y < word.Y + word.Height)
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                if (X < word.X + word.Width)
+                {
+                    if (Y < word.Y)
+                    {
+                        if (word.Y < Y + Height)
+                        {
+                            return true;
+                        }
+                    }
+                    else
+                    {
+                        if (Y < word.Y + word.Height)
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
+        }
     }
 
     public enum SpanType

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -108,6 +109,11 @@ namespace Chatterino.Common
             twitchEmotesCodeReplacements[@"\;-?(p|P)"] = ";P";
             twitchEmotesCodeReplacements[@"\;-?\)"] = ";)";
             twitchEmotesCodeReplacements[@"R-?\)"] = "R-)";
+
+            _bttvHatEmotes["IceCold"] = null;
+            //_bttvHatEmotes["SoSnowy"] = null;
+            _bttvHatEmotes["TopHat"] = null;
+            _bttvHatEmotes["SantaHat"] = null;
 
             //ChatterinoEmotes["WithAHat"] = new LazyLoadedImage { Name = "WithAHat", Tooltip = "WithAHat\nChatterino Emote", Url = "https://fourtf.com/chatterino/emotes/img/WithAHat_x1.png", IsHat = true };
         }
@@ -229,7 +235,7 @@ namespace Chatterino.Common
                             string imageType = e["imageType"];
                             string url = template.Replace("{{id}}", id).Replace("{{image}}", "1x");
 
-                            BttvGlobalEmotes[code] = new LazyLoadedImage { Name = code, Url = url, IsHat = code.StartsWith("Hallo"), Tooltip = code + "\nBetterTTV Global Emote", IsEmote = true };
+                            BttvGlobalEmotes[code] = new LazyLoadedImage { Name = code, Url = url, IsHat = IsBttvEmoteAHat(code), Tooltip = code + "\nBetterTTV Global Emote", IsEmote = true };
                         }
                     }
                     EmotesLoaded?.Invoke(null, EventArgs.Empty);
@@ -339,6 +345,14 @@ namespace Chatterino.Common
                     e.Message.Log("emotes");
                 }
             });
+        }
+
+        private static ConcurrentDictionary<string, object> _bttvHatEmotes = new ConcurrentDictionary<string, object>();
+
+        private static bool IsBttvEmoteAHat(string code)
+        {
+            return code.StartsWith("Hallo") ||
+                   _bttvHatEmotes.ContainsKey(code);
         }
 
         internal static void TriggerEmotesLoaded()

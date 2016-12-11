@@ -74,7 +74,7 @@ namespace Chatterino
             }
         }
 
-        // Emotes
+        // Emoteses
         public static event EventHandler EmoteLoaded;
 
         [System.Runtime.InteropServices.DllImport("shcore.dll")]

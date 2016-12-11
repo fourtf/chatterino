@@ -241,7 +241,7 @@ namespace Chatterino.Controls
             {
                 var g = App.UseDirectX ? null : CreateGraphics();
 
-                msg.CalculateBounds(g, Width - messagePadding.Left - messagePadding.Right - 20);
+                msg.CalculateBounds(g, Width - messagePadding.Left - messagePadding.Right - 20, true);
 
                 g?.Dispose();
 

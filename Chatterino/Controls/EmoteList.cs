@@ -24,6 +24,7 @@ namespace Chatterino.Controls
             mouseScrollMultiplyer = 0.2;
 
             AllowMessageSeperator = false;
+            EnableHatEmotes = false;
         }
 
         public void LoadChannel(TwitchChannel channel)
@@ -47,11 +48,11 @@ namespace Chatterino.Controls
                         {
                             if (emotes.Key == 0)
                             {
-                                messages.Add(new Message("Twitch Emotes"));
+                                messages.Add(new Message("Twitch Emoteses"));
                             }
                             else
                             {
-                                messages.Add(new Message("Twitch Subscriber Emotes"));
+                                messages.Add(new Message("Twitch Subscriber Emoteses"));
                             }
 
                             messages.Add(new Message(words));
@@ -63,14 +64,14 @@ namespace Chatterino.Controls
                 //{
                 //    List<Word> words = new List<Word>();
 
-                //    foreach (var emote in Emotes.ChatterinoEmotes.Values)
+                //    foreach (var emote in Emoteses.ChatterinoEmotes.Values)
                 //    {
                 //        words.Add(new Word { Type = SpanType.LazyLoadedImage, Value = emote, Value = emote.Value, CopyText = emote.Name, Link = new Link(LinkType.InsertText, emote.Name + " ") });
                 //    }
 
                 //    if (words.Count != 0)
                 //    {
-                //        messages.Add(new Message("Chatterino Global Emotes"));
+                //        messages.Add(new Message("Chatterino Global Emoteses"));
                 //        messages.Add(new Message(words));
                 //    }
                 //}
@@ -87,7 +88,7 @@ namespace Chatterino.Controls
 
                     if (words.Count != 0)
                     {
-                        messages.Add(new Message("BetterTTV Channel Emotes"));
+                        messages.Add(new Message("BetterTTV Channel Emoteses"));
                         messages.Add(new Message(words));
                     }
                 }
@@ -103,7 +104,7 @@ namespace Chatterino.Controls
 
                     if (words.Count != 0)
                     {
-                        messages.Add(new Message("BetterTTV Global Emotes"));
+                        messages.Add(new Message("BetterTTV Global Emoteses"));
                         messages.Add(new Message(words));
                     }
                 }
@@ -120,7 +121,7 @@ namespace Chatterino.Controls
 
                     if (words.Count != 0)
                     {
-                        messages.Add(new Message("FrankerFaceZ Channel Emotes"));
+                        messages.Add(new Message("FrankerFaceZ Channel Emoteses"));
                         messages.Add(new Message(words));
                     }
                 }
@@ -136,7 +137,7 @@ namespace Chatterino.Controls
 
                     if (words.Count != 0)
                     {
-                        messages.Add(new Message("FrankerFaceZ Global Emotes"));
+                        messages.Add(new Message("FrankerFaceZ Global Emoteses"));
                         messages.Add(new Message(words));
                     }
                 }

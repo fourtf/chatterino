@@ -25,6 +25,8 @@ namespace Chatterino.Controls
 
         public bool AllowMessageSeperator { get; set; } = true;
 
+        public bool EnableHatEmotes { get; protected set; } = true;
+
         static ContextMenu urlContextMenu;
         static Link urlContextMenuLink;
 
@@ -206,7 +208,8 @@ namespace Chatterino.Controls
                                 }
                                 else
                                 {
-                                    Messages[i - 1].CalculateBounds(graphics, Width - MessagePadding.Left - MessagePadding.Right);
+                                    Messages[i - 1].CalculateBounds(graphics,
+                                        Width - MessagePadding.Left - MessagePadding.Right, EnableHatEmotes);
 
                                     scrollFactor = 1;
                                     currentScrollLeft = Messages[i - 1].Height;
@@ -243,7 +246,7 @@ namespace Chatterino.Controls
                                 }
                                 else
                                 {
-                                    Messages[i + 1].CalculateBounds(graphics, Width - MessagePadding.Left - MessagePadding.Right);
+                                    Messages[i + 1].CalculateBounds(graphics, Width - MessagePadding.Left - MessagePadding.Right, EnableHatEmotes);
 
                                     scrollFactor = 1;
                                     currentScrollLeft = Messages[i + 1].Height;
@@ -967,7 +970,7 @@ namespace Chatterino.Controls
                     {
                         var msg = messages[i];
 
-                        msg.CalculateBounds(g, Width - MessagePadding.Left - MessagePadding.Right);
+                        msg.CalculateBounds(g, Width - MessagePadding.Left - MessagePadding.Right, EnableHatEmotes);
                         currentHeight += msg.Height;
 
                         if (currentHeight > totalHeight)
@@ -980,7 +983,7 @@ namespace Chatterino.Controls
                     for (var i = messages.Length - 1; i >= 0; i--)
                     {
                         var msg = messages[i];
-                        msg.CalculateBounds(g, Width - MessagePadding.Left - MessagePadding.Right);
+                        msg.CalculateBounds(g, Width - MessagePadding.Left - MessagePadding.Right, EnableHatEmotes);
                         scrollbarThumbHeight++;
 
                         tmpHeight -= msg.Height;

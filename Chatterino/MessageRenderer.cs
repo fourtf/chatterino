@@ -149,6 +149,40 @@ namespace Chatterino
                 }
             }
 
+            Action<int, bool> addWordToGifList = (i, selected) =>
+             {
+                 var word = message.Words[i];
+                 var words = new List<Word>();
+
+                 for (var j = i - 1; j >= 0; j--)
+                 {
+                     if (message.Words[j].Intersects(word))
+                     {
+                         words.Insert(0, message.Words[j]);
+                     }
+                     else
+                     {
+                         break;
+                     }
+                 }
+
+                 words.Add(word);
+
+                 for (var j = i + 1; j < message.Words.Count; j++)
+                 {
+                     if (message.Words[j].Intersects(word))
+                     {
+                         words.Add(message.Words[j]);
+                     }
+                     else
+                     {
+                         break;
+                     }
+                 }
+
+                 gifEmotesOnScreen?.Add(new GifEmoteState(word.X + xOffset, word.Y + yOffset, word.Width, word.Height, words, selected, message.HighlightType, message.Disabled, yOffset, xOffset));
+             };
+
             if (selection != null && !selection.IsEmpty && selection.First.MessageIndex <= currentLine &&
                 selection.Last.MessageIndex >= currentLine)
             {
@@ -156,10 +190,10 @@ namespace Chatterino
 
                 var first = selection.First;
                 var last = selection.Last;
-
                 for (var i = 0; i < message.Words.Count; i++)
                 {
                     var word = message.Words[i];
+
                     if ((currentLine != first.MessageIndex || i >= first.WordIndex) &&
                         (currentLine != last.MessageIndex || i <= last.WordIndex))
                     {
@@ -242,7 +276,7 @@ namespace Chatterino
 
                             if (emote.IsAnimated)
                             {
-                                gifEmotesOnScreen?.Add(new GifEmoteState(word.X + xOffset, word.Y + yOffset, word.Width, word.Height, emote, true, message.HighlightType, message.Disabled));
+                                addWordToGifList(i, true);
                             }
                             else
                             {
@@ -257,20 +291,25 @@ namespace Chatterino
                         {
                             var emote = (LazyLoadedImage)word.Value;
                             if (emote.IsAnimated)
-                                gifEmotesOnScreen?.Add(new GifEmoteState(word.X + xOffset, word.Y + yOffset, word.Width, word.Height, emote, false, message.HighlightType, message.Disabled));
+                            {
+                                addWordToGifList(i, true);
+                            }
                         }
                     }
                 }
             }
             else
             {
-                foreach (var word in message.Words)
+                for (int i = 0; i < message.Words.Count; i++)
                 {
+                    var word = message.Words[i];
                     if (word.Type == SpanType.LazyLoadedImage)
                     {
                         var emote = (LazyLoadedImage)word.Value;
                         if (emote.IsAnimated)
-                            gifEmotesOnScreen?.Add(new GifEmoteState(word.X + xOffset, word.Y + yOffset, word.Width, word.Height, emote, false, message.HighlightType, message.Disabled));
+                        {
+                            addWordToGifList(i, false);
+                        }
                     }
                 }
             }
@@ -312,10 +351,28 @@ namespace Chatterino
                     backgroundBrush = App.ColorScheme.ChatBackground;
                 }
 
+                if (state.Words.Count > 1)
+                {
+                    g.Clip = new Region(new Rectangle(state.X, state.Y, state.Width, state.Height));
+                }
+
                 g.FillRectangle(backgroundBrush, state.X, state.Y,
                                 state.Width, state.Height);
-                g.DrawImage((Image)state.Emote.Image, state.X, state.Y,
-                    state.Width, state.Height);
+
+                foreach (var word in state.Words)
+                {
+                    switch (word.Type)
+                    {
+                        case SpanType.Text:
+                            break;
+                        case SpanType.LazyLoadedImage:
+                            g.DrawImage((Image)((LazyLoadedImage)word.Value).Image, word.X + state.MessageXOffset, word.Y + state.MessageYOffset, word.Width, word.Height);
+                            break;
+                        case SpanType.Image:
+                            g.DrawImage((Image)word.Value, word.X + state.MessageXOffset, word.Y + state.MessageYOffset, word.Width, word.Height);
+                            break;
+                    }
+                }
 
                 if (state.Disabled)
                 {
@@ -331,71 +388,11 @@ namespace Chatterino
                     g.FillRectangle(_selectionBrush, state.X, state.Y,
                         state.Width, state.Height);
                 }
+                if (state.Words.Count > 1)
+                {
+                    g.ResetClip();
+                }
             }
-
-            //var Words = message.Words;
-            //Graphics g = (Graphics)graphics;
-
-            //int spaceWidth =
-            //    GuiEngine.Current.MeasureStringSize(g, FontType.Medium, " ").Width;
-
-            //for (int i = 0; i < Words.Count; i++)
-            //{
-            //    var word = Words[i];
-
-            //    LazyLoadedImage emote;
-            //    if (word.Type == SpanType.LazyLoadedImage && (emote = (LazyLoadedImage)word.Value).IsAnimated)
-            //    {
-            //        if (emote.Image != null)
-            //        {
-            //            lock (emote.Image)
-            //            {
-            //                var currentXOffset = message.X;
-            //                var currentYOffset = message.Y;
-
-            //                Brush backgroundBrush;
-
-            //                if (message.HighlightType == HighlightType.Highlighted)
-            //                {
-            //                    backgroundBrush = App.ColorScheme.ChatBackgroundHighlighted;
-            //                }
-            //                else if (message.HighlightType == HighlightType.Resub)
-            //                {
-            //                    backgroundBrush = App.ColorScheme.ChatBackgroundResub;
-            //                }
-            //                else
-            //                {
-            //                    backgroundBrush = App.ColorScheme.ChatBackground;
-            //                }
-
-            //                g.FillRectangle(backgroundBrush, word.X + currentXOffset, word.Y + currentYOffset,
-            //                    word.Width, word.Height);
-            //                g.DrawImage((Image)emote.Image, word.X + currentXOffset, word.Y + currentYOffset,
-            //                    word.Width, word.Height);
-
-            //                //if (message.Highlighted)
-            //                //    g.FillRectangle(, word.X + CurrentXOffset, word.Y + CurrentYOffset, word.Width, word.Height);
-
-            //                if (selection != null && !selection.IsEmpty &&
-            //                    (currentLine > selection.First.MessageIndex ||
-            //                     (currentLine == selection.First.MessageIndex && i >= selection.First.WordIndex)) &&
-            //                    (currentLine < selection.Last.MessageIndex ||
-            //                     (selection.Last.MessageIndex == currentLine && i < selection.Last.WordIndex)))
-            //                    g.FillRectangle(selectionBrush, word.X + currentXOffset, word.Y + currentYOffset,
-            //                        word.Width, word.Height);
-
-            //                if (message.Disabled)
-            //                {
-            //                    g.FillRectangle(
-            //                        new SolidBrush(Color.FromArgb(172,
-            //                            (App.ColorScheme.ChatBackground as SolidBrush)?.Color ?? Color.Black)),
-            //                        word.X + currentXOffset, word.Y + currentYOffset, word.Width + spaceWidth,
-            //                        word.Height);
-            //                }
-            //            }
-            //        }
-            //    }
-            //}
         }
     }
 }

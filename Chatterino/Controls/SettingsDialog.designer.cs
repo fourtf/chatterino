@@ -681,7 +681,7 @@
             this.chkTwitchEmotes.Name = "chkTwitchEmotes";
             this.chkTwitchEmotes.Size = new System.Drawing.Size(132, 17);
             this.chkTwitchEmotes.TabIndex = 23;
-            this.chkTwitchEmotes.Text = "Enable Twitch Emotes";
+            this.chkTwitchEmotes.Text = "Enable Twitch Emoteses";
             this.chkTwitchEmotes.UseVisualStyleBackColor = true;
             // 
             // tabControl2
@@ -702,7 +702,7 @@
             this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
             this.tabPage3.Size = new System.Drawing.Size(407, 242);
             this.tabPage3.TabIndex = 0;
-            this.tabPage3.Text = "Ignored Emotes";
+            this.tabPage3.Text = "Ignored Emoteses";
             this.tabPage3.UseVisualStyleBackColor = true;
             // 
             // label8
@@ -714,7 +714,7 @@
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(230, 13);
             this.label8.TabIndex = 22;
-            this.label8.Text = "Emotes that will be shown as text (one per line):";
+            this.label8.Text = "Emoteses that will be shown as text (one per line):";
             // 
             // rtbIngoredEmotes
             // 
@@ -763,7 +763,7 @@
             this.chkBttvEmotes.Name = "chkBttvEmotes";
             this.chkBttvEmotes.Size = new System.Drawing.Size(149, 17);
             this.chkBttvEmotes.TabIndex = 11;
-            this.chkBttvEmotes.Text = "Enable BetterTTV Emotes";
+            this.chkBttvEmotes.Text = "Enable BetterTTV Emoteses";
             this.chkBttvEmotes.UseVisualStyleBackColor = true;
             // 
             // chkFFzEmotes
@@ -776,7 +776,7 @@
             this.chkFFzEmotes.Name = "chkFFzEmotes";
             this.chkFFzEmotes.Size = new System.Drawing.Size(167, 17);
             this.chkFFzEmotes.TabIndex = 10;
-            this.chkFFzEmotes.Text = "Enable FrankerFaceZ Emotes";
+            this.chkFFzEmotes.Text = "Enable FrankerFaceZ Emoteses";
             this.chkFFzEmotes.UseVisualStyleBackColor = true;
             // 
             // panel11
@@ -1486,7 +1486,7 @@
             this.spEmotes.Selected = false;
             this.spEmotes.Size = new System.Drawing.Size(150, 30);
             this.spEmotes.TabIndex = 4;
-            this.spEmotes.Text = "Emotes";
+            this.spEmotes.Text = "Emoteses";
             // 
             // spIgnoredUsers
             // 
