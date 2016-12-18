@@ -905,7 +905,11 @@ namespace Chatterino.Common
                             else
                             {
                                 string imageType = e["imageType"];
-                                string url = template.Replace("{{id}}", id).Replace("{{image}}", "1x");
+                                string url = template.Replace("{{id}}", id);
+
+                                double scale;
+                                url = Emotes.GetBttvEmoteLink(url, out scale);
+
                                 Emotes.BttvChannelEmotesCache[id] =
                                     BttvChannelEmotes[code] =
                                         new LazyLoadedImage
@@ -913,6 +917,7 @@ namespace Chatterino.Common
                                             Name = code,
                                             Url = url,
                                             Tooltip = code + "\nBetterTTV Channel Emote\nChannel: " + channel,
+                                            Scale = scale,
                                             IsEmote = true
                                         };
                             }
@@ -1011,34 +1016,9 @@ namespace Chatterino.Common
 
                             dynamic emoticons = set["emoticons"];
 
-                            foreach (var emoticon in emoticons)
+                            foreach (LazyLoadedImage emote in Emotes.GetFfzEmoteFromDynamic(emoticons))
                             {
-                                string code = emoticon["name"];
-                                string id = emoticon["id"];
-                                dynamic owner = emoticon["owner"];
-                                string ownerName = owner["display_name"];
-
-                                dynamic urls = emoticon["urls"];
-
-                                string url = "http:" + urls["1"];
-
-                                LazyLoadedImage emote;
-                                if (Emotes.FfzChannelEmotesCache.TryGetValue(id, out emote))
-                                {
-                                    FfzChannelEmotes[code] = emote;
-                                }
-                                else
-                                {
-                                    Emotes.FfzChannelEmotesCache[id] =
-                                        FfzChannelEmotes[code] =
-                                            new LazyLoadedImage
-                                            {
-                                                Name = code,
-                                                Url = url,
-                                                Tooltip = code + "\nFFZ Channel Emote\nChannel: " + ownerName,
-                                                IsEmote = true
-                                            };
-                                }
+                                FfzChannelEmotes[emote.Name] = emote;
                             }
                         }
                     }

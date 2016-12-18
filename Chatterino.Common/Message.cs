@@ -815,10 +815,21 @@ namespace Chatterino.Common
 
                     word.SplitSegments = null;
 
-                    if (word.Type == SpanType.LazyLoadedImage && ((LazyLoadedImage)word.Value).IsHat && (i > 0 && Words[i - 1].Type != SpanType.Text) && enableHatEmotes)
+                    Margin margin = null;
+
+                    if (word.Type == SpanType.LazyLoadedImage && enableHatEmotes && (i >0 && Words[i - 1].Type != SpanType.Text))
                     {
+                        var img = (LazyLoadedImage)word.Value;
+
+                        if (img.IsHat)
+                        {
 #warning emote size
-                        x -= word.Width + 2;
+                            x -= word.Width + 2;
+                        }
+                        else if (img.Margin != null)
+                        {
+                            margin = img.Margin;
+                        }
                     }
 
                     // word wrapped text
@@ -891,20 +902,20 @@ namespace Chatterino.Common
                     {
                         y += fixCurrentLineHeight();
 
-                        word.X = 0;
-                        word.Y = y;
+                        word.X = 0 + (margin?.Left ?? 0);
+                        word.Y = y + (margin?.Top ?? 0);
 
-                        x = word.Width + spaceWidth;
+                        x = word.Width + spaceWidth + (margin == null ? 0 : (margin.Left + margin.Right));
 
                         lineStartIndex = i;
                     }
                     // word fits in current line
                     else
                     {
-                        word.X = x;
-                        word.Y = y;
+                        word.X = x + (margin?.Left ?? 0); 
+                        word.Y = y + (margin?.Top ?? 0); 
 
-                        x += word.Width + spaceWidth;
+                        x += word.Width + spaceWidth + (margin == null ? 0 : (margin.Left + margin.Right)); 
                     }
                 }
 

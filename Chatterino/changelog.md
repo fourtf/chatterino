@@ -1,5 +1,10 @@
 ﻿# changelog
 
+## 1.0.8
+- added /r which expands to /w <last user you whispered with>
+- added support for ffz emote margins
+- chatterino now uses the proper 2x and 4x emotes for ffz and bttv
+
 ## 1.0.7.1
 - temporarily disabled SoSnowy again because it was causing lag
 

@@ -69,6 +69,7 @@
     <Compile Include="IrcManager.cs" />
     <Compile Include="Link.cs" />
     <Compile Include="LinkType.cs" />
+    <Compile Include="Margin.cs" />
     <Compile Include="Message.cs" />
     <Compile Include="MessageBadges.cs" />
     <Compile Include="MessageInputLogic.cs" />

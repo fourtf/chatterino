@@ -33,6 +33,8 @@ namespace Chatterino.Common
             get { return twitchBlockedUsers.Keys; }
         }
 
+        public static string LastReceivedWhisperUser { get; set; }
+
         // Static Ctor
         public struct TwitchEmoteValue
         {
@@ -499,16 +501,6 @@ namespace Chatterino.Common
                 var channel = msg.Middle;
                 var user = msg.Params;
 
-                var key = Tuple.Create(user, channel);
-
-                //if (!recentChatClears.ContainsKey(key))
-                //{
-                //    recentChatClears[key] = null;
-
-                //    object o;
-
-                //    new System.Threading.Timer(x => { recentChatClears.TryRemove(key, out o); }, null, 3000, System.Threading.Timeout.Infinite);
-
                 string reason;
                 msg.Tags.TryGetValue("ban-reason", out reason);
                 string _duration;
@@ -581,11 +573,15 @@ namespace Chatterino.Common
             {
                 TwitchChannel.WhisperChannel.AddMessage(new Message(msg, TwitchChannel.WhisperChannel, true, false, isReceivedWhisper: true));
 
+                LastReceivedWhisperUser = msg.PrefixUser;
+
                 if (AppSettings.ChatEnableInlineWhispers)
                 {
-                    var inlineMessage = new Message(msg, TwitchChannel.WhisperChannel, true, false, true) { HighlightTab = false };
-
-                    inlineMessage.HighlightType = HighlightType.Whisper;
+                    var inlineMessage = new Message(msg, TwitchChannel.WhisperChannel, true, false, true)
+                    {
+                        HighlightTab = false,
+                        HighlightType = HighlightType.Whisper
+                    };
 
                     foreach (var channel in TwitchChannel.Channels)
                     {

@@ -346,7 +346,7 @@ namespace Chatterino.Controls
             };
             #endregion
 
-            // Emoteses
+            // Emotes
             #region emotes
             BindCheckBox(chkTwitchEmotes, "ChatEnableTwitchEmotes");
             BindCheckBox(chkBttvEmotes, "ChatEnableBttvEmotes");

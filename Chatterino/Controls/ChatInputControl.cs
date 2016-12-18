@@ -92,8 +92,19 @@ namespace Chatterino.Controls
             if (AppSettings.ChatHideInputIfEmpty && Logic.Text.Length == 0)
                 Visible = false;
 
-            Logic.Changed += (s, e) =>
+            Logic.Changed += (sender, e) =>
             {
+                if (Logic.Text.StartsWith("/r "))
+                {
+                    if (IrcManager.LastReceivedWhisperUser != null)
+                    {
+                        var s = "/w " + IrcManager.LastReceivedWhisperUser + Logic.Text.Substring(2);
+                        Logic.SetText(s);
+                        Logic.SetCaretPosition(s.Length - 1);
+                        return;
+                    }
+                }
+
                 if (AppSettings.ChatHideInputIfEmpty && Logic.Text.Length == 0)
                 {
                     Visible = false;

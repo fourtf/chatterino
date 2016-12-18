@@ -829,7 +829,7 @@ namespace Chatterino.Controls
                         GuiEngine.Current.HandleLink(new Link(LinkType.Url, _selected.Channel.PopoutPlayerLink));
                     }));
                 _contextMenu.MenuItems.Add("-");
-                _contextMenu.MenuItems.Add(new MenuItem("Reload Channel Emoteses", (s, e) =>
+                _contextMenu.MenuItems.Add(new MenuItem("Reload Channel Emotes", (s, e) =>
                 {
                     _selected.Channel.ReloadEmotes();
                 }));

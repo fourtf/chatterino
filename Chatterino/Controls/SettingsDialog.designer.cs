@@ -146,6 +146,7 @@
             this.spWhispers = new Chatterino.Controls.SettingsTabPage();
             this.spBrowserExtension = new Chatterino.Controls.SettingsTabPage();
             this.spConnection = new Chatterino.Controls.SettingsTabPage();
+            this.label16 = new System.Windows.Forms.Label();
             this.tabs.SuspendLayout();
             this.RightPanel.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -194,8 +195,8 @@
             this.tabs.Location = new System.Drawing.Point(0, 0);
             this.tabs.Name = "tabs";
             this.tabs.Panel = this.RightPanel;
-            this.tabs.SelectedIndex = 1;
-            this.tabs.SelectedTab = this.spAppearance;
+            this.tabs.SelectedIndex = 3;
+            this.tabs.SelectedTab = this.spEmotes;
             this.tabs.Size = new System.Drawing.Size(614, 484);
             this.tabs.TabIndex = 0;
             this.tabs.TabsWidth = 150;
@@ -205,8 +206,8 @@
             this.RightPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.RightPanel.Controls.Add(this.panel1);
             this.RightPanel.Controls.Add(this.panel4);
+            this.RightPanel.Controls.Add(this.panel1);
             this.RightPanel.Controls.Add(this.panel11);
             this.RightPanel.Controls.Add(this.panel6);
             this.RightPanel.Controls.Add(this.panel5);
@@ -626,6 +627,7 @@
             // 
             // panel4
             // 
+            this.panel4.Controls.Add(this.label16);
             this.panel4.Controls.Add(this.labelEmoteScale);
             this.panel4.Controls.Add(this.trackBarEmoteScale);
             this.panel4.Controls.Add(this.checkBoxEmoteSizeBasedOnTextHeight);
@@ -681,7 +683,7 @@
             this.chkTwitchEmotes.Name = "chkTwitchEmotes";
             this.chkTwitchEmotes.Size = new System.Drawing.Size(132, 17);
             this.chkTwitchEmotes.TabIndex = 23;
-            this.chkTwitchEmotes.Text = "Enable Twitch Emoteses";
+            this.chkTwitchEmotes.Text = "Enable Twitch Emotes";
             this.chkTwitchEmotes.UseVisualStyleBackColor = true;
             // 
             // tabControl2
@@ -702,7 +704,7 @@
             this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
             this.tabPage3.Size = new System.Drawing.Size(407, 242);
             this.tabPage3.TabIndex = 0;
-            this.tabPage3.Text = "Ignored Emoteses";
+            this.tabPage3.Text = "Ignored Emotes";
             this.tabPage3.UseVisualStyleBackColor = true;
             // 
             // label8
@@ -714,7 +716,7 @@
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(230, 13);
             this.label8.TabIndex = 22;
-            this.label8.Text = "Emoteses that will be shown as text (one per line):";
+            this.label8.Text = "Emotes that will be shown as text (one per line):";
             // 
             // rtbIngoredEmotes
             // 
@@ -763,7 +765,7 @@
             this.chkBttvEmotes.Name = "chkBttvEmotes";
             this.chkBttvEmotes.Size = new System.Drawing.Size(149, 17);
             this.chkBttvEmotes.TabIndex = 11;
-            this.chkBttvEmotes.Text = "Enable BetterTTV Emoteses";
+            this.chkBttvEmotes.Text = "Enable BetterTTV Emotes";
             this.chkBttvEmotes.UseVisualStyleBackColor = true;
             // 
             // chkFFzEmotes
@@ -776,7 +778,7 @@
             this.chkFFzEmotes.Name = "chkFFzEmotes";
             this.chkFFzEmotes.Size = new System.Drawing.Size(167, 17);
             this.chkFFzEmotes.TabIndex = 10;
-            this.chkFFzEmotes.Text = "Enable FrankerFaceZ Emoteses";
+            this.chkFFzEmotes.Text = "Enable FrankerFaceZ Emotes";
             this.chkFFzEmotes.UseVisualStyleBackColor = true;
             // 
             // panel11
@@ -1460,6 +1462,7 @@
             this.spAppearance.Location = new System.Drawing.Point(0, 30);
             this.spAppearance.Name = "spAppearance";
             this.spAppearance.Panel = this.panel1;
+            this.spAppearance.Selected = false;
             this.spAppearance.Size = new System.Drawing.Size(150, 30);
             this.spAppearance.TabIndex = 1;
             this.spAppearance.Text = "Appearance";
@@ -1483,10 +1486,9 @@
             this.spEmotes.Location = new System.Drawing.Point(0, 90);
             this.spEmotes.Name = "spEmotes";
             this.spEmotes.Panel = this.panel4;
-            this.spEmotes.Selected = false;
             this.spEmotes.Size = new System.Drawing.Size(150, 30);
             this.spEmotes.TabIndex = 4;
-            this.spEmotes.Text = "Emoteses";
+            this.spEmotes.Text = "Emotes";
             // 
             // spIgnoredUsers
             // 
@@ -1573,6 +1575,16 @@
             this.spConnection.TabIndex = 2;
             this.spConnection.Text = "Connection";
             this.spConnection.Visible = false;
+            // 
+            // label16
+            // 
+            this.label16.ForeColor = System.Drawing.Color.White;
+            this.label16.Location = new System.Drawing.Point(225, 98);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(227, 37);
+            this.label16.TabIndex = 27;
+            this.label16.Text = "(you might have to restart chatterino for it to load the properly scaled images)";
+            this.label16.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // SettingsDialog
             // 
@@ -1753,5 +1765,6 @@
         private System.Windows.Forms.NumericUpDown numThemeNightUntil;
         private System.Windows.Forms.Label labelNightThemeUntil;
         private System.Windows.Forms.Label labelNightDesc;
+        private System.Windows.Forms.Label label16;
     }
 }

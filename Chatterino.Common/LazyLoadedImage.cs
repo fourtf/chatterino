@@ -16,6 +16,7 @@ namespace Chatterino.Common
         public bool HasTrailingSpace { get; set; } = true;
         public bool IsEmote { get; set; }
         public double Scale { get; set; } = 1;
+        public Margin Margin { get; set; } = null;
 
         public string Tooltip { get; set; } = null;
 

@@ -16,7 +16,7 @@ namespace Chatterino.Controls
         {
             Icon = App.Icon;
 
-            Text = "Emoteses - Chatterino";
+            Text = "Emotes - Chatterino";
 
             //TopMost = true;
 
@@ -38,7 +38,7 @@ namespace Chatterino.Controls
 
         public void SetChannel(TwitchChannel channel)
         {
-            Text = (channel == null ? "Global" : (channel.Name + "'" + (channel.Name.EndsWith("s") ? "" : "s"))) + " Emoteses - Chatterino";
+            Text = (channel == null ? "Global" : (channel.Name + "'" + (channel.Name.EndsWith("s") ? "" : "s"))) + " Emotes - Chatterino";
 
             container.LoadChannel(channel);
         }
