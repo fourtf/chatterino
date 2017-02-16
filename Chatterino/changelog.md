@@ -1,5 +1,9 @@
 ﻿# changelog
 
+## 1.0.9
+- fixed an issue preventing users from starting chatterino
+- fixed the icon having a santa hat (when you restart your pc/clean icon cache)
+
 ## 1.0.8
 - added /r which expands to /w <last user you whispered with>
 - added support for ffz emote margins
