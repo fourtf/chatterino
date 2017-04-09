@@ -215,7 +215,7 @@ namespace Chatterino.Common
 
                     var request = WebRequest.Create($"https://fourtf.com/chatterino/countuser.php?hash={hash}");
                     using (var response = request.GetResponse())
-                    using (var stream = response.GetResponseStream())
+                    using (response.GetResponseStream())
                     {
                     }
                 });
@@ -627,7 +627,11 @@ namespace Chatterino.Common
                 TwitchChannel.GetChannel((msg.Middle ?? "").TrimStart('#')).Process(c =>
                 {
                     string tmp;
+
                     if (msg.Tags.TryGetValue("msg-id", out tmp) && tmp == "timeout_success")
+                        return;
+
+                    if (AppSettings.Rainbow && tmp == "color_changed")
                         return;
 
                     var message = new Message(msg.Params, null, true) { HighlightTab = false };

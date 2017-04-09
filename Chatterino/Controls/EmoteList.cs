@@ -41,7 +41,7 @@ namespace Chatterino.Controls
 
                         foreach (var emote in emotes.OrderBy(x => x.Key))
                         {
-                            words.Add(new Word { Type = SpanType.LazyLoadedImage, Value = Emotes.GetTwitchEmoteById(emote.Value.ID, emote.Key), Tooltip = emote.Key + "\nTwitch LazyLoadedImage", CopyText = emote.Key, Link = new Link(LinkType.InsertText, emote.Key + " ") });
+                            words.Add(new Word { Type = SpanType.LazyLoadedImage, Value = Emotes.GetTwitchEmoteById(emote.Value.ID, emote.Key), Tooltip = emote.Key + "\nTwitch Emote", CopyText = emote.Key, Link = new Link(LinkType.InsertText, emote.Key + " ") });
                         }
 
                         if (words.Count != 0)

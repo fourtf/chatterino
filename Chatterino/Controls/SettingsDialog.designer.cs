@@ -30,6 +30,20 @@
         {
             this.tabs = new Chatterino.Controls.SettingsTabControl();
             this.RightPanel = new System.Windows.Forms.Panel();
+            this.panel4 = new System.Windows.Forms.Panel();
+            this.label16 = new System.Windows.Forms.Label();
+            this.labelEmoteScale = new System.Windows.Forms.Label();
+            this.trackBarEmoteScale = new System.Windows.Forms.TrackBar();
+            this.checkBoxEmoteSizeBasedOnTextHeight = new System.Windows.Forms.CheckBox();
+            this.chkTwitchEmotes = new System.Windows.Forms.CheckBox();
+            this.tabControl2 = new System.Windows.Forms.TabControl();
+            this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.label8 = new System.Windows.Forms.Label();
+            this.rtbIngoredEmotes = new System.Windows.Forms.RichTextBox();
+            this.chkEmojis = new System.Windows.Forms.CheckBox();
+            this.chkGifEmotes = new System.Windows.Forms.CheckBox();
+            this.chkBttvEmotes = new System.Windows.Forms.CheckBox();
+            this.chkFFzEmotes = new System.Windows.Forms.CheckBox();
             this.panel1 = new System.Windows.Forms.Panel();
             this.labelNightDesc = new System.Windows.Forms.Label();
             this.numThemeNightUntil = new System.Windows.Forms.NumericUpDown();
@@ -59,21 +73,7 @@
             this.txtMsgLimit = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.chkAllowSameMessages = new System.Windows.Forms.CheckBox();
-            this.chkTimestampSeconds = new System.Windows.Forms.CheckBox();
             this.chkTimestamps = new System.Windows.Forms.CheckBox();
-            this.panel4 = new System.Windows.Forms.Panel();
-            this.labelEmoteScale = new System.Windows.Forms.Label();
-            this.trackBarEmoteScale = new System.Windows.Forms.TrackBar();
-            this.checkBoxEmoteSizeBasedOnTextHeight = new System.Windows.Forms.CheckBox();
-            this.chkTwitchEmotes = new System.Windows.Forms.CheckBox();
-            this.tabControl2 = new System.Windows.Forms.TabControl();
-            this.tabPage3 = new System.Windows.Forms.TabPage();
-            this.label8 = new System.Windows.Forms.Label();
-            this.rtbIngoredEmotes = new System.Windows.Forms.RichTextBox();
-            this.chkEmojis = new System.Windows.Forms.CheckBox();
-            this.chkGifEmotes = new System.Windows.Forms.CheckBox();
-            this.chkBttvEmotes = new System.Windows.Forms.CheckBox();
-            this.chkFFzEmotes = new System.Windows.Forms.CheckBox();
             this.panel11 = new System.Windows.Forms.Panel();
             this.label14 = new System.Windows.Forms.Label();
             this.buttonAccountRemove = new System.Windows.Forms.Button();
@@ -146,18 +146,19 @@
             this.spWhispers = new Chatterino.Controls.SettingsTabPage();
             this.spBrowserExtension = new Chatterino.Controls.SettingsTabPage();
             this.spConnection = new Chatterino.Controls.SettingsTabPage();
-            this.label16 = new System.Windows.Forms.Label();
+            this.chkTimestampSeconds = new System.Windows.Forms.CheckBox();
+            this.chkTimestampAmPm = new System.Windows.Forms.CheckBox();
             this.tabs.SuspendLayout();
             this.RightPanel.SuspendLayout();
+            this.panel4.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBarEmoteScale)).BeginInit();
+            this.tabControl2.SuspendLayout();
+            this.tabPage3.SuspendLayout();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numThemeNightUntil)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numThemeNightFrom)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
-            this.panel4.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBarEmoteScale)).BeginInit();
-            this.tabControl2.SuspendLayout();
-            this.tabPage3.SuspendLayout();
             this.panel11.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewAccounts)).BeginInit();
             this.panel6.SuspendLayout();
@@ -195,9 +196,9 @@
             this.tabs.Location = new System.Drawing.Point(0, 0);
             this.tabs.Name = "tabs";
             this.tabs.Panel = this.RightPanel;
-            this.tabs.SelectedIndex = 3;
-            this.tabs.SelectedTab = this.spEmotes;
-            this.tabs.Size = new System.Drawing.Size(614, 484);
+            this.tabs.SelectedIndex = 1;
+            this.tabs.SelectedTab = this.spAppearance;
+            this.tabs.Size = new System.Drawing.Size(614, 495);
             this.tabs.TabIndex = 0;
             this.tabs.TabsWidth = 150;
             // 
@@ -206,11 +207,11 @@
             this.RightPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.RightPanel.Controls.Add(this.panel4);
             this.RightPanel.Controls.Add(this.panel1);
-            this.RightPanel.Controls.Add(this.panel11);
-            this.RightPanel.Controls.Add(this.panel6);
             this.RightPanel.Controls.Add(this.panel5);
+            this.RightPanel.Controls.Add(this.panel11);
+            this.RightPanel.Controls.Add(this.panel4);
+            this.RightPanel.Controls.Add(this.panel6);
             this.RightPanel.Controls.Add(this.panel8);
             this.RightPanel.Controls.Add(this.panel7);
             this.RightPanel.Controls.Add(this.panel3);
@@ -220,11 +221,178 @@
             this.RightPanel.Location = new System.Drawing.Point(150, 0);
             this.RightPanel.Name = "RightPanel";
             this.RightPanel.Padding = new System.Windows.Forms.Padding(0, 0, 0, 42);
-            this.RightPanel.Size = new System.Drawing.Size(464, 484);
+            this.RightPanel.Size = new System.Drawing.Size(464, 495);
             this.RightPanel.TabIndex = 0;
+            // 
+            // panel4
+            // 
+            this.panel4.Controls.Add(this.label16);
+            this.panel4.Controls.Add(this.labelEmoteScale);
+            this.panel4.Controls.Add(this.trackBarEmoteScale);
+            this.panel4.Controls.Add(this.checkBoxEmoteSizeBasedOnTextHeight);
+            this.panel4.Controls.Add(this.chkTwitchEmotes);
+            this.panel4.Controls.Add(this.tabControl2);
+            this.panel4.Controls.Add(this.chkEmojis);
+            this.panel4.Controls.Add(this.chkGifEmotes);
+            this.panel4.Controls.Add(this.chkBttvEmotes);
+            this.panel4.Controls.Add(this.chkFFzEmotes);
+            this.panel4.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel4.Location = new System.Drawing.Point(0, 0);
+            this.panel4.Name = "panel4";
+            this.panel4.Size = new System.Drawing.Size(464, 453);
+            this.panel4.TabIndex = 2;
+            // 
+            // label16
+            // 
+            this.label16.ForeColor = System.Drawing.Color.White;
+            this.label16.Location = new System.Drawing.Point(225, 98);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(227, 37);
+            this.label16.TabIndex = 27;
+            this.label16.Text = "(you might have to restart chatterino for it to load the properly scaled images)";
+            this.label16.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // labelEmoteScale
+            // 
+            this.labelEmoteScale.AutoSize = true;
+            this.labelEmoteScale.ForeColor = System.Drawing.Color.White;
+            this.labelEmoteScale.Location = new System.Drawing.Point(305, 47);
+            this.labelEmoteScale.Name = "labelEmoteScale";
+            this.labelEmoteScale.Size = new System.Drawing.Size(82, 13);
+            this.labelEmoteScale.TabIndex = 26;
+            this.labelEmoteScale.Text = "Emote scale: 1x";
+            // 
+            // trackBarEmoteScale
+            // 
+            this.trackBarEmoteScale.Location = new System.Drawing.Point(243, 63);
+            this.trackBarEmoteScale.Maximum = 45;
+            this.trackBarEmoteScale.Name = "trackBarEmoteScale";
+            this.trackBarEmoteScale.Size = new System.Drawing.Size(193, 45);
+            this.trackBarEmoteScale.TabIndex = 25;
+            this.trackBarEmoteScale.Value = 5;
+            // 
+            // checkBoxEmoteSizeBasedOnTextHeight
+            // 
+            this.checkBoxEmoteSizeBasedOnTextHeight.AutoSize = true;
+            this.checkBoxEmoteSizeBasedOnTextHeight.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.checkBoxEmoteSizeBasedOnTextHeight.Location = new System.Drawing.Point(252, 13);
+            this.checkBoxEmoteSizeBasedOnTextHeight.Name = "checkBoxEmoteSizeBasedOnTextHeight";
+            this.checkBoxEmoteSizeBasedOnTextHeight.Size = new System.Drawing.Size(184, 17);
+            this.checkBoxEmoteSizeBasedOnTextHeight.TabIndex = 24;
+            this.checkBoxEmoteSizeBasedOnTextHeight.Text = "Emote Size based on Text Height";
+            this.checkBoxEmoteSizeBasedOnTextHeight.UseVisualStyleBackColor = true;
+            // 
+            // chkTwitchEmotes
+            // 
+            this.chkTwitchEmotes.AutoSize = true;
+            this.chkTwitchEmotes.Checked = true;
+            this.chkTwitchEmotes.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkTwitchEmotes.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.chkTwitchEmotes.Location = new System.Drawing.Point(16, 13);
+            this.chkTwitchEmotes.Name = "chkTwitchEmotes";
+            this.chkTwitchEmotes.Size = new System.Drawing.Size(132, 17);
+            this.chkTwitchEmotes.TabIndex = 23;
+            this.chkTwitchEmotes.Text = "Enable Twitch Emotes";
+            this.chkTwitchEmotes.UseVisualStyleBackColor = true;
+            // 
+            // tabControl2
+            // 
+            this.tabControl2.Controls.Add(this.tabPage3);
+            this.tabControl2.Location = new System.Drawing.Point(17, 131);
+            this.tabControl2.Name = "tabControl2";
+            this.tabControl2.SelectedIndex = 0;
+            this.tabControl2.Size = new System.Drawing.Size(415, 268);
+            this.tabControl2.TabIndex = 22;
+            // 
+            // tabPage3
+            // 
+            this.tabPage3.Controls.Add(this.label8);
+            this.tabPage3.Controls.Add(this.rtbIngoredEmotes);
+            this.tabPage3.Location = new System.Drawing.Point(4, 22);
+            this.tabPage3.Name = "tabPage3";
+            this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage3.Size = new System.Drawing.Size(407, 242);
+            this.tabPage3.TabIndex = 0;
+            this.tabPage3.Text = "Ignored Emotes";
+            this.tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.label8.ForeColor = System.Drawing.Color.Black;
+            this.label8.Location = new System.Drawing.Point(3, 5);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(230, 13);
+            this.label8.TabIndex = 22;
+            this.label8.Text = "Emotes that will be shown as text (one per line):";
+            // 
+            // rtbIngoredEmotes
+            // 
+            this.rtbIngoredEmotes.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.rtbIngoredEmotes.Location = new System.Drawing.Point(6, 21);
+            this.rtbIngoredEmotes.Name = "rtbIngoredEmotes";
+            this.rtbIngoredEmotes.Size = new System.Drawing.Size(395, 215);
+            this.rtbIngoredEmotes.TabIndex = 17;
+            this.rtbIngoredEmotes.Text = "";
+            // 
+            // chkEmojis
+            // 
+            this.chkEmojis.AutoSize = true;
+            this.chkEmojis.Checked = true;
+            this.chkEmojis.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkEmojis.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.chkEmojis.Location = new System.Drawing.Point(16, 105);
+            this.chkEmojis.Name = "chkEmojis";
+            this.chkEmojis.Size = new System.Drawing.Size(92, 17);
+            this.chkEmojis.TabIndex = 13;
+            this.chkEmojis.Text = "Enable Emojis";
+            this.chkEmojis.UseVisualStyleBackColor = true;
+            // 
+            // chkGifEmotes
+            // 
+            this.chkGifEmotes.AutoSize = true;
+            this.chkGifEmotes.Checked = true;
+            this.chkGifEmotes.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkGifEmotes.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.chkGifEmotes.Location = new System.Drawing.Point(16, 82);
+            this.chkGifEmotes.Name = "chkGifEmotes";
+            this.chkGifEmotes.Size = new System.Drawing.Size(133, 17);
+            this.chkGifEmotes.TabIndex = 12;
+            this.chkGifEmotes.Text = "Enable GIF Animations";
+            this.chkGifEmotes.UseVisualStyleBackColor = true;
+            // 
+            // chkBttvEmotes
+            // 
+            this.chkBttvEmotes.AutoSize = true;
+            this.chkBttvEmotes.Checked = true;
+            this.chkBttvEmotes.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkBttvEmotes.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.chkBttvEmotes.Location = new System.Drawing.Point(16, 36);
+            this.chkBttvEmotes.Name = "chkBttvEmotes";
+            this.chkBttvEmotes.Size = new System.Drawing.Size(149, 17);
+            this.chkBttvEmotes.TabIndex = 11;
+            this.chkBttvEmotes.Text = "Enable BetterTTV Emotes";
+            this.chkBttvEmotes.UseVisualStyleBackColor = true;
+            // 
+            // chkFFzEmotes
+            // 
+            this.chkFFzEmotes.AutoSize = true;
+            this.chkFFzEmotes.Checked = true;
+            this.chkFFzEmotes.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkFFzEmotes.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.chkFFzEmotes.Location = new System.Drawing.Point(16, 59);
+            this.chkFFzEmotes.Name = "chkFFzEmotes";
+            this.chkFFzEmotes.Size = new System.Drawing.Size(167, 17);
+            this.chkFFzEmotes.TabIndex = 10;
+            this.chkFFzEmotes.Text = "Enable FrankerFaceZ Emotes";
+            this.chkFFzEmotes.UseVisualStyleBackColor = true;
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.chkTimestampAmPm);
             this.panel1.Controls.Add(this.labelNightDesc);
             this.panel1.Controls.Add(this.numThemeNightUntil);
             this.panel1.Controls.Add(this.labelNightThemeUntil);
@@ -258,7 +426,7 @@
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(464, 442);
+            this.panel1.Size = new System.Drawing.Size(464, 453);
             this.panel1.TabIndex = 0;
             // 
             // labelNightDesc
@@ -599,19 +767,6 @@
             this.chkAllowSameMessages.Text = "Allow sending Duplicate Messages (add a space at the end)";
             this.chkAllowSameMessages.UseVisualStyleBackColor = true;
             // 
-            // chkTimestampSeconds
-            // 
-            this.chkTimestampSeconds.AutoSize = true;
-            this.chkTimestampSeconds.Checked = true;
-            this.chkTimestampSeconds.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkTimestampSeconds.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.chkTimestampSeconds.Location = new System.Drawing.Point(156, 158);
-            this.chkTimestampSeconds.Name = "chkTimestampSeconds";
-            this.chkTimestampSeconds.Size = new System.Drawing.Size(168, 17);
-            this.chkTimestampSeconds.TabIndex = 1;
-            this.chkTimestampSeconds.Text = "Show Seconds in Timestamps";
-            this.chkTimestampSeconds.UseVisualStyleBackColor = true;
-            // 
             // chkTimestamps
             // 
             this.chkTimestamps.AutoSize = true;
@@ -625,162 +780,6 @@
             this.chkTimestamps.Text = "Show Timestamps";
             this.chkTimestamps.UseVisualStyleBackColor = true;
             // 
-            // panel4
-            // 
-            this.panel4.Controls.Add(this.label16);
-            this.panel4.Controls.Add(this.labelEmoteScale);
-            this.panel4.Controls.Add(this.trackBarEmoteScale);
-            this.panel4.Controls.Add(this.checkBoxEmoteSizeBasedOnTextHeight);
-            this.panel4.Controls.Add(this.chkTwitchEmotes);
-            this.panel4.Controls.Add(this.tabControl2);
-            this.panel4.Controls.Add(this.chkEmojis);
-            this.panel4.Controls.Add(this.chkGifEmotes);
-            this.panel4.Controls.Add(this.chkBttvEmotes);
-            this.panel4.Controls.Add(this.chkFFzEmotes);
-            this.panel4.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel4.Location = new System.Drawing.Point(0, 0);
-            this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(464, 442);
-            this.panel4.TabIndex = 2;
-            // 
-            // labelEmoteScale
-            // 
-            this.labelEmoteScale.AutoSize = true;
-            this.labelEmoteScale.ForeColor = System.Drawing.Color.White;
-            this.labelEmoteScale.Location = new System.Drawing.Point(305, 47);
-            this.labelEmoteScale.Name = "labelEmoteScale";
-            this.labelEmoteScale.Size = new System.Drawing.Size(82, 13);
-            this.labelEmoteScale.TabIndex = 26;
-            this.labelEmoteScale.Text = "Emote scale: 1x";
-            // 
-            // trackBarEmoteScale
-            // 
-            this.trackBarEmoteScale.Location = new System.Drawing.Point(243, 63);
-            this.trackBarEmoteScale.Maximum = 45;
-            this.trackBarEmoteScale.Name = "trackBarEmoteScale";
-            this.trackBarEmoteScale.Size = new System.Drawing.Size(193, 45);
-            this.trackBarEmoteScale.TabIndex = 25;
-            this.trackBarEmoteScale.Value = 5;
-            // 
-            // checkBoxEmoteSizeBasedOnTextHeight
-            // 
-            this.checkBoxEmoteSizeBasedOnTextHeight.AutoSize = true;
-            this.checkBoxEmoteSizeBasedOnTextHeight.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.checkBoxEmoteSizeBasedOnTextHeight.Location = new System.Drawing.Point(252, 13);
-            this.checkBoxEmoteSizeBasedOnTextHeight.Name = "checkBoxEmoteSizeBasedOnTextHeight";
-            this.checkBoxEmoteSizeBasedOnTextHeight.Size = new System.Drawing.Size(184, 17);
-            this.checkBoxEmoteSizeBasedOnTextHeight.TabIndex = 24;
-            this.checkBoxEmoteSizeBasedOnTextHeight.Text = "Emote Size based on Text Height";
-            this.checkBoxEmoteSizeBasedOnTextHeight.UseVisualStyleBackColor = true;
-            // 
-            // chkTwitchEmotes
-            // 
-            this.chkTwitchEmotes.AutoSize = true;
-            this.chkTwitchEmotes.Checked = true;
-            this.chkTwitchEmotes.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkTwitchEmotes.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.chkTwitchEmotes.Location = new System.Drawing.Point(16, 13);
-            this.chkTwitchEmotes.Name = "chkTwitchEmotes";
-            this.chkTwitchEmotes.Size = new System.Drawing.Size(132, 17);
-            this.chkTwitchEmotes.TabIndex = 23;
-            this.chkTwitchEmotes.Text = "Enable Twitch Emotes";
-            this.chkTwitchEmotes.UseVisualStyleBackColor = true;
-            // 
-            // tabControl2
-            // 
-            this.tabControl2.Controls.Add(this.tabPage3);
-            this.tabControl2.Location = new System.Drawing.Point(17, 131);
-            this.tabControl2.Name = "tabControl2";
-            this.tabControl2.SelectedIndex = 0;
-            this.tabControl2.Size = new System.Drawing.Size(415, 268);
-            this.tabControl2.TabIndex = 22;
-            // 
-            // tabPage3
-            // 
-            this.tabPage3.Controls.Add(this.label8);
-            this.tabPage3.Controls.Add(this.rtbIngoredEmotes);
-            this.tabPage3.Location = new System.Drawing.Point(4, 22);
-            this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(407, 242);
-            this.tabPage3.TabIndex = 0;
-            this.tabPage3.Text = "Ignored Emotes";
-            this.tabPage3.UseVisualStyleBackColor = true;
-            // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.label8.ForeColor = System.Drawing.Color.Black;
-            this.label8.Location = new System.Drawing.Point(3, 5);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(230, 13);
-            this.label8.TabIndex = 22;
-            this.label8.Text = "Emotes that will be shown as text (one per line):";
-            // 
-            // rtbIngoredEmotes
-            // 
-            this.rtbIngoredEmotes.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.rtbIngoredEmotes.Location = new System.Drawing.Point(6, 21);
-            this.rtbIngoredEmotes.Name = "rtbIngoredEmotes";
-            this.rtbIngoredEmotes.Size = new System.Drawing.Size(395, 215);
-            this.rtbIngoredEmotes.TabIndex = 17;
-            this.rtbIngoredEmotes.Text = "";
-            // 
-            // chkEmojis
-            // 
-            this.chkEmojis.AutoSize = true;
-            this.chkEmojis.Checked = true;
-            this.chkEmojis.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkEmojis.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.chkEmojis.Location = new System.Drawing.Point(16, 105);
-            this.chkEmojis.Name = "chkEmojis";
-            this.chkEmojis.Size = new System.Drawing.Size(92, 17);
-            this.chkEmojis.TabIndex = 13;
-            this.chkEmojis.Text = "Enable Emojis";
-            this.chkEmojis.UseVisualStyleBackColor = true;
-            // 
-            // chkGifEmotes
-            // 
-            this.chkGifEmotes.AutoSize = true;
-            this.chkGifEmotes.Checked = true;
-            this.chkGifEmotes.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkGifEmotes.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.chkGifEmotes.Location = new System.Drawing.Point(16, 82);
-            this.chkGifEmotes.Name = "chkGifEmotes";
-            this.chkGifEmotes.Size = new System.Drawing.Size(133, 17);
-            this.chkGifEmotes.TabIndex = 12;
-            this.chkGifEmotes.Text = "Enable GIF Animations";
-            this.chkGifEmotes.UseVisualStyleBackColor = true;
-            // 
-            // chkBttvEmotes
-            // 
-            this.chkBttvEmotes.AutoSize = true;
-            this.chkBttvEmotes.Checked = true;
-            this.chkBttvEmotes.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkBttvEmotes.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.chkBttvEmotes.Location = new System.Drawing.Point(16, 36);
-            this.chkBttvEmotes.Name = "chkBttvEmotes";
-            this.chkBttvEmotes.Size = new System.Drawing.Size(149, 17);
-            this.chkBttvEmotes.TabIndex = 11;
-            this.chkBttvEmotes.Text = "Enable BetterTTV Emotes";
-            this.chkBttvEmotes.UseVisualStyleBackColor = true;
-            // 
-            // chkFFzEmotes
-            // 
-            this.chkFFzEmotes.AutoSize = true;
-            this.chkFFzEmotes.Checked = true;
-            this.chkFFzEmotes.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkFFzEmotes.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.chkFFzEmotes.Location = new System.Drawing.Point(16, 59);
-            this.chkFFzEmotes.Name = "chkFFzEmotes";
-            this.chkFFzEmotes.Size = new System.Drawing.Size(167, 17);
-            this.chkFFzEmotes.TabIndex = 10;
-            this.chkFFzEmotes.Text = "Enable FrankerFaceZ Emotes";
-            this.chkFFzEmotes.UseVisualStyleBackColor = true;
-            // 
             // panel11
             // 
             this.panel11.Controls.Add(this.label14);
@@ -790,7 +789,7 @@
             this.panel11.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel11.Location = new System.Drawing.Point(0, 0);
             this.panel11.Name = "panel11";
-            this.panel11.Size = new System.Drawing.Size(464, 442);
+            this.panel11.Size = new System.Drawing.Size(464, 453);
             this.panel11.TabIndex = 9;
             // 
             // label14
@@ -857,7 +856,7 @@
             this.panel6.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel6.Location = new System.Drawing.Point(0, 0);
             this.panel6.Name = "panel6";
-            this.panel6.Size = new System.Drawing.Size(464, 442);
+            this.panel6.Size = new System.Drawing.Size(464, 453);
             this.panel6.TabIndex = 4;
             // 
             // comboShowIgnoredUsersMessagesIf
@@ -959,7 +958,7 @@
             this.panel5.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel5.Location = new System.Drawing.Point(0, 0);
             this.panel5.Name = "panel5";
-            this.panel5.Size = new System.Drawing.Size(464, 442);
+            this.panel5.Size = new System.Drawing.Size(464, 453);
             this.panel5.TabIndex = 3;
             // 
             // chkAllowCommandAtEnd
@@ -1035,7 +1034,7 @@
             this.panel8.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel8.Location = new System.Drawing.Point(0, 0);
             this.panel8.Name = "panel8";
-            this.panel8.Size = new System.Drawing.Size(464, 442);
+            this.panel8.Size = new System.Drawing.Size(464, 453);
             this.panel8.TabIndex = 6;
             // 
             // label13
@@ -1069,7 +1068,7 @@
             this.panel7.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel7.Location = new System.Drawing.Point(0, 0);
             this.panel7.Name = "panel7";
-            this.panel7.Size = new System.Drawing.Size(464, 442);
+            this.panel7.Size = new System.Drawing.Size(464, 453);
             this.panel7.TabIndex = 5;
             // 
             // chkDoubleClickLinks
@@ -1109,7 +1108,7 @@
             this.panel3.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel3.Location = new System.Drawing.Point(0, 0);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(464, 442);
+            this.panel3.Size = new System.Drawing.Size(464, 453);
             this.panel3.TabIndex = 1;
             // 
             // tabControl1
@@ -1258,7 +1257,7 @@
             this.panel10.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel10.Location = new System.Drawing.Point(0, 0);
             this.panel10.Name = "panel10";
-            this.panel10.Size = new System.Drawing.Size(464, 442);
+            this.panel10.Size = new System.Drawing.Size(464, 453);
             this.panel10.TabIndex = 8;
             // 
             // panel2
@@ -1278,7 +1277,7 @@
             this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel2.Location = new System.Drawing.Point(0, 0);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(464, 442);
+            this.panel2.Size = new System.Drawing.Size(464, 453);
             this.panel2.TabIndex = 0;
             // 
             // comboBox1
@@ -1397,7 +1396,7 @@
             this.panel9.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel9.Location = new System.Drawing.Point(0, 0);
             this.panel9.Name = "panel9";
-            this.panel9.Size = new System.Drawing.Size(464, 442);
+            this.panel9.Size = new System.Drawing.Size(464, 453);
             this.panel9.TabIndex = 7;
             // 
             // tabControl3
@@ -1462,7 +1461,6 @@
             this.spAppearance.Location = new System.Drawing.Point(0, 30);
             this.spAppearance.Name = "spAppearance";
             this.spAppearance.Panel = this.panel1;
-            this.spAppearance.Selected = false;
             this.spAppearance.Size = new System.Drawing.Size(150, 30);
             this.spAppearance.TabIndex = 1;
             this.spAppearance.Text = "Appearance";
@@ -1486,6 +1484,7 @@
             this.spEmotes.Location = new System.Drawing.Point(0, 90);
             this.spEmotes.Name = "spEmotes";
             this.spEmotes.Panel = this.panel4;
+            this.spEmotes.Selected = false;
             this.spEmotes.Size = new System.Drawing.Size(150, 30);
             this.spEmotes.TabIndex = 4;
             this.spEmotes.Text = "Emotes";
@@ -1576,22 +1575,36 @@
             this.spConnection.Text = "Connection";
             this.spConnection.Visible = false;
             // 
-            // label16
+            // chkTimestampSeconds
             // 
-            this.label16.ForeColor = System.Drawing.Color.White;
-            this.label16.Location = new System.Drawing.Point(225, 98);
-            this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(227, 37);
-            this.label16.TabIndex = 27;
-            this.label16.Text = "(you might have to restart chatterino for it to load the properly scaled images)";
-            this.label16.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.chkTimestampSeconds.AutoSize = true;
+            this.chkTimestampSeconds.Checked = true;
+            this.chkTimestampSeconds.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkTimestampSeconds.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.chkTimestampSeconds.Location = new System.Drawing.Point(156, 158);
+            this.chkTimestampSeconds.Name = "chkTimestampSeconds";
+            this.chkTimestampSeconds.Size = new System.Drawing.Size(168, 17);
+            this.chkTimestampSeconds.TabIndex = 1;
+            this.chkTimestampSeconds.Text = "Show Seconds in Timestamps";
+            this.chkTimestampSeconds.UseVisualStyleBackColor = true;
+            // 
+            // chkTimestampAmPm
+            // 
+            this.chkTimestampAmPm.AutoSize = true;
+            this.chkTimestampAmPm.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.chkTimestampAmPm.Location = new System.Drawing.Point(330, 159);
+            this.chkTimestampAmPm.Name = "chkTimestampAmPm";
+            this.chkTimestampAmPm.Size = new System.Drawing.Size(81, 17);
+            this.chkTimestampAmPm.TabIndex = 36;
+            this.chkTimestampAmPm.Text = "Use am/pm";
+            this.chkTimestampAmPm.UseVisualStyleBackColor = true;
             // 
             // SettingsDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(80)))), ((int)(((byte)(80)))), ((int)(((byte)(80)))));
-            this.ClientSize = new System.Drawing.Size(614, 484);
+            this.ClientSize = new System.Drawing.Size(614, 495);
             this.ControlBox = false;
             this.Controls.Add(this.tabs);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
@@ -1603,18 +1616,18 @@
             this.Text = "Preferences";
             this.tabs.ResumeLayout(false);
             this.RightPanel.ResumeLayout(false);
-            this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numThemeNightUntil)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numThemeNightFrom)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBar2)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).EndInit();
             this.panel4.ResumeLayout(false);
             this.panel4.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarEmoteScale)).EndInit();
             this.tabControl2.ResumeLayout(false);
             this.tabPage3.ResumeLayout(false);
             this.tabPage3.PerformLayout();
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numThemeNightUntil)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numThemeNightFrom)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).EndInit();
             this.panel11.ResumeLayout(false);
             this.panel11.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewAccounts)).EndInit();
@@ -1652,7 +1665,6 @@
         private System.Windows.Forms.Panel panel1;
         private SettingsTabPage spAppearance;
         private System.Windows.Forms.CheckBox chkTimestamps;
-        private System.Windows.Forms.CheckBox chkTimestampSeconds;
         private System.Windows.Forms.CheckBox chkAllowSameMessages;
         private SettingsTabPage spConnection;
         private System.Windows.Forms.Panel panel2;
@@ -1766,5 +1778,7 @@
         private System.Windows.Forms.Label labelNightThemeUntil;
         private System.Windows.Forms.Label labelNightDesc;
         private System.Windows.Forms.Label label16;
+        private System.Windows.Forms.CheckBox chkTimestampAmPm;
+        private System.Windows.Forms.CheckBox chkTimestampSeconds;
     }
 }

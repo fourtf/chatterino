@@ -280,6 +280,15 @@ namespace Chatterino
             [ImageType.Cheer5000] = Properties.Resources.cheer5000,
             [ImageType.Cheer10000] = Properties.Resources.cheer10000,
             [ImageType.Cheer100000] = Properties.Resources.cheer100000,
+            [ImageType.Cheer200000] = Properties.Resources._200000,
+            [ImageType.Cheer300000] = Properties.Resources._300000,
+            [ImageType.Cheer400000] = Properties.Resources._400000,
+            [ImageType.Cheer500000] = Properties.Resources._500000,
+            [ImageType.Cheer600000] = Properties.Resources._600000,
+            [ImageType.Cheer700000] = Properties.Resources._700000,
+            [ImageType.Cheer800000] = Properties.Resources._800000,
+            [ImageType.Cheer900000] = Properties.Resources._900000,
+            [ImageType.Cheer1000000] = Properties.Resources._1000000,
         };
 
         public object GetImage(ImageType type)

@@ -214,4 +214,31 @@
   <data name="tool_moreCollapser_off16" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\tool_moreCollapser_off16.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="_1000000" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\1000000.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="_200000" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\200000.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="_300000" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\300000.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="_400000" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\400000.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="_500000" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\500000.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="_600000" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\600000.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="_700000" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\700000.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="_800000" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\800000.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="_900000" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\900000.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>

@@ -237,6 +237,8 @@ namespace Chatterino.Common
         public static bool ChatEnableGifAnimations { get; set; } = true;
 
         public static bool ChatEnableInlineWhispers { get; set; } = false;
+        public static bool Rainbow { get; set; } = false;
+        public static bool TimestampsAmPm { get; set; } = false;
 
         public static bool ProxyEnable { get; set; } = false;
         public static string ProxyType { get; set; } = "http";

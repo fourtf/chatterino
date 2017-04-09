@@ -27,7 +27,7 @@ namespace Chatterino
             {
                 StartPosition = FormStartPosition.Manual;
                 Location = new Point(Math.Max(0, AppSettings.WindowX), Math.Max(0, AppSettings.WindowY));
-                Size = new Size(Math.Min(AppSettings.WindowWidth, 200), Math.Min(AppSettings.WindowHeight, 200));
+                Size = new Size(Math.Max(AppSettings.WindowWidth, 200), Math.Max(AppSettings.WindowHeight, 200));
             }
             catch { }
 

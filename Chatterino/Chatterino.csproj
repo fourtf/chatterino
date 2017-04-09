@@ -304,6 +304,15 @@
     <Content Include="Controls\CustomFontDialog\LICENSE.txt" />
     <Content Include="icon2.ico" />
     <Content Include="icon2_christmas.ico" />
+    <None Include="Resources\1000000.png" />
+    <None Include="Resources\900000.png" />
+    <None Include="Resources\800000.png" />
+    <None Include="Resources\700000.png" />
+    <None Include="Resources\600000.png" />
+    <None Include="Resources\500000.png" />
+    <None Include="Resources\400000.png" />
+    <None Include="Resources\300000.png" />
+    <None Include="Resources\200000.png" />
     <None Include="Resources\tool_moreCollapser_off16.png" />
     <None Include="Resources\screenshot_user.png" />
     <None Include="Resources\UserProfile_22x.png" />

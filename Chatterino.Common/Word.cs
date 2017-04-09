@@ -77,7 +77,6 @@ namespace Chatterino.Common
     public enum SpanType
     {
         Text,
-        LazyLoadedImage,
-        Image
+        LazyLoadedImage
     }
 }

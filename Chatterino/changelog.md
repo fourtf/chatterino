@@ -1,5 +1,17 @@
 ﻿# changelog
 
+## 1.2.1
+- fixed text being copied twice
+
+## 1.2
+- fixed channel ffz emotes being tagged as "global"
+- added ap/pm timestamp format
+- added "new" cheer badges
+- changed some values to hopefully improve the disconnecting issue
+
+## 1.1
+- fixed window size resetting to 200x200 px on start
+
 ## 1.0.9
 - fixed an issue preventing users from starting chatterino
 - fixed the icon having a santa hat (when you restart your pc/clean icon cache)

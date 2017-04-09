@@ -160,7 +160,7 @@ namespace Chatterino.Common
             return link.Replace("{{image}}", (_scale == 4 ? 3 : _scale) + "x");
         }
 
-        public static IEnumerable<LazyLoadedImage> GetFfzEmoteFromDynamic(dynamic d)
+        public static IEnumerable<LazyLoadedImage> GetFfzEmoteFromDynamic(dynamic d, bool global)
         {
             List<LazyLoadedImage> emotes = new List<LazyLoadedImage>();
 
@@ -243,7 +243,7 @@ namespace Chatterino.Common
                     }
                 }
 
-                emotes.Add(new LazyLoadedImage { Name = name, Url = url, Scale = scale, Margin = margin, Tooltip = name + "\nFrankerFaceZ Global Emote", IsEmote = true });
+                emotes.Add(new LazyLoadedImage { Name = name, Url = url, Scale = scale, Margin = margin, Tooltip = name + $"\nFrankerFaceZ {(global ? "Global" : "Channel")} Emote", IsEmote = true });
             }
 
             return emotes;
@@ -411,7 +411,7 @@ namespace Chatterino.Common
                         {
                             var val = set.Value;
 
-                            foreach (LazyLoadedImage emote in GetFfzEmoteFromDynamic(val["emoticons"]))
+                            foreach (LazyLoadedImage emote in GetFfzEmoteFromDynamic(val["emoticons"], true))
                             {
                                 FfzGlobalEmotes[emote.Name] = emote;
                             }
@@ -453,7 +453,7 @@ namespace Chatterino.Common
 
                             dynamic emoticons = _set["emoticons"];
 
-                            foreach (LazyLoadedImage emote in GetFfzEmoteFromDynamic(emoticons))
+                            foreach (LazyLoadedImage emote in GetFfzEmoteFromDynamic(emoticons, true))
                             {
                                 FfzGlobalEmotes[emote.Name] = emote;
                             }

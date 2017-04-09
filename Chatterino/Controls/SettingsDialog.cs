@@ -227,7 +227,8 @@ namespace Chatterino.Controls
             };
 
             BindCheckBox(chkTimestamps, "ChatShowTimestamps");
-            BindCheckBox(chkTimestampSeconds, "ChatShowTimestampSeconds");
+            BindCheckBox(chkTimestampSeconds, "ChatShowTimestampSeconds"); 
+            BindCheckBox(chkTimestampAmPm, "TimestampsAmPm");
             BindCheckBox(chkAllowSameMessages, "ChatAllowSameMessage");
             BindCheckBox(chkDoubleClickLinks, "ChatLinksDoubleClickOnly");
             BindCheckBox(chkHideInput, "ChatHideInputIfEmpty");

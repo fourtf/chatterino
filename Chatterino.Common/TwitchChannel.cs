@@ -21,7 +21,7 @@ namespace Chatterino.Common
     {
         const int maxMessages = 1000;
 
-        static System.Timers.Timer refreshChatterListTimer = new System.Timers.Timer(30 * 1000 * 60);
+        static readonly System.Timers.Timer refreshChatterListTimer = new System.Timers.Timer(30 * 1000 * 60);
 
         // properties
         public string Name { get; private set; }
@@ -513,9 +513,9 @@ namespace Chatterino.Common
         }
 
 
-        private static System.Timers.Timer UpdateIsLiveTimer = new System.Timers.Timer(1000 * 60);
+        private static readonly System.Timers.Timer UpdateIsLiveTimer = new System.Timers.Timer(1000 * 60);
 
-        private static ConcurrentDictionary<string, TwitchChannel> channels = new ConcurrentDictionary<string, TwitchChannel>();
+        private static readonly ConcurrentDictionary<string, TwitchChannel> channels = new ConcurrentDictionary<string, TwitchChannel>();
         public static IEnumerable<TwitchChannel> Channels { get { return channels.Values; } }
 
         public static TwitchChannel WhisperChannel { get; private set; } = new TwitchChannel("/whispers");
@@ -632,12 +632,24 @@ namespace Chatterino.Common
             IrcManager.Client?.Part("#" + Name);
         }
 
+        //static readonly Random ColorRandom = new Random();
+        private static float usernameHue = 0;
         public void SendMessage(string text)
         {
             //if (Name == "/whispers")
             //    IrcManager.SendMessage("jtv", text, IsModOrBroadcaster);
             //else
             IrcManager.SendMessage(this, text, IsModOrBroadcaster);
+
+            if (AppSettings.Rainbow)
+            {
+                usernameHue += 0.1f;
+                
+                float r, g, b;
+                (new HSLColor(usernameHue % 1, 0.5f, 0.5f)).ToRGB(out r, out g, out b);
+
+                IrcManager.SendMessage(this, $".color #{(int)(r * 255):X}{(int)(g * 255):X}{(int)(b * 255):X}", IsModOrBroadcaster);
+            }
         }
 
         void fetchUsernames()
@@ -1016,7 +1028,7 @@ namespace Chatterino.Common
 
                             dynamic emoticons = set["emoticons"];
 
-                            foreach (LazyLoadedImage emote in Emotes.GetFfzEmoteFromDynamic(emoticons))
+                            foreach (LazyLoadedImage emote in Emotes.GetFfzEmoteFromDynamic(emoticons, false))
                             {
                                 FfzChannelEmotes[emote.Name] = emote;
                             }

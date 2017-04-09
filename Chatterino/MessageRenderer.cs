@@ -141,12 +141,12 @@ namespace Chatterino
                         //g.DrawRectangle(Pens.Red, xOffset + word.X, word.Y + yOffset, word.Width, word.Height);
                     }
                 }
-                else if (word.Type == SpanType.Image)
-                {
-                    var img = (Image)word.Value;
-                    if (img != null)
-                        g.DrawImage(img, word.X + xOffset, word.Y + yOffset, word.Width, word.Height);
-                }
+                //else if (word.Type == SpanType.Image)
+                //{
+                //    var img = (Image)word.Value;
+                //    if (img != null)
+                //        g.DrawImage(img, word.X + xOffset, word.Y + yOffset, word.Width, word.Height);
+                //}
             }
 
             Action<int, bool> addWordToGifList = (i, selected) =>
@@ -245,22 +245,22 @@ namespace Chatterino
                                         rect.Height);
                             }
                         }
-                        else if (word.Type == SpanType.Image)
-                        {
-                            var textLength = 2;
+                        //else if (word.Type == SpanType.Image)
+                        //{
+                        //    var textLength = 2;
 
-                            var offset = (first.MessageIndex == currentLine && first.WordIndex == i)
-                                ? first.CharIndex
-                                : 0;
-                            var length = ((last.MessageIndex == currentLine && last.WordIndex == i)
-                                             ? last.CharIndex
-                                             : textLength) - offset;
+                        //    var offset = (first.MessageIndex == currentLine && first.WordIndex == i)
+                        //        ? first.CharIndex
+                        //        : 0;
+                        //    var length = ((last.MessageIndex == currentLine && last.WordIndex == i)
+                        //                     ? last.CharIndex
+                        //                     : textLength) - offset;
 
-                            g.FillRectangle(_selectionBrush, word.X + xOffset + (offset == 0 ? 0 : word.Width),
-                                word.Y + yOffset,
-                                (offset == 0 ? word.Width : 0) + (offset + length == 2 ? spaceWidth : 0) - 1,
-                                word.Height);
-                        }
+                        //    g.FillRectangle(_selectionBrush, word.X + xOffset + (offset == 0 ? 0 : word.Width),
+                        //        word.Y + yOffset,
+                        //        (offset == 0 ? word.Width : 0) + (offset + length == 2 ? spaceWidth : 0) - 1,
+                        //        word.Height);
+                        //}
                         else if (word.Type == SpanType.LazyLoadedImage)
                         {
                             var textLength = 2;
@@ -366,11 +366,13 @@ namespace Chatterino
                         case SpanType.Text:
                             break;
                         case SpanType.LazyLoadedImage:
-                            g.DrawImage((Image)((LazyLoadedImage)word.Value).Image, word.X + state.MessageXOffset, word.Y + state.MessageYOffset, word.Width, word.Height);
+                            g.DrawImage((Image) ((LazyLoadedImage) word.Value).Image, word.X + state.MessageXOffset,
+                                word.Y + state.MessageYOffset, word.Width, word.Height);
                             break;
-                        case SpanType.Image:
-                            g.DrawImage((Image)word.Value, word.X + state.MessageXOffset, word.Y + state.MessageYOffset, word.Width, word.Height);
-                            break;
+                        //    case SpanType.Image:
+                        //        g.DrawImage((Image)word.Value, word.X + state.MessageXOffset, word.Y + state.MessageYOffset, word.Width, word.Height);
+                        //        break;
+                        //}
                     }
                 }
 

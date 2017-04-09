@@ -17,17 +17,17 @@ namespace TwitchIrc
         public event EventHandler Disconnected;
         public event EventHandler<ExceptionEventArgs> ConnectionException;
 
-        public bool IsConnected { get; private set; } = false;
+        public bool IsConnected { get; private set; }
 
         // private variables
         private bool connecting = false;
 
         private bool receivedPong = true;
 
-        private TcpClient client = null;
-        private NetworkStream stream = null;
+        private TcpClient client;
+        private NetworkStream stream;
 
-        private string username, password = null;
+        private string username, password;
 
         // constructor
         public IrcConnection()
@@ -70,76 +70,77 @@ namespace TwitchIrc
         {
             IsConnected = false;
 
-            if (!connecting)
+            if (connecting) return;
+
+            if (client != null)
             {
-                if (client != null)
+                client.Close();
+                client = null;
+            }
+
+            try
+            {
+                client = new TcpClient
                 {
-                    client.Close();
-                    client = null;
-                }
+                    NoDelay = true,
+                    ReceiveBufferSize = 80960,
+                    SendBufferSize = 80960
+                };
 
-                try
+                client.Connect("irc.chat.twitch.tv", 6667);
+
+                stream = client.GetStream();
+
+                var reader = new StreamReader(stream);
+
+                new Task(() =>
                 {
-                    client = new TcpClient();
-                    client.NoDelay = true;
-                    client.ReceiveBufferSize = 8096;
-                    client.SendBufferSize = 8096;
-                    client.Connect("irc.chat.twitch.tv", 6667);
-
-                    stream = client.GetStream();
-
-                    var reader = new StreamReader(stream);
-
-                    new Task(() =>
+                    try
                     {
-                        try
+                        string line;
+
+                        while ((line = reader.ReadLine()) != null)
                         {
-                            string line;
-
-                            while ((line = reader.ReadLine()) != null)
-                            {
 #if DEBUG
-                                Console.WriteLine(line);
+                            Console.WriteLine(line);
 #endif
-                                IrcMessage msg;
+                            IrcMessage msg;
 
-                                if (IrcMessage.TryParse(line, out msg))
+                            if (IrcMessage.TryParse(line, out msg))
+                            {
+                                if (msg.Command == "PING")
                                 {
-                                    if (msg.Command == "PING")
-                                    {
-                                        WriteLine("PONG");
-                                    }
-                                    else if (msg.Command == "PONG")
-                                    {
-                                        receivedPong = true;
-                                    }
-
-                                    MessageReceived?.Invoke(this, new MessageEventArgs(msg));
+                                    WriteLine("PONG");
                                 }
+                                else if (msg.Command == "PONG")
+                                {
+                                    receivedPong = true;
+                                }
+                                MessageReceived?.Invoke(this, new MessageEventArgs(msg));
                             }
                         }
-                        catch { }
-                    }).Start();
-
-                    if (!string.IsNullOrEmpty(password))
-                    {
-                        writeLine(stream, "PASS " + password);
                     }
+                    catch { }
+                }).Start();
 
-                    writeLine(stream, "NICK " + username);
-
-                    writeLine(stream, "CAP REQ :twitch.tv/commands");
-                    writeLine(stream, "CAP REQ :twitch.tv/tags");
-
-                    receivedPong = true;
-                    IsConnected = true;
-
-                    Connected?.Invoke(this, EventArgs.Empty);
-                }
-                catch (Exception exc)
+                if (!string.IsNullOrEmpty(password))
                 {
-                    ConnectionException?.Invoke(this, new ExceptionEventArgs(exc));
+                    writeLine(stream, "PASS " + password);
                 }
+
+                writeLine(stream, "NICK " + username);
+
+                writeLine(stream, "CAP REQ :twitch.tv/commands");
+                writeLine(stream, "CAP REQ :twitch.tv/tags");
+
+                receivedPong = true;
+                IsConnected = true;
+
+                Connected?.Invoke(this, EventArgs.Empty);
+            }
+            catch (Exception exc)
+            {
+                ConnectionException?.Invoke(this, new ExceptionEventArgs(exc));
             }
         }
 
@@ -176,6 +177,6 @@ namespace TwitchIrc
         }
 
         // static
-        private static System.Timers.Timer pingTimer = new System.Timers.Timer { Enabled = true, Interval = 7500 };
+        private static System.Timers.Timer pingTimer = new System.Timers.Timer { Enabled = true, Interval = 12500 };
     }
 }

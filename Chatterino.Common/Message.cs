@@ -75,6 +75,8 @@ namespace Chatterino.Common
 
         }
 
+        static CultureInfo enUS = new CultureInfo("en-US");
+
         public Message(IrcMessage data, TwitchChannel channel, bool enableTimestamp = true, bool enablePingSound = true,
             bool isReceivedWhisper = false, bool isSentWhisper = false, bool includeChannel = false)
         {
@@ -170,6 +172,8 @@ namespace Chatterino.Common
             string tmiTimestamp;
             long tmiTimestampInt;
 
+            DateTime timestampTime = DateTime.Now;
+
             if (data.Tags.TryGetValue("tmi-sent-ts", out tmiTimestamp))
             {
 
@@ -179,8 +183,10 @@ namespace Chatterino.Common
 
                     var time = dtDateTime.AddSeconds(tmiTimestampInt / 1000).ToLocalTime();
 
-                    timestamp = time.ToString(AppSettings.ChatShowTimestampSeconds ? "HH:mm:ss" : "HH:mm");
-                    enableTimestamp = true;
+                    timestampTime = time;
+
+                    //timestamp = time.ToString(AppSettings.ChatShowTimestampSeconds ? "HH:mm:ss" : "HH:mm");
+                    //enableTimestamp = true;
                 }
             }
             else if (data.Tags.TryGetValue("timestamp-utc", out timestampTag))
@@ -188,14 +194,26 @@ namespace Chatterino.Common
                 DateTime time;
                 if (DateTime.TryParseExact(timestampTag, "yyyyMMdd-HHmmss", CultureInfo.InvariantCulture, DateTimeStyles.AssumeUniversal, out time))
                 {
-                    timestamp = time.ToString(AppSettings.ChatShowTimestampSeconds ? "HH:mm:ss" : "HH:mm");
-                    enableTimestamp = true;
+                    timestampTime = time;
+                    //timestamp = time.ToString(AppSettings.ChatShowTimestampSeconds ? "HH:mm:ss" : "HH:mm");
+                    //enableTimestamp = true;
                 }
             }
 
             if (enableTimestamp && AppSettings.ChatShowTimestamps)
             {
-                timestamp = timestamp ?? DateTime.Now.ToString(AppSettings.ChatShowTimestampSeconds ? "HH:mm:ss" : "HH:mm");
+                string timestampFormat;
+
+                if (AppSettings.ChatShowTimestampSeconds)
+                {
+                    timestampFormat = AppSettings.TimestampsAmPm ? "hh:mm:ss tt" : "HH:mm:ss";
+                }
+                else
+                {
+                    timestampFormat = AppSettings.TimestampsAmPm ? "hh:mm tt" : "HH:mm";
+                }
+
+                timestamp = timestampTime.ToString(timestampFormat, enUS);
 
                 words.Add(new Word
                 {
@@ -235,7 +253,43 @@ namespace Chatterino.Common
                         {
                             object image;
 
-                            if (cheer >= 100000)
+                            if (cheer >= 1000000)
+                            {
+                                image = GuiEngine.Current.GetImage(ImageType.Cheer1000000);
+                            }
+                            else if (cheer >= 900000)
+                            {
+                                image = GuiEngine.Current.GetImage(ImageType.Cheer900000);
+                            }
+                            else if (cheer >= 800000)
+                            {
+                                image = GuiEngine.Current.GetImage(ImageType.Cheer800000);
+                            }
+                            else if (cheer >= 700000)
+                            {
+                                image = GuiEngine.Current.GetImage(ImageType.Cheer700000);
+                            }
+                            else if (cheer >= 600000)
+                            {
+                                image = GuiEngine.Current.GetImage(ImageType.Cheer600000);
+                            }
+                            else if (cheer >= 500000)
+                            {
+                                image = GuiEngine.Current.GetImage(ImageType.Cheer500000);
+                            }
+                            else if (cheer >= 400000)
+                            {
+                                image = GuiEngine.Current.GetImage(ImageType.Cheer400000);
+                            }
+                            else if (cheer >= 300000)
+                            {
+                                image = GuiEngine.Current.GetImage(ImageType.Cheer300000);
+                            }
+                            else if (cheer >= 200000)
+                            {
+                                image = GuiEngine.Current.GetImage(ImageType.Cheer200000);
+                            }
+                            else if (cheer >= 100000)
                             {
                                 image = GuiEngine.Current.GetImage(ImageType.Cheer100000);
                             }
@@ -260,7 +314,7 @@ namespace Chatterino.Common
                                 image = GuiEngine.Current.GetImage(ImageType.Cheer1);
                             }
 
-                            words.Add(new Word { Type = SpanType.Image, Value = image, Tooltip = "Twitch Cheer " + cheer });
+                            words.Add(new Word { Type = SpanType.LazyLoadedImage, Value = new LazyLoadedImage(image) {Scale = cheer > 100000 ? 0.25 : 1 }, Tooltip = "Twitch Cheer " + cheer });
                         }
                     }
                     else if (badge.StartsWith("subscriber/"))
@@ -281,21 +335,21 @@ namespace Chatterino.Common
                         {
                             case "staff/1":
                                 Badges |= MessageBadges.Staff;
-                                words.Add(new Word { Type = SpanType.Image, Value = GuiEngine.Current.GetImage(ImageType.BadgeStaff), Tooltip = "Twitch Staff" });
+                                words.Add(new Word { Type = SpanType.LazyLoadedImage, Value = new LazyLoadedImage(GuiEngine.Current.GetImage(ImageType.BadgeStaff)), Tooltip = "Twitch Staff" });
                                 break;
                             case "admin/1":
                                 Badges |= MessageBadges.Admin;
-                                words.Add(new Word { Type = SpanType.Image, Value = GuiEngine.Current.GetImage(ImageType.BadgeAdmin), Tooltip = "Twitch Admin" });
+                                words.Add(new Word { Type = SpanType.LazyLoadedImage, Value = new LazyLoadedImage(GuiEngine.Current.GetImage(ImageType.BadgeAdmin)), Tooltip = "Twitch Admin" });
                                 break;
                             case "global_mod/1":
                                 Badges |= MessageBadges.GlobalMod;
-                                words.Add(new Word { Type = SpanType.Image, Value = GuiEngine.Current.GetImage(ImageType.BadgeGlobalmod), Tooltip = "Global Moderator" });
+                                words.Add(new Word { Type = SpanType.LazyLoadedImage, Value = GuiEngine.Current.GetImage(ImageType.BadgeGlobalmod), Tooltip = "Global Moderator" });
                                 break;
                             case "moderator/1":
                                 Badges |= MessageBadges.Mod;
                                 if (channel.ModeratorBadge == null)
                                 {
-                                    words.Add(new Word { Type = SpanType.Image, Value = GuiEngine.Current.GetImage(ImageType.BadgeModerator), Tooltip = "Channel Moderator" });
+                                    words.Add(new Word { Type = SpanType.LazyLoadedImage, Value = new LazyLoadedImage(GuiEngine.Current.GetImage(ImageType.BadgeModerator)), Tooltip = "Channel Moderator" });
                                 }
                                 else
                                 {
@@ -304,15 +358,15 @@ namespace Chatterino.Common
                                 break;
                             case "turbo/1":
                                 Badges |= MessageBadges.Turbo;
-                                words.Add(new Word { Type = SpanType.Image, Value = GuiEngine.Current.GetImage(ImageType.BadgeTurbo), Tooltip = "Turbo Subscriber" });
+                                words.Add(new Word { Type = SpanType.LazyLoadedImage, Value = new LazyLoadedImage(GuiEngine.Current.GetImage(ImageType.BadgeTurbo)), Tooltip = "Turbo Subscriber" });
                                 break;
                             case "broadcaster/1":
                                 Badges |= MessageBadges.Broadcaster;
-                                words.Add(new Word { Type = SpanType.Image, Value = GuiEngine.Current.GetImage(ImageType.BadgeBroadcaster), Tooltip = "Channel Broadcaster" });
+                                words.Add(new Word { Type = SpanType.LazyLoadedImage, Value = new LazyLoadedImage(GuiEngine.Current.GetImage(ImageType.BadgeBroadcaster)), Tooltip = "Channel Broadcaster" });
                                 break;
                             case "premium/1":
                                 Badges |= MessageBadges.Broadcaster;
-                                words.Add(new Word { Type = SpanType.Image, Value = GuiEngine.Current.GetImage(ImageType.BadgeTwitchPrime), Tooltip = "Twitch Prime" });
+                                words.Add(new Word { Type = SpanType.LazyLoadedImage, Value = new LazyLoadedImage(GuiEngine.Current.GetImage(ImageType.BadgeTwitchPrime)), Tooltip = "Twitch Prime" });
                                 break;
                         }
                     }
@@ -709,22 +763,6 @@ namespace Chatterino.Common
                             word.Height = size.Height;
                         }
                     }
-                    else if (word.Type == SpanType.Image)
-                    {
-                        //if (_measureImages)
-                        //{
-                        //    if (word.Value == null)
-                        //    {
-                        //        CommonSize size = GuiEngine.Current.GetImageSize(word.Value);
-                        //        word.Width = size.Width;
-                        //        word.Height = size.Height;
-                        //    }
-                        //    else
-                        //    {
-                        //        word.Width = word.Height = 16;
-                        //    }
-                        //}
-                    }
                     else if (word.Type == SpanType.LazyLoadedImage)
                     {
                         if (emotesChanged || _measureImages)
@@ -990,14 +1028,7 @@ namespace Chatterino.Common
             var w = Words[currentWord];
             var _currentSplit = 0;
 
-            if (w.Type == SpanType.Image)
-            {
-                var imageSize = GuiEngine.Current.GetImageSize(w.Value);
-
-                if (point.X - w.X > imageSize.Width)
-                    currentChar = 1;
-            }
-            else if (w.Type == SpanType.LazyLoadedImage)
+            if (w.Type == SpanType.LazyLoadedImage)
             {
                 var emote = (LazyLoadedImage)w.Value;
 
