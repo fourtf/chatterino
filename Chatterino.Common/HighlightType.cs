@@ -14,5 +14,7 @@ namespace Chatterino.Common
         Resub = 2,
         Whisper = 4,
         SearchResult = 8,
+        Connected = 16,
+        Disconnected = 32,
     }
 }

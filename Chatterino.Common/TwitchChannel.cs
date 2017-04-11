@@ -385,12 +385,33 @@ namespace Chatterino.Common
 
         private void IrcManager_Connected(object sender, EventArgs e)
         {
-            AddMessage(new Message("connected to chat", HSLColor.Gray, true) { HighlightTab = false });
+            lock (MessageLock)
+            {
+                if (Messages.Length != 0 && Messages[Messages.Length - 1].HighlightType.HasFlag(HighlightType.Disconnected))
+                {
+                    Messages[Messages.Length - 1] = new Message("reconnected to chat",
+                        HSLColor.Gray, true)
+                    {
+                        HighlightTab = false,
+                        HighlightType = HighlightType.Connected,
+                    };
+                    return;
+                }
+            }
+
+            AddMessage(new Message("connected to chat", HSLColor.Gray, true)
+            {
+                HighlightTab = false,
+                HighlightType = HighlightType.Disconnected,
+            });
         }
 
         private void IrcManager_Disconnected(object sender, EventArgs e)
         {
-            AddMessage(new Message("disconnected from chat", HSLColor.Gray, true) { HighlightTab = false });
+            AddMessage(new Message("disconnected from chat", HSLColor.Gray, true)
+            {
+                HighlightTab = false
+            });
         }
 
         private void IrcManager_NoticeAdded(object sender, ValueEventArgs<string> e)
@@ -644,7 +665,7 @@ namespace Chatterino.Common
             if (AppSettings.Rainbow)
             {
                 usernameHue += 0.1f;
-                
+
                 float r, g, b;
                 (new HSLColor(usernameHue % 1, 0.5f, 0.5f)).ToRGB(out r, out g, out b);
 
@@ -707,7 +728,7 @@ namespace Chatterino.Common
 
         public object MessageLock { get; private set; } = new object();
 
-        public static IEnumerable<TwitchChannel> AllChannels => Channels.Concat(new[] {WhisperChannel, MentionsChannel});
+        public static IEnumerable<TwitchChannel> AllChannels => Channels.Concat(new[] { WhisperChannel, MentionsChannel });
 
         public void ClearChat(bool removeMessages)
         {

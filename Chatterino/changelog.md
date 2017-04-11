@@ -1,5 +1,10 @@
 ﻿# changelog
 
+## 1.2.2
+- added option for rainbow username colors
+- made the "jump to bottom" more obvious
+- fixed the reconnecting issue
+
 ## 1.2.1
 - fixed text being copied twice
 
@@ -7,7 +12,6 @@
 - fixed channel ffz emotes being tagged as "global"
 - added ap/pm timestamp format
 - added "new" cheer badges
-- changed some values to hopefully improve the disconnecting issue
 
 ## 1.1
 - fixed window size resetting to 200x200 px on start

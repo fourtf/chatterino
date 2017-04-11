@@ -204,20 +204,24 @@ namespace Chatterino.Common
             {
                 Task.Run(() =>
                 {
-                    string hash;
-                    using (var sha = SHA256.Create())
+                    try
                     {
-                        hash = string.Join("", sha
-                            .ComputeHash(Encoding.UTF8.GetBytes(username))
-                            .Select(item => item.ToString("x2")));
-                    }
-                    hash = hash.Remove(32);
+                        string hash;
+                        using (var sha = SHA256.Create())
+                        {
+                            hash = string.Join("", sha
+                                .ComputeHash(Encoding.UTF8.GetBytes(username))
+                                .Select(item => item.ToString("x2")));
+                        }
+                        hash = hash.Remove(32);
 
-                    var request = WebRequest.Create($"https://fourtf.com/chatterino/countuser.php?hash={hash}");
-                    using (var response = request.GetResponse())
-                    using (response.GetResponseStream())
-                    {
+                        var request = WebRequest.Create($"https://fourtf.com/chatterino/countuser.php?hash={hash}");
+                        using (var response = request.GetResponse())
+                        using (response.GetResponseStream())
+                        {
+                        }
                     }
+                    catch { }
                 });
             }
         }

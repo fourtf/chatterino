@@ -98,7 +98,8 @@ namespace Chatterino.Controls
             {
                 checkScrollBarPosition();
                 updateMessageBounds();
-                Invalidate();
+
+                ProposeInvalidation();
             };
 
             Controls.Add(_scroll);
@@ -164,7 +165,8 @@ namespace Chatterino.Controls
         private void App_EmoteLoaded(object s, EventArgs e)
         {
             updateMessageBounds(true);
-            Invalidate();
+
+            ProposeInvalidation();
         }
 
         // overrides
@@ -316,7 +318,7 @@ namespace Chatterino.Controls
 
                 updateMessageBounds();
 
-                Invalidate();
+                ProposeInvalidation();
             }
 
             base.OnMouseWheel(e);
@@ -500,6 +502,32 @@ namespace Chatterino.Controls
         }
 
         Brush lastReadMessageBrush = Brushes.Red;
+
+        DateTime lastDrawn = DateTime.Now;
+
+        bool redraw = false;
+
+        public void ProposeInvalidation()
+        {
+            if (lastDrawn + TimeSpan.FromMilliseconds(1000 / 60f) > DateTime.Now)
+            {
+                redraw = true;
+                return;
+            }
+
+            lastDrawn = DateTime.Now;
+
+            redraw = false;
+            Invalidate();
+
+            Task.Delay(1000 / 60).ContinueWith(task =>
+            {
+                if (redraw)
+                {
+                    this.Invoke(() => Invalidate());
+                }
+            });
+        }
 
         protected override void OnPaint(PaintEventArgs e)
         {

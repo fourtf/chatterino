@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace TwitchIrc
@@ -83,8 +84,8 @@ namespace TwitchIrc
                 client = new TcpClient
                 {
                     NoDelay = true,
-                    ReceiveBufferSize = 80960,
-                    SendBufferSize = 80960
+                    ReceiveBufferSize = 8192,
+                    SendBufferSize = 8192
                 };
 
                 client.Connect("irc.chat.twitch.tv", 6667);
@@ -93,7 +94,10 @@ namespace TwitchIrc
 
                 var reader = new StreamReader(stream);
 
-                new Task(() =>
+                var messageQueue = new ConcurrentQueue<IrcMessage>();
+                var messageQueueAddedEvent = new AutoResetEvent(false);
+
+                new Thread(() =>
                 {
                     try
                     {
@@ -102,7 +106,7 @@ namespace TwitchIrc
                         while ((line = reader.ReadLine()) != null)
                         {
 #if DEBUG
-                            Console.WriteLine(line);
+                            System.Diagnostics.Debug.WriteLine(line);
 #endif
                             IrcMessage msg;
 
@@ -116,11 +120,47 @@ namespace TwitchIrc
                                 {
                                     receivedPong = true;
                                 }
-                                MessageReceived?.Invoke(this, new MessageEventArgs(msg));
+
+                                messageQueue.Enqueue(msg);
+                                messageQueueAddedEvent.Set();
                             }
                         }
                     }
                     catch { }
+                }).Start();
+
+                new Thread(() =>
+                {
+                    bool inQueue = false;
+
+                    IrcMessage message;
+
+                    while (true)
+                    {
+                        messageQueueAddedEvent.WaitOne();
+
+                        while (messageQueue.TryDequeue(out message))
+                        {
+                            int count = messageQueue.Count;
+
+                            if (messageQueue.Count > 50)
+                            {
+                                IrcMessage.TryParse($"@system-msg=ignored\\s{count}\\smessages USERNOTICE #{message.Middle}", out message);
+
+                                IrcMessage nil;
+                                for (int i = 0; i < count; i++)
+                                {
+                                    messageQueue.TryDequeue(out nil);
+                                }
+
+                                MessageReceived?.Invoke(this, new MessageEventArgs(message));
+                            }
+                            else
+                            {
+                                MessageReceived?.Invoke(this, new MessageEventArgs(message));
+                            }
+                        }
+                    }
                 }).Start();
 
                 if (!string.IsNullOrEmpty(password))
@@ -177,6 +217,6 @@ namespace TwitchIrc
         }
 
         // static
-        private static System.Timers.Timer pingTimer = new System.Timers.Timer { Enabled = true, Interval = 12500 };
+        private static System.Timers.Timer pingTimer = new System.Timers.Timer { Enabled = true, Interval = 8000 };
     }
 }

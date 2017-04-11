@@ -233,6 +233,7 @@ namespace Chatterino.Controls
             BindCheckBox(chkDoubleClickLinks, "ChatLinksDoubleClickOnly");
             BindCheckBox(chkHideInput, "ChatHideInputIfEmpty");
             BindCheckBox(chkMessageSeperators, "ChatSeperateMessages");
+            BindCheckBox(chkRainbow, "Rainbow");
 
             chkMessageSeperators.CheckedChanged += (s, e) =>
             {
@@ -794,6 +795,16 @@ namespace Chatterino.Controls
         private void btnTextCustomPing_Click(object sender, EventArgs e)
         {
             GuiEngine.Current.PlaySound(NotificationSound.Ping, true);
+        }
+
+        private void tabs_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void chkRainbow_CheckedChanged(object sender, EventArgs e)
+        {
+
         }
 
         //RESET

@@ -59,6 +59,12 @@ namespace TwitchIrc
 
         public bool Say(string message, string channel, bool isMod)
         {
+            if (message.StartsWith(".color"))
+            {
+                WriteConnection.WriteLine("PRIVMSG #" + channel + " :" + message);
+                return true;
+            }
+
             lock (lastMessagesLock)
             {
                 while (lastMessagesMod.Count > 0 && lastMessagesMod.Peek() < DateTime.Now)

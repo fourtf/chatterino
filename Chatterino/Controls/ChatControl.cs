@@ -120,7 +120,7 @@ namespace Chatterino.Controls
 
                     updateMessageBounds();
 
-                    Invalidate();
+                    ProposeInvalidation();
                 });
 
                 (Parent as ColumnTabPage)?.UpdateDefaultTitle();
@@ -145,9 +145,11 @@ namespace Chatterino.Controls
             _scroll.Size = new Size(SystemInformation.VerticalScrollBarWidth, Height - TopMenuBarHeight - 2);
             _scroll.Anchor = AnchorStyles.None; // AnchorStyles.Right | AnchorStyles.Bottom | AnchorStyles.Top;
 
-            Input = new ChatInputControl(this);
-            Input.Width = 600 - 2;
-            Input.Location = new Point(0, Height - 32);
+            Input = new ChatInputControl(this)
+            {
+                Width = 600 - 2,
+                Location = new Point(0, Height - 32)
+            };
 
             Input.VisibleChanged += (s, e) =>
             {
@@ -264,7 +266,7 @@ namespace Chatterino.Controls
             }
 
             updateMessageBounds();
-            Invalidate();
+            ProposeInvalidation();
         }
 
         private void Channel_MessagesAddedAtStart(object sender, ValueEventArgs<Message[]> e)
@@ -283,7 +285,7 @@ namespace Chatterino.Controls
             }
 
             updateMessageBounds();
-            Invalidate();
+            ProposeInvalidation();
         }
 
         private void Channel_MessagesRemovedAtStart(object sender, ValueEventArgs<Message[]> e)
@@ -304,7 +306,7 @@ namespace Chatterino.Controls
             _scroll.RemoveHighlightsWhere(h => h.Position < 0);
 
             updateMessageBounds();
-            Invalidate();
+            ProposeInvalidation();
         }
 
         private void Channel_ChatCleared(object sender, ChatClearedEventArgs e)
@@ -312,7 +314,7 @@ namespace Chatterino.Controls
             this.Invoke(() =>
             {
                 updateMessageBounds();
-                Invalidate();
+                ProposeInvalidation();
             });
         }
 
@@ -362,7 +364,7 @@ namespace Chatterino.Controls
         {
             if (!scrollAtBottom && e.Y > Height - (Input.Visible ? Input.Height : 0) - ScrollToBottomBarHeight)
             {
-                App.ShowToolTip(PointToScreen(new Point(e.Location.X + 16, e.Location.Y)), "jump to bottom");
+                //App.ShowToolTip(PointToScreen(new Point(e.Location.X + 16, e.Location.Y)), "jump to bottom");
                 Cursor = Cursors.Hand;
             }
             else
@@ -382,7 +384,7 @@ namespace Chatterino.Controls
 
                     scrollAtBottom = true;
                     updateMessageBounds();
-                    Invalidate();
+                    ProposeInvalidation();
                 }
                 else
                 {
@@ -434,10 +436,24 @@ namespace Chatterino.Controls
             {
                 var start = Height - (Input.Visible ? Input.Height : 0) - ScrollToBottomBarHeight;
 
-                Brush scrollToBottomBg = new LinearGradientBrush(new Point(0, start),
-                    new Point(0, start + ScrollToBottomBarHeight), Color.Transparent, Color.FromArgb(48, 0, 0, 0));
+                //Brush scrollToBottomBg = new LinearGradientBrush(new Point(0, start),
+                //    new Point(0, start + ScrollToBottomBarHeight),
+                //    Color.FromArgb(48, 0, 0, 0),
+                //    Color.FromArgb(192, 0, 0, 0));
+
+                Brush scrollToBottomBg = new SolidBrush(
+                    Color.FromArgb(230, ((SolidBrush)App.ColorScheme.ChatBackground).Color));
 
                 g.FillRectangle(scrollToBottomBg, 1, start, Width - 2, ScrollToBottomBarHeight);
+
+                g.DrawString("Jump to bottom", Font, Brushes.White, new Rectangle(
+                    1, start, Width - 2, ScrollToBottomBarHeight), new StringFormat
+                    {
+                        Alignment = StringAlignment.Center,
+                        LineAlignment = StringAlignment.Center
+                    });
+
+                scrollToBottomBg.Dispose();
             }
         }
 
