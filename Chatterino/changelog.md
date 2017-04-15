@@ -1,5 +1,8 @@
 ﻿# changelog
 
+## 1.2.3
+- fixed crash when closing split
+
 ## 1.2.2
 - added option for rainbow username colors
 - made the "jump to bottom" more obvious

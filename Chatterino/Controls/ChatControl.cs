@@ -436,17 +436,13 @@ namespace Chatterino.Controls
             {
                 var start = Height - (Input.Visible ? Input.Height : 0) - ScrollToBottomBarHeight;
 
-                //Brush scrollToBottomBg = new LinearGradientBrush(new Point(0, start),
-                //    new Point(0, start + ScrollToBottomBarHeight),
-                //    Color.FromArgb(48, 0, 0, 0),
-                //    Color.FromArgb(192, 0, 0, 0));
-
                 Brush scrollToBottomBg = new SolidBrush(
                     Color.FromArgb(230, ((SolidBrush)App.ColorScheme.ChatBackground).Color));
 
                 g.FillRectangle(scrollToBottomBg, 1, start, Width - 2, ScrollToBottomBarHeight);
 
-                g.DrawString("Jump to bottom", Font, Brushes.White, new Rectangle(
+                g.DrawString("Jump to bottom", Font, App.ColorScheme.IsLightTheme ? Brushes.Black : Brushes.White,
+                    new Rectangle(
                     1, start, Width - 2, ScrollToBottomBarHeight), new StringFormat
                     {
                         Alignment = StringAlignment.Center,
