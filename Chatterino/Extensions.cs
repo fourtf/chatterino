@@ -14,7 +14,15 @@ namespace Chatterino
         {
             if (c.InvokeRequired)
             {
+#if !DEBUG
+                try
+                {
+#endif
                 c.Invoke((System.Windows.Forms.MethodInvoker)delegate { action(); });
+#if !DEBUG
+                }
+                catch { }
+#endif
             }
             else
             {
