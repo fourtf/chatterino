@@ -366,13 +366,13 @@ namespace Chatterino
                         case SpanType.Text:
                             break;
                         case SpanType.LazyLoadedImage:
-                            g.DrawImage((Image) ((LazyLoadedImage) word.Value).Image, word.X + state.MessageXOffset,
+                            g.DrawImage((Image)((LazyLoadedImage)word.Value).Image, word.X + state.MessageXOffset,
                                 word.Y + state.MessageYOffset, word.Width, word.Height);
                             break;
-                        //    case SpanType.Image:
-                        //        g.DrawImage((Image)word.Value, word.X + state.MessageXOffset, word.Y + state.MessageYOffset, word.Width, word.Height);
-                        //        break;
-                        //}
+                            //    case SpanType.Image:
+                            //        g.DrawImage((Image)word.Value, word.X + state.MessageXOffset, word.Y + state.MessageYOffset, word.Width, word.Height);
+                            //        break;
+                            //}
                     }
                 }
 

@@ -657,9 +657,22 @@ namespace Chatterino.Common
         private static float usernameHue = 0;
         public void SendMessage(string text)
         {
-            //if (Name == "/whispers")
-            //    IrcManager.SendMessage("jtv", text, IsModOrBroadcaster);
-            //else
+            if (Name == null)
+            {
+                if (text.StartsWith("/w "))
+                {
+                    var channel = AllChannels.FirstOrDefault();
+
+                    if (channel != null)
+                    {
+                        //IrcManager.Client.Say(text, "fivetf", true);
+                        IrcManager.SendMessage(channel, text, IsModOrBroadcaster);
+                    }
+                }
+
+                return;
+            }
+
             IrcManager.SendMessage(this, text, IsModOrBroadcaster);
 
             if (AppSettings.Rainbow)

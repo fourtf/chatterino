@@ -1,7 +1,9 @@
 ﻿# changelog
 
 ## 1.2.3
-- fixed crash when closing split
+- fixed crash when closing splits
+- fixed sending whispers from /whispers and /mentions
+- fixed the very important typo in the settings
 
 ## 1.2.2
 - added option for rainbow username colors

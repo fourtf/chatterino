@@ -1728,7 +1728,7 @@
             this.chkRainbow.Name = "chkRainbow";
             this.chkRainbow.Size = new System.Drawing.Size(573, 21);
             this.chkRainbow.TabIndex = 37;
-            this.chkRainbow.Text = "Switch username color like a rainbow after each message (requires twith prime / t" +
+            this.chkRainbow.Text = "Switch username color like a rainbow after each message (requires twitch prime / t" +
     "urbo)\r\n";
             this.chkRainbow.UseVisualStyleBackColor = true;
             this.chkRainbow.CheckedChanged += new System.EventHandler(this.chkRainbow_CheckedChanged);
