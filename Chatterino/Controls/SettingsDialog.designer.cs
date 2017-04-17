@@ -31,6 +31,7 @@
             this.tabs = new Chatterino.Controls.SettingsTabControl();
             this.RightPanel = new System.Windows.Forms.Panel();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.comboQuality = new System.Windows.Forms.ComboBox();
             this.label17 = new System.Windows.Forms.Label();
             this.chkRainbow = new System.Windows.Forms.CheckBox();
             this.chkTimestampAmPm = new System.Windows.Forms.CheckBox();
@@ -64,8 +65,13 @@
             this.chkAllowSameMessages = new System.Windows.Forms.CheckBox();
             this.chkTimestampSeconds = new System.Windows.Forms.CheckBox();
             this.chkTimestamps = new System.Windows.Forms.CheckBox();
-            this.comboBox2 = new System.Windows.Forms.ComboBox();
-            this.label18 = new System.Windows.Forms.Label();
+            this.panel5 = new System.Windows.Forms.Panel();
+            this.chkAllowCommandAtEnd = new System.Windows.Forms.CheckBox();
+            this.lblCommands = new System.Windows.Forms.Label();
+            this.btnCommandRemove = new System.Windows.Forms.Button();
+            this.btnCommandAdd = new System.Windows.Forms.Button();
+            this.dgvCommands = new System.Windows.Forms.DataGridView();
+            this.Command = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.panel4 = new System.Windows.Forms.Panel();
             this.label16 = new System.Windows.Forms.Label();
             this.labelEmoteScale = new System.Windows.Forms.Label();
@@ -86,33 +92,23 @@
             this.buttonAccountAdd = new System.Windows.Forms.Button();
             this.dataGridViewAccounts = new System.Windows.Forms.DataGridView();
             this.Username = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.panel9 = new System.Windows.Forms.Panel();
-            this.tabControl3 = new System.Windows.Forms.TabControl();
-            this.tabPage4 = new System.Windows.Forms.TabPage();
-            this.label12 = new System.Windows.Forms.Label();
-            this.rtbIgnoreKeywords = new System.Windows.Forms.RichTextBox();
-            this.panel6 = new System.Windows.Forms.Panel();
-            this.comboShowIgnoredUsersMessagesIf = new System.Windows.Forms.ComboBox();
-            this.label15 = new System.Windows.Forms.Label();
-            this.chkTwitchIgnores = new System.Windows.Forms.CheckBox();
-            this.btnIgnoredUserRemove = new System.Windows.Forms.Button();
-            this.btnIgnoredUserAdd = new System.Windows.Forms.Button();
-            this.dgvIgnoredUsers = new System.Windows.Forms.DataGridView();
-            this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.label9 = new System.Windows.Forms.Label();
-            this.panel5 = new System.Windows.Forms.Panel();
-            this.chkAllowCommandAtEnd = new System.Windows.Forms.CheckBox();
-            this.lblCommands = new System.Windows.Forms.Label();
-            this.btnCommandRemove = new System.Windows.Forms.Button();
-            this.btnCommandAdd = new System.Windows.Forms.Button();
-            this.dgvCommands = new System.Windows.Forms.DataGridView();
-            this.Command = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.textBox4 = new System.Windows.Forms.TextBox();
+            this.lblProxyPassword = new System.Windows.Forms.Label();
+            this.textBox3 = new System.Windows.Forms.TextBox();
+            this.lblProxyUsername = new System.Windows.Forms.Label();
+            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.lblProxyType = new System.Windows.Forms.Label();
+            this.lblProxy = new System.Windows.Forms.Label();
+            this.chkProxyEnabled = new System.Windows.Forms.CheckBox();
+            this.panel10 = new System.Windows.Forms.Panel();
             this.panel8 = new System.Windows.Forms.Panel();
             this.label13 = new System.Windows.Forms.Label();
             this.chkEnableInlineWhispers = new System.Windows.Forms.CheckBox();
-            this.panel7 = new System.Windows.Forms.Panel();
-            this.chkDoubleClickLinks = new System.Windows.Forms.CheckBox();
-            this.chkUseDefaultBrowser = new System.Windows.Forms.CheckBox();
             this.panel3 = new System.Windows.Forms.Panel();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
@@ -127,20 +123,25 @@
             this.chkFlashTaskbar = new System.Windows.Forms.CheckBox();
             this.chkHighlight = new System.Windows.Forms.CheckBox();
             this.chkPings = new System.Windows.Forms.CheckBox();
-            this.panel10 = new System.Windows.Forms.Panel();
-            this.panel2 = new System.Windows.Forms.Panel();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
-            this.label4 = new System.Windows.Forms.Label();
-            this.textBox4 = new System.Windows.Forms.TextBox();
-            this.lblProxyPassword = new System.Windows.Forms.Label();
-            this.textBox3 = new System.Windows.Forms.TextBox();
-            this.lblProxyUsername = new System.Windows.Forms.Label();
-            this.textBox2 = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.lblProxyType = new System.Windows.Forms.Label();
-            this.lblProxy = new System.Windows.Forms.Label();
-            this.chkProxyEnabled = new System.Windows.Forms.CheckBox();
+            this.panel9 = new System.Windows.Forms.Panel();
+            this.tabControl3 = new System.Windows.Forms.TabControl();
+            this.tabPage4 = new System.Windows.Forms.TabPage();
+            this.label12 = new System.Windows.Forms.Label();
+            this.rtbIgnoreKeywords = new System.Windows.Forms.RichTextBox();
+            this.panel7 = new System.Windows.Forms.Panel();
+            this.chkDoubleClickLinks = new System.Windows.Forms.CheckBox();
+            this.chkUseDefaultBrowser = new System.Windows.Forms.CheckBox();
+            this.panel6 = new System.Windows.Forms.Panel();
+            this.comboShowIgnoredUsersMessagesIf = new System.Windows.Forms.ComboBox();
+            this.label15 = new System.Windows.Forms.Label();
+            this.chkTwitchIgnores = new System.Windows.Forms.CheckBox();
+            this.btnIgnoredUserRemove = new System.Windows.Forms.Button();
+            this.btnIgnoredUserAdd = new System.Windows.Forms.Button();
+            this.dgvIgnoredUsers = new System.Windows.Forms.DataGridView();
+            this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.label9 = new System.Windows.Forms.Label();
+            this.comboBox2 = new System.Windows.Forms.ComboBox();
+            this.label18 = new System.Windows.Forms.Label();
             this.spAccounts = new Chatterino.Controls.SettingsTabPage();
             this.spAppearance = new Chatterino.Controls.SettingsTabPage();
             this.spCommands = new Chatterino.Controls.SettingsTabPage();
@@ -152,7 +153,9 @@
             this.spWhispers = new Chatterino.Controls.SettingsTabPage();
             this.spBrowserExtension = new Chatterino.Controls.SettingsTabPage();
             this.spConnection = new Chatterino.Controls.SettingsTabPage();
-            this.comboQuality = new System.Windows.Forms.ComboBox();
+            this.openFileStreamlink = new System.Windows.Forms.OpenFileDialog();
+            this.btnStreamlinkPath = new System.Windows.Forms.Button();
+            this.chkStreamlinkPath = new System.Windows.Forms.CheckBox();
             this.tabs.SuspendLayout();
             this.RightPanel.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -160,26 +163,26 @@
             ((System.ComponentModel.ISupportInitialize)(this.numThemeNightFrom)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
+            this.panel5.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvCommands)).BeginInit();
             this.panel4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarEmoteScale)).BeginInit();
             this.tabControl2.SuspendLayout();
             this.tabPage3.SuspendLayout();
             this.panel11.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewAccounts)).BeginInit();
-            this.panel9.SuspendLayout();
-            this.tabControl3.SuspendLayout();
-            this.tabPage4.SuspendLayout();
-            this.panel6.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvIgnoredUsers)).BeginInit();
-            this.panel5.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvCommands)).BeginInit();
+            this.panel2.SuspendLayout();
             this.panel8.SuspendLayout();
-            this.panel7.SuspendLayout();
             this.panel3.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
-            this.panel2.SuspendLayout();
+            this.panel9.SuspendLayout();
+            this.tabControl3.SuspendLayout();
+            this.tabPage4.SuspendLayout();
+            this.panel7.SuspendLayout();
+            this.panel6.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvIgnoredUsers)).BeginInit();
             this.SuspendLayout();
             // 
             // tabs
@@ -214,18 +217,18 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.RightPanel.Controls.Add(this.panel1);
-            this.RightPanel.Controls.Add(this.panel6);
-            this.RightPanel.Controls.Add(this.panel9);
-            this.RightPanel.Controls.Add(this.comboBox2);
-            this.RightPanel.Controls.Add(this.label18);
+            this.RightPanel.Controls.Add(this.panel5);
             this.RightPanel.Controls.Add(this.panel4);
             this.RightPanel.Controls.Add(this.panel11);
-            this.RightPanel.Controls.Add(this.panel5);
-            this.RightPanel.Controls.Add(this.panel8);
-            this.RightPanel.Controls.Add(this.panel7);
-            this.RightPanel.Controls.Add(this.panel3);
-            this.RightPanel.Controls.Add(this.panel10);
             this.RightPanel.Controls.Add(this.panel2);
+            this.RightPanel.Controls.Add(this.panel10);
+            this.RightPanel.Controls.Add(this.panel8);
+            this.RightPanel.Controls.Add(this.panel3);
+            this.RightPanel.Controls.Add(this.panel9);
+            this.RightPanel.Controls.Add(this.panel7);
+            this.RightPanel.Controls.Add(this.panel6);
+            this.RightPanel.Controls.Add(this.comboBox2);
+            this.RightPanel.Controls.Add(this.label18);
             this.RightPanel.Location = new System.Drawing.Point(150, 0);
             this.RightPanel.Name = "RightPanel";
             this.RightPanel.Padding = new System.Windows.Forms.Padding(0, 0, 0, 42);
@@ -234,6 +237,8 @@
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.chkStreamlinkPath);
+            this.panel1.Controls.Add(this.btnStreamlinkPath);
             this.panel1.Controls.Add(this.comboQuality);
             this.panel1.Controls.Add(this.label17);
             this.panel1.Controls.Add(this.chkRainbow);
@@ -273,6 +278,22 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(464, 480);
             this.panel1.TabIndex = 0;
+            // 
+            // comboQuality
+            // 
+            this.comboQuality.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboQuality.FormattingEnabled = true;
+            this.comboQuality.Items.AddRange(new object[] {
+            "best",
+            "high",
+            "medium",
+            "low",
+            "worst"});
+            this.comboQuality.Location = new System.Drawing.Point(112, 413);
+            this.comboQuality.Name = "comboQuality";
+            this.comboQuality.Size = new System.Drawing.Size(119, 21);
+            this.comboQuality.TabIndex = 39;
+            this.comboQuality.SelectedIndexChanged += new System.EventHandler(this.comboQuality_SelectedIndexChanged);
             // 
             // label17
             // 
@@ -675,31 +696,84 @@
             this.chkTimestamps.Text = "Show Timestamps";
             this.chkTimestamps.UseVisualStyleBackColor = true;
             // 
-            // comboBox2
+            // panel5
             // 
-            this.comboBox2.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBox2.FormattingEnabled = true;
-            this.comboBox2.Items.AddRange(new object[] {
-            "White",
-            "Light",
-            "Dark",
-            "Black"});
-            this.comboBox2.Location = new System.Drawing.Point(97, 391);
-            this.comboBox2.Name = "comboBox2";
-            this.comboBox2.Size = new System.Drawing.Size(119, 21);
-            this.comboBox2.TabIndex = 30;
+            this.panel5.Controls.Add(this.chkAllowCommandAtEnd);
+            this.panel5.Controls.Add(this.lblCommands);
+            this.panel5.Controls.Add(this.btnCommandRemove);
+            this.panel5.Controls.Add(this.btnCommandAdd);
+            this.panel5.Controls.Add(this.dgvCommands);
+            this.panel5.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel5.Location = new System.Drawing.Point(0, 0);
+            this.panel5.Name = "panel5";
+            this.panel5.Size = new System.Drawing.Size(464, 480);
+            this.panel5.TabIndex = 3;
             // 
-            // label18
+            // chkAllowCommandAtEnd
             // 
-            this.label18.AutoSize = true;
-            this.label18.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.label18.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.label18.Location = new System.Drawing.Point(14, 394);
-            this.label18.Name = "label18";
-            this.label18.Size = new System.Drawing.Size(94, 13);
-            this.label18.TabIndex = 18;
-            this.label18.Text = "Streamlink Quality:";
-            this.label18.Click += new System.EventHandler(this.label18_Click);
+            this.chkAllowCommandAtEnd.AutoSize = true;
+            this.chkAllowCommandAtEnd.Checked = true;
+            this.chkAllowCommandAtEnd.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkAllowCommandAtEnd.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.chkAllowCommandAtEnd.Location = new System.Drawing.Point(176, 17);
+            this.chkAllowCommandAtEnd.Name = "chkAllowCommandAtEnd";
+            this.chkAllowCommandAtEnd.Size = new System.Drawing.Size(205, 17);
+            this.chkAllowCommandAtEnd.TabIndex = 1;
+            this.chkAllowCommandAtEnd.Text = "Allow commands at the end of the line";
+            this.chkAllowCommandAtEnd.UseVisualStyleBackColor = true;
+            // 
+            // lblCommands
+            // 
+            this.lblCommands.AutoSize = true;
+            this.lblCommands.ForeColor = System.Drawing.Color.White;
+            this.lblCommands.Location = new System.Drawing.Point(13, 321);
+            this.lblCommands.Name = "lblCommands";
+            this.lblCommands.Size = new System.Drawing.Size(270, 78);
+            this.lblCommands.TabIndex = 4;
+            this.lblCommands.Text = "/name command\r\n\r\n{1} = first word, {2} = seconds word, ...\r\n{1+} = first word and" +
+    " after, {2+} = second word and after\r\n\r\nwarning: you could override important tw" +
+    "itch commands";
+            // 
+            // btnCommandRemove
+            // 
+            this.btnCommandRemove.Location = new System.Drawing.Point(95, 13);
+            this.btnCommandRemove.Name = "btnCommandRemove";
+            this.btnCommandRemove.Size = new System.Drawing.Size(75, 23);
+            this.btnCommandRemove.TabIndex = 2;
+            this.btnCommandRemove.Text = "Remove";
+            this.btnCommandRemove.UseVisualStyleBackColor = true;
+            // 
+            // btnCommandAdd
+            // 
+            this.btnCommandAdd.Location = new System.Drawing.Point(15, 13);
+            this.btnCommandAdd.Name = "btnCommandAdd";
+            this.btnCommandAdd.Size = new System.Drawing.Size(75, 23);
+            this.btnCommandAdd.TabIndex = 1;
+            this.btnCommandAdd.Text = "Add";
+            this.btnCommandAdd.UseVisualStyleBackColor = true;
+            // 
+            // dgvCommands
+            // 
+            this.dgvCommands.AllowUserToAddRows = false;
+            this.dgvCommands.AllowUserToDeleteRows = false;
+            this.dgvCommands.AllowUserToResizeColumns = false;
+            this.dgvCommands.AllowUserToResizeRows = false;
+            this.dgvCommands.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvCommands.ColumnHeadersVisible = false;
+            this.dgvCommands.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.Command});
+            this.dgvCommands.Location = new System.Drawing.Point(16, 48);
+            this.dgvCommands.Name = "dgvCommands";
+            this.dgvCommands.RowHeadersVisible = false;
+            this.dgvCommands.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dgvCommands.Size = new System.Drawing.Size(415, 270);
+            this.dgvCommands.TabIndex = 0;
+            // 
+            // Command
+            // 
+            this.Command.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.Command.HeaderText = "Command";
+            this.Command.Name = "Command";
             // 
             // panel4
             // 
@@ -931,240 +1005,143 @@
             this.Username.Name = "Username";
             this.Username.ReadOnly = true;
             // 
-            // panel9
+            // panel2
             // 
-            this.panel9.Controls.Add(this.tabControl3);
-            this.panel9.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel9.Location = new System.Drawing.Point(0, 0);
-            this.panel9.Name = "panel9";
-            this.panel9.Size = new System.Drawing.Size(464, 480);
-            this.panel9.TabIndex = 7;
+            this.panel2.Controls.Add(this.comboBox1);
+            this.panel2.Controls.Add(this.label4);
+            this.panel2.Controls.Add(this.textBox4);
+            this.panel2.Controls.Add(this.lblProxyPassword);
+            this.panel2.Controls.Add(this.textBox3);
+            this.panel2.Controls.Add(this.lblProxyUsername);
+            this.panel2.Controls.Add(this.textBox2);
+            this.panel2.Controls.Add(this.label1);
+            this.panel2.Controls.Add(this.textBox1);
+            this.panel2.Controls.Add(this.lblProxyType);
+            this.panel2.Controls.Add(this.lblProxy);
+            this.panel2.Controls.Add(this.chkProxyEnabled);
+            this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel2.Location = new System.Drawing.Point(0, 0);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(464, 480);
+            this.panel2.TabIndex = 0;
             // 
-            // tabControl3
+            // comboBox1
             // 
-            this.tabControl3.Controls.Add(this.tabPage4);
-            this.tabControl3.Location = new System.Drawing.Point(17, 12);
-            this.tabControl3.Name = "tabControl3";
-            this.tabControl3.SelectedIndex = 0;
-            this.tabControl3.Size = new System.Drawing.Size(415, 387);
-            this.tabControl3.TabIndex = 22;
+            this.comboBox1.FormattingEnabled = true;
+            this.comboBox1.Location = new System.Drawing.Point(87, 52);
+            this.comboBox1.Name = "comboBox1";
+            this.comboBox1.Size = new System.Drawing.Size(167, 21);
+            this.comboBox1.TabIndex = 15;
             // 
-            // tabPage4
+            // label4
             // 
-            this.tabPage4.Controls.Add(this.label12);
-            this.tabPage4.Controls.Add(this.rtbIgnoreKeywords);
-            this.tabPage4.Location = new System.Drawing.Point(4, 22);
-            this.tabPage4.Name = "tabPage4";
-            this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage4.Size = new System.Drawing.Size(407, 361);
-            this.tabPage4.TabIndex = 0;
-            this.tabPage4.Text = "Ignore Keywords";
-            this.tabPage4.UseVisualStyleBackColor = true;
+            this.label4.AutoSize = true;
+            this.label4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.label4.Location = new System.Drawing.Point(18, 107);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(29, 13);
+            this.label4.TabIndex = 14;
+            this.label4.Text = "Port:";
             // 
-            // label12
+            // textBox4
             // 
-            this.label12.AutoSize = true;
-            this.label12.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.label12.ForeColor = System.Drawing.Color.Black;
-            this.label12.Location = new System.Drawing.Point(3, 5);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(152, 13);
-            this.label12.TabIndex = 22;
-            this.label12.Text = "Ignore keywords (one per line):";
+            this.textBox4.Location = new System.Drawing.Point(87, 103);
+            this.textBox4.Name = "textBox4";
+            this.textBox4.Size = new System.Drawing.Size(167, 20);
+            this.textBox4.TabIndex = 13;
             // 
-            // rtbIgnoreKeywords
+            // lblProxyPassword
             // 
-            this.rtbIgnoreKeywords.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.rtbIgnoreKeywords.Location = new System.Drawing.Point(6, 21);
-            this.rtbIgnoreKeywords.Name = "rtbIgnoreKeywords";
-            this.rtbIgnoreKeywords.Size = new System.Drawing.Size(395, 334);
-            this.rtbIgnoreKeywords.TabIndex = 17;
-            this.rtbIgnoreKeywords.Text = "";
+            this.lblProxyPassword.AutoSize = true;
+            this.lblProxyPassword.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.lblProxyPassword.Location = new System.Drawing.Point(18, 156);
+            this.lblProxyPassword.Name = "lblProxyPassword";
+            this.lblProxyPassword.Size = new System.Drawing.Size(56, 13);
+            this.lblProxyPassword.TabIndex = 12;
+            this.lblProxyPassword.Text = "Password:";
             // 
-            // panel6
+            // textBox3
             // 
-            this.panel6.Controls.Add(this.comboShowIgnoredUsersMessagesIf);
-            this.panel6.Controls.Add(this.label15);
-            this.panel6.Controls.Add(this.chkTwitchIgnores);
-            this.panel6.Controls.Add(this.btnIgnoredUserRemove);
-            this.panel6.Controls.Add(this.btnIgnoredUserAdd);
-            this.panel6.Controls.Add(this.dgvIgnoredUsers);
-            this.panel6.Controls.Add(this.label9);
-            this.panel6.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel6.Location = new System.Drawing.Point(0, 0);
-            this.panel6.Name = "panel6";
-            this.panel6.Size = new System.Drawing.Size(464, 480);
-            this.panel6.TabIndex = 4;
+            this.textBox3.Location = new System.Drawing.Point(87, 153);
+            this.textBox3.Name = "textBox3";
+            this.textBox3.Size = new System.Drawing.Size(167, 20);
+            this.textBox3.TabIndex = 11;
             // 
-            // comboShowIgnoredUsersMessagesIf
+            // lblProxyUsername
             // 
-            this.comboShowIgnoredUsersMessagesIf.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboShowIgnoredUsersMessagesIf.FormattingEnabled = true;
-            this.comboShowIgnoredUsersMessagesIf.Items.AddRange(new object[] {
-            "You are moderator",
-            "You are broadcaster",
-            "Never"});
-            this.comboShowIgnoredUsersMessagesIf.Location = new System.Drawing.Point(322, 36);
-            this.comboShowIgnoredUsersMessagesIf.Name = "comboShowIgnoredUsersMessagesIf";
-            this.comboShowIgnoredUsersMessagesIf.Size = new System.Drawing.Size(109, 21);
-            this.comboShowIgnoredUsersMessagesIf.TabIndex = 25;
+            this.lblProxyUsername.AutoSize = true;
+            this.lblProxyUsername.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.lblProxyUsername.Location = new System.Drawing.Point(18, 131);
+            this.lblProxyUsername.Name = "lblProxyUsername";
+            this.lblProxyUsername.Size = new System.Drawing.Size(58, 13);
+            this.lblProxyUsername.TabIndex = 10;
+            this.lblProxyUsername.Text = "Username:";
             // 
-            // label15
+            // textBox2
             // 
-            this.label15.AutoSize = true;
-            this.label15.ForeColor = System.Drawing.Color.White;
-            this.label15.Location = new System.Drawing.Point(177, 41);
-            this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(139, 13);
-            this.label15.TabIndex = 6;
-            this.label15.Text = "Show messages anyways if:";
+            this.textBox2.Location = new System.Drawing.Point(87, 128);
+            this.textBox2.Name = "textBox2";
+            this.textBox2.Size = new System.Drawing.Size(167, 20);
+            this.textBox2.TabIndex = 9;
             // 
-            // chkTwitchIgnores
+            // label1
             // 
-            this.chkTwitchIgnores.AutoSize = true;
-            this.chkTwitchIgnores.Checked = true;
-            this.chkTwitchIgnores.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkTwitchIgnores.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.chkTwitchIgnores.Location = new System.Drawing.Point(16, 13);
-            this.chkTwitchIgnores.Name = "chkTwitchIgnores";
-            this.chkTwitchIgnores.Size = new System.Drawing.Size(163, 17);
-            this.chkTwitchIgnores.TabIndex = 24;
-            this.chkTwitchIgnores.Text = "Enable Twitch Ignored Users";
-            this.chkTwitchIgnores.UseVisualStyleBackColor = true;
+            this.label1.AutoSize = true;
+            this.label1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.label1.Location = new System.Drawing.Point(18, 81);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(32, 13);
+            this.label1.TabIndex = 8;
+            this.label1.Text = "Host:";
             // 
-            // btnIgnoredUserRemove
+            // textBox1
             // 
-            this.btnIgnoredUserRemove.Location = new System.Drawing.Point(96, 36);
-            this.btnIgnoredUserRemove.Name = "btnIgnoredUserRemove";
-            this.btnIgnoredUserRemove.Size = new System.Drawing.Size(75, 23);
-            this.btnIgnoredUserRemove.TabIndex = 8;
-            this.btnIgnoredUserRemove.Text = "Remove";
-            this.btnIgnoredUserRemove.UseVisualStyleBackColor = true;
+            this.textBox1.Location = new System.Drawing.Point(87, 78);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(167, 20);
+            this.textBox1.TabIndex = 7;
             // 
-            // btnIgnoredUserAdd
+            // lblProxyType
             // 
-            this.btnIgnoredUserAdd.Location = new System.Drawing.Point(16, 36);
-            this.btnIgnoredUserAdd.Name = "btnIgnoredUserAdd";
-            this.btnIgnoredUserAdd.Size = new System.Drawing.Size(75, 23);
-            this.btnIgnoredUserAdd.TabIndex = 7;
-            this.btnIgnoredUserAdd.Text = "Add";
-            this.btnIgnoredUserAdd.UseVisualStyleBackColor = true;
+            this.lblProxyType.AutoSize = true;
+            this.lblProxyType.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.lblProxyType.Location = new System.Drawing.Point(18, 55);
+            this.lblProxyType.Name = "lblProxyType";
+            this.lblProxyType.Size = new System.Drawing.Size(34, 13);
+            this.lblProxyType.TabIndex = 6;
+            this.lblProxyType.Text = "Type:";
             // 
-            // dgvIgnoredUsers
+            // lblProxy
             // 
-            this.dgvIgnoredUsers.AllowUserToAddRows = false;
-            this.dgvIgnoredUsers.AllowUserToDeleteRows = false;
-            this.dgvIgnoredUsers.AllowUserToResizeColumns = false;
-            this.dgvIgnoredUsers.AllowUserToResizeRows = false;
-            this.dgvIgnoredUsers.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvIgnoredUsers.ColumnHeadersVisible = false;
-            this.dgvIgnoredUsers.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.dataGridViewTextBoxColumn1});
-            this.dgvIgnoredUsers.Location = new System.Drawing.Point(16, 63);
-            this.dgvIgnoredUsers.Name = "dgvIgnoredUsers";
-            this.dgvIgnoredUsers.RowHeadersVisible = false;
-            this.dgvIgnoredUsers.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvIgnoredUsers.Size = new System.Drawing.Size(415, 268);
-            this.dgvIgnoredUsers.TabIndex = 6;
+            this.lblProxy.AutoSize = true;
+            this.lblProxy.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblProxy.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.lblProxy.Location = new System.Drawing.Point(18, 7);
+            this.lblProxy.Name = "lblProxy";
+            this.lblProxy.Size = new System.Drawing.Size(228, 17);
+            this.lblProxy.TabIndex = 4;
+            this.lblProxy.Text = "Proxy (doesn\'t work right now Keepo)";
             // 
-            // dataGridViewTextBoxColumn1
+            // chkProxyEnabled
             // 
-            this.dataGridViewTextBoxColumn1.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.dataGridViewTextBoxColumn1.HeaderText = "Command";
-            this.dataGridViewTextBoxColumn1.Name = "dataGridViewTextBoxColumn1";
+            this.chkProxyEnabled.AutoSize = true;
+            this.chkProxyEnabled.Checked = true;
+            this.chkProxyEnabled.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkProxyEnabled.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.chkProxyEnabled.Location = new System.Drawing.Point(21, 31);
+            this.chkProxyEnabled.Name = "chkProxyEnabled";
+            this.chkProxyEnabled.Size = new System.Drawing.Size(88, 17);
+            this.chkProxyEnabled.TabIndex = 3;
+            this.chkProxyEnabled.Text = "Enable Proxy";
+            this.chkProxyEnabled.UseVisualStyleBackColor = true;
             // 
-            // label9
+            // panel10
             // 
-            this.label9.AutoSize = true;
-            this.label9.ForeColor = System.Drawing.Color.White;
-            this.label9.Location = new System.Drawing.Point(13, 334);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(361, 65);
-            this.label9.TabIndex = 5;
-            this.label9.Text = "/ignore in chat to ignore someone\r\n/unignore in chat to unignore someone\r\n\r\nChatt" +
-    "erino uses the twitch ignore api.\r\nIf you use your own oauth key make sure that " +
-    "it has the proper permissions.";
-            // 
-            // panel5
-            // 
-            this.panel5.Controls.Add(this.chkAllowCommandAtEnd);
-            this.panel5.Controls.Add(this.lblCommands);
-            this.panel5.Controls.Add(this.btnCommandRemove);
-            this.panel5.Controls.Add(this.btnCommandAdd);
-            this.panel5.Controls.Add(this.dgvCommands);
-            this.panel5.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel5.Location = new System.Drawing.Point(0, 0);
-            this.panel5.Name = "panel5";
-            this.panel5.Size = new System.Drawing.Size(464, 480);
-            this.panel5.TabIndex = 3;
-            // 
-            // chkAllowCommandAtEnd
-            // 
-            this.chkAllowCommandAtEnd.AutoSize = true;
-            this.chkAllowCommandAtEnd.Checked = true;
-            this.chkAllowCommandAtEnd.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkAllowCommandAtEnd.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.chkAllowCommandAtEnd.Location = new System.Drawing.Point(176, 17);
-            this.chkAllowCommandAtEnd.Name = "chkAllowCommandAtEnd";
-            this.chkAllowCommandAtEnd.Size = new System.Drawing.Size(205, 17);
-            this.chkAllowCommandAtEnd.TabIndex = 1;
-            this.chkAllowCommandAtEnd.Text = "Allow commands at the end of the line";
-            this.chkAllowCommandAtEnd.UseVisualStyleBackColor = true;
-            // 
-            // lblCommands
-            // 
-            this.lblCommands.AutoSize = true;
-            this.lblCommands.ForeColor = System.Drawing.Color.White;
-            this.lblCommands.Location = new System.Drawing.Point(13, 321);
-            this.lblCommands.Name = "lblCommands";
-            this.lblCommands.Size = new System.Drawing.Size(270, 78);
-            this.lblCommands.TabIndex = 4;
-            this.lblCommands.Text = "/name command\r\n\r\n{1} = first word, {2} = seconds word, ...\r\n{1+} = first word and" +
-    " after, {2+} = second word and after\r\n\r\nwarning: you could override important tw" +
-    "itch commands";
-            // 
-            // btnCommandRemove
-            // 
-            this.btnCommandRemove.Location = new System.Drawing.Point(95, 13);
-            this.btnCommandRemove.Name = "btnCommandRemove";
-            this.btnCommandRemove.Size = new System.Drawing.Size(75, 23);
-            this.btnCommandRemove.TabIndex = 2;
-            this.btnCommandRemove.Text = "Remove";
-            this.btnCommandRemove.UseVisualStyleBackColor = true;
-            // 
-            // btnCommandAdd
-            // 
-            this.btnCommandAdd.Location = new System.Drawing.Point(15, 13);
-            this.btnCommandAdd.Name = "btnCommandAdd";
-            this.btnCommandAdd.Size = new System.Drawing.Size(75, 23);
-            this.btnCommandAdd.TabIndex = 1;
-            this.btnCommandAdd.Text = "Add";
-            this.btnCommandAdd.UseVisualStyleBackColor = true;
-            // 
-            // dgvCommands
-            // 
-            this.dgvCommands.AllowUserToAddRows = false;
-            this.dgvCommands.AllowUserToDeleteRows = false;
-            this.dgvCommands.AllowUserToResizeColumns = false;
-            this.dgvCommands.AllowUserToResizeRows = false;
-            this.dgvCommands.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvCommands.ColumnHeadersVisible = false;
-            this.dgvCommands.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.Command});
-            this.dgvCommands.Location = new System.Drawing.Point(16, 48);
-            this.dgvCommands.Name = "dgvCommands";
-            this.dgvCommands.RowHeadersVisible = false;
-            this.dgvCommands.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvCommands.Size = new System.Drawing.Size(415, 270);
-            this.dgvCommands.TabIndex = 0;
-            // 
-            // Command
-            // 
-            this.Command.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.Command.HeaderText = "Command";
-            this.Command.Name = "Command";
+            this.panel10.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel10.Location = new System.Drawing.Point(0, 0);
+            this.panel10.Name = "panel10";
+            this.panel10.Size = new System.Drawing.Size(464, 480);
+            this.panel10.TabIndex = 8;
             // 
             // panel8
             // 
@@ -1199,41 +1176,6 @@
             this.chkEnableInlineWhispers.TabIndex = 24;
             this.chkEnableInlineWhispers.Text = "Enable inline whispers";
             this.chkEnableInlineWhispers.UseVisualStyleBackColor = true;
-            // 
-            // panel7
-            // 
-            this.panel7.Controls.Add(this.chkDoubleClickLinks);
-            this.panel7.Controls.Add(this.chkUseDefaultBrowser);
-            this.panel7.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel7.Location = new System.Drawing.Point(0, 0);
-            this.panel7.Name = "panel7";
-            this.panel7.Size = new System.Drawing.Size(464, 480);
-            this.panel7.TabIndex = 5;
-            // 
-            // chkDoubleClickLinks
-            // 
-            this.chkDoubleClickLinks.AutoSize = true;
-            this.chkDoubleClickLinks.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.chkDoubleClickLinks.Location = new System.Drawing.Point(16, 13);
-            this.chkDoubleClickLinks.Name = "chkDoubleClickLinks";
-            this.chkDoubleClickLinks.Size = new System.Drawing.Size(180, 17);
-            this.chkDoubleClickLinks.TabIndex = 25;
-            this.chkDoubleClickLinks.Text = "Only open Links on Double Click";
-            this.chkDoubleClickLinks.UseVisualStyleBackColor = true;
-            // 
-            // chkUseDefaultBrowser
-            // 
-            this.chkUseDefaultBrowser.AutoSize = true;
-            this.chkUseDefaultBrowser.Checked = true;
-            this.chkUseDefaultBrowser.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkUseDefaultBrowser.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.chkUseDefaultBrowser.Location = new System.Drawing.Point(16, 35);
-            this.chkUseDefaultBrowser.Name = "chkUseDefaultBrowser";
-            this.chkUseDefaultBrowser.Size = new System.Drawing.Size(183, 17);
-            this.chkUseDefaultBrowser.TabIndex = 24;
-            this.chkUseDefaultBrowser.Text = "Use the system\'s Default Browser";
-            this.chkUseDefaultBrowser.UseVisualStyleBackColor = true;
-            this.chkUseDefaultBrowser.Visible = false;
             // 
             // panel3
             // 
@@ -1391,143 +1333,222 @@
             this.chkPings.Text = "Play Sound when your Name is mentioned";
             this.chkPings.UseVisualStyleBackColor = true;
             // 
-            // panel10
+            // panel9
             // 
-            this.panel10.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel10.Location = new System.Drawing.Point(0, 0);
-            this.panel10.Name = "panel10";
-            this.panel10.Size = new System.Drawing.Size(464, 480);
-            this.panel10.TabIndex = 8;
+            this.panel9.Controls.Add(this.tabControl3);
+            this.panel9.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel9.Location = new System.Drawing.Point(0, 0);
+            this.panel9.Name = "panel9";
+            this.panel9.Size = new System.Drawing.Size(464, 480);
+            this.panel9.TabIndex = 7;
             // 
-            // panel2
+            // tabControl3
             // 
-            this.panel2.Controls.Add(this.comboBox1);
-            this.panel2.Controls.Add(this.label4);
-            this.panel2.Controls.Add(this.textBox4);
-            this.panel2.Controls.Add(this.lblProxyPassword);
-            this.panel2.Controls.Add(this.textBox3);
-            this.panel2.Controls.Add(this.lblProxyUsername);
-            this.panel2.Controls.Add(this.textBox2);
-            this.panel2.Controls.Add(this.label1);
-            this.panel2.Controls.Add(this.textBox1);
-            this.panel2.Controls.Add(this.lblProxyType);
-            this.panel2.Controls.Add(this.lblProxy);
-            this.panel2.Controls.Add(this.chkProxyEnabled);
-            this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel2.Location = new System.Drawing.Point(0, 0);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(464, 480);
-            this.panel2.TabIndex = 0;
+            this.tabControl3.Controls.Add(this.tabPage4);
+            this.tabControl3.Location = new System.Drawing.Point(17, 12);
+            this.tabControl3.Name = "tabControl3";
+            this.tabControl3.SelectedIndex = 0;
+            this.tabControl3.Size = new System.Drawing.Size(415, 387);
+            this.tabControl3.TabIndex = 22;
             // 
-            // comboBox1
+            // tabPage4
             // 
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(87, 52);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(167, 21);
-            this.comboBox1.TabIndex = 15;
+            this.tabPage4.Controls.Add(this.label12);
+            this.tabPage4.Controls.Add(this.rtbIgnoreKeywords);
+            this.tabPage4.Location = new System.Drawing.Point(4, 22);
+            this.tabPage4.Name = "tabPage4";
+            this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage4.Size = new System.Drawing.Size(407, 361);
+            this.tabPage4.TabIndex = 0;
+            this.tabPage4.Text = "Ignore Keywords";
+            this.tabPage4.UseVisualStyleBackColor = true;
             // 
-            // label4
+            // label12
             // 
-            this.label4.AutoSize = true;
-            this.label4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.label4.Location = new System.Drawing.Point(18, 107);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(29, 13);
-            this.label4.TabIndex = 14;
-            this.label4.Text = "Port:";
+            this.label12.AutoSize = true;
+            this.label12.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.label12.ForeColor = System.Drawing.Color.Black;
+            this.label12.Location = new System.Drawing.Point(3, 5);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(152, 13);
+            this.label12.TabIndex = 22;
+            this.label12.Text = "Ignore keywords (one per line):";
             // 
-            // textBox4
+            // rtbIgnoreKeywords
             // 
-            this.textBox4.Location = new System.Drawing.Point(87, 103);
-            this.textBox4.Name = "textBox4";
-            this.textBox4.Size = new System.Drawing.Size(167, 20);
-            this.textBox4.TabIndex = 13;
+            this.rtbIgnoreKeywords.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.rtbIgnoreKeywords.Location = new System.Drawing.Point(6, 21);
+            this.rtbIgnoreKeywords.Name = "rtbIgnoreKeywords";
+            this.rtbIgnoreKeywords.Size = new System.Drawing.Size(395, 334);
+            this.rtbIgnoreKeywords.TabIndex = 17;
+            this.rtbIgnoreKeywords.Text = "";
             // 
-            // lblProxyPassword
+            // panel7
             // 
-            this.lblProxyPassword.AutoSize = true;
-            this.lblProxyPassword.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.lblProxyPassword.Location = new System.Drawing.Point(18, 156);
-            this.lblProxyPassword.Name = "lblProxyPassword";
-            this.lblProxyPassword.Size = new System.Drawing.Size(56, 13);
-            this.lblProxyPassword.TabIndex = 12;
-            this.lblProxyPassword.Text = "Password:";
+            this.panel7.Controls.Add(this.chkDoubleClickLinks);
+            this.panel7.Controls.Add(this.chkUseDefaultBrowser);
+            this.panel7.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel7.Location = new System.Drawing.Point(0, 0);
+            this.panel7.Name = "panel7";
+            this.panel7.Size = new System.Drawing.Size(464, 480);
+            this.panel7.TabIndex = 5;
             // 
-            // textBox3
+            // chkDoubleClickLinks
             // 
-            this.textBox3.Location = new System.Drawing.Point(87, 153);
-            this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(167, 20);
-            this.textBox3.TabIndex = 11;
+            this.chkDoubleClickLinks.AutoSize = true;
+            this.chkDoubleClickLinks.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.chkDoubleClickLinks.Location = new System.Drawing.Point(16, 13);
+            this.chkDoubleClickLinks.Name = "chkDoubleClickLinks";
+            this.chkDoubleClickLinks.Size = new System.Drawing.Size(180, 17);
+            this.chkDoubleClickLinks.TabIndex = 25;
+            this.chkDoubleClickLinks.Text = "Only open Links on Double Click";
+            this.chkDoubleClickLinks.UseVisualStyleBackColor = true;
             // 
-            // lblProxyUsername
+            // chkUseDefaultBrowser
             // 
-            this.lblProxyUsername.AutoSize = true;
-            this.lblProxyUsername.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.lblProxyUsername.Location = new System.Drawing.Point(18, 131);
-            this.lblProxyUsername.Name = "lblProxyUsername";
-            this.lblProxyUsername.Size = new System.Drawing.Size(58, 13);
-            this.lblProxyUsername.TabIndex = 10;
-            this.lblProxyUsername.Text = "Username:";
+            this.chkUseDefaultBrowser.AutoSize = true;
+            this.chkUseDefaultBrowser.Checked = true;
+            this.chkUseDefaultBrowser.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkUseDefaultBrowser.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.chkUseDefaultBrowser.Location = new System.Drawing.Point(16, 35);
+            this.chkUseDefaultBrowser.Name = "chkUseDefaultBrowser";
+            this.chkUseDefaultBrowser.Size = new System.Drawing.Size(183, 17);
+            this.chkUseDefaultBrowser.TabIndex = 24;
+            this.chkUseDefaultBrowser.Text = "Use the system\'s Default Browser";
+            this.chkUseDefaultBrowser.UseVisualStyleBackColor = true;
+            this.chkUseDefaultBrowser.Visible = false;
             // 
-            // textBox2
+            // panel6
             // 
-            this.textBox2.Location = new System.Drawing.Point(87, 128);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(167, 20);
-            this.textBox2.TabIndex = 9;
+            this.panel6.Controls.Add(this.comboShowIgnoredUsersMessagesIf);
+            this.panel6.Controls.Add(this.label15);
+            this.panel6.Controls.Add(this.chkTwitchIgnores);
+            this.panel6.Controls.Add(this.btnIgnoredUserRemove);
+            this.panel6.Controls.Add(this.btnIgnoredUserAdd);
+            this.panel6.Controls.Add(this.dgvIgnoredUsers);
+            this.panel6.Controls.Add(this.label9);
+            this.panel6.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel6.Location = new System.Drawing.Point(0, 0);
+            this.panel6.Name = "panel6";
+            this.panel6.Size = new System.Drawing.Size(464, 480);
+            this.panel6.TabIndex = 4;
             // 
-            // label1
+            // comboShowIgnoredUsersMessagesIf
             // 
-            this.label1.AutoSize = true;
-            this.label1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.label1.Location = new System.Drawing.Point(18, 81);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(32, 13);
-            this.label1.TabIndex = 8;
-            this.label1.Text = "Host:";
+            this.comboShowIgnoredUsersMessagesIf.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboShowIgnoredUsersMessagesIf.FormattingEnabled = true;
+            this.comboShowIgnoredUsersMessagesIf.Items.AddRange(new object[] {
+            "You are moderator",
+            "You are broadcaster",
+            "Never"});
+            this.comboShowIgnoredUsersMessagesIf.Location = new System.Drawing.Point(322, 36);
+            this.comboShowIgnoredUsersMessagesIf.Name = "comboShowIgnoredUsersMessagesIf";
+            this.comboShowIgnoredUsersMessagesIf.Size = new System.Drawing.Size(109, 21);
+            this.comboShowIgnoredUsersMessagesIf.TabIndex = 25;
             // 
-            // textBox1
+            // label15
             // 
-            this.textBox1.Location = new System.Drawing.Point(87, 78);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(167, 20);
-            this.textBox1.TabIndex = 7;
+            this.label15.AutoSize = true;
+            this.label15.ForeColor = System.Drawing.Color.White;
+            this.label15.Location = new System.Drawing.Point(177, 41);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(139, 13);
+            this.label15.TabIndex = 6;
+            this.label15.Text = "Show messages anyways if:";
             // 
-            // lblProxyType
+            // chkTwitchIgnores
             // 
-            this.lblProxyType.AutoSize = true;
-            this.lblProxyType.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.lblProxyType.Location = new System.Drawing.Point(18, 55);
-            this.lblProxyType.Name = "lblProxyType";
-            this.lblProxyType.Size = new System.Drawing.Size(34, 13);
-            this.lblProxyType.TabIndex = 6;
-            this.lblProxyType.Text = "Type:";
+            this.chkTwitchIgnores.AutoSize = true;
+            this.chkTwitchIgnores.Checked = true;
+            this.chkTwitchIgnores.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkTwitchIgnores.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.chkTwitchIgnores.Location = new System.Drawing.Point(16, 13);
+            this.chkTwitchIgnores.Name = "chkTwitchIgnores";
+            this.chkTwitchIgnores.Size = new System.Drawing.Size(163, 17);
+            this.chkTwitchIgnores.TabIndex = 24;
+            this.chkTwitchIgnores.Text = "Enable Twitch Ignored Users";
+            this.chkTwitchIgnores.UseVisualStyleBackColor = true;
             // 
-            // lblProxy
+            // btnIgnoredUserRemove
             // 
-            this.lblProxy.AutoSize = true;
-            this.lblProxy.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblProxy.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.lblProxy.Location = new System.Drawing.Point(18, 7);
-            this.lblProxy.Name = "lblProxy";
-            this.lblProxy.Size = new System.Drawing.Size(228, 17);
-            this.lblProxy.TabIndex = 4;
-            this.lblProxy.Text = "Proxy (doesn\'t work right now Keepo)";
+            this.btnIgnoredUserRemove.Location = new System.Drawing.Point(96, 36);
+            this.btnIgnoredUserRemove.Name = "btnIgnoredUserRemove";
+            this.btnIgnoredUserRemove.Size = new System.Drawing.Size(75, 23);
+            this.btnIgnoredUserRemove.TabIndex = 8;
+            this.btnIgnoredUserRemove.Text = "Remove";
+            this.btnIgnoredUserRemove.UseVisualStyleBackColor = true;
             // 
-            // chkProxyEnabled
+            // btnIgnoredUserAdd
             // 
-            this.chkProxyEnabled.AutoSize = true;
-            this.chkProxyEnabled.Checked = true;
-            this.chkProxyEnabled.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkProxyEnabled.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.chkProxyEnabled.Location = new System.Drawing.Point(21, 31);
-            this.chkProxyEnabled.Name = "chkProxyEnabled";
-            this.chkProxyEnabled.Size = new System.Drawing.Size(88, 17);
-            this.chkProxyEnabled.TabIndex = 3;
-            this.chkProxyEnabled.Text = "Enable Proxy";
-            this.chkProxyEnabled.UseVisualStyleBackColor = true;
+            this.btnIgnoredUserAdd.Location = new System.Drawing.Point(16, 36);
+            this.btnIgnoredUserAdd.Name = "btnIgnoredUserAdd";
+            this.btnIgnoredUserAdd.Size = new System.Drawing.Size(75, 23);
+            this.btnIgnoredUserAdd.TabIndex = 7;
+            this.btnIgnoredUserAdd.Text = "Add";
+            this.btnIgnoredUserAdd.UseVisualStyleBackColor = true;
+            // 
+            // dgvIgnoredUsers
+            // 
+            this.dgvIgnoredUsers.AllowUserToAddRows = false;
+            this.dgvIgnoredUsers.AllowUserToDeleteRows = false;
+            this.dgvIgnoredUsers.AllowUserToResizeColumns = false;
+            this.dgvIgnoredUsers.AllowUserToResizeRows = false;
+            this.dgvIgnoredUsers.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvIgnoredUsers.ColumnHeadersVisible = false;
+            this.dgvIgnoredUsers.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.dataGridViewTextBoxColumn1});
+            this.dgvIgnoredUsers.Location = new System.Drawing.Point(16, 63);
+            this.dgvIgnoredUsers.Name = "dgvIgnoredUsers";
+            this.dgvIgnoredUsers.RowHeadersVisible = false;
+            this.dgvIgnoredUsers.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dgvIgnoredUsers.Size = new System.Drawing.Size(415, 268);
+            this.dgvIgnoredUsers.TabIndex = 6;
+            // 
+            // dataGridViewTextBoxColumn1
+            // 
+            this.dataGridViewTextBoxColumn1.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.dataGridViewTextBoxColumn1.HeaderText = "Command";
+            this.dataGridViewTextBoxColumn1.Name = "dataGridViewTextBoxColumn1";
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.ForeColor = System.Drawing.Color.White;
+            this.label9.Location = new System.Drawing.Point(13, 334);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(361, 65);
+            this.label9.TabIndex = 5;
+            this.label9.Text = "/ignore in chat to ignore someone\r\n/unignore in chat to unignore someone\r\n\r\nChatt" +
+    "erino uses the twitch ignore api.\r\nIf you use your own oauth key make sure that " +
+    "it has the proper permissions.";
+            // 
+            // comboBox2
+            // 
+            this.comboBox2.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBox2.FormattingEnabled = true;
+            this.comboBox2.Items.AddRange(new object[] {
+            "White",
+            "Light",
+            "Dark",
+            "Black"});
+            this.comboBox2.Location = new System.Drawing.Point(97, 391);
+            this.comboBox2.Name = "comboBox2";
+            this.comboBox2.Size = new System.Drawing.Size(119, 21);
+            this.comboBox2.TabIndex = 30;
+            // 
+            // label18
+            // 
+            this.label18.AutoSize = true;
+            this.label18.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.label18.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.label18.Location = new System.Drawing.Point(14, 394);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(94, 13);
+            this.label18.TabIndex = 18;
+            this.label18.Text = "Streamlink Quality:";
+            this.label18.Click += new System.EventHandler(this.label18_Click);
             // 
             // spAccounts
             // 
@@ -1662,21 +1683,32 @@
             this.spConnection.Text = "Connection";
             this.spConnection.Visible = false;
             // 
-            // comboQuality
+            // openFileStreamlink
             // 
-            this.comboQuality.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboQuality.FormattingEnabled = true;
-            this.comboQuality.Items.AddRange(new object[] {
-            "best",
-            "high",
-            "medium",
-            "low",
-            "worst"});
-            this.comboQuality.Location = new System.Drawing.Point(112, 413);
-            this.comboQuality.Name = "comboQuality";
-            this.comboQuality.Size = new System.Drawing.Size(119, 21);
-            this.comboQuality.TabIndex = 39;
-            this.comboQuality.SelectedIndexChanged += new System.EventHandler(this.comboQuality_SelectedIndexChanged);
+            this.openFileStreamlink.FileName = "Streamlink";
+            this.openFileStreamlink.Title = "Find Streamlink Binary";
+            // 
+            // btnStreamlinkPath
+            // 
+            this.btnStreamlinkPath.Location = new System.Drawing.Point(369, 411);
+            this.btnStreamlinkPath.Name = "btnStreamlinkPath";
+            this.btnStreamlinkPath.Size = new System.Drawing.Size(75, 23);
+            this.btnStreamlinkPath.TabIndex = 41;
+            this.btnStreamlinkPath.Text = "Select";
+            this.btnStreamlinkPath.UseVisualStyleBackColor = true;
+            this.btnStreamlinkPath.Click += new System.EventHandler(this.btnStreamlinkPath_Click);
+            // 
+            // chkStreamlinkPath
+            // 
+            this.chkStreamlinkPath.AutoSize = true;
+            this.chkStreamlinkPath.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.chkStreamlinkPath.Location = new System.Drawing.Point(237, 415);
+            this.chkStreamlinkPath.Name = "chkStreamlinkPath";
+            this.chkStreamlinkPath.Size = new System.Drawing.Size(131, 17);
+            this.chkStreamlinkPath.TabIndex = 42;
+            this.chkStreamlinkPath.Text = "Path(if using portable):";
+            this.chkStreamlinkPath.UseVisualStyleBackColor = true;
+            this.chkStreamlinkPath.CheckedChanged += new System.EventHandler(this.chkStreamlinkPath_CheckedChanged);
             // 
             // SettingsDialog
             // 
@@ -1702,6 +1734,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.numThemeNightFrom)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).EndInit();
+            this.panel5.ResumeLayout(false);
+            this.panel5.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvCommands)).EndInit();
             this.panel4.ResumeLayout(false);
             this.panel4.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarEmoteScale)).EndInit();
@@ -1711,20 +1746,10 @@
             this.panel11.ResumeLayout(false);
             this.panel11.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewAccounts)).EndInit();
-            this.panel9.ResumeLayout(false);
-            this.tabControl3.ResumeLayout(false);
-            this.tabPage4.ResumeLayout(false);
-            this.tabPage4.PerformLayout();
-            this.panel6.ResumeLayout(false);
-            this.panel6.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvIgnoredUsers)).EndInit();
-            this.panel5.ResumeLayout(false);
-            this.panel5.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvCommands)).EndInit();
+            this.panel2.ResumeLayout(false);
+            this.panel2.PerformLayout();
             this.panel8.ResumeLayout(false);
             this.panel8.PerformLayout();
-            this.panel7.ResumeLayout(false);
-            this.panel7.PerformLayout();
             this.panel3.ResumeLayout(false);
             this.panel3.PerformLayout();
             this.tabControl1.ResumeLayout(false);
@@ -1732,8 +1757,15 @@
             this.tabPage1.PerformLayout();
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();
-            this.panel2.ResumeLayout(false);
-            this.panel2.PerformLayout();
+            this.panel9.ResumeLayout(false);
+            this.tabControl3.ResumeLayout(false);
+            this.tabPage4.ResumeLayout(false);
+            this.tabPage4.PerformLayout();
+            this.panel7.ResumeLayout(false);
+            this.panel7.PerformLayout();
+            this.panel6.ResumeLayout(false);
+            this.panel6.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvIgnoredUsers)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -1865,5 +1897,8 @@
         private System.Windows.Forms.Label label18;
         private System.Windows.Forms.Label label17;
         private System.Windows.Forms.ComboBox comboQuality;
+        private System.Windows.Forms.OpenFileDialog openFileStreamlink;
+        private System.Windows.Forms.Button btnStreamlinkPath;
+        private System.Windows.Forms.CheckBox chkStreamlinkPath;
     }
 }

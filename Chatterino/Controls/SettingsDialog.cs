@@ -142,6 +142,7 @@ namespace Chatterino.Controls
             var originalThemeNightStart = AppSettings.NightThemeStart;
             var originalThemeNightEnd = AppSettings.NightThemeEnd;
             var originalQuality = comboQuality.Text = AppSettings.Quality;
+            var originalPath = AppSettings.StreamlinkPath;
 
             BindCheckBox(checkBoxDifferentThemeAtNight, "EnableNightTheme");
 
@@ -241,6 +242,7 @@ namespace Chatterino.Controls
             BindCheckBox(chkHideInput, "ChatHideInputIfEmpty");
             BindCheckBox(chkMessageSeperators, "ChatSeperateMessages");
             BindCheckBox(chkRainbow, "Rainbow");
+            BindCheckBox(chkStreamlinkPath, "enableStreamlinkPath");
 
             chkMessageSeperators.CheckedChanged += (s, e) =>
             {
@@ -809,11 +811,6 @@ namespace Chatterino.Controls
 
         }
 
-        private void chkRainbow_CheckedChanged(object sender, EventArgs e)
-        {
-
-        }
-
         private void label7_Click(object sender, EventArgs e)
         {
 
@@ -824,12 +821,43 @@ namespace Chatterino.Controls
 
         }
 
+
+        private void chkRainbow_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+
         private void chkTopMost_CheckedChanged(object sender, EventArgs e)
         {
 
         }
 
         private void comboQuality_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btnStreamlinkPath_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog streamlink = new OpenFileDialog();
+            streamlink.InitialDirectory = "C:\\";
+            streamlink.Filter = "Streamlink binary (streamlink.exe)|*.exe";
+            streamlink.FilterIndex = 1;
+            streamlink.RestoreDirectory = true;
+            if (streamlink.ShowDialog() == DialogResult.OK)
+            {
+                try
+                {
+                    AppSettings.StreamlinkPath = streamlink.FileName;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error: Could not read file from disk. Original error: " + ex.Message);
+                }
+            }
+        }
+
+        private void chkStreamlinkPath_CheckedChanged(object sender, EventArgs e)
         {
 
         }

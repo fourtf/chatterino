@@ -844,8 +844,17 @@ namespace Chatterino.Controls
                 _contextMenu.MenuItems.Add(new MenuItem("Open Streamlink",
                     (s, e) =>
                     {
-                        string strCmdText = _selected.Channel.ChannelLink + " " + AppSettings.Quality;
-                        Process.Start("streamlink", strCmdText);
+                        string strCmdText = "";
+                        if (AppSettings.enableStreamlinkPath)
+                        {
+                            strCmdText = _selected.Channel.ChannelLink + " " + AppSettings.Quality;
+                            Process.Start(AppSettings.StreamlinkPath, strCmdText);
+                        }
+                        else
+                        {
+                            strCmdText = _selected.Channel.ChannelLink + " " + AppSettings.Quality;
+                            Process.Start("streamlink", strCmdText);
+                        }
                     }));
                         _contextMenu.MenuItems.Add("-");
                 _contextMenu.MenuItems.Add(new MenuItem("Reload Channel Emotes", (s, e) =>
