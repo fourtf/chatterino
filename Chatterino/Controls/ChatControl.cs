@@ -856,7 +856,7 @@ namespace Chatterino.Controls
                             Process.Start("streamlink", strCmdText);
                         }
                     }));
-                        _contextMenu.MenuItems.Add("-");
+                _contextMenu.MenuItems.Add("-");
                 _contextMenu.MenuItems.Add(new MenuItem("Reload Channel Emotes", (s, e) =>
                 {
                     _selected.Channel.ReloadEmotes();
