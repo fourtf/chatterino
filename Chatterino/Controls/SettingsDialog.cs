@@ -141,6 +141,7 @@ namespace Chatterino.Controls
             var originalThemeHue = AppSettings.ThemeHue;
             var originalThemeNightStart = AppSettings.NightThemeStart;
             var originalThemeNightEnd = AppSettings.NightThemeEnd;
+            var originalQuality = comboQuality.Text = AppSettings.Quality;
 
             BindCheckBox(checkBoxDifferentThemeAtNight, "EnableNightTheme");
 
@@ -158,6 +159,11 @@ namespace Chatterino.Controls
             comboThemeNight.SelectedValueChanged += (s, e) =>
             {
                 AppSettings.NightTheme = comboThemeNight.Text;
+            };
+
+            comboQuality.SelectedValueChanged += (s, e) =>
+            {
+                AppSettings.Quality = comboQuality.Text;
             };
 
             numThemeNightFrom.Value = Math.Max(1, Math.Min(24, AppSettings.NightThemeStart));
@@ -183,6 +189,7 @@ namespace Chatterino.Controls
                 AppSettings.ThemeHue = originalThemeHue;
                 AppSettings.NightThemeStart = originalThemeNightStart;
                 AppSettings.NightThemeEnd = originalThemeNightEnd;
+                AppSettings.Quality = originalQuality;
                 App.MainForm.Refresh();
             };
 
@@ -806,6 +813,27 @@ namespace Chatterino.Controls
         {
 
         }
+
+        private void label7_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label18_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void chkTopMost_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void comboQuality_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
 
         //RESET
         //void btnResetAll_Click(object sender, EventArgs e)
