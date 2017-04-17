@@ -31,12 +31,12 @@
             this.label1 = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.button2 = new System.Windows.Forms.Button();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.button2 = new System.Windows.Forms.Button();
+            this.label2 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.label3 = new System.Windows.Forms.Label();
             this.comboTheme = new System.Windows.Forms.ComboBox();
+            this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -76,14 +76,14 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Login";
             // 
-            // label2
+            // pictureBox1
             // 
-            this.label2.Location = new System.Drawing.Point(6, 24);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(259, 62);
-            this.label2.TabIndex = 3;
-            this.label2.Text = "You can also switch and add accounts later by clicking on this button at the top " +
-    "left:\r\n";
+            this.pictureBox1.Image = global::Chatterino.Properties.Resources.screenshot_user;
+            this.pictureBox1.Location = new System.Drawing.Point(271, 24);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(30, 27);
+            this.pictureBox1.TabIndex = 4;
+            this.pictureBox1.TabStop = false;
             // 
             // button2
             // 
@@ -96,14 +96,14 @@
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
-            // pictureBox1
+            // label2
             // 
-            this.pictureBox1.Image = global::Chatterino.Properties.Resources.screenshot_user;
-            this.pictureBox1.Location = new System.Drawing.Point(271, 24);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(30, 27);
-            this.pictureBox1.TabIndex = 4;
-            this.pictureBox1.TabStop = false;
+            this.label2.Location = new System.Drawing.Point(6, 24);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(259, 62);
+            this.label2.TabIndex = 3;
+            this.label2.Text = "You can also switch and add accounts later by clicking on this button at the top " +
+    "left:\r\n";
             // 
             // groupBox2
             // 
@@ -116,14 +116,6 @@
             this.groupBox2.TabIndex = 5;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Theme";
-            // 
-            // label3
-            // 
-            this.label3.Location = new System.Drawing.Point(6, 24);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(295, 44);
-            this.label3.TabIndex = 3;
-            this.label3.Text = "Select one of the four themes that you\'d like to use.";
             // 
             // comboTheme
             // 
@@ -139,6 +131,14 @@
             this.comboTheme.Size = new System.Drawing.Size(167, 25);
             this.comboTheme.TabIndex = 17;
             // 
+            // label3
+            // 
+            this.label3.Location = new System.Drawing.Point(6, 24);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(295, 44);
+            this.label3.TabIndex = 3;
+            this.label3.Text = "Select one of the four themes that you\'d like to use.";
+            // 
             // label4
             // 
             this.label4.Location = new System.Drawing.Point(23, 181);
@@ -146,7 +146,7 @@
             this.label4.Size = new System.Drawing.Size(621, 42);
             this.label4.TabIndex = 5;
             this.label4.Text = "Pro-Tip: You can view your whispers by joining \"/whispers\" and your mentions by j" +
-    "oining \"/menitions\"";
+    "oining \"/mentions\"";
             // 
             // WelcomeForm
             // 
