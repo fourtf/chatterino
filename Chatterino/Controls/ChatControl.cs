@@ -840,6 +840,10 @@ namespace Chatterino.Controls
                     {
                         GuiEngine.Current.HandleLink(new Link(LinkType.Url, _selected.Channel.PopoutPlayerLink));
                     }));
+                _contextMenu.MenuItems.Add(new MenuItem("Open Streamlink",
+                    (s, e) => { string strCmdText;
+                                strCmdText= "streamlink " + _selected.Channel.ChannelLink + " best";
+                                System.Diagnostics.Process.Start("CMD.exe",strCmdText); }));
                 _contextMenu.MenuItems.Add("-");
                 _contextMenu.MenuItems.Add(new MenuItem("Reload Channel Emotes", (s, e) =>
                 {
