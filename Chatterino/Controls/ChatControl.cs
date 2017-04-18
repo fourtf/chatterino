@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.IO;
@@ -839,6 +840,21 @@ namespace Chatterino.Controls
                     (s, e) =>
                     {
                         GuiEngine.Current.HandleLink(new Link(LinkType.Url, _selected.Channel.PopoutPlayerLink));
+                    }));
+                _contextMenu.MenuItems.Add(new MenuItem("Open Streamlink",
+                    (s, e) =>
+                    {
+                        string strCmdText = "";
+                        if (AppSettings.enableStreamlinkPath)
+                        {
+                            strCmdText = _selected.Channel.ChannelLink + " " + AppSettings.Quality;
+                            Process.Start(AppSettings.StreamlinkPath, strCmdText);
+                        }
+                        else
+                        {
+                            strCmdText = _selected.Channel.ChannelLink + " " + AppSettings.Quality;
+                            Process.Start("streamlink", strCmdText);
+                        }
                     }));
                 _contextMenu.MenuItems.Add("-");
                 _contextMenu.MenuItems.Add(new MenuItem("Reload Channel Emotes", (s, e) =>

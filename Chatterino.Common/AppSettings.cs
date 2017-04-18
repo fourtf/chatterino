@@ -131,6 +131,20 @@ namespace Chatterino.Common
             }
         }
 
+        private static string _quality = "best";
+
+        public static string Quality
+        {
+            get { return _quality; }
+            set
+            {
+                if (_quality != value)
+                {
+                    _quality = value;
+                }
+            }
+        }
+
         // Chat
         public static double ScrollMultiplyer { get; set; } = 1;
 
