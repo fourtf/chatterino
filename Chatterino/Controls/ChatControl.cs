@@ -844,15 +844,43 @@ namespace Chatterino.Controls
                 _contextMenu.MenuItems.Add(new MenuItem("Open Streamlink",
                     (s, e) =>
                     {
-                        if (AppSettings.EnableStreamlinkPath)
+                        var arguments = _selected.Channel.ChannelLink + " " + AppSettings.Quality;
+
+                        var process = new Process
                         {
-                            var strCmdText = _selected.Channel.ChannelLink + " " + AppSettings.Quality;
-                            Process.Start(AppSettings.StreamlinkPath, strCmdText);
+                            StartInfo =
+                            {
+                                FileName = AppSettings.EnableStreamlinkPath ? AppSettings.StreamlinkPath : "streamlink",
+                                Arguments = arguments,
+                                RedirectStandardOutput = true,
+                                CreateNoWindow = true,
+                                UseShellExecute = false,
+                                StandardOutputEncoding = Encoding.UTF8
+                            }
+                        };
+
+                        try
+                        {
+                            process.Start();
+
+                            Task.Run(() =>
+                            {
+                                try
+                                {
+                                    var stdout = process.StandardOutput.ReadToEnd();
+
+                                    if (stdout.Contains("error: "))
+                                    {
+                                        MessageBox.Show("Full console output:\r\n\r\n" + stdout,
+                                            "Error while executing streamlink");
+                                    }
+                                }
+                                catch { /* ignored */ }
+                            });
                         }
-                        else
+                        catch (Exception exception)
                         {
-                            var strCmdText = _selected.Channel.ChannelLink + " " + AppSettings.Quality;
-                            Process.Start("streamlink", strCmdText);
+                            MessageBox.Show(exception.Message, "Error while starting streamlink");
                         }
                     }));
                 _contextMenu.MenuItems.Add("-");

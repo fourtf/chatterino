@@ -845,6 +845,10 @@ namespace Chatterino.Controls
             catch { }
         }
 
+        private void btnStreamlinkPath_Click_1(object sender, EventArgs e)
+        {
+
+        }
 
         //RESET
         //void btnResetAll_Click(object sender, EventArgs e)

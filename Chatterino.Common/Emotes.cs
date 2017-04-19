@@ -317,7 +317,6 @@ namespace Chatterino.Common
             {
                 try
                 {
-                    Directory.CreateDirectory("./Cache");
                     var parser = new System.Text.Json.JsonParser();
 
                     // better twitch tv emotes
@@ -376,7 +375,6 @@ namespace Chatterino.Common
             {
                 try
                 {
-                    Directory.CreateDirectory("./Cache");
                     var parser = new System.Text.Json.JsonParser();
 
                     //if (!File.Exists(ffzEmotesGlobalCache))
