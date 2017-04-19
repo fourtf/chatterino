@@ -343,6 +343,16 @@ namespace Chatterino.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap LafRmOrmOzPL9CW {
+            get {
+                object obj = ResourceManager.GetObject("LafRmOrmOzPL9CW", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap Message_16xLG {
             get {
                 object obj = ResourceManager.GetObject("Message_16xLG", resourceCulture);

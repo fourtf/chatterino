@@ -3,6 +3,7 @@ using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -242,7 +243,7 @@ namespace Chatterino.Controls
             BindCheckBox(chkHideInput, "ChatHideInputIfEmpty");
             BindCheckBox(chkMessageSeperators, "ChatSeperateMessages");
             BindCheckBox(chkRainbow, "Rainbow");
-            BindCheckBox(chkStreamlinkPath, "enableStreamlinkPath");
+            BindCheckBox(chkStreamlinkPath, "EnableStreamlinkPath");
 
             chkMessageSeperators.CheckedChanged += (s, e) =>
             {
@@ -806,37 +807,6 @@ namespace Chatterino.Controls
             GuiEngine.Current.PlaySound(NotificationSound.Ping, true);
         }
 
-        private void tabs_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label7_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label18_Click(object sender, EventArgs e)
-        {
-
-        }
-
-
-        private void chkRainbow_CheckedChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void chkTopMost_CheckedChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void comboQuality_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
-
         private void btnStreamlinkPath_Click(object sender, EventArgs e)
         {
             OpenFileDialog streamlink = new OpenFileDialog();
@@ -857,9 +827,22 @@ namespace Chatterino.Controls
             }
         }
 
-        private void chkStreamlinkPath_CheckedChanged(object sender, EventArgs e)
+        private void linkStreamlinkWebsite_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
+            try
+            {
+                Process.Start("https://streamlink.github.io/");
+            }
+            catch { }
+        }
 
+        private void linkStreamlinkDownload_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            try
+            {
+                Process.Start("https://github.com/streamlink/streamlink/releases");
+            }
+            catch { }
         }
 
 

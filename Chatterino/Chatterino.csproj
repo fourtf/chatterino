@@ -304,6 +304,7 @@
     <Content Include="Controls\CustomFontDialog\LICENSE.txt" />
     <Content Include="icon2.ico" />
     <Content Include="icon2_christmas.ico" />
+    <None Include="Resources\LafRmOrmOzPL9CW.png" />
     <None Include="Resources\1000000.png" />
     <None Include="Resources\900000.png" />
     <None Include="Resources\800000.png" />

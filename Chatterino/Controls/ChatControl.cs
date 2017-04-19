@@ -844,15 +844,14 @@ namespace Chatterino.Controls
                 _contextMenu.MenuItems.Add(new MenuItem("Open Streamlink",
                     (s, e) =>
                     {
-                        string strCmdText = "";
-                        if (AppSettings.enableStreamlinkPath)
+                        if (AppSettings.EnableStreamlinkPath)
                         {
-                            strCmdText = _selected.Channel.ChannelLink + " " + AppSettings.Quality;
+                            var strCmdText = _selected.Channel.ChannelLink + " " + AppSettings.Quality;
                             Process.Start(AppSettings.StreamlinkPath, strCmdText);
                         }
                         else
                         {
-                            strCmdText = _selected.Channel.ChannelLink + " " + AppSettings.Quality;
+                            var strCmdText = _selected.Channel.ChannelLink + " " + AppSettings.Quality;
                             Process.Start("streamlink", strCmdText);
                         }
                     }));

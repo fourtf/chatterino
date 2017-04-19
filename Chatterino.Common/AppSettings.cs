@@ -145,6 +145,9 @@ namespace Chatterino.Common
             }
         }
 
+        public static bool EnableStreamlinkPath { get; set; }
+        public static string StreamlinkPath { get; set; }
+
         // Chat
         public static double ScrollMultiplyer { get; set; } = 1;
 
