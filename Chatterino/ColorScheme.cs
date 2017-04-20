@@ -104,9 +104,16 @@ namespace Chatterino
             }
             else
             {
-                scheme.ChatBackgroundHighlighted = getColor(HSLColor.FromRGB(0.6f, 0.5f, 0.52f), 0.9f).ToBrush();
-                scheme.ChatBackgroundResub = getColor(HSLColor.FromRGB(0.52f, 0.5f, 0.6f), 0.8f).ToBrush();
-                scheme.ChatBackgroundWhisper = getColor(HSLColor.FromRGB(0.5f, 0.55f, 0.5f), 0.8f).ToBrush();
+                //scheme.ChatBackgroundHighlighted = getColor(HSLColor.FromRGB(0.6f, 0.5f, 0.52f), 0.9f).ToBrush();
+                //scheme.ChatBackgroundHighlighted = new SolidBrush(Color.FromArgb(52, 0, 16));
+
+                var l = multiplier == -1 ? 0 : 20;
+                scheme.ChatBackgroundHighlighted = new SolidBrush(Color.FromArgb(70 + l, 20 + l, 24 + l));
+                scheme.ChatBackgroundResub = new SolidBrush(Color.FromArgb(47 + l, 20 + l, 70 + l));
+                scheme.ChatBackgroundWhisper = new SolidBrush(Color.FromArgb(20 + l, 40 + l, 70 + l));
+
+                //scheme.ChatBackgroundResub = getColor(HSLColor.FromRGB(0.52f, 0.5f, 0.6f), 0.8f).ToBrush();
+                //scheme.ChatBackgroundWhisper = getColor(HSLColor.FromRGB(0.5f, 0.55f, 0.5f), 0.8f).ToBrush();
             }
 
             scheme.Menu = getColor(gray, 0.90f).ToBrush();

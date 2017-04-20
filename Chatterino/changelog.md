@@ -1,8 +1,10 @@
 ﻿# changelog
 
 ## 1.2.4
-- added streamlink support (thanks to @cranken1337)
+- added streamlink support (thanks to cranken1337)
 - fixed an issue that caused bttv and ffz global emotes not to load for some users
+- made username colors more vibrant
+- changed colors for highlights, whispers and resubs
 
 ## 1.2.3
 - fixed crash when closing splits

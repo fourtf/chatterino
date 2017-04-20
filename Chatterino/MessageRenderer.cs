@@ -99,8 +99,8 @@ namespace Chatterino
                             }
                             else
                             {
-                                if (hsl.Luminosity < 0.5f)
-                                    hsl = hsl.WithLuminosity(0.5f);
+                                if (hsl.Luminosity < 0.3f)
+                                    hsl = hsl.WithLuminosity(0.3f);
                             }
 
                             float r, _g, b;

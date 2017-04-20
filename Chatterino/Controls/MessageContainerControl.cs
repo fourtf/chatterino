@@ -650,15 +650,20 @@ namespace Chatterino.Controls
                                                 }
                                                 else
                                                 {
-                                                    if (hsl.Luminosity < 0.66f)
+                                                    if (hsl.Luminosity < 0.5f)
                                                     {
-                                                        hsl = hsl.WithLuminosity(0.66f);
+                                                        hsl = hsl.WithLuminosity(0.5f);
+                                                    }
+
+                                                    if (hsl.Luminosity < 0.8f && hsl.Hue > 0.54444 && hsl.Hue < 0.8333)
+                                                    {
+                                                        hsl = hsl.WithLuminosity(hsl.Luminosity + (float)Math.Sin((hsl.Hue - 0.54444) / (0.8333 - 0.54444) * Math.PI) * 0.2f * (0.5f + hsl.Luminosity));
                                                     }
                                                 }
 
-                                                if (hsl.Luminosity >= 0.9f)
+                                                if (hsl.Luminosity >= 0.95f)
                                                 {
-                                                    hsl = hsl.WithLuminosity(0.9f);
+                                                    hsl = hsl.WithLuminosity(0.95f);
                                                 }
 
                                                 float r, _g, b;
