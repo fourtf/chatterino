@@ -86,7 +86,8 @@ namespace Chatterino.Common
             get { return _enableNightTheme; }
             set
             {
-                _enableNightTheme = value; UpdateCurrentTheme();
+                _enableNightTheme = value;
+                UpdateCurrentTheme();
             }
         }
 
@@ -95,7 +96,11 @@ namespace Chatterino.Common
         public static double ThemeHue
         {
             get { return themeHue; }
-            set { themeHue = value; ThemeChanged?.Invoke(null, null); }
+            set
+            {
+                themeHue = value;
+                ThemeChanged?.Invoke(null, null);
+            }
         }
 
         public static void UpdateCurrentTheme()
@@ -147,8 +152,11 @@ namespace Chatterino.Common
 
         public static bool EnableStreamlinkPath { get; set; }
         public static string StreamlinkPath { get; set; }
+        public static string CustomStreamlinkArguments { get; set; }
 
-        // Chat
+        public static bool PrefereEmotesOverUsernames { get; set; }
+
+    // Chat
         public static double ScrollMultiplyer { get; set; } = 1;
 
         public static double EmoteScale { get; set; } = 1;

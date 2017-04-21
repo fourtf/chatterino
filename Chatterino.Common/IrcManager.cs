@@ -247,16 +247,40 @@ namespace Chatterino.Common
                 Disconnected?.Invoke(null, EventArgs.Empty);
         }
 
+        static DateTime nextMessageSendTime = DateTime.MinValue;
+        static DateTime nextProtectMessageSendTime = DateTime.MinValue;
+
         // Send Messages
         public static void SendMessage(TwitchChannel channel, string _message, bool isMod)
         {
             if (channel != null)
             {
+                if (!_message.StartsWith(".color "))
+                {
+                    if (!isMod && nextMessageSendTime > DateTime.Now)
+                    {
+                        Task.Run(async () =>
+                        {
+                            await Task.Delay(300);
+                            channel.AddMessage(new Message("Sending messages too fast, message not sent.",
+                                HSLColor.Gray, false));
+                        });
+
+                        return;
+                    }
+
+                    nextMessageSendTime = DateTime.Now.AddSeconds(1.1);
+                }
+
                 var message = Commands.ProcessMessage(_message, channel, true);
 
                 if (!Client.Say(message, channel.Name.TrimStart('#'), isMod))
                 {
-                    channel.AddMessage(new Message($"Your message was not sent to protect you from a global ban. (try again in {Client.GetTimeUntilNextMessage(isMod).Seconds} seconds)", HSLColor.Gray, false));
+                    if (nextProtectMessageSendTime < DateTime.Now)
+                    {
+                        channel.AddMessage(new Message($"Message not sent to protect you from a global ban. (try again in {Client.GetTimeUntilNextMessage(isMod).Seconds} seconds)", HSLColor.Gray, false));
+                        nextProtectMessageSendTime = DateTime.Now.AddSeconds(1);
+                    }
                 }
             }
         }
@@ -642,6 +666,19 @@ namespace Chatterino.Common
 
                     c.AddMessage(message);
                 });
+            }
+            else if (msg.Command == "USERSTATE")
+            {
+                string value;
+
+                if (msg.Tags.TryGetValue("mod", out value))
+                {
+                    TwitchChannel.GetChannel((msg.Middle ?? "").TrimStart('#'))
+                        .Process(c =>
+                        {
+                            c.IsMod = value == "1";
+                        });
+                }
             }
         }
     }

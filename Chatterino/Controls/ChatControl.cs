@@ -7,6 +7,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -394,6 +395,16 @@ namespace Chatterino.Controls
             }
         }
 
+        private long messageSendCount;
+        private DateTime nextAutoMessageSendTime = DateTime.MinValue;
+
+        protected override void OnKeyUp(KeyEventArgs e)
+        {
+            messageSendCount = 0;
+
+            base.OnKeyUp(e);
+        }
+
         protected override void OnKeyPress(KeyPressEventArgs e)
         {
             base.OnKeyPress(e);
@@ -417,7 +428,14 @@ namespace Chatterino.Controls
                 }
                 else if (e.KeyChar == '\r' || e.KeyChar == '\n')
                 {
-                    SendMessage((ModifierKeys & Keys.Control) != Keys.Control);
+                    if ((channel?.IsModOrBroadcaster ?? false) || messageSendCount == 0 || nextAutoMessageSendTime < DateTime.Now)
+                    {
+                        SendMessage((ModifierKeys & Keys.Control) != Keys.Control);
+
+                        nextAutoMessageSendTime = DateTime.Now.AddSeconds(1.6);
+                    }
+
+                    messageSendCount++;
                 }
                 else if (e.KeyChar >= ' ')
                 {
@@ -815,6 +833,8 @@ namespace Chatterino.Controls
             static MenuItem _roomstateEmoteonly;
             static MenuItem _roomstateR9K;
 
+            static MenuItem _streamlink;
+
             public static MenuItem LoginMenuItem { get; set; }
 
             static ChatControlHeader()
@@ -844,7 +864,24 @@ namespace Chatterino.Controls
                 _contextMenu.MenuItems.Add(new MenuItem("Open Streamlink",
                     (s, e) =>
                     {
-                        var arguments = _selected.Channel.ChannelLink + " " + AppSettings.Quality;
+                        var qualities = new Dictionary<string, string>
+                        {
+                            ["high"] = "high,720p60,720p60_alt,720p,medium,480p,low,360p,160p,worst",
+                            ["medium"] = "medium,480p,low,360p,160p,worst",
+                            ["low"] = "low,360p,160p,worst"
+                        };
+
+                        string quality;
+                        if (!qualities.TryGetValue(AppSettings.Quality, out quality))
+                        {
+                            quality = AppSettings.Quality;
+                        }
+
+                        var arguments = _selected.Channel.ChannelLink + " " + quality;
+                        arguments += " " + AppSettings.CustomStreamlinkArguments
+                            .Replace("{name}", _selected.ChannelName)
+                            .Replace("{title}", _selected.Channel?.StreamStatus)
+                            .Replace("{game}", _selected.Channel?.StreamGame);
 
                         var process = new Process
                         {
@@ -904,10 +941,13 @@ namespace Chatterino.Controls
                 _roomstateContextMenu.Popup += (s, e) =>
                 {
                     _roomstateR9K.Checked = (_selected.Channel?.RoomState ?? RoomState.None).HasFlag(RoomState.R9k);
-                    _roomstateSlow.Checked = (_selected.Channel?.RoomState ?? RoomState.None).HasFlag(RoomState.SlowMode);
+                    _roomstateSlow.Checked =
+                        (_selected.Channel?.RoomState ?? RoomState.None).HasFlag(RoomState.SlowMode);
                     _roomstateSub.Checked = (_selected.Channel?.RoomState ?? RoomState.None).HasFlag(RoomState.SubOnly);
                     _roomstateEmoteonly.Checked =
                         (_selected.Channel?.RoomState ?? RoomState.None).HasFlag(RoomState.EmoteOnly);
+
+                    _streamlink.Visible = !_selected.ChannelName.StartsWith("/");
                 };
 
                 _roomstateContextMenu.MenuItems.Add(_roomstateSlow = new MenuItem("Slowmode", (s, e) =>

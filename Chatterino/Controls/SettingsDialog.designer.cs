@@ -31,15 +31,12 @@
             this.openFileStreamlink = new System.Windows.Forms.OpenFileDialog();
             this.tabs = new Chatterino.Controls.SettingsTabControl();
             this.RightPanel = new System.Windows.Forms.Panel();
-            this.panel5 = new System.Windows.Forms.Panel();
-            this.chkAllowCommandAtEnd = new System.Windows.Forms.CheckBox();
-            this.lblCommands = new System.Windows.Forms.Label();
-            this.btnCommandRemove = new System.Windows.Forms.Button();
-            this.btnCommandAdd = new System.Windows.Forms.Button();
-            this.dgvCommands = new System.Windows.Forms.DataGridView();
-            this.Command = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.panel12 = new System.Windows.Forms.Panel();
+            this.chkPrefereEmotes = new System.Windows.Forms.CheckBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.label21 = new System.Windows.Forms.Label();
+            this.label20 = new System.Windows.Forms.Label();
+            this.txtStreamlinkCustomArguments = new System.Windows.Forms.TextBox();
             this.linkStreamlinkDownload = new System.Windows.Forms.LinkLabel();
             this.linkStreamlinkWebsite = new System.Windows.Forms.LinkLabel();
             this.label19 = new System.Windows.Forms.Label();
@@ -54,6 +51,13 @@
             this.label11 = new System.Windows.Forms.Label();
             this.trackBar2 = new System.Windows.Forms.TrackBar();
             this.chkRainbow = new System.Windows.Forms.CheckBox();
+            this.panel5 = new System.Windows.Forms.Panel();
+            this.chkAllowCommandAtEnd = new System.Windows.Forms.CheckBox();
+            this.lblCommands = new System.Windows.Forms.Label();
+            this.btnCommandRemove = new System.Windows.Forms.Button();
+            this.btnCommandAdd = new System.Windows.Forms.Button();
+            this.dgvCommands = new System.Windows.Forms.DataGridView();
+            this.Command = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.panel2 = new System.Windows.Forms.Panel();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.label4 = new System.Windows.Forms.Label();
@@ -165,11 +169,11 @@
             this.spConnection = new Chatterino.Controls.SettingsTabPage();
             this.tabs.SuspendLayout();
             this.RightPanel.SuspendLayout();
-            this.panel5.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvCommands)).BeginInit();
             this.panel12.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar2)).BeginInit();
+            this.panel5.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvCommands)).BeginInit();
             this.panel2.SuspendLayout();
             this.panel8.SuspendLayout();
             this.panel3.SuspendLayout();
@@ -251,6 +255,252 @@
             this.RightPanel.Size = new System.Drawing.Size(481, 491);
             this.RightPanel.TabIndex = 0;
             // 
+            // panel12
+            // 
+            this.panel12.Controls.Add(this.chkPrefereEmotes);
+            this.panel12.Controls.Add(this.groupBox2);
+            this.panel12.Controls.Add(this.chkAllowSameMessages);
+            this.panel12.Controls.Add(this.chkTabLocalizedNames);
+            this.panel12.Controls.Add(this.chkMentionUserWithAt);
+            this.panel12.Controls.Add(this.lblScrollSpeed);
+            this.panel12.Controls.Add(this.label11);
+            this.panel12.Controls.Add(this.trackBar2);
+            this.panel12.Controls.Add(this.chkRainbow);
+            this.panel12.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel12.Location = new System.Drawing.Point(0, 0);
+            this.panel12.Name = "panel12";
+            this.panel12.Size = new System.Drawing.Size(481, 449);
+            this.panel12.TabIndex = 31;
+            // 
+            // chkPrefereEmotes
+            // 
+            this.chkPrefereEmotes.AutoSize = true;
+            this.chkPrefereEmotes.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.chkPrefereEmotes.Location = new System.Drawing.Point(15, 44);
+            this.chkPrefereEmotes.Name = "chkPrefereEmotes";
+            this.chkPrefereEmotes.Size = new System.Drawing.Size(388, 17);
+            this.chkPrefereEmotes.TabIndex = 55;
+            this.chkPrefereEmotes.Text = "Prefere emotes over usernames when tab-completing (unless starting with @)";
+            this.chkPrefereEmotes.UseVisualStyleBackColor = true;
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.label21);
+            this.groupBox2.Controls.Add(this.label20);
+            this.groupBox2.Controls.Add(this.txtStreamlinkCustomArguments);
+            this.groupBox2.Controls.Add(this.linkStreamlinkDownload);
+            this.groupBox2.Controls.Add(this.linkStreamlinkWebsite);
+            this.groupBox2.Controls.Add(this.label19);
+            this.groupBox2.Controls.Add(this.comboQuality);
+            this.groupBox2.Controls.Add(this.label17);
+            this.groupBox2.Controls.Add(this.chkStreamlinkPath);
+            this.groupBox2.Controls.Add(this.btnStreamlinkPath);
+            this.groupBox2.ForeColor = System.Drawing.Color.White;
+            this.groupBox2.Location = new System.Drawing.Point(15, 174);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(431, 215);
+            this.groupBox2.TabIndex = 54;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Streamlink";
+            // 
+            // label21
+            // 
+            this.label21.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.label21.ForeColor = System.Drawing.Color.Silver;
+            this.label21.Location = new System.Drawing.Point(9, 173);
+            this.label21.Name = "label21";
+            this.label21.Size = new System.Drawing.Size(412, 39);
+            this.label21.TabIndex = 51;
+            this.label21.Text = "You can use {name}, {game} and {title} for the streamers name, game, and stream t" +
+    "itle respectively";
+            // 
+            // label20
+            // 
+            this.label20.AutoSize = true;
+            this.label20.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.label20.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.label20.Location = new System.Drawing.Point(9, 147);
+            this.label20.Name = "label20";
+            this.label20.Size = new System.Drawing.Size(97, 13);
+            this.label20.TabIndex = 50;
+            this.label20.Text = "Custom arguments:";
+            // 
+            // txtStreamlinkCustomArguments
+            // 
+            this.txtStreamlinkCustomArguments.Location = new System.Drawing.Point(109, 143);
+            this.txtStreamlinkCustomArguments.Name = "txtStreamlinkCustomArguments";
+            this.txtStreamlinkCustomArguments.Size = new System.Drawing.Size(308, 20);
+            this.txtStreamlinkCustomArguments.TabIndex = 49;
+            // 
+            // linkStreamlinkDownload
+            // 
+            this.linkStreamlinkDownload.AutoSize = true;
+            this.linkStreamlinkDownload.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
+            this.linkStreamlinkDownload.Location = new System.Drawing.Point(67, 57);
+            this.linkStreamlinkDownload.Name = "linkStreamlinkDownload";
+            this.linkStreamlinkDownload.Size = new System.Drawing.Size(55, 13);
+            this.linkStreamlinkDownload.TabIndex = 48;
+            this.linkStreamlinkDownload.TabStop = true;
+            this.linkStreamlinkDownload.Text = "Download";
+            this.linkStreamlinkDownload.VisitedLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
+            this.linkStreamlinkDownload.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkStreamlinkDownload_LinkClicked);
+            // 
+            // linkStreamlinkWebsite
+            // 
+            this.linkStreamlinkWebsite.AutoSize = true;
+            this.linkStreamlinkWebsite.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
+            this.linkStreamlinkWebsite.Location = new System.Drawing.Point(12, 57);
+            this.linkStreamlinkWebsite.Name = "linkStreamlinkWebsite";
+            this.linkStreamlinkWebsite.Size = new System.Drawing.Size(46, 13);
+            this.linkStreamlinkWebsite.TabIndex = 47;
+            this.linkStreamlinkWebsite.TabStop = true;
+            this.linkStreamlinkWebsite.Text = "Website";
+            this.linkStreamlinkWebsite.VisitedLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
+            this.linkStreamlinkWebsite.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkStreamlinkWebsite_LinkClicked);
+            // 
+            // label19
+            // 
+            this.label19.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.label19.Location = new System.Drawing.Point(9, 19);
+            this.label19.Name = "label19";
+            this.label19.Size = new System.Drawing.Size(413, 39);
+            this.label19.TabIndex = 46;
+            this.label19.Text = "Streamlink is a command-line utility that pipes video streams from various servic" +
+    "es into a video player, such as VLC. Make sure to edit the configuration file be" +
+    "fore you use it!";
+            // 
+            // comboQuality
+            // 
+            this.comboQuality.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboQuality.FormattingEnabled = true;
+            this.comboQuality.Items.AddRange(new object[] {
+            "best",
+            "high",
+            "medium",
+            "low",
+            "worst"});
+            this.comboQuality.Location = new System.Drawing.Point(109, 88);
+            this.comboQuality.Name = "comboQuality";
+            this.comboQuality.Size = new System.Drawing.Size(119, 21);
+            this.comboQuality.TabIndex = 45;
+            // 
+            // label17
+            // 
+            this.label17.AutoSize = true;
+            this.label17.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.label17.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.label17.Location = new System.Drawing.Point(9, 91);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(42, 13);
+            this.label17.TabIndex = 44;
+            this.label17.Text = "Quality:";
+            // 
+            // chkStreamlinkPath
+            // 
+            this.chkStreamlinkPath.AutoSize = true;
+            this.chkStreamlinkPath.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.chkStreamlinkPath.Location = new System.Drawing.Point(12, 116);
+            this.chkStreamlinkPath.Name = "chkStreamlinkPath";
+            this.chkStreamlinkPath.Size = new System.Drawing.Size(326, 17);
+            this.chkStreamlinkPath.TabIndex = 47;
+            this.chkStreamlinkPath.Text = "Use custom path (if using portable or it wasn\'t installed properly):";
+            this.chkStreamlinkPath.UseVisualStyleBackColor = true;
+            // 
+            // btnStreamlinkPath
+            // 
+            this.btnStreamlinkPath.ForeColor = System.Drawing.Color.Black;
+            this.btnStreamlinkPath.Location = new System.Drawing.Point(344, 113);
+            this.btnStreamlinkPath.Name = "btnStreamlinkPath";
+            this.btnStreamlinkPath.Size = new System.Drawing.Size(75, 23);
+            this.btnStreamlinkPath.TabIndex = 46;
+            this.btnStreamlinkPath.Text = "Select";
+            this.btnStreamlinkPath.UseVisualStyleBackColor = true;
+            this.btnStreamlinkPath.Click += new System.EventHandler(this.btnStreamlinkPath_Click);
+            // 
+            // chkAllowSameMessages
+            // 
+            this.chkAllowSameMessages.AutoSize = true;
+            this.chkAllowSameMessages.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.chkAllowSameMessages.Location = new System.Drawing.Point(15, 136);
+            this.chkAllowSameMessages.Name = "chkAllowSameMessages";
+            this.chkAllowSameMessages.Size = new System.Drawing.Size(306, 17);
+            this.chkAllowSameMessages.TabIndex = 53;
+            this.chkAllowSameMessages.Text = "Allow sending duplicate messages (add a space at the end)";
+            this.chkAllowSameMessages.UseVisualStyleBackColor = true;
+            // 
+            // chkTabLocalizedNames
+            // 
+            this.chkTabLocalizedNames.AutoSize = true;
+            this.chkTabLocalizedNames.Checked = true;
+            this.chkTabLocalizedNames.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkTabLocalizedNames.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.chkTabLocalizedNames.Location = new System.Drawing.Point(15, 89);
+            this.chkTabLocalizedNames.Name = "chkTabLocalizedNames";
+            this.chkTabLocalizedNames.Size = new System.Drawing.Size(190, 17);
+            this.chkTabLocalizedNames.TabIndex = 52;
+            this.chkTabLocalizedNames.Text = "Use localized names when tabbing";
+            this.chkTabLocalizedNames.UseVisualStyleBackColor = true;
+            // 
+            // chkMentionUserWithAt
+            // 
+            this.chkMentionUserWithAt.AutoSize = true;
+            this.chkMentionUserWithAt.Checked = true;
+            this.chkMentionUserWithAt.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkMentionUserWithAt.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.chkMentionUserWithAt.Location = new System.Drawing.Point(15, 66);
+            this.chkMentionUserWithAt.Name = "chkMentionUserWithAt";
+            this.chkMentionUserWithAt.Size = new System.Drawing.Size(249, 17);
+            this.chkMentionUserWithAt.TabIndex = 51;
+            this.chkMentionUserWithAt.Text = "Mention users with an @ (except in commands)";
+            this.chkMentionUserWithAt.UseVisualStyleBackColor = true;
+            // 
+            // lblScrollSpeed
+            // 
+            this.lblScrollSpeed.AutoSize = true;
+            this.lblScrollSpeed.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.lblScrollSpeed.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.lblScrollSpeed.Location = new System.Drawing.Point(377, 20);
+            this.lblScrollSpeed.Name = "lblScrollSpeed";
+            this.lblScrollSpeed.Size = new System.Drawing.Size(33, 13);
+            this.lblScrollSpeed.TabIndex = 50;
+            this.lblScrollSpeed.Text = "100%";
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.label11.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.label11.Location = new System.Drawing.Point(12, 20);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(105, 13);
+            this.label11.TabIndex = 49;
+            this.label11.Text = "Mouse Scroll Speed:";
+            // 
+            // trackBar2
+            // 
+            this.trackBar2.LargeChange = 45;
+            this.trackBar2.Location = new System.Drawing.Point(121, 15);
+            this.trackBar2.Maximum = 400;
+            this.trackBar2.Minimum = 100;
+            this.trackBar2.Name = "trackBar2";
+            this.trackBar2.Size = new System.Drawing.Size(250, 45);
+            this.trackBar2.TabIndex = 48;
+            this.trackBar2.TickStyle = System.Windows.Forms.TickStyle.None;
+            this.trackBar2.Value = 200;
+            // 
+            // chkRainbow
+            // 
+            this.chkRainbow.AutoSize = true;
+            this.chkRainbow.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.chkRainbow.Location = new System.Drawing.Point(15, 113);
+            this.chkRainbow.Name = "chkRainbow";
+            this.chkRainbow.Size = new System.Drawing.Size(437, 17);
+            this.chkRainbow.TabIndex = 43;
+            this.chkRainbow.Text = "Switch username color like a rainbow after each message (requires twitch prime / " +
+    "turbo)\r\n";
+            this.chkRainbow.UseVisualStyleBackColor = true;
+            // 
             // panel5
             // 
             this.panel5.Controls.Add(this.chkAllowCommandAtEnd);
@@ -329,208 +579,6 @@
             this.Command.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
             this.Command.HeaderText = "Command";
             this.Command.Name = "Command";
-            // 
-            // panel12
-            // 
-            this.panel12.Controls.Add(this.groupBox2);
-            this.panel12.Controls.Add(this.chkAllowSameMessages);
-            this.panel12.Controls.Add(this.chkTabLocalizedNames);
-            this.panel12.Controls.Add(this.chkMentionUserWithAt);
-            this.panel12.Controls.Add(this.lblScrollSpeed);
-            this.panel12.Controls.Add(this.label11);
-            this.panel12.Controls.Add(this.trackBar2);
-            this.panel12.Controls.Add(this.chkRainbow);
-            this.panel12.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel12.Location = new System.Drawing.Point(0, 0);
-            this.panel12.Name = "panel12";
-            this.panel12.Size = new System.Drawing.Size(481, 449);
-            this.panel12.TabIndex = 31;
-            // 
-            // groupBox2
-            // 
-            this.groupBox2.Controls.Add(this.linkStreamlinkDownload);
-            this.groupBox2.Controls.Add(this.linkStreamlinkWebsite);
-            this.groupBox2.Controls.Add(this.label19);
-            this.groupBox2.Controls.Add(this.comboQuality);
-            this.groupBox2.Controls.Add(this.label17);
-            this.groupBox2.Controls.Add(this.chkStreamlinkPath);
-            this.groupBox2.Controls.Add(this.btnStreamlinkPath);
-            this.groupBox2.ForeColor = System.Drawing.Color.White;
-            this.groupBox2.Location = new System.Drawing.Point(15, 147);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(431, 148);
-            this.groupBox2.TabIndex = 54;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Streamlink";
-            // 
-            // linkStreamlinkDownload
-            // 
-            this.linkStreamlinkDownload.AutoSize = true;
-            this.linkStreamlinkDownload.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
-            this.linkStreamlinkDownload.Location = new System.Drawing.Point(67, 57);
-            this.linkStreamlinkDownload.Name = "linkStreamlinkDownload";
-            this.linkStreamlinkDownload.Size = new System.Drawing.Size(55, 13);
-            this.linkStreamlinkDownload.TabIndex = 48;
-            this.linkStreamlinkDownload.TabStop = true;
-            this.linkStreamlinkDownload.Text = "Download";
-            this.linkStreamlinkDownload.VisitedLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
-            this.linkStreamlinkDownload.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkStreamlinkDownload_LinkClicked);
-            // 
-            // linkStreamlinkWebsite
-            // 
-            this.linkStreamlinkWebsite.AutoSize = true;
-            this.linkStreamlinkWebsite.LinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
-            this.linkStreamlinkWebsite.Location = new System.Drawing.Point(12, 57);
-            this.linkStreamlinkWebsite.Name = "linkStreamlinkWebsite";
-            this.linkStreamlinkWebsite.Size = new System.Drawing.Size(46, 13);
-            this.linkStreamlinkWebsite.TabIndex = 47;
-            this.linkStreamlinkWebsite.TabStop = true;
-            this.linkStreamlinkWebsite.Text = "Website";
-            this.linkStreamlinkWebsite.VisitedLinkColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
-            this.linkStreamlinkWebsite.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkStreamlinkWebsite_LinkClicked);
-            // 
-            // label19
-            // 
-            this.label19.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.label19.Location = new System.Drawing.Point(9, 19);
-            this.label19.Name = "label19";
-            this.label19.Size = new System.Drawing.Size(413, 39);
-            this.label19.TabIndex = 46;
-            this.label19.Text = "Streamlink is a command-line utility that pipes video streams from various servic" +
-    "es into a video player, such as VLC. Make sure to edit the configuration file be" +
-    "fore you use it!";
-            // 
-            // comboQuality
-            // 
-            this.comboQuality.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboQuality.FormattingEnabled = true;
-            this.comboQuality.Items.AddRange(new object[] {
-            "best",
-            "high",
-            "medium",
-            "low",
-            "worst"});
-            this.comboQuality.Location = new System.Drawing.Point(109, 88);
-            this.comboQuality.Name = "comboQuality";
-            this.comboQuality.Size = new System.Drawing.Size(119, 21);
-            this.comboQuality.TabIndex = 45;
-            // 
-            // label17
-            // 
-            this.label17.AutoSize = true;
-            this.label17.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.label17.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.label17.Location = new System.Drawing.Point(9, 91);
-            this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(42, 13);
-            this.label17.TabIndex = 44;
-            this.label17.Text = "Quality:";
-            // 
-            // chkStreamlinkPath
-            // 
-            this.chkStreamlinkPath.AutoSize = true;
-            this.chkStreamlinkPath.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.chkStreamlinkPath.Location = new System.Drawing.Point(9, 115);
-            this.chkStreamlinkPath.Name = "chkStreamlinkPath";
-            this.chkStreamlinkPath.Size = new System.Drawing.Size(326, 17);
-            this.chkStreamlinkPath.TabIndex = 47;
-            this.chkStreamlinkPath.Text = "Use custom path (if using portable or it wasn\'t installed properly):";
-            this.chkStreamlinkPath.UseVisualStyleBackColor = true;
-            // 
-            // btnStreamlinkPath
-            // 
-            this.btnStreamlinkPath.ForeColor = System.Drawing.Color.Black;
-            this.btnStreamlinkPath.Location = new System.Drawing.Point(341, 112);
-            this.btnStreamlinkPath.Name = "btnStreamlinkPath";
-            this.btnStreamlinkPath.Size = new System.Drawing.Size(75, 23);
-            this.btnStreamlinkPath.TabIndex = 46;
-            this.btnStreamlinkPath.Text = "Select";
-            this.btnStreamlinkPath.UseVisualStyleBackColor = true;
-            this.btnStreamlinkPath.Click += new System.EventHandler(this.btnStreamlinkPath_Click);
-            // 
-            // chkAllowSameMessages
-            // 
-            this.chkAllowSameMessages.AutoSize = true;
-            this.chkAllowSameMessages.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.chkAllowSameMessages.Location = new System.Drawing.Point(15, 113);
-            this.chkAllowSameMessages.Name = "chkAllowSameMessages";
-            this.chkAllowSameMessages.Size = new System.Drawing.Size(306, 17);
-            this.chkAllowSameMessages.TabIndex = 53;
-            this.chkAllowSameMessages.Text = "Allow sending duplicate messages (add a space at the end)";
-            this.chkAllowSameMessages.UseVisualStyleBackColor = true;
-            // 
-            // chkTabLocalizedNames
-            // 
-            this.chkTabLocalizedNames.AutoSize = true;
-            this.chkTabLocalizedNames.Checked = true;
-            this.chkTabLocalizedNames.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkTabLocalizedNames.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.chkTabLocalizedNames.Location = new System.Drawing.Point(15, 66);
-            this.chkTabLocalizedNames.Name = "chkTabLocalizedNames";
-            this.chkTabLocalizedNames.Size = new System.Drawing.Size(190, 17);
-            this.chkTabLocalizedNames.TabIndex = 52;
-            this.chkTabLocalizedNames.Text = "Use localized names when tabbing";
-            this.chkTabLocalizedNames.UseVisualStyleBackColor = true;
-            // 
-            // chkMentionUserWithAt
-            // 
-            this.chkMentionUserWithAt.AutoSize = true;
-            this.chkMentionUserWithAt.Checked = true;
-            this.chkMentionUserWithAt.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkMentionUserWithAt.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.chkMentionUserWithAt.Location = new System.Drawing.Point(15, 43);
-            this.chkMentionUserWithAt.Name = "chkMentionUserWithAt";
-            this.chkMentionUserWithAt.Size = new System.Drawing.Size(249, 17);
-            this.chkMentionUserWithAt.TabIndex = 51;
-            this.chkMentionUserWithAt.Text = "Mention users with an @ (except in commands)";
-            this.chkMentionUserWithAt.UseVisualStyleBackColor = true;
-            // 
-            // lblScrollSpeed
-            // 
-            this.lblScrollSpeed.AutoSize = true;
-            this.lblScrollSpeed.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.lblScrollSpeed.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.lblScrollSpeed.Location = new System.Drawing.Point(377, 20);
-            this.lblScrollSpeed.Name = "lblScrollSpeed";
-            this.lblScrollSpeed.Size = new System.Drawing.Size(33, 13);
-            this.lblScrollSpeed.TabIndex = 50;
-            this.lblScrollSpeed.Text = "100%";
-            // 
-            // label11
-            // 
-            this.label11.AutoSize = true;
-            this.label11.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.label11.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.label11.Location = new System.Drawing.Point(12, 20);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(105, 13);
-            this.label11.TabIndex = 49;
-            this.label11.Text = "Mouse Scroll Speed:";
-            // 
-            // trackBar2
-            // 
-            this.trackBar2.LargeChange = 45;
-            this.trackBar2.Location = new System.Drawing.Point(121, 15);
-            this.trackBar2.Maximum = 400;
-            this.trackBar2.Minimum = 100;
-            this.trackBar2.Name = "trackBar2";
-            this.trackBar2.Size = new System.Drawing.Size(250, 45);
-            this.trackBar2.TabIndex = 48;
-            this.trackBar2.TickStyle = System.Windows.Forms.TickStyle.None;
-            this.trackBar2.Value = 200;
-            // 
-            // chkRainbow
-            // 
-            this.chkRainbow.AutoSize = true;
-            this.chkRainbow.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.chkRainbow.Location = new System.Drawing.Point(15, 90);
-            this.chkRainbow.Name = "chkRainbow";
-            this.chkRainbow.Size = new System.Drawing.Size(437, 17);
-            this.chkRainbow.TabIndex = 43;
-            this.chkRainbow.Text = "Switch username color like a rainbow after each message (requires twitch prime / " +
-    "turbo)\r\n";
-            this.chkRainbow.UseVisualStyleBackColor = true;
             // 
             // panel2
             // 
@@ -1805,14 +1853,14 @@
             this.Text = "Preferences";
             this.tabs.ResumeLayout(false);
             this.RightPanel.ResumeLayout(false);
-            this.panel5.ResumeLayout(false);
-            this.panel5.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvCommands)).EndInit();
             this.panel12.ResumeLayout(false);
             this.panel12.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar2)).EndInit();
+            this.panel5.ResumeLayout(false);
+            this.panel5.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvCommands)).EndInit();
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
             this.panel8.ResumeLayout(false);
@@ -1990,5 +2038,9 @@
         private System.Windows.Forms.LinkLabel linkStreamlinkWebsite;
         private System.Windows.Forms.Label label19;
         private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.Label label20;
+        private System.Windows.Forms.TextBox txtStreamlinkCustomArguments;
+        private System.Windows.Forms.CheckBox chkPrefereEmotes;
+        private System.Windows.Forms.Label label21;
     }
 }

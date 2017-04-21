@@ -244,6 +244,7 @@ namespace Chatterino.Controls
             BindCheckBox(chkMessageSeperators, "ChatSeperateMessages");
             BindCheckBox(chkRainbow, "Rainbow");
             BindCheckBox(chkStreamlinkPath, "EnableStreamlinkPath");
+            BindCheckBox(chkPrefereEmotes, "PrefereEmotesOverUsernames");
 
             chkMessageSeperators.CheckedChanged += (s, e) =>
             {
@@ -268,6 +269,20 @@ namespace Chatterino.Controls
             chkLastReadMessageIndicator.CheckedChanged += (s, e) =>
             {
                 App.MainForm.Refresh();
+            };
+
+            txtStreamlinkCustomArguments.Text = AppSettings.CustomStreamlinkArguments;
+
+            txtStreamlinkCustomArguments.TextChanged += (s, e) =>
+            {
+                AppSettings.CustomStreamlinkArguments = txtStreamlinkCustomArguments.Text;
+            };
+
+            var originalCustomStreamlinkArguments = AppSettings.CustomStreamlinkArguments;
+
+            onCancel += (s, e) =>
+            {
+                AppSettings.CustomStreamlinkArguments = originalCustomStreamlinkArguments;
             };
             #endregion
 
@@ -843,11 +858,6 @@ namespace Chatterino.Controls
                 Process.Start("https://github.com/streamlink/streamlink/releases");
             }
             catch { }
-        }
-
-        private void btnStreamlinkPath_Click_1(object sender, EventArgs e)
-        {
-
         }
 
         //RESET

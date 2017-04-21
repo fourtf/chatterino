@@ -1,5 +1,13 @@
 ﻿# changelog
 
+## 1.2.5
+- added an option to prefere emotes over usernames when tab-completing
+- fixed some username colors looking weird
+- fixed streamlink quality options for streams that use "720p,480p,..." instead of "high,medium,..." as their quality options
+- added custom arguments for streamlink
+- fixed message limit not changing after being modded/unmodded
+- made ctrl+enter send messages every 1.6 seconds if you are not mod
+
 ## 1.2.4
 - added streamlink support (thanks to cranken1337)
 - fixed an issue that caused bttv and ffz global emotes not to load for some users

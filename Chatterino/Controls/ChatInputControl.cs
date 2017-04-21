@@ -127,15 +127,16 @@ namespace Chatterino.Controls
 
                 calculateBounds();
                 Invalidate();
-                Update();
             };
 
             // emote button
-            emoteListButton = new FlatButton();
-            emoteListButton.Image = (Image)GuiEngine.Current.ScaleImage(Properties.Resources.Emoji_Color_1F607_19, 0.85);
-            emoteListButton.Anchor = AnchorStyles.Right | AnchorStyles.Bottom;
-            emoteListButton.Size = new Size(16, 16);
-            emoteListButton.Cursor = Cursors.Default;
+            emoteListButton = new FlatButton
+            {
+                Image = (Image) GuiEngine.Current.ScaleImage(Properties.Resources.Emoji_Color_1F607_19, 0.85),
+                Anchor = AnchorStyles.Right | AnchorStyles.Bottom,
+                Size = new Size(16, 16),
+                Cursor = Cursors.Default
+            };
             emoteListButton.Location = new Point(Width - emoteListButton.Width - 1, Height - emoteListButton.Height - 1);
 
             emoteListButton.Click += (s, e) =>

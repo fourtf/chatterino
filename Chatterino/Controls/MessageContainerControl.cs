@@ -655,14 +655,14 @@ namespace Chatterino.Controls
                                                         hsl = hsl.WithLuminosity(0.5f);
                                                     }
 
-                                                    if (hsl.Luminosity < 0.8f && hsl.Hue > 0.54444 && hsl.Hue < 0.8333)
+                                                    if (hsl.Luminosity < 0.6f && hsl.Hue > 0.54444 && hsl.Hue < 0.8333)
                                                     {
-                                                        hsl = hsl.WithLuminosity(hsl.Luminosity + (float)Math.Sin((hsl.Hue - 0.54444) / (0.8333 - 0.54444) * Math.PI) * 0.2f * (0.5f + hsl.Luminosity));
+                                                        hsl = hsl.WithLuminosity(hsl.Luminosity + (float)Math.Sin((hsl.Hue - 0.54444) / (0.8333 - 0.54444) * Math.PI) * hsl.Saturation * 0.2f);
                                                     }
 
                                                     if (hsl.Luminosity < 0.8f && (hsl.Hue < 0.06 || hsl.Hue > 0.92))
                                                     {
-                                                        hsl = hsl.WithLuminosity(hsl.Luminosity + (msg.HasAnyHighlightType(HighlightType.Highlighted) ? 0.27f : 0.1f) * (0.4f + hsl.Luminosity));
+                                                        hsl = hsl.WithLuminosity(hsl.Luminosity + (msg.HasAnyHighlightType(HighlightType.Highlighted) ? 0.27f : 0.1f) * hsl.Saturation);
                                                     }
                                                 }
 

@@ -106,7 +106,7 @@ namespace TwitchIrc
                         while ((line = reader.ReadLine()) != null)
                         {
 #if DEBUG
-                            //System.Diagnostics.Debug.WriteLine(line);
+                            System.Diagnostics.Debug.WriteLine(line);
 #endif
                             IrcMessage msg;
 

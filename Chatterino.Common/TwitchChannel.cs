@@ -612,35 +612,52 @@ namespace Chatterino.Common
 
         public IEnumerable<KeyValuePair<string, string>> GetCompletionItems(bool firstWord, bool allowAt)
         {
-            var names = new List<KeyValuePair<string, string>>(emoteNames);
+            var usernames = new List<KeyValuePair<string, string>>();
 
             var commaAtEnd = firstWord ? "," : "";
 
             if (AppSettings.ChatMentionUsersWithAt)
             {
-                names.AddRange(Users.Select(x => new KeyValuePair<string, string>(x.Key, (allowAt ? "@" : "") + (!AppSettings.ChatTabLocalizedNames && !string.Equals(x.Value, x.Key, StringComparison.OrdinalIgnoreCase) ? x.Key.ToLower() : x.Value) + commaAtEnd)));
-                names.AddRange(Users.Select(x => new KeyValuePair<string, string>((allowAt ? "@" : "") + x.Key, (allowAt ? "@" : "") + (!AppSettings.ChatTabLocalizedNames && !string.Equals(x.Value, x.Key, StringComparison.OrdinalIgnoreCase) ? x.Key.ToLower() : x.Value) + commaAtEnd)));
+                usernames.AddRange(Users.Select(x => new KeyValuePair<string, string>(x.Key, (allowAt ? "@" : "") + (!AppSettings.ChatTabLocalizedNames && !string.Equals(x.Value, x.Key, StringComparison.OrdinalIgnoreCase) ? x.Key.ToLower() : x.Value) + commaAtEnd)));
+                usernames.AddRange(Users.Select(x => new KeyValuePair<string, string>((allowAt ? "@" : "") + x.Key, (allowAt ? "@" : "") + (!AppSettings.ChatTabLocalizedNames && !string.Equals(x.Value, x.Key, StringComparison.OrdinalIgnoreCase) ? x.Key.ToLower() : x.Value) + commaAtEnd)));
             }
             else
             {
-                names.AddRange(Users.Select(x => new KeyValuePair<string, string>(x.Key, (!AppSettings.ChatTabLocalizedNames && !string.Equals(x.Value, x.Key, StringComparison.OrdinalIgnoreCase) ? x.Key.ToLower() : x.Value) + commaAtEnd)));
+                usernames.AddRange(Users.Select(x => new KeyValuePair<string, string>(x.Key, (!AppSettings.ChatTabLocalizedNames && !string.Equals(x.Value, x.Key, StringComparison.OrdinalIgnoreCase) ? x.Key.ToLower() : x.Value) + commaAtEnd)));
                 if (allowAt)
-                    names.AddRange(Users.Select(x => new KeyValuePair<string, string>("@" + x.Key, "@" + (!AppSettings.ChatTabLocalizedNames && !string.Equals(x.Value, x.Key, StringComparison.OrdinalIgnoreCase) ? x.Key.ToLower() : x.Value) + commaAtEnd)));
+                    usernames.AddRange(Users.Select(x => new KeyValuePair<string, string>("@" + x.Key, "@" + (!AppSettings.ChatTabLocalizedNames && !string.Equals(x.Value, x.Key, StringComparison.OrdinalIgnoreCase) ? x.Key.ToLower() : x.Value) + commaAtEnd)));
             }
 
             lock (Commands.CustomCommandsLock)
             {
-                names.AddRange(Commands.CustomCommands.Select(x => new KeyValuePair<string, string>("/" + x.Name.ToUpper(), "/" + x.Name)));
+                usernames.AddRange(Commands.CustomCommands.Select(x => new KeyValuePair<string, string>("/" + x.Name.ToUpper(), "/" + x.Name)));
             }
 
             lock (Util.TwitchChatCommandNames)
             {
-                names.AddRange(Util.TwitchChatCommandNames.Select(x => new KeyValuePair<string, string>(x.ToUpper(), x)));
+                usernames.AddRange(Util.TwitchChatCommandNames.Select(x => new KeyValuePair<string, string>(x.ToUpper(), x)));
             }
 
-            names.Sort((x1, x2) => string.Compare(x1.Value, x2.Value));
+            if (AppSettings.PrefereEmotesOverUsernames)
+            {
+                usernames.Sort((x1, x2) => string.Compare(x1.Value, x2.Value));
 
-            return names;
+                var emotes = new List<KeyValuePair<string, string>>(emoteNames);
+
+                emotes.Sort((x1, x2) => string.Compare(x1.Value, x2.Value));
+
+                emotes.AddRange(usernames);
+
+                return emotes;
+            }
+            else
+            {
+                usernames.AddRange(emoteNames);
+
+                usernames.Sort((x1, x2) => string.Compare(x1.Value, x2.Value));
+
+                return usernames;
+            }
         }
 
         public void Join()

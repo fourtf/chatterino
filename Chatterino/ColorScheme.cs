@@ -108,7 +108,7 @@ namespace Chatterino
                 //scheme.ChatBackgroundHighlighted = new SolidBrush(Color.FromArgb(52, 0, 16));
 
                 var l = multiplier == -1 ? 0 : 20;
-                scheme.ChatBackgroundHighlighted = new SolidBrush(Color.FromArgb(70 + l, 20 + l, 24 + l));
+                scheme.ChatBackgroundHighlighted = new SolidBrush(Color.FromArgb(55 + l, 20 + l, 24 + l));
                 scheme.ChatBackgroundResub = new SolidBrush(Color.FromArgb(47 + l, 20 + l, 70 + l));
                 scheme.ChatBackgroundWhisper = new SolidBrush(Color.FromArgb(20 + l, 40 + l, 70 + l));
 
