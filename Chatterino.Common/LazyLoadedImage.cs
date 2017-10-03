@@ -50,6 +50,10 @@ namespace Chatterino.Common
                         try
                         {
                             var request = WebRequest.Create(Url);
+                            if (AppSettings.IgnoreSystemProxy)
+                            {
+                                request.Proxy = null;
+                            }
                             using (var response = request.GetResponse())
                             using (var stream = response.GetResponseStream())
                             {

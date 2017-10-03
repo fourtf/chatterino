@@ -87,6 +87,10 @@ namespace Chatterino.Common
                     try
                     {
                         var request = WebRequest.Create($"https://api.twitch.tv/kraken/streams/{channel.Name}?client_id={IrcManager.DefaultClientID}");
+                        if (AppSettings.IgnoreSystemProxy)
+                        {
+                            request.Proxy = null;
+                        }
                         using (var resp = request.GetResponse())
                         using (var stream = resp.GetResponseStream())
                         {
@@ -212,7 +216,10 @@ namespace Chatterino.Common
 
                 if (AppSettings.ChatAllowSameMessage)
                 {
-                    text = text + " ";
+                    if (!executeCommands)
+                    {
+                        text = text + " ";
+                    }
                 }
 
                 return text;

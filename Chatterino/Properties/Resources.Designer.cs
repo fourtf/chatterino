@@ -83,6 +83,16 @@ namespace Chatterino.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap _25000 {
+            get {
+                object obj = ResourceManager.GetObject("_25000", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap _300000 {
             get {
                 object obj = ResourceManager.GetObject("_300000", resourceCulture);
@@ -96,6 +106,16 @@ namespace Chatterino.Properties {
         internal static System.Drawing.Bitmap _400000 {
             get {
                 object obj = ResourceManager.GetObject("_400000", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap _50000 {
+            get {
+                object obj = ResourceManager.GetObject("_50000", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -126,6 +146,16 @@ namespace Chatterino.Properties {
         internal static System.Drawing.Bitmap _700000 {
             get {
                 object obj = ResourceManager.GetObject("_700000", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap _75000 {
+            get {
+                object obj = ResourceManager.GetObject("_75000", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -376,6 +406,16 @@ namespace Chatterino.Properties {
         internal static System.Drawing.Bitmap OpenFolder_16x {
             get {
                 object obj = ResourceManager.GetObject("OpenFolder_16x", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap partner {
+            get {
+                object obj = ResourceManager.GetObject("partner", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

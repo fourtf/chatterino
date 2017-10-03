@@ -1,5 +1,21 @@
 ﻿# changelog
 
+## 1.2.10
+- fixed an issue that caused chatterino to crash when it received invalid emote data from twitch
+
+## 1.2.9
+- fixed an issue with commands when sending duplicate messages
+
+## 1.2.8
+- added badges for 25000, 50000 and 75000 bits
+- combined disconnecting and reconnecting message into one
+- tweaked code a bit so it doesn't disconnect on my unis wifi as much
+
+## 1.2.6
+- added the twitch verified partner badge
+- fixed chat being invisible when a global moderator is in chat
+- fixed the moderator dropdown not showing
+
 ## 1.2.5
 - added an option to prefere emotes over usernames when tab-completing
 - fixed some username colors looking weird

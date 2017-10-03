@@ -69,6 +69,10 @@ namespace Chatterino.Common
                             var request =
                                 WebRequest.Create(
                                     $"https://api.twitch.tv/kraken/chat/{Name}/badges?client_id={IrcManager.DefaultClientID}");
+                            if (AppSettings.IgnoreSystemProxy)
+                            {
+                                request.Proxy = null;
+                            }
                             using (var response = request.GetResponse())
                             using (var stream = response.GetResponseStream())
                             {
@@ -81,6 +85,10 @@ namespace Chatterino.Common
                             }
 
                             request = WebRequest.Create(imageUrl);
+                            if (AppSettings.IgnoreSystemProxy)
+                            {
+                                request.Proxy = null;
+                            }
                             using (var response = request.GetResponse())
                             using (var stream = response.GetResponseStream())
                             {
@@ -223,6 +231,10 @@ namespace Chatterino.Common
                 var request =
                     WebRequest.Create(
                         $"https://api.twitch.tv/kraken/channels/{Name}?client_id={IrcManager.DefaultClientID}");
+                if (AppSettings.IgnoreSystemProxy)
+                {
+                    request.Proxy = null;
+                }
                 using (var response = request.GetResponse())
                 using (var stream = response.GetResponseStream())
                 {
@@ -272,6 +284,10 @@ namespace Chatterino.Common
                         {
                             var request =
                                 WebRequest.Create($"https://badges.twitch.tv/v1/badges/channels/{RoomID}/display");
+                            if (AppSettings.IgnoreSystemProxy)
+                            {
+                                request.Proxy = null;
+                            }
                             using (var response = request.GetResponse())
                             using (var stream = response.GetResponseStream())
                             {
@@ -314,6 +330,10 @@ namespace Chatterino.Common
                             var request =
                                 WebRequest.Create(
                                     $"https://tmi.twitch.tv/api/rooms/{RoomID}/recent_messages?client_id={IrcManager.DefaultClientID}");
+                            if (AppSettings.IgnoreSystemProxy)
+                            {
+                                request.Proxy = null;
+                            }
                             using (var response = request.GetResponse())
                             using (var stream = response.GetResponseStream())
                             {
@@ -395,6 +415,9 @@ namespace Chatterino.Common
                         HighlightTab = false,
                         HighlightType = HighlightType.Connected,
                     };
+
+                    Task.Run(() => ChatCleared?.Invoke(this, new ChatClearedEventArgs("", "", 0)));
+
                     return;
                 }
             }
@@ -410,7 +433,8 @@ namespace Chatterino.Common
         {
             AddMessage(new Message("disconnected from chat", HSLColor.Gray, true)
             {
-                HighlightTab = false
+                HighlightTab = false,
+                HighlightType = HighlightType.Disconnected
             });
         }
 
@@ -481,7 +505,10 @@ namespace Chatterino.Common
                     var req =
                         WebRequest.Create(
                             $"https://api.twitch.tv/kraken/streams/{Name}?client_id={IrcManager.DefaultClientID}");
-
+                    if (AppSettings.IgnoreSystemProxy)
+                    {
+                        req.Proxy = null;
+                    }
                     using (var res = req.GetResponse())
                     using (var resStream = res.GetResponseStream())
                     {
@@ -708,6 +735,10 @@ namespace Chatterino.Common
             try
             {
                 var request = WebRequest.Create($"http://tmi.twitch.tv/group/user/{Name}/chatters");
+                if (AppSettings.IgnoreSystemProxy)
+                {
+                    request.Proxy = null;
+                }
                 using (var response = request.GetResponse())
                 using (var stream = response.GetResponseStream())
                 {
@@ -1048,6 +1079,10 @@ namespace Chatterino.Common
                                                 object img;
 
                                                 var request = WebRequest.Create(url);
+                                                if (AppSettings.IgnoreSystemProxy)
+                                                {
+                                                    request.Proxy = null;
+                                                }
                                                 using (var response = request.GetResponse())
                                                 using (var s = response.GetResponseStream())
                                                 {

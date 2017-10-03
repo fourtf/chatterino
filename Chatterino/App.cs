@@ -113,7 +113,9 @@ namespace Chatterino
             GuiEngine.Initialize(new WinformsGuiEngine());
 
             ServicePointManager.ServerCertificateValidationCallback = (a, b, c, d) => true;
-            ServicePointManager.DefaultConnectionLimit = 1000;
+            ServicePointManager.DefaultConnectionLimit = int.MaxValue;
+            //ServicePointManager.UseNagleAlgorithm = false;
+            //ServicePointManager.MaxServicePoints = 10000;
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);

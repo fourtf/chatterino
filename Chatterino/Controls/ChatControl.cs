@@ -861,7 +861,7 @@ namespace Chatterino.Controls
                     {
                         GuiEngine.Current.HandleLink(new Link(LinkType.Url, _selected.Channel.PopoutPlayerLink));
                     }));
-                _contextMenu.MenuItems.Add(new MenuItem("Open Streamlink",
+                _contextMenu.MenuItems.Add(_streamlink = new MenuItem("Open Streamlink",
                     (s, e) =>
                     {
                         var qualities = new Dictionary<string, string>

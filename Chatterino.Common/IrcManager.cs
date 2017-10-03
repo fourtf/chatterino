@@ -91,6 +91,10 @@ namespace Chatterino.Common
                             $"https://api.twitch.tv/kraken/users/{username}/blocks?limit={limit}&client_id={Account.ClientId}";
 
                         var request = WebRequest.Create(nextLink + $"&oauth_token={oauth}");
+                        if (AppSettings.IgnoreSystemProxy)
+                        {
+                            request.Proxy = null;
+                        }
                         using (var response = request.GetResponse())
                         using (var stream = response.GetResponseStream())
                         {
@@ -124,6 +128,10 @@ namespace Chatterino.Common
                         var request =
                             WebRequest.Create(
                                 $"https://api.twitch.tv/kraken/users/{username}/emotes?oauth_token={oauth}&client_id={Account.ClientId}");
+                        if (AppSettings.IgnoreSystemProxy)
+                        {
+                            request.Proxy = null;
+                        }
                         using (var response = request.GetResponse())
                         using (var stream = response.GetResponseStream())
                         {
@@ -216,6 +224,10 @@ namespace Chatterino.Common
                         hash = hash.Remove(32);
 
                         var request = WebRequest.Create($"https://fourtf.com/chatterino/countuser.php?hash={hash}");
+                        if (AppSettings.IgnoreSystemProxy)
+                        {
+                            request.Proxy = null;
+                        }
                         using (var response = request.GetResponse())
                         using (response.GetResponseStream())
                         {
@@ -247,8 +259,8 @@ namespace Chatterino.Common
                 Disconnected?.Invoke(null, EventArgs.Empty);
         }
 
-        static DateTime nextMessageSendTime = DateTime.MinValue;
-        static DateTime nextProtectMessageSendTime = DateTime.MinValue;
+        private static DateTime nextMessageSendTime = DateTime.MinValue;
+        private static DateTime nextProtectMessageSendTime = DateTime.MinValue;
 
         // Send Messages
         public static void SendMessage(TwitchChannel channel, string _message, bool isMod)
@@ -309,6 +321,10 @@ namespace Chatterino.Common
             try
             {
                 var request = WebRequest.Create($"https://api.twitch.tv/kraken/users/{Account.Username}/blocks/{_username}?oauth_token={Account.OauthToken}&client_id={Account.ClientId}");
+                if (AppSettings.IgnoreSystemProxy)
+                {
+                    request.Proxy = null;
+                }
                 request.Method = "PUT";
                 using (var response = (HttpWebResponse)request.GetResponse())
                 using (var stream = response.GetResponseStream())
@@ -357,6 +373,10 @@ namespace Chatterino.Common
             {
                 var request = WebRequest.Create($"https://api.twitch.tv/kraken/users/{Account.Username}/blocks/{username}?oauth_token={Account.OauthToken}&client_id={Account.ClientId}");
                 request.Method = "DELETE";
+                if (AppSettings.IgnoreSystemProxy)
+                {
+                    request.Proxy = null;
+                }
                 using (var response = (HttpWebResponse)request.GetResponse())
                 using (var stream = response.GetResponseStream())
                 {
@@ -391,6 +411,10 @@ namespace Chatterino.Common
             try
             {
                 var request = WebRequest.Create($"https://api.twitch.tv/kraken/users/{Account.Username}/follows/channels/{username}?client_id={Account.ClientId}&oauth_token={Account.OauthToken}");
+                if (AppSettings.IgnoreSystemProxy)
+                {
+                    request.Proxy = null;
+                }
                 using (var response = request.GetResponse())
                 using (var stream = response.GetResponseStream())
                 {
@@ -425,6 +449,10 @@ namespace Chatterino.Common
             {
                 var request = WebRequest.Create($"https://api.twitch.tv/kraken/users/{Account.Username}/follows/channels/{username}?client_id={Account.ClientId}&oauth_token={Account.OauthToken}");
                 request.Method = "PUT";
+                if (AppSettings.IgnoreSystemProxy)
+                {
+                    request.Proxy = null;
+                }
 
                 using (var response = request.GetResponse())
                 using (var stream = response.GetResponseStream())
@@ -446,6 +474,10 @@ namespace Chatterino.Common
             {
                 var request = WebRequest.Create($"https://api.twitch.tv/kraken/users/{Account.Username}/follows/channels/{username}?client_id={Account.ClientId}&oauth_token={Account.OauthToken}");
                 request.Method = "DELETE";
+                if (AppSettings.IgnoreSystemProxy)
+                {
+                    request.Proxy = null;
+                }
 
                 using (var response = request.GetResponse())
                 using (var stream = response.GetResponseStream())

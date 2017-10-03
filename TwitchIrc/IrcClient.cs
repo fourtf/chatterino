@@ -82,7 +82,7 @@ namespace TwitchIrc
 
                 if (lastMessagesMod.Count < (isMod ? 99 : 19))
                 {
-                    WriteConnection.WriteLine("PRIVMSG #" + channel + " :" + message);
+                    WriteConnection.WriteLine("PRIVMSG #" + channel + " :" + message.TrimAll(isMod));
 
                     lastMessagesMod.Enqueue(DateTime.Now + TimeSpan.FromSeconds(32));
                     lastMessagesPleb.Enqueue(DateTime.Now + TimeSpan.FromSeconds(32));

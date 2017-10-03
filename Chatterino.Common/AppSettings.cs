@@ -150,6 +150,7 @@ namespace Chatterino.Common
             }
         }
 
+        public static bool IgnoreSystemProxy { get; set; } = false;
         public static bool EnableStreamlinkPath { get; set; }
         public static string StreamlinkPath { get; set; }
         public static string CustomStreamlinkArguments { get; set; }
@@ -169,7 +170,7 @@ namespace Chatterino.Common
 
         public static bool ChatShowTimestamps { get; set; } = true;
         public static bool ChatShowTimestampSeconds { get; set; } = false;
-        public static bool ChatAllowSameMessage { get; set; } = true;
+        public static bool ChatAllowSameMessage { get; set; } = false;
         public static bool ChatLinksDoubleClickOnly { get; set; } = false;
         public static bool ChatHideInputIfEmpty { get; set; } = false;
         public static bool ChatInputShowMessageLength { get; set; } = false;

@@ -84,6 +84,10 @@ namespace Chatterino.Controls
                             var scope = context.Request.QueryString["scope"];
 
                             var request = WebRequest.Create("https://api.twitch.tv/kraken?oauth_token=" + access_token + "&client_id=" + IrcManager.DefaultClientID);
+                            if (AppSettings.IgnoreSystemProxy)
+                            {
+                                request.Proxy = null;
+                            }
                             using (var response = request.GetResponse())
                             using (var stream = response.GetResponseStream())
                             {
@@ -214,6 +218,10 @@ namespace Chatterino.Controls
                 try
                 {
                     var req = WebRequest.Create($"https://api.twitch.tv/kraken?oauth_token={oauthToken}&client_id={clientid}");
+                    if (AppSettings.IgnoreSystemProxy)
+                    {
+                        req.Proxy = null;
+                    }
                     using (var res = req.GetResponse())
                     using (var stream = res.GetResponseStream())
                     {

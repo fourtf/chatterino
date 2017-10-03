@@ -65,6 +65,10 @@ namespace Chatterino.Controls
                 try
                 {
                     var request = WebRequest.Create($"https://api.twitch.tv/kraken/channels/{data.UserName}?client_id={Common.IrcManager.DefaultClientID}");
+                    if (AppSettings.IgnoreSystemProxy)
+                    {
+                        request.Proxy = null;
+                    }
 
                     using (var response = request.GetResponse())
                     using (var stream = response.GetResponseStream())
@@ -92,6 +96,10 @@ namespace Chatterino.Controls
                             try
                             {
                                 var req = WebRequest.Create(logo);
+                                if (AppSettings.IgnoreSystemProxy)
+                                {
+                                    request.Proxy = null;
+                                }
 
                                 using (var res = req.GetResponse())
                                 using (var s = res.GetResponseStream())

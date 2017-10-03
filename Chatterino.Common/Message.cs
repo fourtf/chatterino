@@ -293,6 +293,18 @@ namespace Chatterino.Common
                             {
                                 image = GuiEngine.Current.GetImage(ImageType.Cheer100000);
                             }
+                            else if (cheer >= 75000)
+                            {
+                                image = GuiEngine.Current.GetImage(ImageType.Cheer75000);
+                            }
+                            else if (cheer >= 50000)
+                            {
+                                image = GuiEngine.Current.GetImage(ImageType.Cheer50000);
+                            }
+                            else if (cheer >= 25000)
+                            {
+                                image = GuiEngine.Current.GetImage(ImageType.Cheer25000);
+                            }
                             else if (cheer >= 10000)
                             {
                                 image = GuiEngine.Current.GetImage(ImageType.Cheer10000);
@@ -314,7 +326,7 @@ namespace Chatterino.Common
                                 image = GuiEngine.Current.GetImage(ImageType.Cheer1);
                             }
 
-                            words.Add(new Word { Type = SpanType.LazyLoadedImage, Value = new LazyLoadedImage(image) {Scale = cheer > 100000 ? 0.25 : 1 }, Tooltip = "Twitch Cheer " + cheer });
+                            words.Add(new Word { Type = SpanType.LazyLoadedImage, Value = new LazyLoadedImage(image) { Scale = cheer > 100000 ? 0.25 : 1 }, Tooltip = "Twitch Cheer " + cheer });
                         }
                     }
                     else if (badge.StartsWith("subscriber/"))
@@ -343,7 +355,7 @@ namespace Chatterino.Common
                                 break;
                             case "global_mod/1":
                                 Badges |= MessageBadges.GlobalMod;
-                                words.Add(new Word { Type = SpanType.LazyLoadedImage, Value = GuiEngine.Current.GetImage(ImageType.BadgeGlobalmod), Tooltip = "Global Moderator" });
+                                words.Add(new Word { Type = SpanType.LazyLoadedImage, Value = new LazyLoadedImage(GuiEngine.Current.GetImage(ImageType.BadgeGlobalmod)), Tooltip = "Global Moderator" });
                                 break;
                             case "moderator/1":
                                 Badges |= MessageBadges.Mod;
@@ -367,6 +379,10 @@ namespace Chatterino.Common
                             case "premium/1":
                                 Badges |= MessageBadges.Broadcaster;
                                 words.Add(new Word { Type = SpanType.LazyLoadedImage, Value = new LazyLoadedImage(GuiEngine.Current.GetImage(ImageType.BadgeTwitchPrime)), Tooltip = "Twitch Prime" });
+                                break;
+                            case "partner/1":
+                                Badges |= MessageBadges.Broadcaster;
+                                words.Add(new Word { Type = SpanType.LazyLoadedImage, Value = new LazyLoadedImage(GuiEngine.Current.GetImage(ImageType.BadgeVerified)), Tooltip = "Twitch Verified" });
                                 break;
                         }
                     }
@@ -428,17 +444,21 @@ namespace Chatterino.Common
                         var id = int.Parse(x[0]);
                         foreach (var y in x[1].Split(','))
                         {
-                            var coords = y.Split('-');
-                            var index = int.Parse(coords[0]);
-                            var name = text.Substring(index, int.Parse(coords[1]) - index + 1);
-
-                            // ignore ignored emotes
-                            if (!AppSettings.ChatIgnoredEmotes.ContainsKey(name))
+                            try
                             {
-                                var e = Emotes.GetTwitchEmoteById(id, name);
+                                var coords = y.Split('-');
+                                var index = int.Parse(coords[0]);
+                                var name = text.Substring(index, int.Parse(coords[1]) - index + 1);
 
-                                twitchEmotes.Add(Tuple.Create(index, e));
+                                // ignore ignored emotes
+                                if (!AppSettings.ChatIgnoredEmotes.ContainsKey(name))
+                                {
+                                    var e = Emotes.GetTwitchEmoteById(id, name);
+
+                                    twitchEmotes.Add(Tuple.Create(index, e));
+                                }
                             }
+                            catch { }
                         };
                     }
                 });
@@ -855,7 +875,7 @@ namespace Chatterino.Common
 
                     Margin margin = null;
 
-                    if (word.Type == SpanType.LazyLoadedImage && enableHatEmotes && (i >0 && Words[i - 1].Type != SpanType.Text))
+                    if (word.Type == SpanType.LazyLoadedImage && enableHatEmotes && (i > 0 && Words[i - 1].Type != SpanType.Text))
                     {
                         var img = (LazyLoadedImage)word.Value;
 
@@ -950,10 +970,10 @@ namespace Chatterino.Common
                     // word fits in current line
                     else
                     {
-                        word.X = x + (margin?.Left ?? 0); 
-                        word.Y = y + (margin?.Top ?? 0); 
+                        word.X = x + (margin?.Left ?? 0);
+                        word.Y = y + (margin?.Top ?? 0);
 
-                        x += word.Width + spaceWidth + (margin == null ? 0 : (margin.Left + margin.Right)); 
+                        x += word.Width + spaceWidth + (margin == null ? 0 : (margin.Left + margin.Right));
                     }
                 }
 
