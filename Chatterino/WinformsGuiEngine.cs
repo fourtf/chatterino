@@ -377,12 +377,17 @@ namespace Chatterino
                 }
                 else
                 {
-                    using (var layout = new SharpDX.DirectWrite.TextLayout(Fonts.Factory, text, Fonts.GetTextFormat(font), 1000000, 1000000))
+                    try
                     {
-                        var metrics = layout.Metrics;
+                        using (var layout = new SharpDX.DirectWrite.TextLayout(Fonts.Factory, text, Fonts.GetTextFormat(font), 1000000, 1000000))
+                        {
+                            var metrics = layout.Metrics;
 
-                        return new CommonSize((int)metrics.WidthIncludingTrailingWhitespace, sizeCache.Item3);
+                            return new CommonSize((int)metrics.WidthIncludingTrailingWhitespace, sizeCache.Item3);
+                        }
                     }
+                    catch { }
+                    return new CommonSize(100, 10);
                 }
             });
         }

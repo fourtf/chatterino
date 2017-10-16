@@ -1,5 +1,8 @@
 ﻿# changelog
 
+## 1.2.11
+- fixed some arabic character crashing DirectWrite
+
 ## 1.2.10
 - fixed an issue that caused chatterino to crash when it received invalid emote data from twitch
 

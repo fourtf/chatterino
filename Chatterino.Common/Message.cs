@@ -600,7 +600,7 @@ namespace Chatterino.Common
                             words.Add(new Word
                             {
                                 Type = SpanType.Text,
-                                Value = s,
+                                Value = s.Replace('﷽', '?'),
                                 Color = slashMe ? UsernameColor : (link == null ? new HSLColor?() : HSLColor.FromRGB(-8355712)),
                                 Link = link == null ? null : new Link(LinkType.Url, link),
                                 CopyText = s
@@ -679,7 +679,7 @@ namespace Chatterino.Common
                 });
             }
 
-            Words.AddRange(text.Split(' ').Select(x => _createWord(SpanType.Text, x, color)));
+            Words.AddRange(text.Split(' ').Select(x => _createWord(SpanType.Text, x.Replace('﷽', '?'), color)));
         }
 
         public Message(List<Word> words)
@@ -1194,7 +1194,7 @@ namespace Chatterino.Common
         }
 
         // private
-        private static Word _createWord(SpanType type, string text, HSLColor? color)
+        private static Word _createWord(SpanType type, string text, HSLColor? color, string differentCopyText = null)
         {
             var link = _createLink(text);
 
@@ -1203,7 +1203,7 @@ namespace Chatterino.Common
                 Type = type,
                 Value = text,
                 Color = (link == null ? color : HSLColor.FromRGB(-8355712)),
-                CopyText = text,
+                CopyText = differentCopyText ?? text,
                 Link = link,
             };
         }
