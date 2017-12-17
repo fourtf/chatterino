@@ -13,5 +13,7 @@ namespace Chatterino.Common
         UserInfo,
         InsertText,
         ShowChannel,
+        BanUser,
+        TimeoutUser,
     }
 }

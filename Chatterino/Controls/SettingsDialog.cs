@@ -236,7 +236,7 @@ namespace Chatterino.Controls
             };
 
             BindCheckBox(chkTimestamps, "ChatShowTimestamps");
-            BindCheckBox(chkTimestampSeconds, "ChatShowTimestampSeconds"); 
+            BindCheckBox(chkTimestampSeconds, "ChatShowTimestampSeconds");
             BindCheckBox(chkTimestampAmPm, "TimestampsAmPm");
             BindCheckBox(chkAllowSameMessages, "ChatAllowSameMessage");
             BindCheckBox(chkDoubleClickLinks, "ChatLinksDoubleClickOnly");
@@ -437,6 +437,7 @@ namespace Chatterino.Controls
             #endregion
 
             // Ignored Users
+            #region ignored users
             BindCheckBox(chkTwitchIgnores, "EnableTwitchUserIgnores");
 
             foreach (var user in IrcManager.IgnoredUsers)
@@ -515,8 +516,10 @@ namespace Chatterino.Controls
                     }
                 }
             };
+            #endregion
 
             // Ignored Messages
+            #region ignored messages
             var ignoreKeywordsOriginal = rtbIgnoreKeywords.Text = string.Join(Environment.NewLine, AppSettings.ChatIgnoredKeywords);
 
             rtbIgnoreKeywords.LostFocus += (s, e) =>
@@ -545,6 +548,7 @@ namespace Chatterino.Controls
                     AppSettings.ChatIgnoredKeywords = list.ToArray();
                 }
             };
+            #endregion
 
             // Links
 
@@ -563,6 +567,7 @@ namespace Chatterino.Controls
             BindTextBox(textBox3, "ProxyPassword");
 
             // Highlights
+            #region highlights
             var customHighlightsOriginal = rtbHighlights.Text = string.Join(Environment.NewLine, AppSettings.ChatCustomHighlights);
             var highlightIgnoredUsersOriginal = rtbUserBlacklist.Text = string.Join(Environment.NewLine, AppSettings.HighlightIgnoredUsers.Keys);
 
@@ -640,6 +645,43 @@ namespace Chatterino.Controls
                         }
                     }
                 }
+            };
+            #endregion
+
+            // Moderation
+            BindCheckBox(chkBanButton, "EnableBanButton");
+            BindCheckBox(chkTimeoutButton, "EnableTimeoutButton");
+
+            var originalTimeoutButtons = new List<int>(AppSettings.TimeoutButtons);
+
+            Action updateTimeoutButtons = () =>
+            {
+                List<int> values = new List<int>();
+                foreach (var control in listView1.Controls)
+                {
+                    values.Add((control as TimespanSelectControl).GetValue());
+                }
+                AppSettings.TimeoutButtons = values;
+            };
+
+            foreach (var i in AppSettings.TimeoutButtons)
+            {
+                var c = new TimespanSelectControl(i);
+                c.ValueChanged += (s, e) => updateTimeoutButtons();
+                listView1.Controls.Add(c);
+            }
+
+            onCancel += (s, e) =>
+            {
+                AppSettings.TimeoutButtons = originalTimeoutButtons;
+            };
+
+            listView1.ControlRemoved += (s, e) => updateTimeoutButtons();
+            listView1.ControlAdded += (s, e) => updateTimeoutButtons();
+
+            btnAddTimeout.Click += (s, e) =>
+            {
+                listView1.Controls.Add(new TimespanSelectControl());
             };
 
             // Whispers

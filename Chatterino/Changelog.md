@@ -1,5 +1,8 @@
 ﻿# changelog
 
+## 1.2.12
+- added optional ban and custom timeout buttons (sponsored by WipzTV)
+
 ## 1.2.11
 - fixed some arabic character crashing DirectWrite
 

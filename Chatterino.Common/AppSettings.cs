@@ -163,6 +163,11 @@ namespace Chatterino.Common
         public static double EmoteScale { get; set; } = 1;
         public static bool EmoteScaleByLineHeight { get; set; } = false;
 
+        public static bool EnableBanButton { get; set; } = false;
+        public static bool EnableTimeoutButton { get; set; } = false;
+
+        public static List<int> TimeoutButtons { get; set; } = new List<int> { 5 * 60 };
+
         // 0 = no, 1 = if mod, 2 = if broadcaster
         public static int ChatShowIgnoredUsersMessages { get; set; } = 1;
 
@@ -377,6 +382,12 @@ namespace Chatterino.Common
                             dict[s] = null;
                     }
                 }
+                else if (prop.PropertyType == typeof(List<int>))
+                {
+                    int xd;
+                    prop.SetValue(null, settings.GetString(prop.Name, "").Split(',').Select(x => x.Trim())
+                        .Where(x => int.TryParse(x, out xd)).Select(x => int.Parse(x)).ToList());
+                }
             }
         }
 
@@ -400,6 +411,8 @@ namespace Chatterino.Common
                     settings.Set(prop.Name, (string[])prop.GetValue(null));
                 else if (prop.PropertyType == typeof(ConcurrentDictionary<string, object>))
                     settings.Set(prop.Name, ((ConcurrentDictionary<string, object>)prop.GetValue(null)).Keys);
+                else if (prop.PropertyType == typeof(List<int>))
+                    settings.Set(prop.Name, string.Join(",", (List<int>)prop.GetValue(null)));
             }
 
             settings.Save(path);

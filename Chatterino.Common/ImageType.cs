@@ -36,5 +36,9 @@ namespace Chatterino.Common
         Cheer800000,
         Cheer900000,
         Cheer1000000,
+
+        Ban,
+        Timeout,
+        TimeoutAlt
     }
 }

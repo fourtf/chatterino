@@ -31,6 +31,70 @@
             this.openFileStreamlink = new System.Windows.Forms.OpenFileDialog();
             this.tabs = new Chatterino.Controls.SettingsTabControl();
             this.RightPanel = new System.Windows.Forms.Panel();
+            this.panel13 = new System.Windows.Forms.Panel();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.chkTimeoutButton = new System.Windows.Forms.CheckBox();
+            this.listView1 = new System.Windows.Forms.FlowLayoutPanel();
+            this.btnAddTimeout = new System.Windows.Forms.Button();
+            this.chkBanButton = new System.Windows.Forms.CheckBox();
+            this.panel8 = new System.Windows.Forms.Panel();
+            this.label13 = new System.Windows.Forms.Label();
+            this.chkEnableInlineWhispers = new System.Windows.Forms.CheckBox();
+            this.panel10 = new System.Windows.Forms.Panel();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.chkTimestamps = new System.Windows.Forms.CheckBox();
+            this.chkTimestampAmPm = new System.Windows.Forms.CheckBox();
+            this.chkTimestampSeconds = new System.Windows.Forms.CheckBox();
+            this.chkMessageSeperators = new System.Windows.Forms.CheckBox();
+            this.chkLastReadMessageIndicator = new System.Windows.Forms.CheckBox();
+            this.labelNightDesc = new System.Windows.Forms.Label();
+            this.numThemeNightUntil = new System.Windows.Forms.NumericUpDown();
+            this.labelNightThemeUntil = new System.Windows.Forms.Label();
+            this.numThemeNightFrom = new System.Windows.Forms.NumericUpDown();
+            this.labelThemeNightFrom = new System.Windows.Forms.Label();
+            this.comboThemeNight = new System.Windows.Forms.ComboBox();
+            this.labelThemeNight = new System.Windows.Forms.Label();
+            this.checkBoxDifferentThemeAtNight = new System.Windows.Forms.CheckBox();
+            this.chkTopMost = new System.Windows.Forms.CheckBox();
+            this.btnSelectFont = new System.Windows.Forms.Button();
+            this.label10 = new System.Windows.Forms.Label();
+            this.trackBar1 = new System.Windows.Forms.TrackBar();
+            this.chkInputShowMessageLength = new System.Windows.Forms.CheckBox();
+            this.comboTheme = new System.Windows.Forms.ComboBox();
+            this.label7 = new System.Windows.Forms.Label();
+            this.lblFont = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.chkHideInput = new System.Windows.Forms.CheckBox();
+            this.txtMsgLimit = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.panel3 = new System.Windows.Forms.Panel();
+            this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.label2 = new System.Windows.Forms.Label();
+            this.rtbHighlights = new System.Windows.Forms.RichTextBox();
+            this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.rtbUserBlacklist = new System.Windows.Forms.RichTextBox();
+            this.label6 = new System.Windows.Forms.Label();
+            this.btnTextCustomPing = new System.Windows.Forms.Button();
+            this.btnCustomHighlightOpenFile = new System.Windows.Forms.Button();
+            this.chkCustomPingSound = new System.Windows.Forms.CheckBox();
+            this.chkFlashTaskbar = new System.Windows.Forms.CheckBox();
+            this.chkHighlight = new System.Windows.Forms.CheckBox();
+            this.chkPings = new System.Windows.Forms.CheckBox();
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.textBox4 = new System.Windows.Forms.TextBox();
+            this.lblProxyPassword = new System.Windows.Forms.Label();
+            this.textBox3 = new System.Windows.Forms.TextBox();
+            this.lblProxyUsername = new System.Windows.Forms.Label();
+            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.lblProxyType = new System.Windows.Forms.Label();
+            this.lblProxy = new System.Windows.Forms.Label();
+            this.chkProxyEnabled = new System.Windows.Forms.CheckBox();
             this.panel5 = new System.Windows.Forms.Panel();
             this.chkAllowCommandAtEnd = new System.Windows.Forms.CheckBox();
             this.lblCommands = new System.Windows.Forms.Label();
@@ -67,37 +131,6 @@
             this.label11 = new System.Windows.Forms.Label();
             this.trackBar2 = new System.Windows.Forms.TrackBar();
             this.chkRainbow = new System.Windows.Forms.CheckBox();
-            this.panel2 = new System.Windows.Forms.Panel();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
-            this.label4 = new System.Windows.Forms.Label();
-            this.textBox4 = new System.Windows.Forms.TextBox();
-            this.lblProxyPassword = new System.Windows.Forms.Label();
-            this.textBox3 = new System.Windows.Forms.TextBox();
-            this.lblProxyUsername = new System.Windows.Forms.Label();
-            this.textBox2 = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.lblProxyType = new System.Windows.Forms.Label();
-            this.lblProxy = new System.Windows.Forms.Label();
-            this.chkProxyEnabled = new System.Windows.Forms.CheckBox();
-            this.panel10 = new System.Windows.Forms.Panel();
-            this.panel8 = new System.Windows.Forms.Panel();
-            this.label13 = new System.Windows.Forms.Label();
-            this.chkEnableInlineWhispers = new System.Windows.Forms.CheckBox();
-            this.panel3 = new System.Windows.Forms.Panel();
-            this.tabControl1 = new System.Windows.Forms.TabControl();
-            this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.label2 = new System.Windows.Forms.Label();
-            this.rtbHighlights = new System.Windows.Forms.RichTextBox();
-            this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.rtbUserBlacklist = new System.Windows.Forms.RichTextBox();
-            this.label6 = new System.Windows.Forms.Label();
-            this.btnTextCustomPing = new System.Windows.Forms.Button();
-            this.btnCustomHighlightOpenFile = new System.Windows.Forms.Button();
-            this.chkCustomPingSound = new System.Windows.Forms.CheckBox();
-            this.chkFlashTaskbar = new System.Windows.Forms.CheckBox();
-            this.chkHighlight = new System.Windows.Forms.CheckBox();
-            this.chkPings = new System.Windows.Forms.CheckBox();
             this.panel7 = new System.Windows.Forms.Panel();
             this.chkDoubleClickLinks = new System.Windows.Forms.CheckBox();
             this.chkUseDefaultBrowser = new System.Windows.Forms.CheckBox();
@@ -120,33 +153,6 @@
             this.chkGifEmotes = new System.Windows.Forms.CheckBox();
             this.chkBttvEmotes = new System.Windows.Forms.CheckBox();
             this.chkFFzEmotes = new System.Windows.Forms.CheckBox();
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.chkTimestamps = new System.Windows.Forms.CheckBox();
-            this.chkTimestampAmPm = new System.Windows.Forms.CheckBox();
-            this.chkTimestampSeconds = new System.Windows.Forms.CheckBox();
-            this.chkMessageSeperators = new System.Windows.Forms.CheckBox();
-            this.chkLastReadMessageIndicator = new System.Windows.Forms.CheckBox();
-            this.labelNightDesc = new System.Windows.Forms.Label();
-            this.numThemeNightUntil = new System.Windows.Forms.NumericUpDown();
-            this.labelNightThemeUntil = new System.Windows.Forms.Label();
-            this.numThemeNightFrom = new System.Windows.Forms.NumericUpDown();
-            this.labelThemeNightFrom = new System.Windows.Forms.Label();
-            this.comboThemeNight = new System.Windows.Forms.ComboBox();
-            this.labelThemeNight = new System.Windows.Forms.Label();
-            this.checkBoxDifferentThemeAtNight = new System.Windows.Forms.CheckBox();
-            this.chkTopMost = new System.Windows.Forms.CheckBox();
-            this.btnSelectFont = new System.Windows.Forms.Button();
-            this.label10 = new System.Windows.Forms.Label();
-            this.trackBar1 = new System.Windows.Forms.TrackBar();
-            this.chkInputShowMessageLength = new System.Windows.Forms.CheckBox();
-            this.comboTheme = new System.Windows.Forms.ComboBox();
-            this.label7 = new System.Windows.Forms.Label();
-            this.lblFont = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
-            this.chkHideInput = new System.Windows.Forms.CheckBox();
-            this.txtMsgLimit = new System.Windows.Forms.TextBox();
-            this.label3 = new System.Windows.Forms.Label();
             this.panel11 = new System.Windows.Forms.Panel();
             this.label14 = new System.Windows.Forms.Label();
             this.buttonAccountRemove = new System.Windows.Forms.Button();
@@ -164,11 +170,25 @@
             this.spIgnoredMessages = new Chatterino.Controls.SettingsTabPage();
             this.spLinks = new Chatterino.Controls.SettingsTabPage();
             this.spHighlighted = new Chatterino.Controls.SettingsTabPage();
+            this.spModeration = new Chatterino.Controls.SettingsTabPage();
             this.spWhispers = new Chatterino.Controls.SettingsTabPage();
             this.spBrowserExtension = new Chatterino.Controls.SettingsTabPage();
             this.spConnection = new Chatterino.Controls.SettingsTabPage();
             this.tabs.SuspendLayout();
             this.RightPanel.SuspendLayout();
+            this.panel13.SuspendLayout();
+            this.groupBox3.SuspendLayout();
+            this.panel8.SuspendLayout();
+            this.panel1.SuspendLayout();
+            this.groupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numThemeNightUntil)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numThemeNightFrom)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
+            this.panel3.SuspendLayout();
+            this.tabControl1.SuspendLayout();
+            this.tabPage1.SuspendLayout();
+            this.tabPage2.SuspendLayout();
+            this.panel2.SuspendLayout();
             this.panel5.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvCommands)).BeginInit();
             this.panel6.SuspendLayout();
@@ -176,12 +196,6 @@
             this.panel12.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar2)).BeginInit();
-            this.panel2.SuspendLayout();
-            this.panel8.SuspendLayout();
-            this.panel3.SuspendLayout();
-            this.tabControl1.SuspendLayout();
-            this.tabPage1.SuspendLayout();
-            this.tabPage2.SuspendLayout();
             this.panel7.SuspendLayout();
             this.panel9.SuspendLayout();
             this.tabControl3.SuspendLayout();
@@ -190,11 +204,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.trackBarEmoteScale)).BeginInit();
             this.tabControl2.SuspendLayout();
             this.tabPage3.SuspendLayout();
-            this.panel1.SuspendLayout();
-            this.groupBox1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numThemeNightUntil)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numThemeNightFrom)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
             this.panel11.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewAccounts)).BeginInit();
             this.SuspendLayout();
@@ -217,6 +226,7 @@
             this.tabs.Controls.Add(this.spIgnoredMessages);
             this.tabs.Controls.Add(this.spLinks);
             this.tabs.Controls.Add(this.spHighlighted);
+            this.tabs.Controls.Add(this.spModeration);
             this.tabs.Controls.Add(this.spWhispers);
             this.tabs.Controls.Add(this.spBrowserExtension);
             this.tabs.Controls.Add(this.spConnection);
@@ -224,8 +234,8 @@
             this.tabs.Location = new System.Drawing.Point(0, 0);
             this.tabs.Name = "tabs";
             this.tabs.Panel = this.RightPanel;
-            this.tabs.SelectedIndex = 3;
-            this.tabs.SelectedTab = this.spCommands;
+            this.tabs.SelectedIndex = 9;
+            this.tabs.SelectedTab = this.spModeration;
             this.tabs.Size = new System.Drawing.Size(631, 491);
             this.tabs.TabIndex = 0;
             this.tabs.TabsWidth = 150;
@@ -235,17 +245,18 @@
             this.RightPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.RightPanel.Controls.Add(this.panel13);
+            this.RightPanel.Controls.Add(this.panel8);
+            this.RightPanel.Controls.Add(this.panel10);
+            this.RightPanel.Controls.Add(this.panel1);
+            this.RightPanel.Controls.Add(this.panel3);
+            this.RightPanel.Controls.Add(this.panel2);
             this.RightPanel.Controls.Add(this.panel5);
             this.RightPanel.Controls.Add(this.panel6);
             this.RightPanel.Controls.Add(this.panel12);
-            this.RightPanel.Controls.Add(this.panel2);
-            this.RightPanel.Controls.Add(this.panel10);
-            this.RightPanel.Controls.Add(this.panel8);
-            this.RightPanel.Controls.Add(this.panel3);
             this.RightPanel.Controls.Add(this.panel7);
             this.RightPanel.Controls.Add(this.panel9);
             this.RightPanel.Controls.Add(this.panel4);
-            this.RightPanel.Controls.Add(this.panel1);
             this.RightPanel.Controls.Add(this.panel11);
             this.RightPanel.Controls.Add(this.comboBox2);
             this.RightPanel.Controls.Add(this.label18);
@@ -254,6 +265,748 @@
             this.RightPanel.Padding = new System.Windows.Forms.Padding(0, 0, 0, 42);
             this.RightPanel.Size = new System.Drawing.Size(481, 491);
             this.RightPanel.TabIndex = 0;
+            // 
+            // panel13
+            // 
+            this.panel13.Controls.Add(this.groupBox3);
+            this.panel13.Controls.Add(this.chkBanButton);
+            this.panel13.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel13.Location = new System.Drawing.Point(0, 0);
+            this.panel13.Name = "panel13";
+            this.panel13.Size = new System.Drawing.Size(481, 449);
+            this.panel13.TabIndex = 34;
+            // 
+            // groupBox3
+            // 
+            this.groupBox3.Controls.Add(this.chkTimeoutButton);
+            this.groupBox3.Controls.Add(this.listView1);
+            this.groupBox3.Controls.Add(this.btnAddTimeout);
+            this.groupBox3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.groupBox3.Location = new System.Drawing.Point(6, 32);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(430, 360);
+            this.groupBox3.TabIndex = 18;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "Timeout buttons";
+            // 
+            // chkTimeoutButton
+            // 
+            this.chkTimeoutButton.AutoSize = true;
+            this.chkTimeoutButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.chkTimeoutButton.Location = new System.Drawing.Point(7, 19);
+            this.chkTimeoutButton.Name = "chkTimeoutButton";
+            this.chkTimeoutButton.Size = new System.Drawing.Size(296, 17);
+            this.chkTimeoutButton.TabIndex = 14;
+            this.chkTimeoutButton.Text = "Enable \"timeout user\" buttons if moderator or broadcaster";
+            this.chkTimeoutButton.UseVisualStyleBackColor = true;
+            // 
+            // listView1
+            // 
+            this.listView1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.listView1.AutoScroll = true;
+            this.listView1.ForeColor = System.Drawing.Color.Black;
+            this.listView1.Location = new System.Drawing.Point(9, 71);
+            this.listView1.Name = "listView1";
+            this.listView1.Size = new System.Drawing.Size(410, 276);
+            this.listView1.TabIndex = 17;
+            // 
+            // btnAddTimeout
+            // 
+            this.btnAddTimeout.ForeColor = System.Drawing.Color.Black;
+            this.btnAddTimeout.Location = new System.Drawing.Point(6, 39);
+            this.btnAddTimeout.Name = "btnAddTimeout";
+            this.btnAddTimeout.Size = new System.Drawing.Size(115, 23);
+            this.btnAddTimeout.TabIndex = 16;
+            this.btnAddTimeout.Text = "Add timeout button";
+            this.btnAddTimeout.UseVisualStyleBackColor = true;
+            // 
+            // chkBanButton
+            // 
+            this.chkBanButton.AutoSize = true;
+            this.chkBanButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.chkBanButton.Location = new System.Drawing.Point(6, 7);
+            this.chkBanButton.Name = "chkBanButton";
+            this.chkBanButton.Size = new System.Drawing.Size(275, 17);
+            this.chkBanButton.TabIndex = 13;
+            this.chkBanButton.Text = "Enable \"ban user\" button if moderator or broadcaster";
+            this.chkBanButton.UseVisualStyleBackColor = true;
+            // 
+            // panel8
+            // 
+            this.panel8.Controls.Add(this.label13);
+            this.panel8.Controls.Add(this.chkEnableInlineWhispers);
+            this.panel8.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel8.Location = new System.Drawing.Point(0, 0);
+            this.panel8.Name = "panel8";
+            this.panel8.Size = new System.Drawing.Size(481, 449);
+            this.panel8.TabIndex = 6;
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.ForeColor = System.Drawing.Color.White;
+            this.label13.Location = new System.Drawing.Point(12, 40);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(300, 39);
+            this.label13.TabIndex = 25;
+            this.label13.Text = "You can join the channel /whispers to view your whispers!\r\n\r\nYou can send whisper" +
+    "s using this command: /w user message";
+            // 
+            // chkEnableInlineWhispers
+            // 
+            this.chkEnableInlineWhispers.AutoSize = true;
+            this.chkEnableInlineWhispers.Checked = true;
+            this.chkEnableInlineWhispers.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkEnableInlineWhispers.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.chkEnableInlineWhispers.Location = new System.Drawing.Point(15, 13);
+            this.chkEnableInlineWhispers.Name = "chkEnableInlineWhispers";
+            this.chkEnableInlineWhispers.Size = new System.Drawing.Size(130, 17);
+            this.chkEnableInlineWhispers.TabIndex = 24;
+            this.chkEnableInlineWhispers.Text = "Enable inline whispers";
+            this.chkEnableInlineWhispers.UseVisualStyleBackColor = true;
+            // 
+            // panel10
+            // 
+            this.panel10.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel10.Location = new System.Drawing.Point(0, 0);
+            this.panel10.Name = "panel10";
+            this.panel10.Size = new System.Drawing.Size(481, 449);
+            this.panel10.TabIndex = 8;
+            // 
+            // panel1
+            // 
+            this.panel1.Controls.Add(this.groupBox1);
+            this.panel1.Controls.Add(this.labelNightDesc);
+            this.panel1.Controls.Add(this.numThemeNightUntil);
+            this.panel1.Controls.Add(this.labelNightThemeUntil);
+            this.panel1.Controls.Add(this.numThemeNightFrom);
+            this.panel1.Controls.Add(this.labelThemeNightFrom);
+            this.panel1.Controls.Add(this.comboThemeNight);
+            this.panel1.Controls.Add(this.labelThemeNight);
+            this.panel1.Controls.Add(this.checkBoxDifferentThemeAtNight);
+            this.panel1.Controls.Add(this.chkTopMost);
+            this.panel1.Controls.Add(this.btnSelectFont);
+            this.panel1.Controls.Add(this.label10);
+            this.panel1.Controls.Add(this.trackBar1);
+            this.panel1.Controls.Add(this.chkInputShowMessageLength);
+            this.panel1.Controls.Add(this.comboTheme);
+            this.panel1.Controls.Add(this.label7);
+            this.panel1.Controls.Add(this.lblFont);
+            this.panel1.Controls.Add(this.label5);
+            this.panel1.Controls.Add(this.chkHideInput);
+            this.panel1.Controls.Add(this.txtMsgLimit);
+            this.panel1.Controls.Add(this.label3);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel1.Location = new System.Drawing.Point(0, 0);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(481, 449);
+            this.panel1.TabIndex = 0;
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.chkTimestamps);
+            this.groupBox1.Controls.Add(this.chkTimestampAmPm);
+            this.groupBox1.Controls.Add(this.chkTimestampSeconds);
+            this.groupBox1.Controls.Add(this.chkMessageSeperators);
+            this.groupBox1.Controls.Add(this.chkLastReadMessageIndicator);
+            this.groupBox1.ForeColor = System.Drawing.Color.White;
+            this.groupBox1.Location = new System.Drawing.Point(17, 226);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(435, 92);
+            this.groupBox1.TabIndex = 37;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Messages";
+            // 
+            // chkTimestamps
+            // 
+            this.chkTimestamps.AutoSize = true;
+            this.chkTimestamps.Checked = true;
+            this.chkTimestamps.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkTimestamps.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.chkTimestamps.Location = new System.Drawing.Point(8, 17);
+            this.chkTimestamps.Name = "chkTimestamps";
+            this.chkTimestamps.Size = new System.Drawing.Size(108, 17);
+            this.chkTimestamps.TabIndex = 0;
+            this.chkTimestamps.Text = "Show timestamps";
+            this.chkTimestamps.UseVisualStyleBackColor = true;
+            // 
+            // chkTimestampAmPm
+            // 
+            this.chkTimestampAmPm.AutoSize = true;
+            this.chkTimestampAmPm.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.chkTimestampAmPm.Location = new System.Drawing.Point(320, 18);
+            this.chkTimestampAmPm.Name = "chkTimestampAmPm";
+            this.chkTimestampAmPm.Size = new System.Drawing.Size(81, 17);
+            this.chkTimestampAmPm.TabIndex = 36;
+            this.chkTimestampAmPm.Text = "Use am/pm";
+            this.chkTimestampAmPm.UseVisualStyleBackColor = true;
+            // 
+            // chkTimestampSeconds
+            // 
+            this.chkTimestampSeconds.AutoSize = true;
+            this.chkTimestampSeconds.Checked = true;
+            this.chkTimestampSeconds.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkTimestampSeconds.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.chkTimestampSeconds.Location = new System.Drawing.Point(146, 17);
+            this.chkTimestampSeconds.Name = "chkTimestampSeconds";
+            this.chkTimestampSeconds.Size = new System.Drawing.Size(162, 17);
+            this.chkTimestampSeconds.TabIndex = 1;
+            this.chkTimestampSeconds.Text = "Show seconds in timestamps";
+            this.chkTimestampSeconds.UseVisualStyleBackColor = true;
+            // 
+            // chkMessageSeperators
+            // 
+            this.chkMessageSeperators.AutoSize = true;
+            this.chkMessageSeperators.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.chkMessageSeperators.Location = new System.Drawing.Point(8, 40);
+            this.chkMessageSeperators.Name = "chkMessageSeperators";
+            this.chkMessageSeperators.Size = new System.Drawing.Size(119, 17);
+            this.chkMessageSeperators.TabIndex = 16;
+            this.chkMessageSeperators.Text = "Separate messages";
+            this.chkMessageSeperators.UseVisualStyleBackColor = true;
+            // 
+            // chkLastReadMessageIndicator
+            // 
+            this.chkLastReadMessageIndicator.AutoSize = true;
+            this.chkLastReadMessageIndicator.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.chkLastReadMessageIndicator.Location = new System.Drawing.Point(9, 64);
+            this.chkLastReadMessageIndicator.Name = "chkLastReadMessageIndicator";
+            this.chkLastReadMessageIndicator.Size = new System.Drawing.Size(235, 17);
+            this.chkLastReadMessageIndicator.TabIndex = 27;
+            this.chkLastReadMessageIndicator.Text = "Show red indicator for the last read message\r\n";
+            this.chkLastReadMessageIndicator.UseVisualStyleBackColor = true;
+            // 
+            // labelNightDesc
+            // 
+            this.labelNightDesc.AutoSize = true;
+            this.labelNightDesc.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.labelNightDesc.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.labelNightDesc.Location = new System.Drawing.Point(410, 44);
+            this.labelNightDesc.Name = "labelNightDesc";
+            this.labelNightDesc.Size = new System.Drawing.Size(34, 13);
+            this.labelNightDesc.TabIndex = 35;
+            this.labelNightDesc.Text = "(1-24)";
+            // 
+            // numThemeNightUntil
+            // 
+            this.numThemeNightUntil.Location = new System.Drawing.Point(346, 40);
+            this.numThemeNightUntil.Maximum = new decimal(new int[] {
+            24,
+            0,
+            0,
+            0});
+            this.numThemeNightUntil.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.numThemeNightUntil.Name = "numThemeNightUntil";
+            this.numThemeNightUntil.Size = new System.Drawing.Size(57, 20);
+            this.numThemeNightUntil.TabIndex = 34;
+            this.numThemeNightUntil.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
+            // labelNightThemeUntil
+            // 
+            this.labelNightThemeUntil.AutoSize = true;
+            this.labelNightThemeUntil.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.labelNightThemeUntil.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.labelNightThemeUntil.Location = new System.Drawing.Point(315, 44);
+            this.labelNightThemeUntil.Name = "labelNightThemeUntil";
+            this.labelNightThemeUntil.Size = new System.Drawing.Size(26, 13);
+            this.labelNightThemeUntil.TabIndex = 33;
+            this.labelNightThemeUntil.Text = "until";
+            // 
+            // numThemeNightFrom
+            // 
+            this.numThemeNightFrom.Location = new System.Drawing.Point(252, 40);
+            this.numThemeNightFrom.Maximum = new decimal(new int[] {
+            24,
+            0,
+            0,
+            0});
+            this.numThemeNightFrom.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.numThemeNightFrom.Name = "numThemeNightFrom";
+            this.numThemeNightFrom.Size = new System.Drawing.Size(57, 20);
+            this.numThemeNightFrom.TabIndex = 32;
+            this.numThemeNightFrom.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
+            // labelThemeNightFrom
+            // 
+            this.labelThemeNightFrom.AutoSize = true;
+            this.labelThemeNightFrom.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.labelThemeNightFrom.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.labelThemeNightFrom.Location = new System.Drawing.Point(222, 44);
+            this.labelThemeNightFrom.Name = "labelThemeNightFrom";
+            this.labelThemeNightFrom.Size = new System.Drawing.Size(27, 13);
+            this.labelThemeNightFrom.TabIndex = 31;
+            this.labelThemeNightFrom.Text = "from";
+            // 
+            // comboThemeNight
+            // 
+            this.comboThemeNight.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboThemeNight.FormattingEnabled = true;
+            this.comboThemeNight.Items.AddRange(new object[] {
+            "White",
+            "Light",
+            "Dark",
+            "Black"});
+            this.comboThemeNight.Location = new System.Drawing.Point(97, 41);
+            this.comboThemeNight.Name = "comboThemeNight";
+            this.comboThemeNight.Size = new System.Drawing.Size(119, 21);
+            this.comboThemeNight.TabIndex = 29;
+            // 
+            // labelThemeNight
+            // 
+            this.labelThemeNight.AutoSize = true;
+            this.labelThemeNight.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.labelThemeNight.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.labelThemeNight.Location = new System.Drawing.Point(14, 44);
+            this.labelThemeNight.Name = "labelThemeNight";
+            this.labelThemeNight.Size = new System.Drawing.Size(77, 13);
+            this.labelThemeNight.TabIndex = 30;
+            this.labelThemeNight.Text = "Theme (Night):";
+            // 
+            // checkBoxDifferentThemeAtNight
+            // 
+            this.checkBoxDifferentThemeAtNight.AutoSize = true;
+            this.checkBoxDifferentThemeAtNight.Checked = true;
+            this.checkBoxDifferentThemeAtNight.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBoxDifferentThemeAtNight.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.checkBoxDifferentThemeAtNight.Location = new System.Drawing.Point(243, 14);
+            this.checkBoxDifferentThemeAtNight.Name = "checkBoxDifferentThemeAtNight";
+            this.checkBoxDifferentThemeAtNight.Size = new System.Drawing.Size(160, 17);
+            this.checkBoxDifferentThemeAtNight.TabIndex = 28;
+            this.checkBoxDifferentThemeAtNight.Text = "different Theme during Night";
+            this.checkBoxDifferentThemeAtNight.UseVisualStyleBackColor = true;
+            // 
+            // chkTopMost
+            // 
+            this.chkTopMost.AutoSize = true;
+            this.chkTopMost.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.chkTopMost.Location = new System.Drawing.Point(17, 193);
+            this.chkTopMost.Name = "chkTopMost";
+            this.chkTopMost.Size = new System.Drawing.Size(133, 17);
+            this.chkTopMost.TabIndex = 26;
+            this.chkTopMost.Text = "Window always on top\r\n";
+            this.chkTopMost.UseVisualStyleBackColor = true;
+            // 
+            // btnSelectFont
+            // 
+            this.btnSelectFont.Location = new System.Drawing.Point(98, 109);
+            this.btnSelectFont.Name = "btnSelectFont";
+            this.btnSelectFont.Size = new System.Drawing.Size(75, 23);
+            this.btnSelectFont.TabIndex = 14;
+            this.btnSelectFont.Text = "Select";
+            this.btnSelectFont.UseVisualStyleBackColor = true;
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.label10.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.label10.Location = new System.Drawing.Point(14, 77);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(64, 13);
+            this.label10.TabIndex = 20;
+            this.label10.Text = "Theme hue:";
+            // 
+            // trackBar1
+            // 
+            this.trackBar1.LargeChange = 45;
+            this.trackBar1.Location = new System.Drawing.Point(86, 72);
+            this.trackBar1.Maximum = 360;
+            this.trackBar1.Name = "trackBar1";
+            this.trackBar1.Size = new System.Drawing.Size(250, 45);
+            this.trackBar1.TabIndex = 19;
+            this.trackBar1.TickStyle = System.Windows.Forms.TickStyle.None;
+            // 
+            // chkInputShowMessageLength
+            // 
+            this.chkInputShowMessageLength.AutoSize = true;
+            this.chkInputShowMessageLength.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.chkInputShowMessageLength.Location = new System.Drawing.Point(17, 170);
+            this.chkInputShowMessageLength.Name = "chkInputShowMessageLength";
+            this.chkInputShowMessageLength.Size = new System.Drawing.Size(316, 17);
+            this.chkInputShowMessageLength.TabIndex = 18;
+            this.chkInputShowMessageLength.Text = "Show message length (actual character count not text length)";
+            this.chkInputShowMessageLength.UseVisualStyleBackColor = true;
+            // 
+            // comboTheme
+            // 
+            this.comboTheme.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboTheme.FormattingEnabled = true;
+            this.comboTheme.Items.AddRange(new object[] {
+            "White",
+            "Light",
+            "Dark",
+            "Black"});
+            this.comboTheme.Location = new System.Drawing.Point(97, 11);
+            this.comboTheme.Name = "comboTheme";
+            this.comboTheme.Size = new System.Drawing.Size(119, 21);
+            this.comboTheme.TabIndex = 16;
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.label7.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.label7.Location = new System.Drawing.Point(14, 14);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(43, 13);
+            this.label7.TabIndex = 17;
+            this.label7.Text = "Theme:";
+            // 
+            // lblFont
+            // 
+            this.lblFont.AutoSize = true;
+            this.lblFont.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.lblFont.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.lblFont.Location = new System.Drawing.Point(182, 114);
+            this.lblFont.Name = "lblFont";
+            this.lblFont.Size = new System.Drawing.Size(54, 13);
+            this.lblFont.TabIndex = 15;
+            this.lblFont.Text = "font name";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.label5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.label5.Location = new System.Drawing.Point(15, 114);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(31, 13);
+            this.label5.TabIndex = 13;
+            this.label5.Text = "Font:";
+            // 
+            // chkHideInput
+            // 
+            this.chkHideInput.AutoSize = true;
+            this.chkHideInput.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.chkHideInput.Location = new System.Drawing.Point(17, 147);
+            this.chkHideInput.Name = "chkHideInput";
+            this.chkHideInput.Size = new System.Drawing.Size(133, 17);
+            this.chkHideInput.TabIndex = 12;
+            this.chkHideInput.Text = "Hide input box if empty";
+            this.chkHideInput.UseVisualStyleBackColor = true;
+            // 
+            // txtMsgLimit
+            // 
+            this.txtMsgLimit.Location = new System.Drawing.Point(269, 330);
+            this.txtMsgLimit.Name = "txtMsgLimit";
+            this.txtMsgLimit.Size = new System.Drawing.Size(167, 20);
+            this.txtMsgLimit.TabIndex = 10;
+            this.txtMsgLimit.Visible = false;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.label3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.label3.Location = new System.Drawing.Point(185, 334);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(77, 13);
+            this.label3.TabIndex = 11;
+            this.label3.Text = "Message Limit:";
+            this.label3.Visible = false;
+            // 
+            // panel3
+            // 
+            this.panel3.Controls.Add(this.tabControl1);
+            this.panel3.Controls.Add(this.btnTextCustomPing);
+            this.panel3.Controls.Add(this.btnCustomHighlightOpenFile);
+            this.panel3.Controls.Add(this.chkCustomPingSound);
+            this.panel3.Controls.Add(this.chkFlashTaskbar);
+            this.panel3.Controls.Add(this.chkHighlight);
+            this.panel3.Controls.Add(this.chkPings);
+            this.panel3.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel3.Location = new System.Drawing.Point(0, 0);
+            this.panel3.Name = "panel3";
+            this.panel3.Size = new System.Drawing.Size(481, 449);
+            this.panel3.TabIndex = 1;
+            // 
+            // tabControl1
+            // 
+            this.tabControl1.Controls.Add(this.tabPage1);
+            this.tabControl1.Controls.Add(this.tabPage2);
+            this.tabControl1.Location = new System.Drawing.Point(17, 110);
+            this.tabControl1.Name = "tabControl1";
+            this.tabControl1.SelectedIndex = 0;
+            this.tabControl1.Size = new System.Drawing.Size(415, 289);
+            this.tabControl1.TabIndex = 21;
+            // 
+            // tabPage1
+            // 
+            this.tabPage1.Controls.Add(this.label2);
+            this.tabPage1.Controls.Add(this.rtbHighlights);
+            this.tabPage1.Location = new System.Drawing.Point(4, 22);
+            this.tabPage1.Name = "tabPage1";
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage1.Size = new System.Drawing.Size(407, 263);
+            this.tabPage1.TabIndex = 0;
+            this.tabPage1.Text = "Highlight keywords";
+            this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.label2.ForeColor = System.Drawing.Color.Black;
+            this.label2.Location = new System.Drawing.Point(3, 5);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(163, 13);
+            this.label2.TabIndex = 22;
+            this.label2.Text = "Highlight keywords (one per line):";
+            // 
+            // rtbHighlights
+            // 
+            this.rtbHighlights.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.rtbHighlights.Location = new System.Drawing.Point(6, 21);
+            this.rtbHighlights.Name = "rtbHighlights";
+            this.rtbHighlights.Size = new System.Drawing.Size(395, 236);
+            this.rtbHighlights.TabIndex = 17;
+            this.rtbHighlights.Text = "";
+            // 
+            // tabPage2
+            // 
+            this.tabPage2.Controls.Add(this.rtbUserBlacklist);
+            this.tabPage2.Controls.Add(this.label6);
+            this.tabPage2.Location = new System.Drawing.Point(4, 22);
+            this.tabPage2.Name = "tabPage2";
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage2.Size = new System.Drawing.Size(407, 263);
+            this.tabPage2.TabIndex = 1;
+            this.tabPage2.Text = "User highlight blacklist";
+            this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // rtbUserBlacklist
+            // 
+            this.rtbUserBlacklist.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.rtbUserBlacklist.Location = new System.Drawing.Point(6, 21);
+            this.rtbUserBlacklist.Name = "rtbUserBlacklist";
+            this.rtbUserBlacklist.Size = new System.Drawing.Size(395, 246);
+            this.rtbUserBlacklist.TabIndex = 24;
+            this.rtbUserBlacklist.Text = "";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.label6.ForeColor = System.Drawing.Color.Black;
+            this.label6.Location = new System.Drawing.Point(3, 5);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(204, 13);
+            this.label6.TabIndex = 23;
+            this.label6.Text = "Users that can not ping you (one per line):";
+            // 
+            // btnTextCustomPing
+            // 
+            this.btnTextCustomPing.Location = new System.Drawing.Point(188, 78);
+            this.btnTextCustomPing.Name = "btnTextCustomPing";
+            this.btnTextCustomPing.Size = new System.Drawing.Size(75, 23);
+            this.btnTextCustomPing.TabIndex = 20;
+            this.btnTextCustomPing.Text = "Test";
+            this.btnTextCustomPing.UseVisualStyleBackColor = true;
+            this.btnTextCustomPing.Click += new System.EventHandler(this.btnTextCustomPing_Click);
+            // 
+            // btnCustomHighlightOpenFile
+            // 
+            this.btnCustomHighlightOpenFile.Image = global::Chatterino.Properties.Resources.OpenFolder_16x;
+            this.btnCustomHighlightOpenFile.Location = new System.Drawing.Point(156, 78);
+            this.btnCustomHighlightOpenFile.Name = "btnCustomHighlightOpenFile";
+            this.btnCustomHighlightOpenFile.Size = new System.Drawing.Size(24, 23);
+            this.btnCustomHighlightOpenFile.TabIndex = 19;
+            this.btnCustomHighlightOpenFile.UseVisualStyleBackColor = true;
+            // 
+            // chkCustomPingSound
+            // 
+            this.chkCustomPingSound.AutoSize = true;
+            this.chkCustomPingSound.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.chkCustomPingSound.Location = new System.Drawing.Point(16, 82);
+            this.chkCustomPingSound.Name = "chkCustomPingSound";
+            this.chkCustomPingSound.Size = new System.Drawing.Size(135, 17);
+            this.chkCustomPingSound.TabIndex = 18;
+            this.chkCustomPingSound.Text = "Custom highlight sound";
+            this.chkCustomPingSound.UseVisualStyleBackColor = true;
+            // 
+            // chkFlashTaskbar
+            // 
+            this.chkFlashTaskbar.AutoSize = true;
+            this.chkFlashTaskbar.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.chkFlashTaskbar.Location = new System.Drawing.Point(16, 59);
+            this.chkFlashTaskbar.Name = "chkFlashTaskbar";
+            this.chkFlashTaskbar.Size = new System.Drawing.Size(232, 17);
+            this.chkFlashTaskbar.TabIndex = 15;
+            this.chkFlashTaskbar.Text = "Flash taskbar when your name is mentioned";
+            this.chkFlashTaskbar.UseVisualStyleBackColor = true;
+            // 
+            // chkHighlight
+            // 
+            this.chkHighlight.AutoSize = true;
+            this.chkHighlight.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.chkHighlight.Location = new System.Drawing.Point(16, 13);
+            this.chkHighlight.Name = "chkHighlight";
+            this.chkHighlight.Size = new System.Drawing.Size(221, 17);
+            this.chkHighlight.TabIndex = 13;
+            this.chkHighlight.Text = "Highlight messages containing your name";
+            this.chkHighlight.UseVisualStyleBackColor = true;
+            // 
+            // chkPings
+            // 
+            this.chkPings.AutoSize = true;
+            this.chkPings.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.chkPings.Location = new System.Drawing.Point(16, 36);
+            this.chkPings.Name = "chkPings";
+            this.chkPings.Size = new System.Drawing.Size(221, 17);
+            this.chkPings.TabIndex = 14;
+            this.chkPings.Text = "Play sound when your name is mentioned";
+            this.chkPings.UseVisualStyleBackColor = true;
+            // 
+            // panel2
+            // 
+            this.panel2.Controls.Add(this.comboBox1);
+            this.panel2.Controls.Add(this.label4);
+            this.panel2.Controls.Add(this.textBox4);
+            this.panel2.Controls.Add(this.lblProxyPassword);
+            this.panel2.Controls.Add(this.textBox3);
+            this.panel2.Controls.Add(this.lblProxyUsername);
+            this.panel2.Controls.Add(this.textBox2);
+            this.panel2.Controls.Add(this.label1);
+            this.panel2.Controls.Add(this.textBox1);
+            this.panel2.Controls.Add(this.lblProxyType);
+            this.panel2.Controls.Add(this.lblProxy);
+            this.panel2.Controls.Add(this.chkProxyEnabled);
+            this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel2.Location = new System.Drawing.Point(0, 0);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(481, 449);
+            this.panel2.TabIndex = 0;
+            // 
+            // comboBox1
+            // 
+            this.comboBox1.FormattingEnabled = true;
+            this.comboBox1.Location = new System.Drawing.Point(87, 52);
+            this.comboBox1.Name = "comboBox1";
+            this.comboBox1.Size = new System.Drawing.Size(167, 21);
+            this.comboBox1.TabIndex = 15;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.label4.Location = new System.Drawing.Point(18, 107);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(29, 13);
+            this.label4.TabIndex = 14;
+            this.label4.Text = "Port:";
+            // 
+            // textBox4
+            // 
+            this.textBox4.Location = new System.Drawing.Point(87, 103);
+            this.textBox4.Name = "textBox4";
+            this.textBox4.Size = new System.Drawing.Size(167, 20);
+            this.textBox4.TabIndex = 13;
+            // 
+            // lblProxyPassword
+            // 
+            this.lblProxyPassword.AutoSize = true;
+            this.lblProxyPassword.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.lblProxyPassword.Location = new System.Drawing.Point(18, 156);
+            this.lblProxyPassword.Name = "lblProxyPassword";
+            this.lblProxyPassword.Size = new System.Drawing.Size(56, 13);
+            this.lblProxyPassword.TabIndex = 12;
+            this.lblProxyPassword.Text = "Password:";
+            // 
+            // textBox3
+            // 
+            this.textBox3.Location = new System.Drawing.Point(87, 153);
+            this.textBox3.Name = "textBox3";
+            this.textBox3.Size = new System.Drawing.Size(167, 20);
+            this.textBox3.TabIndex = 11;
+            // 
+            // lblProxyUsername
+            // 
+            this.lblProxyUsername.AutoSize = true;
+            this.lblProxyUsername.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.lblProxyUsername.Location = new System.Drawing.Point(18, 131);
+            this.lblProxyUsername.Name = "lblProxyUsername";
+            this.lblProxyUsername.Size = new System.Drawing.Size(58, 13);
+            this.lblProxyUsername.TabIndex = 10;
+            this.lblProxyUsername.Text = "Username:";
+            // 
+            // textBox2
+            // 
+            this.textBox2.Location = new System.Drawing.Point(87, 128);
+            this.textBox2.Name = "textBox2";
+            this.textBox2.Size = new System.Drawing.Size(167, 20);
+            this.textBox2.TabIndex = 9;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.label1.Location = new System.Drawing.Point(18, 81);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(32, 13);
+            this.label1.TabIndex = 8;
+            this.label1.Text = "Host:";
+            // 
+            // textBox1
+            // 
+            this.textBox1.Location = new System.Drawing.Point(87, 78);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(167, 20);
+            this.textBox1.TabIndex = 7;
+            // 
+            // lblProxyType
+            // 
+            this.lblProxyType.AutoSize = true;
+            this.lblProxyType.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.lblProxyType.Location = new System.Drawing.Point(18, 55);
+            this.lblProxyType.Name = "lblProxyType";
+            this.lblProxyType.Size = new System.Drawing.Size(34, 13);
+            this.lblProxyType.TabIndex = 6;
+            this.lblProxyType.Text = "Type:";
+            // 
+            // lblProxy
+            // 
+            this.lblProxy.AutoSize = true;
+            this.lblProxy.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblProxy.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.lblProxy.Location = new System.Drawing.Point(18, 7);
+            this.lblProxy.Name = "lblProxy";
+            this.lblProxy.Size = new System.Drawing.Size(228, 17);
+            this.lblProxy.TabIndex = 4;
+            this.lblProxy.Text = "Proxy (doesn\'t work right now Keepo)";
+            // 
+            // chkProxyEnabled
+            // 
+            this.chkProxyEnabled.AutoSize = true;
+            this.chkProxyEnabled.Checked = true;
+            this.chkProxyEnabled.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkProxyEnabled.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.chkProxyEnabled.Location = new System.Drawing.Point(21, 31);
+            this.chkProxyEnabled.Name = "chkProxyEnabled";
+            this.chkProxyEnabled.Size = new System.Drawing.Size(88, 17);
+            this.chkProxyEnabled.TabIndex = 3;
+            this.chkProxyEnabled.Text = "Enable Proxy";
+            this.chkProxyEnabled.UseVisualStyleBackColor = true;
             // 
             // panel5
             // 
@@ -684,334 +1437,6 @@
     "turbo)\r\n";
             this.chkRainbow.UseVisualStyleBackColor = true;
             // 
-            // panel2
-            // 
-            this.panel2.Controls.Add(this.comboBox1);
-            this.panel2.Controls.Add(this.label4);
-            this.panel2.Controls.Add(this.textBox4);
-            this.panel2.Controls.Add(this.lblProxyPassword);
-            this.panel2.Controls.Add(this.textBox3);
-            this.panel2.Controls.Add(this.lblProxyUsername);
-            this.panel2.Controls.Add(this.textBox2);
-            this.panel2.Controls.Add(this.label1);
-            this.panel2.Controls.Add(this.textBox1);
-            this.panel2.Controls.Add(this.lblProxyType);
-            this.panel2.Controls.Add(this.lblProxy);
-            this.panel2.Controls.Add(this.chkProxyEnabled);
-            this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel2.Location = new System.Drawing.Point(0, 0);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(481, 449);
-            this.panel2.TabIndex = 0;
-            // 
-            // comboBox1
-            // 
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(87, 52);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(167, 21);
-            this.comboBox1.TabIndex = 15;
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.label4.Location = new System.Drawing.Point(18, 107);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(29, 13);
-            this.label4.TabIndex = 14;
-            this.label4.Text = "Port:";
-            // 
-            // textBox4
-            // 
-            this.textBox4.Location = new System.Drawing.Point(87, 103);
-            this.textBox4.Name = "textBox4";
-            this.textBox4.Size = new System.Drawing.Size(167, 20);
-            this.textBox4.TabIndex = 13;
-            // 
-            // lblProxyPassword
-            // 
-            this.lblProxyPassword.AutoSize = true;
-            this.lblProxyPassword.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.lblProxyPassword.Location = new System.Drawing.Point(18, 156);
-            this.lblProxyPassword.Name = "lblProxyPassword";
-            this.lblProxyPassword.Size = new System.Drawing.Size(56, 13);
-            this.lblProxyPassword.TabIndex = 12;
-            this.lblProxyPassword.Text = "Password:";
-            // 
-            // textBox3
-            // 
-            this.textBox3.Location = new System.Drawing.Point(87, 153);
-            this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(167, 20);
-            this.textBox3.TabIndex = 11;
-            // 
-            // lblProxyUsername
-            // 
-            this.lblProxyUsername.AutoSize = true;
-            this.lblProxyUsername.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.lblProxyUsername.Location = new System.Drawing.Point(18, 131);
-            this.lblProxyUsername.Name = "lblProxyUsername";
-            this.lblProxyUsername.Size = new System.Drawing.Size(58, 13);
-            this.lblProxyUsername.TabIndex = 10;
-            this.lblProxyUsername.Text = "Username:";
-            // 
-            // textBox2
-            // 
-            this.textBox2.Location = new System.Drawing.Point(87, 128);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(167, 20);
-            this.textBox2.TabIndex = 9;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.label1.Location = new System.Drawing.Point(18, 81);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(32, 13);
-            this.label1.TabIndex = 8;
-            this.label1.Text = "Host:";
-            // 
-            // textBox1
-            // 
-            this.textBox1.Location = new System.Drawing.Point(87, 78);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(167, 20);
-            this.textBox1.TabIndex = 7;
-            // 
-            // lblProxyType
-            // 
-            this.lblProxyType.AutoSize = true;
-            this.lblProxyType.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.lblProxyType.Location = new System.Drawing.Point(18, 55);
-            this.lblProxyType.Name = "lblProxyType";
-            this.lblProxyType.Size = new System.Drawing.Size(34, 13);
-            this.lblProxyType.TabIndex = 6;
-            this.lblProxyType.Text = "Type:";
-            // 
-            // lblProxy
-            // 
-            this.lblProxy.AutoSize = true;
-            this.lblProxy.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblProxy.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.lblProxy.Location = new System.Drawing.Point(18, 7);
-            this.lblProxy.Name = "lblProxy";
-            this.lblProxy.Size = new System.Drawing.Size(228, 17);
-            this.lblProxy.TabIndex = 4;
-            this.lblProxy.Text = "Proxy (doesn\'t work right now Keepo)";
-            // 
-            // chkProxyEnabled
-            // 
-            this.chkProxyEnabled.AutoSize = true;
-            this.chkProxyEnabled.Checked = true;
-            this.chkProxyEnabled.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkProxyEnabled.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.chkProxyEnabled.Location = new System.Drawing.Point(21, 31);
-            this.chkProxyEnabled.Name = "chkProxyEnabled";
-            this.chkProxyEnabled.Size = new System.Drawing.Size(88, 17);
-            this.chkProxyEnabled.TabIndex = 3;
-            this.chkProxyEnabled.Text = "Enable Proxy";
-            this.chkProxyEnabled.UseVisualStyleBackColor = true;
-            // 
-            // panel10
-            // 
-            this.panel10.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel10.Location = new System.Drawing.Point(0, 0);
-            this.panel10.Name = "panel10";
-            this.panel10.Size = new System.Drawing.Size(481, 449);
-            this.panel10.TabIndex = 8;
-            // 
-            // panel8
-            // 
-            this.panel8.Controls.Add(this.label13);
-            this.panel8.Controls.Add(this.chkEnableInlineWhispers);
-            this.panel8.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel8.Location = new System.Drawing.Point(0, 0);
-            this.panel8.Name = "panel8";
-            this.panel8.Size = new System.Drawing.Size(481, 449);
-            this.panel8.TabIndex = 6;
-            // 
-            // label13
-            // 
-            this.label13.AutoSize = true;
-            this.label13.ForeColor = System.Drawing.Color.White;
-            this.label13.Location = new System.Drawing.Point(12, 40);
-            this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(300, 39);
-            this.label13.TabIndex = 25;
-            this.label13.Text = "You can join the channel /whispers to view your whispers!\r\n\r\nYou can send whisper" +
-    "s using this command: /w user message";
-            // 
-            // chkEnableInlineWhispers
-            // 
-            this.chkEnableInlineWhispers.AutoSize = true;
-            this.chkEnableInlineWhispers.Checked = true;
-            this.chkEnableInlineWhispers.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkEnableInlineWhispers.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.chkEnableInlineWhispers.Location = new System.Drawing.Point(15, 13);
-            this.chkEnableInlineWhispers.Name = "chkEnableInlineWhispers";
-            this.chkEnableInlineWhispers.Size = new System.Drawing.Size(130, 17);
-            this.chkEnableInlineWhispers.TabIndex = 24;
-            this.chkEnableInlineWhispers.Text = "Enable inline whispers";
-            this.chkEnableInlineWhispers.UseVisualStyleBackColor = true;
-            // 
-            // panel3
-            // 
-            this.panel3.Controls.Add(this.tabControl1);
-            this.panel3.Controls.Add(this.btnTextCustomPing);
-            this.panel3.Controls.Add(this.btnCustomHighlightOpenFile);
-            this.panel3.Controls.Add(this.chkCustomPingSound);
-            this.panel3.Controls.Add(this.chkFlashTaskbar);
-            this.panel3.Controls.Add(this.chkHighlight);
-            this.panel3.Controls.Add(this.chkPings);
-            this.panel3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel3.Location = new System.Drawing.Point(0, 0);
-            this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(481, 449);
-            this.panel3.TabIndex = 1;
-            // 
-            // tabControl1
-            // 
-            this.tabControl1.Controls.Add(this.tabPage1);
-            this.tabControl1.Controls.Add(this.tabPage2);
-            this.tabControl1.Location = new System.Drawing.Point(17, 110);
-            this.tabControl1.Name = "tabControl1";
-            this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(415, 289);
-            this.tabControl1.TabIndex = 21;
-            // 
-            // tabPage1
-            // 
-            this.tabPage1.Controls.Add(this.label2);
-            this.tabPage1.Controls.Add(this.rtbHighlights);
-            this.tabPage1.Location = new System.Drawing.Point(4, 22);
-            this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(407, 263);
-            this.tabPage1.TabIndex = 0;
-            this.tabPage1.Text = "Highlight keywords";
-            this.tabPage1.UseVisualStyleBackColor = true;
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.label2.ForeColor = System.Drawing.Color.Black;
-            this.label2.Location = new System.Drawing.Point(3, 5);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(163, 13);
-            this.label2.TabIndex = 22;
-            this.label2.Text = "Highlight keywords (one per line):";
-            // 
-            // rtbHighlights
-            // 
-            this.rtbHighlights.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.rtbHighlights.Location = new System.Drawing.Point(6, 21);
-            this.rtbHighlights.Name = "rtbHighlights";
-            this.rtbHighlights.Size = new System.Drawing.Size(395, 236);
-            this.rtbHighlights.TabIndex = 17;
-            this.rtbHighlights.Text = "";
-            // 
-            // tabPage2
-            // 
-            this.tabPage2.Controls.Add(this.rtbUserBlacklist);
-            this.tabPage2.Controls.Add(this.label6);
-            this.tabPage2.Location = new System.Drawing.Point(4, 22);
-            this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(407, 263);
-            this.tabPage2.TabIndex = 1;
-            this.tabPage2.Text = "User highlight blacklist";
-            this.tabPage2.UseVisualStyleBackColor = true;
-            // 
-            // rtbUserBlacklist
-            // 
-            this.rtbUserBlacklist.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.rtbUserBlacklist.Location = new System.Drawing.Point(6, 21);
-            this.rtbUserBlacklist.Name = "rtbUserBlacklist";
-            this.rtbUserBlacklist.Size = new System.Drawing.Size(395, 246);
-            this.rtbUserBlacklist.TabIndex = 24;
-            this.rtbUserBlacklist.Text = "";
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.label6.ForeColor = System.Drawing.Color.Black;
-            this.label6.Location = new System.Drawing.Point(3, 5);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(204, 13);
-            this.label6.TabIndex = 23;
-            this.label6.Text = "Users that can not ping you (one per line):";
-            // 
-            // btnTextCustomPing
-            // 
-            this.btnTextCustomPing.Location = new System.Drawing.Point(188, 78);
-            this.btnTextCustomPing.Name = "btnTextCustomPing";
-            this.btnTextCustomPing.Size = new System.Drawing.Size(75, 23);
-            this.btnTextCustomPing.TabIndex = 20;
-            this.btnTextCustomPing.Text = "Test";
-            this.btnTextCustomPing.UseVisualStyleBackColor = true;
-            this.btnTextCustomPing.Click += new System.EventHandler(this.btnTextCustomPing_Click);
-            // 
-            // btnCustomHighlightOpenFile
-            // 
-            this.btnCustomHighlightOpenFile.Image = global::Chatterino.Properties.Resources.OpenFolder_16x;
-            this.btnCustomHighlightOpenFile.Location = new System.Drawing.Point(156, 78);
-            this.btnCustomHighlightOpenFile.Name = "btnCustomHighlightOpenFile";
-            this.btnCustomHighlightOpenFile.Size = new System.Drawing.Size(24, 23);
-            this.btnCustomHighlightOpenFile.TabIndex = 19;
-            this.btnCustomHighlightOpenFile.UseVisualStyleBackColor = true;
-            // 
-            // chkCustomPingSound
-            // 
-            this.chkCustomPingSound.AutoSize = true;
-            this.chkCustomPingSound.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.chkCustomPingSound.Location = new System.Drawing.Point(16, 82);
-            this.chkCustomPingSound.Name = "chkCustomPingSound";
-            this.chkCustomPingSound.Size = new System.Drawing.Size(135, 17);
-            this.chkCustomPingSound.TabIndex = 18;
-            this.chkCustomPingSound.Text = "Custom highlight sound";
-            this.chkCustomPingSound.UseVisualStyleBackColor = true;
-            // 
-            // chkFlashTaskbar
-            // 
-            this.chkFlashTaskbar.AutoSize = true;
-            this.chkFlashTaskbar.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.chkFlashTaskbar.Location = new System.Drawing.Point(16, 59);
-            this.chkFlashTaskbar.Name = "chkFlashTaskbar";
-            this.chkFlashTaskbar.Size = new System.Drawing.Size(232, 17);
-            this.chkFlashTaskbar.TabIndex = 15;
-            this.chkFlashTaskbar.Text = "Flash taskbar when your name is mentioned";
-            this.chkFlashTaskbar.UseVisualStyleBackColor = true;
-            // 
-            // chkHighlight
-            // 
-            this.chkHighlight.AutoSize = true;
-            this.chkHighlight.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.chkHighlight.Location = new System.Drawing.Point(16, 13);
-            this.chkHighlight.Name = "chkHighlight";
-            this.chkHighlight.Size = new System.Drawing.Size(221, 17);
-            this.chkHighlight.TabIndex = 13;
-            this.chkHighlight.Text = "Highlight messages containing your name";
-            this.chkHighlight.UseVisualStyleBackColor = true;
-            // 
-            // chkPings
-            // 
-            this.chkPings.AutoSize = true;
-            this.chkPings.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.chkPings.Location = new System.Drawing.Point(16, 36);
-            this.chkPings.Name = "chkPings";
-            this.chkPings.Size = new System.Drawing.Size(221, 17);
-            this.chkPings.TabIndex = 14;
-            this.chkPings.Text = "Play sound when your name is mentioned";
-            this.chkPings.UseVisualStyleBackColor = true;
-            // 
             // panel7
             // 
             this.panel7.Controls.Add(this.chkDoubleClickLinks);
@@ -1265,354 +1690,6 @@
             this.chkFFzEmotes.Text = "Enable FrankerFaceZ Emotes";
             this.chkFFzEmotes.UseVisualStyleBackColor = true;
             // 
-            // panel1
-            // 
-            this.panel1.Controls.Add(this.groupBox1);
-            this.panel1.Controls.Add(this.labelNightDesc);
-            this.panel1.Controls.Add(this.numThemeNightUntil);
-            this.panel1.Controls.Add(this.labelNightThemeUntil);
-            this.panel1.Controls.Add(this.numThemeNightFrom);
-            this.panel1.Controls.Add(this.labelThemeNightFrom);
-            this.panel1.Controls.Add(this.comboThemeNight);
-            this.panel1.Controls.Add(this.labelThemeNight);
-            this.panel1.Controls.Add(this.checkBoxDifferentThemeAtNight);
-            this.panel1.Controls.Add(this.chkTopMost);
-            this.panel1.Controls.Add(this.btnSelectFont);
-            this.panel1.Controls.Add(this.label10);
-            this.panel1.Controls.Add(this.trackBar1);
-            this.panel1.Controls.Add(this.chkInputShowMessageLength);
-            this.panel1.Controls.Add(this.comboTheme);
-            this.panel1.Controls.Add(this.label7);
-            this.panel1.Controls.Add(this.lblFont);
-            this.panel1.Controls.Add(this.label5);
-            this.panel1.Controls.Add(this.chkHideInput);
-            this.panel1.Controls.Add(this.txtMsgLimit);
-            this.panel1.Controls.Add(this.label3);
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel1.Location = new System.Drawing.Point(0, 0);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(481, 449);
-            this.panel1.TabIndex = 0;
-            // 
-            // groupBox1
-            // 
-            this.groupBox1.Controls.Add(this.chkTimestamps);
-            this.groupBox1.Controls.Add(this.chkTimestampAmPm);
-            this.groupBox1.Controls.Add(this.chkTimestampSeconds);
-            this.groupBox1.Controls.Add(this.chkMessageSeperators);
-            this.groupBox1.Controls.Add(this.chkLastReadMessageIndicator);
-            this.groupBox1.ForeColor = System.Drawing.Color.White;
-            this.groupBox1.Location = new System.Drawing.Point(17, 226);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(435, 92);
-            this.groupBox1.TabIndex = 37;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Messages";
-            // 
-            // chkTimestamps
-            // 
-            this.chkTimestamps.AutoSize = true;
-            this.chkTimestamps.Checked = true;
-            this.chkTimestamps.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkTimestamps.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.chkTimestamps.Location = new System.Drawing.Point(8, 17);
-            this.chkTimestamps.Name = "chkTimestamps";
-            this.chkTimestamps.Size = new System.Drawing.Size(108, 17);
-            this.chkTimestamps.TabIndex = 0;
-            this.chkTimestamps.Text = "Show timestamps";
-            this.chkTimestamps.UseVisualStyleBackColor = true;
-            // 
-            // chkTimestampAmPm
-            // 
-            this.chkTimestampAmPm.AutoSize = true;
-            this.chkTimestampAmPm.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.chkTimestampAmPm.Location = new System.Drawing.Point(320, 18);
-            this.chkTimestampAmPm.Name = "chkTimestampAmPm";
-            this.chkTimestampAmPm.Size = new System.Drawing.Size(81, 17);
-            this.chkTimestampAmPm.TabIndex = 36;
-            this.chkTimestampAmPm.Text = "Use am/pm";
-            this.chkTimestampAmPm.UseVisualStyleBackColor = true;
-            // 
-            // chkTimestampSeconds
-            // 
-            this.chkTimestampSeconds.AutoSize = true;
-            this.chkTimestampSeconds.Checked = true;
-            this.chkTimestampSeconds.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkTimestampSeconds.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.chkTimestampSeconds.Location = new System.Drawing.Point(146, 17);
-            this.chkTimestampSeconds.Name = "chkTimestampSeconds";
-            this.chkTimestampSeconds.Size = new System.Drawing.Size(162, 17);
-            this.chkTimestampSeconds.TabIndex = 1;
-            this.chkTimestampSeconds.Text = "Show seconds in timestamps";
-            this.chkTimestampSeconds.UseVisualStyleBackColor = true;
-            // 
-            // chkMessageSeperators
-            // 
-            this.chkMessageSeperators.AutoSize = true;
-            this.chkMessageSeperators.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.chkMessageSeperators.Location = new System.Drawing.Point(8, 40);
-            this.chkMessageSeperators.Name = "chkMessageSeperators";
-            this.chkMessageSeperators.Size = new System.Drawing.Size(119, 17);
-            this.chkMessageSeperators.TabIndex = 16;
-            this.chkMessageSeperators.Text = "Separate messages";
-            this.chkMessageSeperators.UseVisualStyleBackColor = true;
-            // 
-            // chkLastReadMessageIndicator
-            // 
-            this.chkLastReadMessageIndicator.AutoSize = true;
-            this.chkLastReadMessageIndicator.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.chkLastReadMessageIndicator.Location = new System.Drawing.Point(9, 64);
-            this.chkLastReadMessageIndicator.Name = "chkLastReadMessageIndicator";
-            this.chkLastReadMessageIndicator.Size = new System.Drawing.Size(235, 17);
-            this.chkLastReadMessageIndicator.TabIndex = 27;
-            this.chkLastReadMessageIndicator.Text = "Show red indicator for the last read message\r\n";
-            this.chkLastReadMessageIndicator.UseVisualStyleBackColor = true;
-            // 
-            // labelNightDesc
-            // 
-            this.labelNightDesc.AutoSize = true;
-            this.labelNightDesc.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.labelNightDesc.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.labelNightDesc.Location = new System.Drawing.Point(410, 44);
-            this.labelNightDesc.Name = "labelNightDesc";
-            this.labelNightDesc.Size = new System.Drawing.Size(34, 13);
-            this.labelNightDesc.TabIndex = 35;
-            this.labelNightDesc.Text = "(1-24)";
-            // 
-            // numThemeNightUntil
-            // 
-            this.numThemeNightUntil.Location = new System.Drawing.Point(346, 40);
-            this.numThemeNightUntil.Maximum = new decimal(new int[] {
-            24,
-            0,
-            0,
-            0});
-            this.numThemeNightUntil.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.numThemeNightUntil.Name = "numThemeNightUntil";
-            this.numThemeNightUntil.Size = new System.Drawing.Size(57, 20);
-            this.numThemeNightUntil.TabIndex = 34;
-            this.numThemeNightUntil.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            // 
-            // labelNightThemeUntil
-            // 
-            this.labelNightThemeUntil.AutoSize = true;
-            this.labelNightThemeUntil.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.labelNightThemeUntil.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.labelNightThemeUntil.Location = new System.Drawing.Point(315, 44);
-            this.labelNightThemeUntil.Name = "labelNightThemeUntil";
-            this.labelNightThemeUntil.Size = new System.Drawing.Size(26, 13);
-            this.labelNightThemeUntil.TabIndex = 33;
-            this.labelNightThemeUntil.Text = "until";
-            // 
-            // numThemeNightFrom
-            // 
-            this.numThemeNightFrom.Location = new System.Drawing.Point(252, 40);
-            this.numThemeNightFrom.Maximum = new decimal(new int[] {
-            24,
-            0,
-            0,
-            0});
-            this.numThemeNightFrom.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.numThemeNightFrom.Name = "numThemeNightFrom";
-            this.numThemeNightFrom.Size = new System.Drawing.Size(57, 20);
-            this.numThemeNightFrom.TabIndex = 32;
-            this.numThemeNightFrom.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            // 
-            // labelThemeNightFrom
-            // 
-            this.labelThemeNightFrom.AutoSize = true;
-            this.labelThemeNightFrom.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.labelThemeNightFrom.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.labelThemeNightFrom.Location = new System.Drawing.Point(222, 44);
-            this.labelThemeNightFrom.Name = "labelThemeNightFrom";
-            this.labelThemeNightFrom.Size = new System.Drawing.Size(27, 13);
-            this.labelThemeNightFrom.TabIndex = 31;
-            this.labelThemeNightFrom.Text = "from";
-            // 
-            // comboThemeNight
-            // 
-            this.comboThemeNight.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboThemeNight.FormattingEnabled = true;
-            this.comboThemeNight.Items.AddRange(new object[] {
-            "White",
-            "Light",
-            "Dark",
-            "Black"});
-            this.comboThemeNight.Location = new System.Drawing.Point(97, 41);
-            this.comboThemeNight.Name = "comboThemeNight";
-            this.comboThemeNight.Size = new System.Drawing.Size(119, 21);
-            this.comboThemeNight.TabIndex = 29;
-            // 
-            // labelThemeNight
-            // 
-            this.labelThemeNight.AutoSize = true;
-            this.labelThemeNight.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.labelThemeNight.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.labelThemeNight.Location = new System.Drawing.Point(14, 44);
-            this.labelThemeNight.Name = "labelThemeNight";
-            this.labelThemeNight.Size = new System.Drawing.Size(77, 13);
-            this.labelThemeNight.TabIndex = 30;
-            this.labelThemeNight.Text = "Theme (Night):";
-            // 
-            // checkBoxDifferentThemeAtNight
-            // 
-            this.checkBoxDifferentThemeAtNight.AutoSize = true;
-            this.checkBoxDifferentThemeAtNight.Checked = true;
-            this.checkBoxDifferentThemeAtNight.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxDifferentThemeAtNight.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.checkBoxDifferentThemeAtNight.Location = new System.Drawing.Point(243, 14);
-            this.checkBoxDifferentThemeAtNight.Name = "checkBoxDifferentThemeAtNight";
-            this.checkBoxDifferentThemeAtNight.Size = new System.Drawing.Size(160, 17);
-            this.checkBoxDifferentThemeAtNight.TabIndex = 28;
-            this.checkBoxDifferentThemeAtNight.Text = "different Theme during Night";
-            this.checkBoxDifferentThemeAtNight.UseVisualStyleBackColor = true;
-            // 
-            // chkTopMost
-            // 
-            this.chkTopMost.AutoSize = true;
-            this.chkTopMost.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.chkTopMost.Location = new System.Drawing.Point(17, 193);
-            this.chkTopMost.Name = "chkTopMost";
-            this.chkTopMost.Size = new System.Drawing.Size(133, 17);
-            this.chkTopMost.TabIndex = 26;
-            this.chkTopMost.Text = "Window always on top\r\n";
-            this.chkTopMost.UseVisualStyleBackColor = true;
-            // 
-            // btnSelectFont
-            // 
-            this.btnSelectFont.Location = new System.Drawing.Point(98, 109);
-            this.btnSelectFont.Name = "btnSelectFont";
-            this.btnSelectFont.Size = new System.Drawing.Size(75, 23);
-            this.btnSelectFont.TabIndex = 14;
-            this.btnSelectFont.Text = "Select";
-            this.btnSelectFont.UseVisualStyleBackColor = true;
-            // 
-            // label10
-            // 
-            this.label10.AutoSize = true;
-            this.label10.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.label10.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.label10.Location = new System.Drawing.Point(14, 77);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(64, 13);
-            this.label10.TabIndex = 20;
-            this.label10.Text = "Theme hue:";
-            // 
-            // trackBar1
-            // 
-            this.trackBar1.LargeChange = 45;
-            this.trackBar1.Location = new System.Drawing.Point(86, 72);
-            this.trackBar1.Maximum = 360;
-            this.trackBar1.Name = "trackBar1";
-            this.trackBar1.Size = new System.Drawing.Size(250, 45);
-            this.trackBar1.TabIndex = 19;
-            this.trackBar1.TickStyle = System.Windows.Forms.TickStyle.None;
-            // 
-            // chkInputShowMessageLength
-            // 
-            this.chkInputShowMessageLength.AutoSize = true;
-            this.chkInputShowMessageLength.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.chkInputShowMessageLength.Location = new System.Drawing.Point(17, 170);
-            this.chkInputShowMessageLength.Name = "chkInputShowMessageLength";
-            this.chkInputShowMessageLength.Size = new System.Drawing.Size(316, 17);
-            this.chkInputShowMessageLength.TabIndex = 18;
-            this.chkInputShowMessageLength.Text = "Show message length (actual character count not text length)";
-            this.chkInputShowMessageLength.UseVisualStyleBackColor = true;
-            // 
-            // comboTheme
-            // 
-            this.comboTheme.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboTheme.FormattingEnabled = true;
-            this.comboTheme.Items.AddRange(new object[] {
-            "White",
-            "Light",
-            "Dark",
-            "Black"});
-            this.comboTheme.Location = new System.Drawing.Point(97, 11);
-            this.comboTheme.Name = "comboTheme";
-            this.comboTheme.Size = new System.Drawing.Size(119, 21);
-            this.comboTheme.TabIndex = 16;
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.label7.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.label7.Location = new System.Drawing.Point(14, 14);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(43, 13);
-            this.label7.TabIndex = 17;
-            this.label7.Text = "Theme:";
-            // 
-            // lblFont
-            // 
-            this.lblFont.AutoSize = true;
-            this.lblFont.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.lblFont.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.lblFont.Location = new System.Drawing.Point(182, 114);
-            this.lblFont.Name = "lblFont";
-            this.lblFont.Size = new System.Drawing.Size(54, 13);
-            this.lblFont.TabIndex = 15;
-            this.lblFont.Text = "font name";
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.label5.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.label5.Location = new System.Drawing.Point(15, 114);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(31, 13);
-            this.label5.TabIndex = 13;
-            this.label5.Text = "Font:";
-            // 
-            // chkHideInput
-            // 
-            this.chkHideInput.AutoSize = true;
-            this.chkHideInput.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.chkHideInput.Location = new System.Drawing.Point(17, 147);
-            this.chkHideInput.Name = "chkHideInput";
-            this.chkHideInput.Size = new System.Drawing.Size(133, 17);
-            this.chkHideInput.TabIndex = 12;
-            this.chkHideInput.Text = "Hide input box if empty";
-            this.chkHideInput.UseVisualStyleBackColor = true;
-            // 
-            // txtMsgLimit
-            // 
-            this.txtMsgLimit.Location = new System.Drawing.Point(269, 330);
-            this.txtMsgLimit.Name = "txtMsgLimit";
-            this.txtMsgLimit.Size = new System.Drawing.Size(167, 20);
-            this.txtMsgLimit.TabIndex = 10;
-            this.txtMsgLimit.Visible = false;
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.label3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.label3.Location = new System.Drawing.Point(185, 334);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(77, 13);
-            this.label3.TabIndex = 11;
-            this.label3.Text = "Message Limit:";
-            this.label3.Visible = false;
-            // 
             // panel11
             // 
             this.panel11.Controls.Add(this.label14);
@@ -1734,6 +1811,7 @@
             this.spCommands.Location = new System.Drawing.Point(0, 90);
             this.spCommands.Name = "spCommands";
             this.spCommands.Panel = this.panel5;
+            this.spCommands.Selected = false;
             this.spCommands.Size = new System.Drawing.Size(150, 30);
             this.spCommands.TabIndex = 5;
             this.spCommands.Text = "Commands";
@@ -1798,11 +1876,22 @@
             this.spHighlighted.TabIndex = 3;
             this.spHighlighted.Text = "Highlighting";
             // 
+            // spModeration
+            // 
+            this.spModeration.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.spModeration.Image = global::Chatterino.Properties.Resources.ban;
+            this.spModeration.Location = new System.Drawing.Point(0, 270);
+            this.spModeration.Name = "spModeration";
+            this.spModeration.Panel = this.panel13;
+            this.spModeration.Size = new System.Drawing.Size(150, 30);
+            this.spModeration.TabIndex = 13;
+            this.spModeration.Text = "Moderation";
+            // 
             // spWhispers
             // 
             this.spWhispers.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.spWhispers.Image = global::Chatterino.Properties.Resources.Message_16xLG;
-            this.spWhispers.Location = new System.Drawing.Point(0, 270);
+            this.spWhispers.Location = new System.Drawing.Point(0, 300);
             this.spWhispers.Name = "spWhispers";
             this.spWhispers.Panel = this.panel8;
             this.spWhispers.Selected = false;
@@ -1814,7 +1903,7 @@
             // 
             this.spBrowserExtension.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.spBrowserExtension.Image = global::Chatterino.Properties.Resources.BrowserLink_16x;
-            this.spBrowserExtension.Location = new System.Drawing.Point(0, 300);
+            this.spBrowserExtension.Location = new System.Drawing.Point(0, 330);
             this.spBrowserExtension.Name = "spBrowserExtension";
             this.spBrowserExtension.Panel = this.panel10;
             this.spBrowserExtension.Selected = false;
@@ -1827,7 +1916,7 @@
             // 
             this.spConnection.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.spConnection.Image = null;
-            this.spConnection.Location = new System.Drawing.Point(0, 330);
+            this.spConnection.Location = new System.Drawing.Point(0, 360);
             this.spConnection.Name = "spConnection";
             this.spConnection.Panel = this.panel2;
             this.spConnection.Selected = false;
@@ -1853,6 +1942,28 @@
             this.Text = "Preferences";
             this.tabs.ResumeLayout(false);
             this.RightPanel.ResumeLayout(false);
+            this.panel13.ResumeLayout(false);
+            this.panel13.PerformLayout();
+            this.groupBox3.ResumeLayout(false);
+            this.groupBox3.PerformLayout();
+            this.panel8.ResumeLayout(false);
+            this.panel8.PerformLayout();
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numThemeNightUntil)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numThemeNightFrom)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).EndInit();
+            this.panel3.ResumeLayout(false);
+            this.panel3.PerformLayout();
+            this.tabControl1.ResumeLayout(false);
+            this.tabPage1.ResumeLayout(false);
+            this.tabPage1.PerformLayout();
+            this.tabPage2.ResumeLayout(false);
+            this.tabPage2.PerformLayout();
+            this.panel2.ResumeLayout(false);
+            this.panel2.PerformLayout();
             this.panel5.ResumeLayout(false);
             this.panel5.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvCommands)).EndInit();
@@ -1864,17 +1975,6 @@
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar2)).EndInit();
-            this.panel2.ResumeLayout(false);
-            this.panel2.PerformLayout();
-            this.panel8.ResumeLayout(false);
-            this.panel8.PerformLayout();
-            this.panel3.ResumeLayout(false);
-            this.panel3.PerformLayout();
-            this.tabControl1.ResumeLayout(false);
-            this.tabPage1.ResumeLayout(false);
-            this.tabPage1.PerformLayout();
-            this.tabPage2.ResumeLayout(false);
-            this.tabPage2.PerformLayout();
             this.panel7.ResumeLayout(false);
             this.panel7.PerformLayout();
             this.panel9.ResumeLayout(false);
@@ -1887,13 +1987,6 @@
             this.tabControl2.ResumeLayout(false);
             this.tabPage3.ResumeLayout(false);
             this.tabPage3.PerformLayout();
-            this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numThemeNightUntil)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numThemeNightFrom)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).EndInit();
             this.panel11.ResumeLayout(false);
             this.panel11.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridViewAccounts)).EndInit();
@@ -2042,5 +2135,12 @@
         private System.Windows.Forms.TextBox txtStreamlinkCustomArguments;
         private System.Windows.Forms.CheckBox chkPrefereEmotes;
         private System.Windows.Forms.Label label21;
+        private System.Windows.Forms.Panel panel13;
+        private SettingsTabPage spModeration;
+        private System.Windows.Forms.CheckBox chkBanButton;
+        private System.Windows.Forms.CheckBox chkTimeoutButton;
+        private System.Windows.Forms.Button btnAddTimeout;
+        private System.Windows.Forms.FlowLayoutPanel listView1;
+        private System.Windows.Forms.GroupBox groupBox3;
     }
 }

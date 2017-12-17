@@ -104,6 +104,30 @@ namespace Chatterino
                         }
                     }
                     break;
+                case LinkType.TimeoutUser:
+                    {
+                        var tuple = _link.Value as Tuple<string, string, int>;
+
+                        var channel = TwitchChannel.GetChannel(tuple.Item2);
+
+                        if (channel != null)
+                        {
+                            channel.SendMessage($"/timeout {tuple.Item1} {tuple.Item3}");
+                        }
+                    }
+                    break;
+                case LinkType.BanUser:
+                    {
+                        var tuple = _link.Value as Tuple<string, string>;
+
+                        var channel = TwitchChannel.GetChannel(tuple.Item2);
+
+                        if (channel != null)
+                        {
+                            channel.SendMessage($"/ban {tuple.Item1}");
+                        }
+                    }
+                    break;
             }
         }
 
@@ -293,6 +317,10 @@ namespace Chatterino
             [ImageType.Cheer800000] = Properties.Resources._800000,
             [ImageType.Cheer900000] = Properties.Resources._900000,
             [ImageType.Cheer1000000] = Properties.Resources._1000000,
+
+            [ImageType.Ban] = Properties.Resources.ban,
+            [ImageType.Timeout] = Properties.Resources.timeout,
+            [ImageType.TimeoutAlt] = Properties.Resources.timeoutalt,
         };
 
         public object GetImage(ImageType type)
@@ -452,6 +480,64 @@ namespace Chatterino
         public void ExecuteHotkeyAction(HotkeyAction action)
         {
 
+        }
+
+        static ConcurrentDictionary<string, Image> timeoutImages = new ConcurrentDictionary<string, Image>();
+        static Dictionary<string, int> values = new Dictionary<string, int>
+        {
+            ["s"] = 1,
+            ["m"] = 60,
+            ["h"] = 60 * 60,
+            ["d"] = 60 * 60 * 24,
+        };
+
+        static Font timeoutFont = new Font("Arial", 7f);
+
+        public Image GetImageForTimeout(int value)
+        {
+            string text1 = "";
+            string text2 = "";
+
+            if (value > 60 * 60 * 24 * 99 || value <= 0)
+            {
+                return Properties.Resources.timeout;
+            }
+
+            foreach (var v in values)
+            {
+                if (value >= v.Value)
+                {
+                    text1 = (value / v.Value).ToString();
+                    text2 = v.Key;
+
+                    if (text1.Length == 1)
+                    {
+                        text2 = text1 + text2;
+                        text1 = "";
+                    }
+                }
+            }
+
+            return timeoutImages.GetOrAdd(text1 + text2, x =>
+            {
+                Bitmap bitmap = new Bitmap(16, 16);
+
+                using (Graphics g = Graphics.FromImage(bitmap))
+                {
+                    var flags = TextFormatFlags.HorizontalCenter | TextFormatFlags.VerticalCenter;
+                    if (text1 != "")
+                    {
+                        TextRenderer.DrawText(g, text1, timeoutFont, new Rectangle(0, -4, 16, 16), Color.Gray, flags);
+                        TextRenderer.DrawText(g, text2, timeoutFont, new Rectangle(0, 4, 16, 16), Color.Gray, flags);
+                    }
+                    else
+                    {
+                        TextRenderer.DrawText(g, text2, timeoutFont, new Rectangle(0, 0, 16, 16), Color.Gray, flags);
+                    }
+                }
+
+                return bitmap;
+            });
         }
     }
 }

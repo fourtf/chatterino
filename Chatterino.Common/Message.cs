@@ -239,6 +239,79 @@ namespace Chatterino.Common
                 });
             }
 
+            // add moderation buttons
+            if (channel.IsModOrBroadcaster && !string.Equals(IrcManager.Account.Username, Username))
+            {
+                string badges;
+                if (data.Tags.TryGetValue("badges", out badges))
+                {
+                    if (badges.Contains("broadcaster"))
+                        goto aftermod;
+
+                    if (badges.Contains("moderator") && !channel.IsBroadcaster)
+                        goto aftermod;
+                }
+
+                if (AppSettings.EnableBanButton)
+                {
+                    words.Add(new Word
+                    {
+                        Type = SpanType.LazyLoadedImage,
+                        Value = new LazyLoadedImage(GuiEngine.Current.GetImage(ImageType.Ban)),
+                        Link = new Link(LinkType.BanUser, Tuple.Create(Username, channel.Name)),
+                        Tooltip = "Ban User"
+                    });
+                }
+
+                if (AppSettings.EnableTimeoutButton)
+                {
+                    foreach (var amount in AppSettings.TimeoutButtons)
+                    {
+                        int tmpAmount = amount;
+                        string tooltip = "";
+
+                        if (tmpAmount > 60 * 60 * 24)
+                        {
+                            tooltip += tmpAmount / (60 * 60 * 24) + " days ";
+                            tmpAmount %= 60 * 60 * 24;
+                        }
+                        if (tmpAmount > 60 * 60)
+                        {
+                            tooltip += tmpAmount / (60 * 60) + " hours ";
+                            tmpAmount %= 60 * 60;
+                        }
+                        if (tmpAmount > 60)
+                        {
+                            tooltip += tmpAmount / (60) + " mins ";
+                            tmpAmount %= 60;
+                        }
+                        if (tmpAmount > 0)
+                        {
+                            tooltip += tmpAmount + " secs ";
+                        }
+
+                        object image;
+                        if (AppSettings.TimeoutButtons.Count > 1)
+                        {
+                            image = ((dynamic)GuiEngine.Current).GetImageForTimeout(amount);
+                        }
+                        else
+                        {
+                            image = GuiEngine.Current.GetImage(ImageType.Timeout);
+                        }
+
+                        words.Add(new Word
+                        {
+                            Type = SpanType.LazyLoadedImage,
+                            Value = new LazyLoadedImage(image),
+                            Link = new Link(LinkType.TimeoutUser, Tuple.Create(Username, channel.Name, amount)),
+                            Tooltip = $"Timeout User ({tooltip.Trim()})"
+                        });
+                    }
+                }
+            }
+            aftermod:
+
             // get badges from tags
             if (data.Tags.TryGetValue("badges", out value))
             {

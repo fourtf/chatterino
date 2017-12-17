@@ -144,6 +144,12 @@
     <Compile Include="Controls\TabPage.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\TimespanSelectControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\TimespanSelectControl.Designer.cs">
+      <DependentUpon>TimespanSelectControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\Tooltip.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -222,6 +228,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\InputDialogForm.resx">
       <DependentUpon>InputDialogForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\TimespanSelectControl.resx">
+      <DependentUpon>TimespanSelectControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\UpdateDialog.resx">
       <DependentUpon>UpdateDialog.cs</DependentUpon>
@@ -304,6 +313,7 @@
     <Content Include="Controls\CustomFontDialog\LICENSE.txt" />
     <Content Include="icon2.ico" />
     <Content Include="icon2_christmas.ico" />
+    <None Include="Resources\timeoutalt.png" />
     <None Include="Resources\75000.png" />
     <None Include="Resources\50000.png" />
     <None Include="Resources\25000.png" />

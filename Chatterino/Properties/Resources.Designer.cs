@@ -203,6 +203,16 @@ namespace Chatterino.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap ban {
+            get {
+                object obj = ResourceManager.GetObject("ban", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap broadcaster_bg {
             get {
                 object obj = ResourceManager.GetObject("broadcaster_bg", resourceCulture);
@@ -475,6 +485,26 @@ namespace Chatterino.Properties {
         internal static System.Drawing.Bitmap StatusAnnotations_Blocked_16xLG_color {
             get {
                 object obj = ResourceManager.GetObject("StatusAnnotations_Blocked_16xLG_color", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap timeout {
+            get {
+                object obj = ResourceManager.GetObject("timeout", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap timeoutalt {
+            get {
+                object obj = ResourceManager.GetObject("timeoutalt", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
