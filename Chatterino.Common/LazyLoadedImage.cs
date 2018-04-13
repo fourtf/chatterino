@@ -2,7 +2,6 @@
 using System;
 using System.Linq;
 using System.Net;
-using System.Runtime.Remoting.Metadata.W3cXsd2001;
 using System.Threading.Tasks;
 
 namespace Chatterino.Common
@@ -26,6 +25,7 @@ namespace Chatterino.Common
 
         bool loading = false;
         private object image = null;
+        public object xd; 
 
         public object Image
         {
@@ -67,12 +67,13 @@ namespace Chatterino.Common
                             img = null;
                         }
                     }
-                    image = img;
-
                     if (img != null)
                     {
-                        GuiEngine.Current.HandleAnimatedTwitchEmote(this);
+                        GuiEngine.Current.HandleAnimatedTwitchEmote(this, img);
                     }
+                    image = img;
+
+                    GuiEngine.Current.TriggerEmoteLoaded();
                 }));
                 return null;
             }

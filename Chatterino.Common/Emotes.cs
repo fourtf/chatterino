@@ -440,7 +440,7 @@ namespace Chatterino.Common
 
                     var parser = new System.Text.Json.JsonParser();
                     using (var webClient = new WebClient())
-                    using (var readStream = webClient.OpenRead("http://cdn.frankerfacez.com/script/event.json"))
+                    using (var readStream = webClient.OpenRead("https://cdn.frankerfacez.com/script/event.json"))
                     {
                         dynamic json = parser.Parse(readStream);
 
@@ -452,7 +452,7 @@ namespace Chatterino.Common
                     if (set != 0)
                     {
                         using (var webClient = new WebClient())
-                        using (var readStream = webClient.OpenRead("http://api.frankerfacez.com/v1/set/" + set))
+                        using (var readStream = webClient.OpenRead("https://api.frankerfacez.com/v1/set/" + set))
                         {
                             dynamic json = parser.Parse(readStream);
                             dynamic _set = json["set"];

@@ -218,11 +218,11 @@ namespace Chatterino
             return null;
         }
 
-        public void HandleAnimatedTwitchEmote(LazyLoadedImage emote)
+        public void HandleAnimatedTwitchEmote(LazyLoadedImage emote, object image)
         {
-            if (emote.Image != null)
+            if (image != null)
             {
-                var img = (Image)emote.Image;
+                var img = (Image)image;
 
                 var animated = ImageAnimator.CanAnimate(img);
 
@@ -283,7 +283,6 @@ namespace Chatterino
                     }
                     catch { }
                 }
-                App.TriggerEmoteLoaded();
             }
         }
 
@@ -538,6 +537,11 @@ namespace Chatterino
 
                 return bitmap;
             });
+        }
+
+        public void TriggerEmoteLoaded()
+        {
+            App.TriggerEmoteLoaded();
         }
     }
 }

@@ -133,7 +133,11 @@ namespace Chatterino
                     {
                         lock (img)
                         {
-                            g.DrawImage(img, word.X + xOffset, word.Y + yOffset, word.Width, word.Height);
+                            try
+                            {
+                                g.DrawImage(img, word.X + xOffset, word.Y + yOffset, word.Width, word.Height);
+                            }
+                            catch { }
                         }
                     }
                     else
@@ -366,8 +370,16 @@ namespace Chatterino
                         case SpanType.Text:
                             break;
                         case SpanType.LazyLoadedImage:
-                            g.DrawImage((Image)((LazyLoadedImage)word.Value).Image, word.X + state.MessageXOffset,
-                                word.Y + state.MessageYOffset, word.Width, word.Height);
+                            Image img = (word.Value as LazyLoadedImage)?.Image as Image;
+
+                            if (img != null)
+                            {
+                                lock (img)
+                                {
+                                    g.DrawImage(img, word.X + state.MessageXOffset,
+                                        word.Y + state.MessageYOffset, word.Width, word.Height);
+                                }
+                            }
                             break;
                             //    case SpanType.Image:
                             //        g.DrawImage((Image)word.Value, word.X + state.MessageXOffset, word.Y + state.MessageYOffset, word.Width, word.Height);

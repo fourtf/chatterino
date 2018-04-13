@@ -543,6 +543,7 @@ namespace Chatterino.Controls
                     }
 
                     var g = buffer.Graphics;
+                    //var g = e.Graphics;
 
                     g.Clear((App.ColorScheme.ChatBackground as SolidBrush).Color);
 

@@ -438,7 +438,7 @@ namespace Chatterino.Controls
 
             // Ignored Users
             #region ignored users
-            BindCheckBox(chkTwitchIgnores, "EnableTwitchUserIgnores");
+            //BindCheckBox(chkTwitchIgnores, "EnableTwitchUserIgnores");
 
             foreach (var user in IrcManager.IgnoredUsers)
             {

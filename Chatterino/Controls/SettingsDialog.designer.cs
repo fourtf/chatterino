@@ -234,8 +234,8 @@
             this.tabs.Location = new System.Drawing.Point(0, 0);
             this.tabs.Name = "tabs";
             this.tabs.Panel = this.RightPanel;
-            this.tabs.SelectedIndex = 9;
-            this.tabs.SelectedTab = this.spModeration;
+            this.tabs.SelectedIndex = 5;
+            this.tabs.SelectedTab = this.spIgnoredUsers;
             this.tabs.Size = new System.Drawing.Size(631, 491);
             this.tabs.TabIndex = 0;
             this.tabs.TabsWidth = 150;
@@ -245,14 +245,14 @@
             this.RightPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.RightPanel.Controls.Add(this.panel13);
+            this.RightPanel.Controls.Add(this.panel6);
             this.RightPanel.Controls.Add(this.panel8);
+            this.RightPanel.Controls.Add(this.panel3);
+            this.RightPanel.Controls.Add(this.panel13);
             this.RightPanel.Controls.Add(this.panel10);
             this.RightPanel.Controls.Add(this.panel1);
-            this.RightPanel.Controls.Add(this.panel3);
             this.RightPanel.Controls.Add(this.panel2);
             this.RightPanel.Controls.Add(this.panel5);
-            this.RightPanel.Controls.Add(this.panel6);
             this.RightPanel.Controls.Add(this.panel12);
             this.RightPanel.Controls.Add(this.panel7);
             this.RightPanel.Controls.Add(this.panel9);
@@ -1137,6 +1137,7 @@
             this.chkTwitchIgnores.TabIndex = 24;
             this.chkTwitchIgnores.Text = "Enable twitch ignored users";
             this.chkTwitchIgnores.UseVisualStyleBackColor = true;
+            this.chkTwitchIgnores.Visible = false;
             // 
             // btnIgnoredUserRemove
             // 
@@ -1185,11 +1186,9 @@
             this.label9.ForeColor = System.Drawing.Color.White;
             this.label9.Location = new System.Drawing.Point(13, 334);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(361, 65);
+            this.label9.Size = new System.Drawing.Size(190, 26);
             this.label9.TabIndex = 5;
-            this.label9.Text = "/ignore in chat to ignore someone\r\n/unignore in chat to unignore someone\r\n\r\nChatt" +
-    "erino uses the twitch ignore api.\r\nIf you use your own oauth key make sure that " +
-    "it has the proper permissions.";
+            this.label9.Text = "/ignore in chat to ignore someone\r\n/unignore in chat to unignore someone";
             // 
             // panel12
             // 
@@ -1835,7 +1834,6 @@
             this.spIgnoredUsers.Location = new System.Drawing.Point(0, 150);
             this.spIgnoredUsers.Name = "spIgnoredUsers";
             this.spIgnoredUsers.Panel = this.panel6;
-            this.spIgnoredUsers.Selected = false;
             this.spIgnoredUsers.Size = new System.Drawing.Size(150, 30);
             this.spIgnoredUsers.TabIndex = 6;
             this.spIgnoredUsers.Text = "Ignored Users";
@@ -1883,6 +1881,7 @@
             this.spModeration.Location = new System.Drawing.Point(0, 270);
             this.spModeration.Name = "spModeration";
             this.spModeration.Panel = this.panel13;
+            this.spModeration.Selected = false;
             this.spModeration.Size = new System.Drawing.Size(150, 30);
             this.spModeration.TabIndex = 13;
             this.spModeration.Text = "Moderation";

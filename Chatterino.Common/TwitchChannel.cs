@@ -1035,12 +1035,12 @@ namespace Chatterino.Common
                         {
                             if (Util.IsLinux)
                             {
-                                Util.LinuxDownloadFile("http://api.frankerfacez.com/v1/room/" + channelName, ffzChannelEmotesCache);
+                                Util.LinuxDownloadFile("https://api.frankerfacez.com/v1/room/" + channelName, ffzChannelEmotesCache);
                             }
                             else
                             {
                                 using (var webClient = new WebClient())
-                                using (var readStream = webClient.OpenRead("http://api.frankerfacez.com/v1/room/" + channelName))
+                                using (var readStream = webClient.OpenRead("https://api.frankerfacez.com/v1/room/" + channelName))
                                 using (var writeStream = File.OpenWrite(ffzChannelEmotesCache))
                                 {
                                     readStream.CopyTo(writeStream);

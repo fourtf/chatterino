@@ -1,7 +1,16 @@
 ﻿# changelog
 
+## 1.3
+- fixed the LSD bug (entire screen filling up with text that never gets cleared)
+- changed access to the ffz api according to their changes
+
+## 1.2.13
+- updated to the .net framework 4.6.1
+- fixed twitch emote images not loading
+- added own implementation of ignored users instead of using the twitch api
+
 ## 1.2.12
-- added optional ban and custom timeout buttons (sponsored by WipzTV)
+- added optional ban and custom timeout buttons (sponsored by Wipz)
 
 ## 1.2.11
 - fixed some arabic character crashing DirectWrite
