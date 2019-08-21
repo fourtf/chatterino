@@ -86,7 +86,10 @@ namespace Chatterino.Common
                 {
                     try
                     {
-                        var request = WebRequest.Create($"https://api.twitch.tv/kraken/streams/{channel.Name}?client_id={IrcManager.DefaultClientID}");
+                        var request = WebRequest.Create($"https://api.twitch.tv/helix/streams?user_login={channel.Name}")
+                            .AuthorizeHelix();
+                            //$"https://api.twitch.tv/kraken/streams/{channel.Name}")
+                        
                         if (AppSettings.IgnoreSystemProxy)
                         {
                             request.Proxy = null;
@@ -97,10 +100,8 @@ namespace Chatterino.Common
                             var parser = new JsonParser();
 
                             dynamic json = parser.Parse(stream);
-
-                            dynamic root = json["stream"];
-
-                            string createdAt = root["created_at"];
+                            dynamic root = json["data"][0];
+                            string createdAt = root["started_at"];
 
                             var streamStart = DateTime.Parse(createdAt);
 

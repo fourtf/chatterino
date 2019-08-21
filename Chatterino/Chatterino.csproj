@@ -313,6 +313,7 @@
     <Content Include="Controls\CustomFontDialog\LICENSE.txt" />
     <Content Include="icon2.ico" />
     <Content Include="icon2_christmas.ico" />
+    <None Include="Resources\update.png" />
     <None Include="Resources\timeoutalt.png" />
     <None Include="Resources\75000.png" />
     <None Include="Resources\50000.png" />

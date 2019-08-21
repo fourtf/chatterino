@@ -1,5 +1,10 @@
 ﻿# changelog
 
+## 1.3.2
+- twitch is deleting their api V3 on september 12th 2019
+- this update uses the new api and V5 for automatic login, tabbing emotes, sub badges and some other stuff
+- some small features like following users are unfortunately remoted
+
 ## 1.3
 - fixed the LSD bug (entire screen filling up with text that never gets cleared)
 - changed access to the ffz api according to their changes

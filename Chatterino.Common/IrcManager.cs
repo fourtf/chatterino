@@ -126,9 +126,24 @@ namespace Chatterino.Common
                 {
                     try
                     {
+                        string uid = "";
+
+                        var idReq =
+                            WebRequest.Create($"https://api.twitch.tv/helix/users/?login={Account.Username}")
+                                .AuthorizeHelix();
+                        using (var resp = idReq.GetResponse())
+                        using (var stream = resp.GetResponseStream())
+                        {
+                            dynamic json = new JsonParser().Parse(stream);
+                            dynamic user = json["data"][0];
+                            uid = user["id"];
+                        }
+
                         var request =
                             WebRequest.Create(
-                                $"https://api.twitch.tv/kraken/users/{username}/emotes?oauth_token={oauth}&client_id={Account.ClientId}");
+                                $"https://api.twitch.tv/kraken/users/{uid}/emotes")
+                                .AuthorizeV5(oauth, Account.ClientId);
+
                         if (AppSettings.IgnoreSystemProxy)
                         {
                             request.Proxy = null;
@@ -425,6 +440,10 @@ namespace Chatterino.Common
         // Check followed users
         public static bool TryCheckIfFollowing(string username, out bool result, out string message)
         {
+            result = false;
+            message = null;
+            return false;
+            /*
             try
             {
                 var request = WebRequest.Create($"https://api.twitch.tv/kraken/users/{Account.Username}/follows/channels/{username}?client_id={Account.ClientId}&oauth_token={Account.OauthToken}");
@@ -458,6 +477,7 @@ namespace Chatterino.Common
                 message = exc.Message;
                 return false;
             }
+            */
         }
 
         public static bool TryFollowUser(string username, out string message)

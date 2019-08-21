@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -46,9 +47,16 @@ namespace Chatterino
             LoadLayout(Path.Combine(Util.GetUserDataPath(), "Layout.xml"));
 
 #if !DEBUG
-            if (AppSettings.CurrentVersion != App.CurrentVersion.ToString())
+
+            if (AppSettings.CurrentVersion == "1.3.0")
             {
                 AppSettings.CurrentVersion = App.CurrentVersion.ToString();
+
+                if (MessageBox.Show("Chatterino has been rewritten from ground up! You can install it alongside Chatterino 1 to try it out. Do you want to check it out?",
+                        "Chatterino 2", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                {
+                    Process.Start("https://www.chatterino.com");
+                }
 
                 if (App.CanShowChangelogs)
                 {
@@ -113,7 +121,7 @@ namespace Chatterino
             get
             {
                 return
-                    ((ColumnTabPage) tabControl.Selected).Columns
+                    ((ColumnTabPage)tabControl.Selected).Columns
                         .SelectMany(x => x.Widgets);
             }
         }
@@ -138,7 +146,7 @@ namespace Chatterino
             switch (keyData)
             {
                 case Keys.Control | Keys.F:
-                    (selected as ChatControl)?.SearchFor(((ChatControl) selected).Input.Logic.Text);
+                    (selected as ChatControl)?.SearchFor(((ChatControl)selected).Input.Logic.Text);
                     break;
                 case Keys.Control | Keys.U:
                     tabControl.ShowUserSwitchPopup();

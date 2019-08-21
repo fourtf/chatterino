@@ -82,6 +82,7 @@
     <Compile Include="UserInfoData.cs" />
     <Compile Include="ValueEventArgs.cs" />
     <Compile Include="VersionNumber.cs" />
+    <Compile Include="WebRequestExtension.cs" />
     <Compile Include="Word.cs" />
     <Compile Include="TwitchChannel.cs" />
     <Compile Include="LazyLoadedImage.cs" />

@@ -64,7 +64,9 @@ namespace Chatterino.Controls
             {
                 try
                 {
-                    var request = WebRequest.Create($"https://api.twitch.tv/kraken/channels/{data.UserName}?client_id={Common.IrcManager.DefaultClientID}");
+                    //var request = WebRequest.Create($"https://api.twitch.tv/kraken/channels/{data.UserName}?client_id={Common.IrcManager.DefaultClientID}");
+                    var request = WebRequest.Create($"https://api.twitch.tv/helix/users?login={data.UserName}")
+                        .AuthorizeHelix();
                     if (AppSettings.IgnoreSystemProxy)
                     {
                         request.Proxy = null;
@@ -76,20 +78,21 @@ namespace Chatterino.Controls
                         var parser = new JsonParser();
 
                         dynamic json = parser.Parse(stream);
+                        dynamic user = json["data"]?[0];
 
-                        string logo = json["logo"];
-                        string createdAt = json["created_at"];
-                        string followerCount = json["followers"];
-                        string viewCount = json["views"];
+                        string logo = user["profile_image_url"];
+                        //string createdAt = user["created_at"];
+                        //string followerCount = user["followers"];
+                        string viewCount = user["view_count"];
 
                         lblViews.Invoke(() => lblViews.Text = $"Channel Views: {viewCount}");
 
                         DateTime createAtTime;
 
-                        if (DateTime.TryParse(createdAt, out createAtTime))
-                        {
-                            lblCreatedAt.Invoke(() => lblCreatedAt.Text = $"Created at: {createAtTime.ToString()}");
-                        }
+                        //if (DateTime.TryParse(createdAt, out createAtTime))
+                        //{
+                        //    lblCreatedAt.Invoke(() => lblCreatedAt.Text = $"Created at: {createAtTime.ToString()}");
+                        //}
 
                         Task.Run(() =>
                         {
@@ -303,17 +306,18 @@ namespace Chatterino.Controls
                 // follow user
                 var isFollowing = false;
 
-                Task.Run(() =>
-                {
-                    bool result;
-                    string message;
+                this.btnFollow.Visible = false;
+                //Task.Run(() =>
+                //{
+                //    bool result;
+                //    string message;
 
-                    Common.IrcManager.TryCheckIfFollowing(data.UserName, out result, out message);
+                //    Common.IrcManager.TryCheckIfFollowing(data.UserName, out result, out message);
 
-                    isFollowing = result;
+                //    isFollowing = result;
 
-                    btnFollow.Invoke(() => btnFollow.Text = isFollowing ? "Unfollow" : "Follow");
-                });
+                //    btnFollow.Invoke(() => btnFollow.Text = isFollowing ? "Unfollow" : "Follow");
+                //});
 
                 btnFollow.Click += (s, e) =>
                 {

@@ -64,11 +64,23 @@ namespace Chatterino.Common
                     {
                         try
                         {
+                            string uid = "";
+
+                            var idReq =
+                                WebRequest.Create($"https://api.twitch.tv/helix/users/?login={this.Name}")
+                                    .AuthorizeHelix();
+                            using (var resp = idReq.GetResponse())
+                            using (var stream = resp.GetResponseStream())
+                            {
+                                dynamic json = new JsonParser().Parse(stream);
+                                dynamic user = json["data"][0];
+                                uid = user["id"];
+                            }
                             string imageUrl = null;
 
                             var request =
                                 WebRequest.Create(
-                                    $"https://api.twitch.tv/kraken/chat/{Name}/badges?client_id={IrcManager.DefaultClientID}");
+                                    $"https://api.twitch.tv/kraken/chat/{uid}/badges").AuthorizeV5();
                             if (AppSettings.IgnoreSystemProxy)
                             {
                                 request.Proxy = null;
@@ -228,28 +240,22 @@ namespace Chatterino.Common
             // call twitch kraken api
             try
             {
-                var request =
-                    WebRequest.Create(
-                        $"https://api.twitch.tv/kraken/channels/{Name}?client_id={IrcManager.DefaultClientID}");
+                var idReq =
+                    WebRequest.Create($"https://api.twitch.tv/helix/users/?login={this.Name}")
+                        .AuthorizeHelix();
                 if (AppSettings.IgnoreSystemProxy)
                 {
-                    request.Proxy = null;
+                    idReq.Proxy = null;
                 }
-                using (var response = request.GetResponse())
-                using (var stream = response.GetResponseStream())
+                using (var resp = idReq.GetResponse())
+                using (var stream = resp.GetResponseStream())
                 {
-                    var parser = new JsonParser();
-
-                    dynamic json = parser.Parse(stream);
-
-                    int roomID;
-
-                    if (int.TryParse(json["_id"], out roomID))
-                    {
-                        RoomID = roomID;
-                        return true;
-                    }
+                    dynamic json = new JsonParser().Parse(stream);
+                    dynamic user = json["data"][0];
+                    RoomID = user["id"];
                 }
+
+                return true;
             }
             catch
             {
@@ -504,44 +510,48 @@ namespace Chatterino.Common
                 {
                     var req =
                         WebRequest.Create(
-                            $"https://api.twitch.tv/kraken/streams/{Name}?client_id={IrcManager.DefaultClientID}");
+                            //$"https://api.twitch.tv/kraken/streams/{Name}?client_id={IrcManager.DefaultClientID}");
+                            $"https://api.twitch.tv/helix/streams?user_login={Name}")
+                            .AuthorizeHelix();
+
                     if (AppSettings.IgnoreSystemProxy)
                     {
                         req.Proxy = null;
                     }
                     using (var res = req.GetResponse())
-                    using (var resStream = res.GetResponseStream())
                     {
-                        var parser = new JsonParser();
-
-                        dynamic json = parser.Parse(resStream);
-
-                        var tmpIsLive = IsLive;
-
-                        IsLive = json["stream"] != null;
-
-                        if (!IsLive)
+                        using (var resStream = res.GetResponseStream())
                         {
-                            StreamViewerCount = 0;
-                            StreamStatus = null;
-                            StreamGame = null;
+                            var parser = new JsonParser();
 
-                            if (tmpIsLive)
+                            dynamic json = parser.Parse(resStream);
+                            var tmpIsLive = IsLive;
+
+                            IsLive = json["data"]?.Count > 0 ?? false;
+
+                            if (!IsLive)
                             {
+                                StreamViewerCount = 0;
+                                StreamStatus = null;
+                                StreamGame = null;
+
+                                if (tmpIsLive)
+                                {
+                                    LiveStatusUpdated?.Invoke(this, EventArgs.Empty);
+                                }
+                            }
+                            else
+                            {
+                                dynamic stream = json["data"][0];
+                                //dynamic channel = stream["channel"];
+
+                                StreamViewerCount = int.Parse(stream["viewer_count"]);
+                                StreamStatus = stream["title"];
+                                //StreamGame = channel["game"];
+                                StreamStart = DateTime.Parse(stream["started_at"]);
+
                                 LiveStatusUpdated?.Invoke(this, EventArgs.Empty);
                             }
-                        }
-                        else
-                        {
-                            dynamic stream = json["stream"];
-                            dynamic channel = stream["channel"];
-
-                            StreamViewerCount = int.Parse(stream["viewers"]);
-                            StreamStatus = channel["status"];
-                            StreamGame = channel["game"];
-                            StreamStart = DateTime.Parse(stream["created_at"]);
-
-                            LiveStatusUpdated?.Invoke(this, EventArgs.Empty);
                         }
                     }
                 }

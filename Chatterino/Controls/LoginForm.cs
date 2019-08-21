@@ -83,7 +83,10 @@ namespace Chatterino.Controls
                             var access_token = context.Request.QueryString["access_token"];
                             var scope = context.Request.QueryString["scope"];
 
-                            var request = WebRequest.Create("https://api.twitch.tv/kraken?oauth_token=" + access_token + "&client_id=" + IrcManager.DefaultClientID);
+                            //var request = WebRequest.Create("https://api.twitch.tv/kraken?oauth_token=" + access_token + "&client_id=" + IrcManager.DefaultClientID);
+                            var request = WebRequest.Create("https://api.twitch.tv/kraken/user")
+                                .AuthorizeV5(access_token);
+
                             if (AppSettings.IgnoreSystemProxy)
                             {
                                 request.Proxy = null;
@@ -93,8 +96,7 @@ namespace Chatterino.Controls
                             {
                                 var parser = new JsonParser();
                                 dynamic json = parser.Parse(stream);
-                                dynamic token = json["token"];
-                                string username = token["user_name"];
+                                string username = json["name"];
 
                                 Account = new Account(username, access_token, IrcManager.DefaultClientID);
                             }
@@ -130,7 +132,7 @@ namespace Chatterino.Controls
                         }
                     }
                 }
-                catch
+                catch (Exception exc)
                 {
                     buttonLogin.Invoke(() =>
                     {
@@ -150,12 +152,12 @@ namespace Chatterino.Controls
 
         private void buttonLogin_Click(object sender, EventArgs e)
         {
-            Process.Start($"https://api.twitch.tv/kraken/oauth2/authorize?response_type=token&client_id={IrcManager.DefaultClientID}&redirect_uri=http://127.0.0.1:5215/code&force_verify=true&scope=chat_login+user_subscriptions+user_blocks_edit+user_blocks_read+user_follows_edit");
+            Process.Start($"https://id.twitch.tv/oauth2/authorize?response_type=token&client_id={IrcManager.DefaultClientID}&redirect_uri=http://127.0.0.1:5215/code&force_verify=true&scope=user_read+chat_login+user_subscriptions+user_blocks_edit+user_blocks_read+user_follows_edit");
         }
 
         private void btnManualLogin_Click(object sender, EventArgs e)
         {
-            Process.Start($"https://api.twitch.tv/kraken/oauth2/authorize?response_type=code&client_id=gkp8i0oxk7xua6pcxmg4w6u8vt8n4qw&redirect_uri=https%3A%2F%2Ffourtf.com%2Fchatterino%2Fauth&force_verify=true&scope=chat_login+user_subscriptions+user_blocks_edit+user_blocks_read+user_follows_edit");
+            Process.Start($"https://id.twitch.tv/oauth2/authorize?response_type=code&client_id=gkp8i0oxk7xua6pcxmg4w6u8vt8n4qw&redirect_uri=https%3A%2F%2Ffourtf.com%2Fchatterino%2Fauth&force_verify=true&scope=user_read+chat_login+user_subscriptions+user_blocks_edit+user_blocks_read+user_follows_edit");
         }
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
@@ -217,7 +219,9 @@ namespace Chatterino.Controls
             {
                 try
                 {
-                    var req = WebRequest.Create($"https://api.twitch.tv/kraken?oauth_token={oauthToken}&client_id={clientid}");
+                    var req = WebRequest.Create($"https://api.twitch.tv/kraken/user")
+                        .AuthorizeV5(oauthToken, clientid);
+
                     if (AppSettings.IgnoreSystemProxy)
                     {
                         req.Proxy = null;
@@ -229,21 +233,16 @@ namespace Chatterino.Controls
 
                         dynamic json = parser.Parse(stream);
 
-                        if (json.ContainsKey("error"))
-                        {
-                            ;
-                        }
+                        string name = json["name"];
 
-                        dynamic token_ = json["token"];
-
-                        if (!(bool)token_["valid"])
+                        if (name == null)
                         {
                             MessageBox.Show("The oauth token is invalid!", "Invalid login code", MessageBoxButtons.OK, MessageBoxIcon.Error);
                             return;
                         }
                         else
                         {
-                            username = token_["user_name"];
+                            username = name;
                         }
                     }
                 }

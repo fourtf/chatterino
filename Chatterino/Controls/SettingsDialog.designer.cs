@@ -31,16 +31,9 @@
             this.openFileStreamlink = new System.Windows.Forms.OpenFileDialog();
             this.tabs = new Chatterino.Controls.SettingsTabControl();
             this.RightPanel = new System.Windows.Forms.Panel();
-            this.panel13 = new System.Windows.Forms.Panel();
-            this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.chkTimeoutButton = new System.Windows.Forms.CheckBox();
-            this.listView1 = new System.Windows.Forms.FlowLayoutPanel();
-            this.btnAddTimeout = new System.Windows.Forms.Button();
-            this.chkBanButton = new System.Windows.Forms.CheckBox();
-            this.panel8 = new System.Windows.Forms.Panel();
-            this.label13 = new System.Windows.Forms.Label();
-            this.chkEnableInlineWhispers = new System.Windows.Forms.CheckBox();
-            this.panel10 = new System.Windows.Forms.Panel();
+            this.panel14 = new System.Windows.Forms.Panel();
+            this.button1 = new System.Windows.Forms.Button();
+            this.label22 = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.chkTimestamps = new System.Windows.Forms.CheckBox();
@@ -68,6 +61,31 @@
             this.chkHideInput = new System.Windows.Forms.CheckBox();
             this.txtMsgLimit = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.textBox4 = new System.Windows.Forms.TextBox();
+            this.lblProxyPassword = new System.Windows.Forms.Label();
+            this.textBox3 = new System.Windows.Forms.TextBox();
+            this.lblProxyUsername = new System.Windows.Forms.Label();
+            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.lblProxyType = new System.Windows.Forms.Label();
+            this.lblProxy = new System.Windows.Forms.Label();
+            this.chkProxyEnabled = new System.Windows.Forms.CheckBox();
+            this.panel6 = new System.Windows.Forms.Panel();
+            this.comboShowIgnoredUsersMessagesIf = new System.Windows.Forms.ComboBox();
+            this.label15 = new System.Windows.Forms.Label();
+            this.chkTwitchIgnores = new System.Windows.Forms.CheckBox();
+            this.btnIgnoredUserRemove = new System.Windows.Forms.Button();
+            this.btnIgnoredUserAdd = new System.Windows.Forms.Button();
+            this.dgvIgnoredUsers = new System.Windows.Forms.DataGridView();
+            this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.label9 = new System.Windows.Forms.Label();
+            this.panel8 = new System.Windows.Forms.Panel();
+            this.label13 = new System.Windows.Forms.Label();
+            this.chkEnableInlineWhispers = new System.Windows.Forms.CheckBox();
             this.panel3 = new System.Windows.Forms.Panel();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
@@ -82,19 +100,13 @@
             this.chkFlashTaskbar = new System.Windows.Forms.CheckBox();
             this.chkHighlight = new System.Windows.Forms.CheckBox();
             this.chkPings = new System.Windows.Forms.CheckBox();
-            this.panel2 = new System.Windows.Forms.Panel();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
-            this.label4 = new System.Windows.Forms.Label();
-            this.textBox4 = new System.Windows.Forms.TextBox();
-            this.lblProxyPassword = new System.Windows.Forms.Label();
-            this.textBox3 = new System.Windows.Forms.TextBox();
-            this.lblProxyUsername = new System.Windows.Forms.Label();
-            this.textBox2 = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.lblProxyType = new System.Windows.Forms.Label();
-            this.lblProxy = new System.Windows.Forms.Label();
-            this.chkProxyEnabled = new System.Windows.Forms.CheckBox();
+            this.panel13 = new System.Windows.Forms.Panel();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.chkTimeoutButton = new System.Windows.Forms.CheckBox();
+            this.listView1 = new System.Windows.Forms.FlowLayoutPanel();
+            this.btnAddTimeout = new System.Windows.Forms.Button();
+            this.chkBanButton = new System.Windows.Forms.CheckBox();
+            this.panel10 = new System.Windows.Forms.Panel();
             this.panel5 = new System.Windows.Forms.Panel();
             this.chkAllowCommandAtEnd = new System.Windows.Forms.CheckBox();
             this.lblCommands = new System.Windows.Forms.Label();
@@ -102,15 +114,6 @@
             this.btnCommandAdd = new System.Windows.Forms.Button();
             this.dgvCommands = new System.Windows.Forms.DataGridView();
             this.Command = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.panel6 = new System.Windows.Forms.Panel();
-            this.comboShowIgnoredUsersMessagesIf = new System.Windows.Forms.ComboBox();
-            this.label15 = new System.Windows.Forms.Label();
-            this.chkTwitchIgnores = new System.Windows.Forms.CheckBox();
-            this.btnIgnoredUserRemove = new System.Windows.Forms.Button();
-            this.btnIgnoredUserAdd = new System.Windows.Forms.Button();
-            this.dgvIgnoredUsers = new System.Windows.Forms.DataGridView();
-            this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.label9 = new System.Windows.Forms.Label();
             this.panel12 = new System.Windows.Forms.Panel();
             this.chkPrefereEmotes = new System.Windows.Forms.CheckBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
@@ -174,25 +177,27 @@
             this.spWhispers = new Chatterino.Controls.SettingsTabPage();
             this.spBrowserExtension = new Chatterino.Controls.SettingsTabPage();
             this.spConnection = new Chatterino.Controls.SettingsTabPage();
+            this.spC2 = new Chatterino.Controls.SettingsTabPage();
             this.tabs.SuspendLayout();
             this.RightPanel.SuspendLayout();
-            this.panel13.SuspendLayout();
-            this.groupBox3.SuspendLayout();
-            this.panel8.SuspendLayout();
+            this.panel14.SuspendLayout();
             this.panel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numThemeNightUntil)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numThemeNightFrom)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
+            this.panel2.SuspendLayout();
+            this.panel6.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvIgnoredUsers)).BeginInit();
+            this.panel8.SuspendLayout();
             this.panel3.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
-            this.panel2.SuspendLayout();
+            this.panel13.SuspendLayout();
+            this.groupBox3.SuspendLayout();
             this.panel5.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvCommands)).BeginInit();
-            this.panel6.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvIgnoredUsers)).BeginInit();
             this.panel12.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar2)).BeginInit();
@@ -230,12 +235,13 @@
             this.tabs.Controls.Add(this.spWhispers);
             this.tabs.Controls.Add(this.spBrowserExtension);
             this.tabs.Controls.Add(this.spConnection);
+            this.tabs.Controls.Add(this.spC2);
             this.tabs.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabs.Location = new System.Drawing.Point(0, 0);
             this.tabs.Name = "tabs";
             this.tabs.Panel = this.RightPanel;
-            this.tabs.SelectedIndex = 5;
-            this.tabs.SelectedTab = this.spIgnoredUsers;
+            this.tabs.SelectedIndex = 13;
+            this.tabs.SelectedTab = this.spC2;
             this.tabs.Size = new System.Drawing.Size(631, 491);
             this.tabs.TabIndex = 0;
             this.tabs.TabsWidth = 150;
@@ -245,13 +251,14 @@
             this.RightPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.RightPanel.Controls.Add(this.panel14);
+            this.RightPanel.Controls.Add(this.panel1);
+            this.RightPanel.Controls.Add(this.panel2);
             this.RightPanel.Controls.Add(this.panel6);
             this.RightPanel.Controls.Add(this.panel8);
             this.RightPanel.Controls.Add(this.panel3);
             this.RightPanel.Controls.Add(this.panel13);
             this.RightPanel.Controls.Add(this.panel10);
-            this.RightPanel.Controls.Add(this.panel1);
-            this.RightPanel.Controls.Add(this.panel2);
             this.RightPanel.Controls.Add(this.panel5);
             this.RightPanel.Controls.Add(this.panel12);
             this.RightPanel.Controls.Add(this.panel7);
@@ -266,113 +273,35 @@
             this.RightPanel.Size = new System.Drawing.Size(481, 491);
             this.RightPanel.TabIndex = 0;
             // 
-            // panel13
+            // panel14
             // 
-            this.panel13.Controls.Add(this.groupBox3);
-            this.panel13.Controls.Add(this.chkBanButton);
-            this.panel13.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel13.Location = new System.Drawing.Point(0, 0);
-            this.panel13.Name = "panel13";
-            this.panel13.Size = new System.Drawing.Size(481, 449);
-            this.panel13.TabIndex = 34;
+            this.panel14.Controls.Add(this.button1);
+            this.panel14.Controls.Add(this.label22);
+            this.panel14.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel14.Location = new System.Drawing.Point(0, 0);
+            this.panel14.Name = "panel14";
+            this.panel14.Size = new System.Drawing.Size(481, 449);
+            this.panel14.TabIndex = 35;
             // 
-            // groupBox3
+            // button1
             // 
-            this.groupBox3.Controls.Add(this.chkTimeoutButton);
-            this.groupBox3.Controls.Add(this.listView1);
-            this.groupBox3.Controls.Add(this.btnAddTimeout);
-            this.groupBox3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.groupBox3.Location = new System.Drawing.Point(6, 32);
-            this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(430, 360);
-            this.groupBox3.TabIndex = 18;
-            this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "Timeout buttons";
+            this.button1.Location = new System.Drawing.Point(16, 56);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 1;
+            this.button1.Text = "Check it out";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
-            // chkTimeoutButton
+            // label22
             // 
-            this.chkTimeoutButton.AutoSize = true;
-            this.chkTimeoutButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.chkTimeoutButton.Location = new System.Drawing.Point(7, 19);
-            this.chkTimeoutButton.Name = "chkTimeoutButton";
-            this.chkTimeoutButton.Size = new System.Drawing.Size(296, 17);
-            this.chkTimeoutButton.TabIndex = 14;
-            this.chkTimeoutButton.Text = "Enable \"timeout user\" buttons if moderator or broadcaster";
-            this.chkTimeoutButton.UseVisualStyleBackColor = true;
-            // 
-            // listView1
-            // 
-            this.listView1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.listView1.AutoScroll = true;
-            this.listView1.ForeColor = System.Drawing.Color.Black;
-            this.listView1.Location = new System.Drawing.Point(9, 71);
-            this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(410, 276);
-            this.listView1.TabIndex = 17;
-            // 
-            // btnAddTimeout
-            // 
-            this.btnAddTimeout.ForeColor = System.Drawing.Color.Black;
-            this.btnAddTimeout.Location = new System.Drawing.Point(6, 39);
-            this.btnAddTimeout.Name = "btnAddTimeout";
-            this.btnAddTimeout.Size = new System.Drawing.Size(115, 23);
-            this.btnAddTimeout.TabIndex = 16;
-            this.btnAddTimeout.Text = "Add timeout button";
-            this.btnAddTimeout.UseVisualStyleBackColor = true;
-            // 
-            // chkBanButton
-            // 
-            this.chkBanButton.AutoSize = true;
-            this.chkBanButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.chkBanButton.Location = new System.Drawing.Point(6, 7);
-            this.chkBanButton.Name = "chkBanButton";
-            this.chkBanButton.Size = new System.Drawing.Size(275, 17);
-            this.chkBanButton.TabIndex = 13;
-            this.chkBanButton.Text = "Enable \"ban user\" button if moderator or broadcaster";
-            this.chkBanButton.UseVisualStyleBackColor = true;
-            // 
-            // panel8
-            // 
-            this.panel8.Controls.Add(this.label13);
-            this.panel8.Controls.Add(this.chkEnableInlineWhispers);
-            this.panel8.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel8.Location = new System.Drawing.Point(0, 0);
-            this.panel8.Name = "panel8";
-            this.panel8.Size = new System.Drawing.Size(481, 449);
-            this.panel8.TabIndex = 6;
-            // 
-            // label13
-            // 
-            this.label13.AutoSize = true;
-            this.label13.ForeColor = System.Drawing.Color.White;
-            this.label13.Location = new System.Drawing.Point(12, 40);
-            this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(300, 39);
-            this.label13.TabIndex = 25;
-            this.label13.Text = "You can join the channel /whispers to view your whispers!\r\n\r\nYou can send whisper" +
-    "s using this command: /w user message";
-            // 
-            // chkEnableInlineWhispers
-            // 
-            this.chkEnableInlineWhispers.AutoSize = true;
-            this.chkEnableInlineWhispers.Checked = true;
-            this.chkEnableInlineWhispers.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkEnableInlineWhispers.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.chkEnableInlineWhispers.Location = new System.Drawing.Point(15, 13);
-            this.chkEnableInlineWhispers.Name = "chkEnableInlineWhispers";
-            this.chkEnableInlineWhispers.Size = new System.Drawing.Size(130, 17);
-            this.chkEnableInlineWhispers.TabIndex = 24;
-            this.chkEnableInlineWhispers.Text = "Enable inline whispers";
-            this.chkEnableInlineWhispers.UseVisualStyleBackColor = true;
-            // 
-            // panel10
-            // 
-            this.panel10.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel10.Location = new System.Drawing.Point(0, 0);
-            this.panel10.Name = "panel10";
-            this.panel10.Size = new System.Drawing.Size(481, 449);
-            this.panel10.TabIndex = 8;
+            this.label22.ForeColor = System.Drawing.Color.White;
+            this.label22.Location = new System.Drawing.Point(13, 15);
+            this.label22.Name = "label22";
+            this.label22.Size = new System.Drawing.Size(374, 34);
+            this.label22.TabIndex = 0;
+            this.label22.Text = "Chatterino has been rewritten from ground up! You can install it alongside Chatte" +
+    "rino 1 to try it out.";
             // 
             // panel1
             // 
@@ -722,6 +651,273 @@
             this.label3.Text = "Message Limit:";
             this.label3.Visible = false;
             // 
+            // panel2
+            // 
+            this.panel2.Controls.Add(this.comboBox1);
+            this.panel2.Controls.Add(this.label4);
+            this.panel2.Controls.Add(this.textBox4);
+            this.panel2.Controls.Add(this.lblProxyPassword);
+            this.panel2.Controls.Add(this.textBox3);
+            this.panel2.Controls.Add(this.lblProxyUsername);
+            this.panel2.Controls.Add(this.textBox2);
+            this.panel2.Controls.Add(this.label1);
+            this.panel2.Controls.Add(this.textBox1);
+            this.panel2.Controls.Add(this.lblProxyType);
+            this.panel2.Controls.Add(this.lblProxy);
+            this.panel2.Controls.Add(this.chkProxyEnabled);
+            this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel2.Location = new System.Drawing.Point(0, 0);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(481, 449);
+            this.panel2.TabIndex = 0;
+            // 
+            // comboBox1
+            // 
+            this.comboBox1.FormattingEnabled = true;
+            this.comboBox1.Location = new System.Drawing.Point(87, 52);
+            this.comboBox1.Name = "comboBox1";
+            this.comboBox1.Size = new System.Drawing.Size(167, 21);
+            this.comboBox1.TabIndex = 15;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.label4.Location = new System.Drawing.Point(18, 107);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(29, 13);
+            this.label4.TabIndex = 14;
+            this.label4.Text = "Port:";
+            // 
+            // textBox4
+            // 
+            this.textBox4.Location = new System.Drawing.Point(87, 103);
+            this.textBox4.Name = "textBox4";
+            this.textBox4.Size = new System.Drawing.Size(167, 20);
+            this.textBox4.TabIndex = 13;
+            // 
+            // lblProxyPassword
+            // 
+            this.lblProxyPassword.AutoSize = true;
+            this.lblProxyPassword.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.lblProxyPassword.Location = new System.Drawing.Point(18, 156);
+            this.lblProxyPassword.Name = "lblProxyPassword";
+            this.lblProxyPassword.Size = new System.Drawing.Size(56, 13);
+            this.lblProxyPassword.TabIndex = 12;
+            this.lblProxyPassword.Text = "Password:";
+            // 
+            // textBox3
+            // 
+            this.textBox3.Location = new System.Drawing.Point(87, 153);
+            this.textBox3.Name = "textBox3";
+            this.textBox3.Size = new System.Drawing.Size(167, 20);
+            this.textBox3.TabIndex = 11;
+            // 
+            // lblProxyUsername
+            // 
+            this.lblProxyUsername.AutoSize = true;
+            this.lblProxyUsername.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.lblProxyUsername.Location = new System.Drawing.Point(18, 131);
+            this.lblProxyUsername.Name = "lblProxyUsername";
+            this.lblProxyUsername.Size = new System.Drawing.Size(58, 13);
+            this.lblProxyUsername.TabIndex = 10;
+            this.lblProxyUsername.Text = "Username:";
+            // 
+            // textBox2
+            // 
+            this.textBox2.Location = new System.Drawing.Point(87, 128);
+            this.textBox2.Name = "textBox2";
+            this.textBox2.Size = new System.Drawing.Size(167, 20);
+            this.textBox2.TabIndex = 9;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.label1.Location = new System.Drawing.Point(18, 81);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(32, 13);
+            this.label1.TabIndex = 8;
+            this.label1.Text = "Host:";
+            // 
+            // textBox1
+            // 
+            this.textBox1.Location = new System.Drawing.Point(87, 78);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(167, 20);
+            this.textBox1.TabIndex = 7;
+            // 
+            // lblProxyType
+            // 
+            this.lblProxyType.AutoSize = true;
+            this.lblProxyType.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.lblProxyType.Location = new System.Drawing.Point(18, 55);
+            this.lblProxyType.Name = "lblProxyType";
+            this.lblProxyType.Size = new System.Drawing.Size(34, 13);
+            this.lblProxyType.TabIndex = 6;
+            this.lblProxyType.Text = "Type:";
+            // 
+            // lblProxy
+            // 
+            this.lblProxy.AutoSize = true;
+            this.lblProxy.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblProxy.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.lblProxy.Location = new System.Drawing.Point(18, 7);
+            this.lblProxy.Name = "lblProxy";
+            this.lblProxy.Size = new System.Drawing.Size(228, 17);
+            this.lblProxy.TabIndex = 4;
+            this.lblProxy.Text = "Proxy (doesn\'t work right now Keepo)";
+            // 
+            // chkProxyEnabled
+            // 
+            this.chkProxyEnabled.AutoSize = true;
+            this.chkProxyEnabled.Checked = true;
+            this.chkProxyEnabled.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkProxyEnabled.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.chkProxyEnabled.Location = new System.Drawing.Point(21, 31);
+            this.chkProxyEnabled.Name = "chkProxyEnabled";
+            this.chkProxyEnabled.Size = new System.Drawing.Size(88, 17);
+            this.chkProxyEnabled.TabIndex = 3;
+            this.chkProxyEnabled.Text = "Enable Proxy";
+            this.chkProxyEnabled.UseVisualStyleBackColor = true;
+            // 
+            // panel6
+            // 
+            this.panel6.Controls.Add(this.comboShowIgnoredUsersMessagesIf);
+            this.panel6.Controls.Add(this.label15);
+            this.panel6.Controls.Add(this.chkTwitchIgnores);
+            this.panel6.Controls.Add(this.btnIgnoredUserRemove);
+            this.panel6.Controls.Add(this.btnIgnoredUserAdd);
+            this.panel6.Controls.Add(this.dgvIgnoredUsers);
+            this.panel6.Controls.Add(this.label9);
+            this.panel6.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel6.Location = new System.Drawing.Point(0, 0);
+            this.panel6.Name = "panel6";
+            this.panel6.Size = new System.Drawing.Size(481, 449);
+            this.panel6.TabIndex = 4;
+            // 
+            // comboShowIgnoredUsersMessagesIf
+            // 
+            this.comboShowIgnoredUsersMessagesIf.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboShowIgnoredUsersMessagesIf.FormattingEnabled = true;
+            this.comboShowIgnoredUsersMessagesIf.Items.AddRange(new object[] {
+            "You are moderator",
+            "You are broadcaster",
+            "Never"});
+            this.comboShowIgnoredUsersMessagesIf.Location = new System.Drawing.Point(322, 36);
+            this.comboShowIgnoredUsersMessagesIf.Name = "comboShowIgnoredUsersMessagesIf";
+            this.comboShowIgnoredUsersMessagesIf.Size = new System.Drawing.Size(109, 21);
+            this.comboShowIgnoredUsersMessagesIf.TabIndex = 25;
+            // 
+            // label15
+            // 
+            this.label15.AutoSize = true;
+            this.label15.ForeColor = System.Drawing.Color.White;
+            this.label15.Location = new System.Drawing.Point(177, 41);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(139, 13);
+            this.label15.TabIndex = 6;
+            this.label15.Text = "Show messages anyways if:";
+            // 
+            // chkTwitchIgnores
+            // 
+            this.chkTwitchIgnores.AutoSize = true;
+            this.chkTwitchIgnores.Checked = true;
+            this.chkTwitchIgnores.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkTwitchIgnores.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.chkTwitchIgnores.Location = new System.Drawing.Point(16, 13);
+            this.chkTwitchIgnores.Name = "chkTwitchIgnores";
+            this.chkTwitchIgnores.Size = new System.Drawing.Size(156, 17);
+            this.chkTwitchIgnores.TabIndex = 24;
+            this.chkTwitchIgnores.Text = "Enable twitch ignored users";
+            this.chkTwitchIgnores.UseVisualStyleBackColor = true;
+            this.chkTwitchIgnores.Visible = false;
+            // 
+            // btnIgnoredUserRemove
+            // 
+            this.btnIgnoredUserRemove.Location = new System.Drawing.Point(96, 36);
+            this.btnIgnoredUserRemove.Name = "btnIgnoredUserRemove";
+            this.btnIgnoredUserRemove.Size = new System.Drawing.Size(75, 23);
+            this.btnIgnoredUserRemove.TabIndex = 8;
+            this.btnIgnoredUserRemove.Text = "Remove";
+            this.btnIgnoredUserRemove.UseVisualStyleBackColor = true;
+            // 
+            // btnIgnoredUserAdd
+            // 
+            this.btnIgnoredUserAdd.Location = new System.Drawing.Point(16, 36);
+            this.btnIgnoredUserAdd.Name = "btnIgnoredUserAdd";
+            this.btnIgnoredUserAdd.Size = new System.Drawing.Size(75, 23);
+            this.btnIgnoredUserAdd.TabIndex = 7;
+            this.btnIgnoredUserAdd.Text = "Add";
+            this.btnIgnoredUserAdd.UseVisualStyleBackColor = true;
+            // 
+            // dgvIgnoredUsers
+            // 
+            this.dgvIgnoredUsers.AllowUserToAddRows = false;
+            this.dgvIgnoredUsers.AllowUserToDeleteRows = false;
+            this.dgvIgnoredUsers.AllowUserToResizeColumns = false;
+            this.dgvIgnoredUsers.AllowUserToResizeRows = false;
+            this.dgvIgnoredUsers.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvIgnoredUsers.ColumnHeadersVisible = false;
+            this.dgvIgnoredUsers.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.dataGridViewTextBoxColumn1});
+            this.dgvIgnoredUsers.Location = new System.Drawing.Point(16, 63);
+            this.dgvIgnoredUsers.Name = "dgvIgnoredUsers";
+            this.dgvIgnoredUsers.RowHeadersVisible = false;
+            this.dgvIgnoredUsers.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dgvIgnoredUsers.Size = new System.Drawing.Size(415, 268);
+            this.dgvIgnoredUsers.TabIndex = 6;
+            // 
+            // dataGridViewTextBoxColumn1
+            // 
+            this.dataGridViewTextBoxColumn1.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.dataGridViewTextBoxColumn1.HeaderText = "Command";
+            this.dataGridViewTextBoxColumn1.Name = "dataGridViewTextBoxColumn1";
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.ForeColor = System.Drawing.Color.White;
+            this.label9.Location = new System.Drawing.Point(13, 334);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(190, 26);
+            this.label9.TabIndex = 5;
+            this.label9.Text = "/ignore in chat to ignore someone\r\n/unignore in chat to unignore someone";
+            // 
+            // panel8
+            // 
+            this.panel8.Controls.Add(this.label13);
+            this.panel8.Controls.Add(this.chkEnableInlineWhispers);
+            this.panel8.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel8.Location = new System.Drawing.Point(0, 0);
+            this.panel8.Name = "panel8";
+            this.panel8.Size = new System.Drawing.Size(481, 449);
+            this.panel8.TabIndex = 6;
+            // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.ForeColor = System.Drawing.Color.White;
+            this.label13.Location = new System.Drawing.Point(12, 40);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(300, 39);
+            this.label13.TabIndex = 25;
+            this.label13.Text = "You can join the channel /whispers to view your whispers!\r\n\r\nYou can send whisper" +
+    "s using this command: /w user message";
+            // 
+            // chkEnableInlineWhispers
+            // 
+            this.chkEnableInlineWhispers.AutoSize = true;
+            this.chkEnableInlineWhispers.Checked = true;
+            this.chkEnableInlineWhispers.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkEnableInlineWhispers.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.chkEnableInlineWhispers.Location = new System.Drawing.Point(15, 13);
+            this.chkEnableInlineWhispers.Name = "chkEnableInlineWhispers";
+            this.chkEnableInlineWhispers.Size = new System.Drawing.Size(130, 17);
+            this.chkEnableInlineWhispers.TabIndex = 24;
+            this.chkEnableInlineWhispers.Text = "Enable inline whispers";
+            this.chkEnableInlineWhispers.UseVisualStyleBackColor = true;
+            // 
             // panel3
             // 
             this.panel3.Controls.Add(this.tabControl1);
@@ -878,135 +1074,79 @@
             this.chkPings.Text = "Play sound when your name is mentioned";
             this.chkPings.UseVisualStyleBackColor = true;
             // 
-            // panel2
+            // panel13
             // 
-            this.panel2.Controls.Add(this.comboBox1);
-            this.panel2.Controls.Add(this.label4);
-            this.panel2.Controls.Add(this.textBox4);
-            this.panel2.Controls.Add(this.lblProxyPassword);
-            this.panel2.Controls.Add(this.textBox3);
-            this.panel2.Controls.Add(this.lblProxyUsername);
-            this.panel2.Controls.Add(this.textBox2);
-            this.panel2.Controls.Add(this.label1);
-            this.panel2.Controls.Add(this.textBox1);
-            this.panel2.Controls.Add(this.lblProxyType);
-            this.panel2.Controls.Add(this.lblProxy);
-            this.panel2.Controls.Add(this.chkProxyEnabled);
-            this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel2.Location = new System.Drawing.Point(0, 0);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(481, 449);
-            this.panel2.TabIndex = 0;
+            this.panel13.Controls.Add(this.groupBox3);
+            this.panel13.Controls.Add(this.chkBanButton);
+            this.panel13.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel13.Location = new System.Drawing.Point(0, 0);
+            this.panel13.Name = "panel13";
+            this.panel13.Size = new System.Drawing.Size(481, 449);
+            this.panel13.TabIndex = 34;
             // 
-            // comboBox1
+            // groupBox3
             // 
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(87, 52);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(167, 21);
-            this.comboBox1.TabIndex = 15;
+            this.groupBox3.Controls.Add(this.chkTimeoutButton);
+            this.groupBox3.Controls.Add(this.listView1);
+            this.groupBox3.Controls.Add(this.btnAddTimeout);
+            this.groupBox3.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.groupBox3.Location = new System.Drawing.Point(6, 32);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(430, 360);
+            this.groupBox3.TabIndex = 18;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "Timeout buttons";
             // 
-            // label4
+            // chkTimeoutButton
             // 
-            this.label4.AutoSize = true;
-            this.label4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.label4.Location = new System.Drawing.Point(18, 107);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(29, 13);
-            this.label4.TabIndex = 14;
-            this.label4.Text = "Port:";
+            this.chkTimeoutButton.AutoSize = true;
+            this.chkTimeoutButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.chkTimeoutButton.Location = new System.Drawing.Point(7, 19);
+            this.chkTimeoutButton.Name = "chkTimeoutButton";
+            this.chkTimeoutButton.Size = new System.Drawing.Size(296, 17);
+            this.chkTimeoutButton.TabIndex = 14;
+            this.chkTimeoutButton.Text = "Enable \"timeout user\" buttons if moderator or broadcaster";
+            this.chkTimeoutButton.UseVisualStyleBackColor = true;
             // 
-            // textBox4
+            // listView1
             // 
-            this.textBox4.Location = new System.Drawing.Point(87, 103);
-            this.textBox4.Name = "textBox4";
-            this.textBox4.Size = new System.Drawing.Size(167, 20);
-            this.textBox4.TabIndex = 13;
+            this.listView1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.listView1.AutoScroll = true;
+            this.listView1.ForeColor = System.Drawing.Color.Black;
+            this.listView1.Location = new System.Drawing.Point(9, 71);
+            this.listView1.Name = "listView1";
+            this.listView1.Size = new System.Drawing.Size(410, 276);
+            this.listView1.TabIndex = 17;
             // 
-            // lblProxyPassword
+            // btnAddTimeout
             // 
-            this.lblProxyPassword.AutoSize = true;
-            this.lblProxyPassword.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.lblProxyPassword.Location = new System.Drawing.Point(18, 156);
-            this.lblProxyPassword.Name = "lblProxyPassword";
-            this.lblProxyPassword.Size = new System.Drawing.Size(56, 13);
-            this.lblProxyPassword.TabIndex = 12;
-            this.lblProxyPassword.Text = "Password:";
+            this.btnAddTimeout.ForeColor = System.Drawing.Color.Black;
+            this.btnAddTimeout.Location = new System.Drawing.Point(6, 39);
+            this.btnAddTimeout.Name = "btnAddTimeout";
+            this.btnAddTimeout.Size = new System.Drawing.Size(115, 23);
+            this.btnAddTimeout.TabIndex = 16;
+            this.btnAddTimeout.Text = "Add timeout button";
+            this.btnAddTimeout.UseVisualStyleBackColor = true;
             // 
-            // textBox3
+            // chkBanButton
             // 
-            this.textBox3.Location = new System.Drawing.Point(87, 153);
-            this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(167, 20);
-            this.textBox3.TabIndex = 11;
+            this.chkBanButton.AutoSize = true;
+            this.chkBanButton.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.chkBanButton.Location = new System.Drawing.Point(6, 7);
+            this.chkBanButton.Name = "chkBanButton";
+            this.chkBanButton.Size = new System.Drawing.Size(275, 17);
+            this.chkBanButton.TabIndex = 13;
+            this.chkBanButton.Text = "Enable \"ban user\" button if moderator or broadcaster";
+            this.chkBanButton.UseVisualStyleBackColor = true;
             // 
-            // lblProxyUsername
+            // panel10
             // 
-            this.lblProxyUsername.AutoSize = true;
-            this.lblProxyUsername.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.lblProxyUsername.Location = new System.Drawing.Point(18, 131);
-            this.lblProxyUsername.Name = "lblProxyUsername";
-            this.lblProxyUsername.Size = new System.Drawing.Size(58, 13);
-            this.lblProxyUsername.TabIndex = 10;
-            this.lblProxyUsername.Text = "Username:";
-            // 
-            // textBox2
-            // 
-            this.textBox2.Location = new System.Drawing.Point(87, 128);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(167, 20);
-            this.textBox2.TabIndex = 9;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.label1.Location = new System.Drawing.Point(18, 81);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(32, 13);
-            this.label1.TabIndex = 8;
-            this.label1.Text = "Host:";
-            // 
-            // textBox1
-            // 
-            this.textBox1.Location = new System.Drawing.Point(87, 78);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(167, 20);
-            this.textBox1.TabIndex = 7;
-            // 
-            // lblProxyType
-            // 
-            this.lblProxyType.AutoSize = true;
-            this.lblProxyType.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.lblProxyType.Location = new System.Drawing.Point(18, 55);
-            this.lblProxyType.Name = "lblProxyType";
-            this.lblProxyType.Size = new System.Drawing.Size(34, 13);
-            this.lblProxyType.TabIndex = 6;
-            this.lblProxyType.Text = "Type:";
-            // 
-            // lblProxy
-            // 
-            this.lblProxy.AutoSize = true;
-            this.lblProxy.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblProxy.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.lblProxy.Location = new System.Drawing.Point(18, 7);
-            this.lblProxy.Name = "lblProxy";
-            this.lblProxy.Size = new System.Drawing.Size(228, 17);
-            this.lblProxy.TabIndex = 4;
-            this.lblProxy.Text = "Proxy (doesn\'t work right now Keepo)";
-            // 
-            // chkProxyEnabled
-            // 
-            this.chkProxyEnabled.AutoSize = true;
-            this.chkProxyEnabled.Checked = true;
-            this.chkProxyEnabled.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkProxyEnabled.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.chkProxyEnabled.Location = new System.Drawing.Point(21, 31);
-            this.chkProxyEnabled.Name = "chkProxyEnabled";
-            this.chkProxyEnabled.Size = new System.Drawing.Size(88, 17);
-            this.chkProxyEnabled.TabIndex = 3;
-            this.chkProxyEnabled.Text = "Enable Proxy";
-            this.chkProxyEnabled.UseVisualStyleBackColor = true;
+            this.panel10.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel10.Location = new System.Drawing.Point(0, 0);
+            this.panel10.Name = "panel10";
+            this.panel10.Size = new System.Drawing.Size(481, 449);
+            this.panel10.TabIndex = 8;
             // 
             // panel5
             // 
@@ -1086,109 +1226,6 @@
             this.Command.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
             this.Command.HeaderText = "Command";
             this.Command.Name = "Command";
-            // 
-            // panel6
-            // 
-            this.panel6.Controls.Add(this.comboShowIgnoredUsersMessagesIf);
-            this.panel6.Controls.Add(this.label15);
-            this.panel6.Controls.Add(this.chkTwitchIgnores);
-            this.panel6.Controls.Add(this.btnIgnoredUserRemove);
-            this.panel6.Controls.Add(this.btnIgnoredUserAdd);
-            this.panel6.Controls.Add(this.dgvIgnoredUsers);
-            this.panel6.Controls.Add(this.label9);
-            this.panel6.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel6.Location = new System.Drawing.Point(0, 0);
-            this.panel6.Name = "panel6";
-            this.panel6.Size = new System.Drawing.Size(481, 449);
-            this.panel6.TabIndex = 4;
-            // 
-            // comboShowIgnoredUsersMessagesIf
-            // 
-            this.comboShowIgnoredUsersMessagesIf.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboShowIgnoredUsersMessagesIf.FormattingEnabled = true;
-            this.comboShowIgnoredUsersMessagesIf.Items.AddRange(new object[] {
-            "You are moderator",
-            "You are broadcaster",
-            "Never"});
-            this.comboShowIgnoredUsersMessagesIf.Location = new System.Drawing.Point(322, 36);
-            this.comboShowIgnoredUsersMessagesIf.Name = "comboShowIgnoredUsersMessagesIf";
-            this.comboShowIgnoredUsersMessagesIf.Size = new System.Drawing.Size(109, 21);
-            this.comboShowIgnoredUsersMessagesIf.TabIndex = 25;
-            // 
-            // label15
-            // 
-            this.label15.AutoSize = true;
-            this.label15.ForeColor = System.Drawing.Color.White;
-            this.label15.Location = new System.Drawing.Point(177, 41);
-            this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(139, 13);
-            this.label15.TabIndex = 6;
-            this.label15.Text = "Show messages anyways if:";
-            // 
-            // chkTwitchIgnores
-            // 
-            this.chkTwitchIgnores.AutoSize = true;
-            this.chkTwitchIgnores.Checked = true;
-            this.chkTwitchIgnores.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkTwitchIgnores.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
-            this.chkTwitchIgnores.Location = new System.Drawing.Point(16, 13);
-            this.chkTwitchIgnores.Name = "chkTwitchIgnores";
-            this.chkTwitchIgnores.Size = new System.Drawing.Size(156, 17);
-            this.chkTwitchIgnores.TabIndex = 24;
-            this.chkTwitchIgnores.Text = "Enable twitch ignored users";
-            this.chkTwitchIgnores.UseVisualStyleBackColor = true;
-            this.chkTwitchIgnores.Visible = false;
-            // 
-            // btnIgnoredUserRemove
-            // 
-            this.btnIgnoredUserRemove.Location = new System.Drawing.Point(96, 36);
-            this.btnIgnoredUserRemove.Name = "btnIgnoredUserRemove";
-            this.btnIgnoredUserRemove.Size = new System.Drawing.Size(75, 23);
-            this.btnIgnoredUserRemove.TabIndex = 8;
-            this.btnIgnoredUserRemove.Text = "Remove";
-            this.btnIgnoredUserRemove.UseVisualStyleBackColor = true;
-            // 
-            // btnIgnoredUserAdd
-            // 
-            this.btnIgnoredUserAdd.Location = new System.Drawing.Point(16, 36);
-            this.btnIgnoredUserAdd.Name = "btnIgnoredUserAdd";
-            this.btnIgnoredUserAdd.Size = new System.Drawing.Size(75, 23);
-            this.btnIgnoredUserAdd.TabIndex = 7;
-            this.btnIgnoredUserAdd.Text = "Add";
-            this.btnIgnoredUserAdd.UseVisualStyleBackColor = true;
-            // 
-            // dgvIgnoredUsers
-            // 
-            this.dgvIgnoredUsers.AllowUserToAddRows = false;
-            this.dgvIgnoredUsers.AllowUserToDeleteRows = false;
-            this.dgvIgnoredUsers.AllowUserToResizeColumns = false;
-            this.dgvIgnoredUsers.AllowUserToResizeRows = false;
-            this.dgvIgnoredUsers.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvIgnoredUsers.ColumnHeadersVisible = false;
-            this.dgvIgnoredUsers.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.dataGridViewTextBoxColumn1});
-            this.dgvIgnoredUsers.Location = new System.Drawing.Point(16, 63);
-            this.dgvIgnoredUsers.Name = "dgvIgnoredUsers";
-            this.dgvIgnoredUsers.RowHeadersVisible = false;
-            this.dgvIgnoredUsers.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvIgnoredUsers.Size = new System.Drawing.Size(415, 268);
-            this.dgvIgnoredUsers.TabIndex = 6;
-            // 
-            // dataGridViewTextBoxColumn1
-            // 
-            this.dataGridViewTextBoxColumn1.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.dataGridViewTextBoxColumn1.HeaderText = "Command";
-            this.dataGridViewTextBoxColumn1.Name = "dataGridViewTextBoxColumn1";
-            // 
-            // label9
-            // 
-            this.label9.AutoSize = true;
-            this.label9.ForeColor = System.Drawing.Color.White;
-            this.label9.Location = new System.Drawing.Point(13, 334);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(190, 26);
-            this.label9.TabIndex = 5;
-            this.label9.Text = "/ignore in chat to ignore someone\r\n/unignore in chat to unignore someone";
             // 
             // panel12
             // 
@@ -1834,6 +1871,7 @@
             this.spIgnoredUsers.Location = new System.Drawing.Point(0, 150);
             this.spIgnoredUsers.Name = "spIgnoredUsers";
             this.spIgnoredUsers.Panel = this.panel6;
+            this.spIgnoredUsers.Selected = false;
             this.spIgnoredUsers.Size = new System.Drawing.Size(150, 30);
             this.spIgnoredUsers.TabIndex = 6;
             this.spIgnoredUsers.Text = "Ignored Users";
@@ -1924,6 +1962,17 @@
             this.spConnection.Text = "Connection";
             this.spConnection.Visible = false;
             // 
+            // spC2
+            // 
+            this.spC2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.spC2.Image = global::Chatterino.Properties.Resources.update;
+            this.spC2.Location = new System.Drawing.Point(0, 390);
+            this.spC2.Name = "spC2";
+            this.spC2.Panel = this.panel14;
+            this.spC2.Size = new System.Drawing.Size(150, 30);
+            this.spC2.TabIndex = 14;
+            this.spC2.Text = "Chatterino 2";
+            // 
             // SettingsDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1941,12 +1990,7 @@
             this.Text = "Preferences";
             this.tabs.ResumeLayout(false);
             this.RightPanel.ResumeLayout(false);
-            this.panel13.ResumeLayout(false);
-            this.panel13.PerformLayout();
-            this.groupBox3.ResumeLayout(false);
-            this.groupBox3.PerformLayout();
-            this.panel8.ResumeLayout(false);
-            this.panel8.PerformLayout();
+            this.panel14.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.groupBox1.ResumeLayout(false);
@@ -1954,6 +1998,13 @@
             ((System.ComponentModel.ISupportInitialize)(this.numThemeNightUntil)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numThemeNightFrom)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).EndInit();
+            this.panel2.ResumeLayout(false);
+            this.panel2.PerformLayout();
+            this.panel6.ResumeLayout(false);
+            this.panel6.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvIgnoredUsers)).EndInit();
+            this.panel8.ResumeLayout(false);
+            this.panel8.PerformLayout();
             this.panel3.ResumeLayout(false);
             this.panel3.PerformLayout();
             this.tabControl1.ResumeLayout(false);
@@ -1961,14 +2012,13 @@
             this.tabPage1.PerformLayout();
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();
-            this.panel2.ResumeLayout(false);
-            this.panel2.PerformLayout();
+            this.panel13.ResumeLayout(false);
+            this.panel13.PerformLayout();
+            this.groupBox3.ResumeLayout(false);
+            this.groupBox3.PerformLayout();
             this.panel5.ResumeLayout(false);
             this.panel5.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvCommands)).EndInit();
-            this.panel6.ResumeLayout(false);
-            this.panel6.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvIgnoredUsers)).EndInit();
             this.panel12.ResumeLayout(false);
             this.panel12.PerformLayout();
             this.groupBox2.ResumeLayout(false);
@@ -2141,5 +2191,9 @@
         private System.Windows.Forms.Button btnAddTimeout;
         private System.Windows.Forms.FlowLayoutPanel listView1;
         private System.Windows.Forms.GroupBox groupBox3;
+        private System.Windows.Forms.Panel panel14;
+        private SettingsTabPage spC2;
+        private System.Windows.Forms.Label label22;
+        private System.Windows.Forms.Button button1;
     }
 }

@@ -20,6 +20,8 @@ namespace Chatterino.Updater
 
         static void Main(string[] args)
         {
+            ZipConstants.DefaultCodePage = 850;
+
             Directory.SetCurrentDirectory(new FileInfo(Assembly.GetEntryAssembly().Location).Directory.FullName);
 
             if (File.Exists("../update2"))
